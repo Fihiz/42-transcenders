@@ -3,7 +3,7 @@ Our [final common core project](https://cdn.intra.42.fr/pdf/pdf/27779/en.subject
 *__Purpose__*  
 We'll need to build a website for "a mighty pong contest", to help users play pong against each other. There will be an admin view, a chat with moderators, real-time multiplayer online games...
 
-*__Directions__*   ​
+*__Directions__*  
 Backend should be written in NestJS. Databases must use PostgreSQL. Frontend must be written with any typescript framework.
 
 *__Rendering__*  
