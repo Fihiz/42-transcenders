@@ -8,3 +8,7 @@ Backend should be written in NestJS. Databases must use PostgreSQL. Frontend mus
 
 *__Rendering__*  
 The website should be a single page app, but the user should be able to use the back button on the browser https://en.wikipedia.org/wiki/Singlepage_application. The website must be usable on the latest version to date on Google Chrome, Firefox, Safari. There must be no unhandled errors or warnings when browsing through the website. Everything should run with a single call to docker-compose up –build.
+
+## USAGE
+
+`docker compose up --build`
