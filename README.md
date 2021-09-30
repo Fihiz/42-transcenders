@@ -11,5 +11,5 @@ The website should be a single page app, but the user should be able to use the 
 
 *__Usage__*
 
-`docker compose up --build`
+`docker compose up --build`  
 `docker kill $(docker ps -q)`
