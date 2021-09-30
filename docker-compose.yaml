@@ -3,7 +3,7 @@ version: '3.8'
 
 services:
 
-    db_postgre:
+    database:
         container_name: PostgreSQL
         restart: always
         image: postgres:latest
@@ -50,9 +50,9 @@ services:
             - ./frontend/angular:/usr/src/app
             #- /usr/src/app/node_modules
         links:
-            - server-side
+            - server
         depends_on:
-            - server-side
+            - server
         command: ng serve --host 0.0.0.0
 
     admin:
