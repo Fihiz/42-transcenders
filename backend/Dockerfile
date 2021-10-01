@@ -1,5 +1,5 @@
 # Current version Node: 16
-FROM node:lts as development
+FROM node:latest as development
 
 RUN mkdir -p /usr/src/app/
 WORKDIR /usr/src/app/
@@ -9,6 +9,7 @@ RUN npm install --only=development
 
 COPY ./nestjs/ ./
 
+# Using TypeScript and other build-time dependencies, we have to execute this command in the development image
 RUN npm run build
 
 
