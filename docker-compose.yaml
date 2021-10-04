@@ -5,21 +5,20 @@ services:
 
     database:
         container_name: PostgreSQL
-        restart: always
+        #restart: always
         image: postgres:latest
-        environment:
-            - POSTGRES_USER=admin
-            - POSTGRES_PASSWORD=admin
-            - POSTGRES_DB=db_pong
+        env_file:
+            - .env
         volumes:
             - ./backend/postgresql/config:/docker-entrypoint-initdb.d/
-            - database:/var/lib/postgresql/data
+            # - database:/var/lib/postgresql/data
+            - ./backend/postgresql/database:/var/lib/postgresql/data
         networks:
             - back
 
     server:
         container_name: NestJS
-        restart: always
+        #restart: always
         build:
             context: backend
             target: development
@@ -30,14 +29,13 @@ services:
             - front
         volumes:
             - ./backend/nestjs:/usr/src/app
-            - /usr/src/app/node_modules
         depends_on:
             - database
         command: npm run start:dev
 
     client:
         container_name: Angular
-        #restart: always
+        restart: always
         build:
             context: ./frontend
         ports:
@@ -48,13 +46,12 @@ services:
             - ./frontend/angular:/usr/src/app
         depends_on:
             - server
-        #command: ng serve --host 0.0.0.0
         command: > 
-          bash -c "npm install && ng serve --host 0.0.0.0 --port 4200"
+          bash -c "npm install && ng serve --host 0.0.0.0"
 
     admin:
         container_name: Adminer
-        restart: always
+        #restart: always
         image: adminer:latest
         ports:
             - 8080:8080
@@ -63,6 +60,7 @@ services:
         depends_on:
             - database
 
+# Check later for an optimized way
 volumes:
     database:
         driver: local
