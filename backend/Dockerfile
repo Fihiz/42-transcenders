@@ -1,7 +1,6 @@
 # Current version Node: 16
 FROM node:latest as development
 
-RUN mkdir -p /usr/src/app/
 WORKDIR /usr/src/app/
 
 COPY ./nestjs/package*.json ./

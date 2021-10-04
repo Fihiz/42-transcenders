@@ -1,12 +1,12 @@
 # Current version Node: 16
 FROM node:latest
 
-RUN mkdir -p /usr/src/app/
 WORKDIR /usr/src/app/
 
 COPY ./angular/package*.json ./
-RUN npm install
-RUN npm install -g @angular/cli
-RUN npm install bootstrap@3.3.7 --save
 
-COPY ./angular/ ./
+RUN npm install -g @angular/cli @angular-devkit/build-angular && npm install
+#RUN npm install bootstrap@3.3.7 --save
+
+#COPY ./angular/ ./src
+COPY ./angular/ /usr/src/app

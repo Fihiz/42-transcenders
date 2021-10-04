@@ -31,29 +31,26 @@ services:
         volumes:
             - ./backend/nestjs:/usr/src/app
             - /usr/src/app/node_modules
-        links:
-            - database
         depends_on:
             - database
         command: npm run start:dev
 
     client:
         container_name: Angular
-        restart: always
+        #restart: always
         build:
-            context: frontend
+            context: ./frontend
         ports:
             - 80:4200
         networks:
             - front
         volumes:
             - ./frontend/angular:/usr/src/app
-            #- /usr/src/app/node_modules
-        links:
-            - server
         depends_on:
             - server
-        command: ng serve --host 0.0.0.0
+        #command: ng serve --host 0.0.0.0
+        command: > 
+          bash -c "npm install && ng serve --host 0.0.0.0 --port 4200"
 
     admin:
         container_name: Adminer
@@ -63,8 +60,6 @@ services:
             - 8080:8080
         networks:
             - back
-        links:
-            - database
         depends_on:
             - database
 
