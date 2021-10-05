@@ -7,10 +7,8 @@ services:
         container_name: PostgreSQL
         # restart: always
         image: postgres:latest
-        environment:
-            - POSTGRES_USER=admin
-            - POSTGRES_PASSWORD=admin
-            - POSTGRES_DB=db_pong
+        env_file:
+            - .env
         volumes:
             - ./backend/postgresql/config:/docker-entrypoint-initdb.d
             - ./backend/postgresql/database:/var/lib/postgresql/data
