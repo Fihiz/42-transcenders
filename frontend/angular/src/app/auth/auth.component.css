@@ -1,0 +1,16 @@
+
+
+.success-class {
+    font-size: 800%;
+    color: green;
+    text-align: center;
+}
+
+.fail-class {
+    font-size: 600%;
+    color: red;
+    text-align: center;
+}
+.hidden {
+    display: none;
+}

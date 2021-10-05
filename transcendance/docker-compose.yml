@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  website:
+    build: 
+      context:  ./front-shrek
+      dockerfile: Dockerfile
+    image: webimage
+    ports:
+      - "5000:4200"
+    volumes:
+      - ./front-shrek/:/app
+  
+
+  back:
+    build:
+        context: ./shrek-app/
+    command: npm run start:dev
+    volumes:
+        - ./shrek-app/:/usr/back
+    ports:
+        - "3000:3000"

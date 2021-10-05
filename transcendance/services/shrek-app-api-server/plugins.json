@@ -1,0 +1,9 @@
+{
+	"name":"oauth2",
+	"config": {
+		"scopes": ["user_profile", "biometrics", "step_counts"],
+		"mandatory_scope": true,
+		"enable_authorization_code": "true"
+	},
+	"protocole":"http"
+}
