@@ -1,0 +1,42 @@
+.hidden {
+    display: none;
+    color: black;
+}
+
+.chat-box {
+    background-color: lightgray;
+    width:15%;
+    height: 250px;
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+.header {
+    border-color: black;
+    border-style: outset;
+}
+
+.rond-rouge {
+    width: 20%;
+}
+
+.rond-vert {
+    width: 20%;
+}
+
+.message {
+    width: 100%;
+    margin-bottom: 0%;
+    height: 70%;
+    border-color: black;
+    border-style: outset;
+}
+
+.input{
+    width:70%;
+}
+
+.send {
+    width:30%;
+}

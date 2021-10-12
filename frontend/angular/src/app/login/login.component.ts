@@ -13,11 +13,12 @@ export class LoginComponent implements OnInit {
 
   async onEvent() {
     const client_id=FORTYTWO_APP_ID;
-    const redirect_uri="http://127.0.0.1:5000/auth/";
+    const redirect_uri="http://127.0.0.1:80/auth/";
     const response_type="code";
     const state='enrfckqgilRbvr!XCWegret1@g30rt3h5/46+=40ethjr4j';
     const url="https://api.intra.42.fr/oauth/authorize?client_id="+client_id+"&redirect_uri="+redirect_uri+"&response_type="+response_type+ "&state=" + state;
     console.log(url);
+    console.log("TTTTTTTEEEEESSSSSSSSTTTTT")
     window.location.href = url;
   }
 

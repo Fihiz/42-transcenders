@@ -5,8 +5,7 @@ WORKDIR /usr/src/app/
 
 COPY ./angular/package*.json ./
 
-RUN npm install -g @angular/cli @angular-devkit/build-angular && npm install
-#RUN npm install bootstrap@3.3.7 --save
+RUN npm update -g
+RUN npm install -g @angular/cli
 
-#COPY ./angular/ ./src
-COPY ./angular/ /usr/src/app
+COPY ./angular/ ./
