@@ -5,8 +5,12 @@
         <img src="../../assets/rond-vert.jpeg" class="rond-vert">
         <a class="pseudo">{{pseudo}}</a>
     </div>
-    <p class="message">debut de la conversation</p>
-    <input type="text" class="input">
-    <button type="button" class="send" (click)="onClick()" value="send">send</button>
+    <div class="message">
+        <a id = "mess-1" *ngFor="let theMessage of messageTab">{{ theMessage.body }}</a> 
+    </div>
+    <div class='in'>
+        <input type="text" class="inputB" id="inputBody" placeholder="ecrivez votre message">
+        <input type="text" class="inputT" id="inputTo" placeholder="to">
+        <button type="button" class="send" (click)="onClick()" value="send">send</button>
+    </div>
 </div>
-<span>{{pseudo}}</span>

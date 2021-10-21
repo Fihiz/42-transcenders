@@ -1,17 +1,16 @@
 # Current version Docker-compose: 3.8
-version: '3.8'
+version: "3.8"
 
 services:
-
     database:
         container_name: PostgreSQL
         # restart: always
         image: postgres:latest
         env_file:
             - .env
-        volumes:
-            - ./backend/postgresql/config:/docker-entrypoint-initdb.d
-            - ./backend/postgresql/database:/var/lib/postgresql/data
+        # volumes:
+            # - ./backend/postgresql/config:/docker-entrypoint-initdb.d
+            # - ./backend/postgresql/database:/var/lib/postgresql/data
         networks:
             - back
 
@@ -47,8 +46,9 @@ services:
             - /usr/src/app/node_modules
         depends_on:
             - server
-        command: > 
-          bash -c "npm install && ng serve --host 0.0.0.0"
+        command: >
+            bash -c "npm install && ng serve --host 0.0.0.0"
+
     admin:
         container_name: Adminer
         # restart: always

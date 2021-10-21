@@ -17,8 +17,6 @@ export class LoginComponent implements OnInit {
     const response_type="code";
     const state='enrfckqgilRbvr!XCWegret1@g30rt3h5/46+=40ethjr4j';
     const url="https://api.intra.42.fr/oauth/authorize?client_id="+client_id+"&redirect_uri="+redirect_uri+"&response_type="+response_type+ "&state=" + state;
-    console.log(url);
-    console.log("TTTTTTTEEEEESSSSSSSSTTTTT")
     window.location.href = url;
   }
 

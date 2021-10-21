@@ -6,6 +6,6 @@ WORKDIR /usr/src/app/
 COPY ./angular/package*.json ./
 
 RUN npm update -g
-RUN npm install -g @angular/cli
+RUN npm install -g @angular/cli openssl
 
 COPY ./angular/ ./
