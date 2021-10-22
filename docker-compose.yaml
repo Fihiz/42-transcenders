@@ -47,7 +47,7 @@ services:
         depends_on:
             - server
         command: >
-            bash -c "npm install && ng serve --host 0.0.0.0"
+            bash -c "npm install && ng serve --host 0.0.0.0 --open"
 
     admin:
         container_name: Adminer

@@ -1,18 +1,18 @@
 .all {
-    display: flex;
-    /* min-height: 100%; */
-    
+  display: flex;
+  /* min-height: 100%; */
 }
 .all app-sidebar {
-    min-height: 100%;
-    /* background-color: aqua; */
-      /* background-image: url("../assets/bannerfigma.png"); */
+  min-height: 100%;
+  /* position: relative; */
+  /* background-color: aqua; */
+  /* background-image: url("../assets/bannerfigma.png"); */
   /* background-color: rgb(129, 176, 218); */
   /* background-size: cover; */
 }
 
 app-header {
-    flex: 1;
-    /* padding: 25px; */
-    /* height: 200px; */
+  flex: 1;
+  /* padding: 25px; */
+  /* height: 200px; */
 }
