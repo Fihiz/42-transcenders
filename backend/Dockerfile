@@ -1,4 +1,3 @@
-# Current version Node: 16
 FROM node:latest as development
 
 WORKDIR /usr/src/app/
