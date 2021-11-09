@@ -1,0 +1,14 @@
+.jumbotron {
+  background-image: url("../../assets/logotransparent.png");
+  background-size: 15%;
+  height: auto;
+  min-height: 500px;
+  letter-spacing: 16px;
+}
+
+body {
+  margin-top: 15%;
+  margin-bottom: 10%;
+  display: flex;
+  justify-content: center;
+}
