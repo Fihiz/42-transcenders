@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ConversationEntity } from "../conversation/conversation.entity";
 import { GameTypeEntity } from "../gameType/gameType.entity";
 import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
@@ -11,9 +11,11 @@ export class PongGameEntity {
   game_id: number;
 
   @ManyToOne(() => WebAppUserEntity)
+  @JoinColumn({name: 'player1'})
 	player1: WebAppUserEntity['login'];
 
   @ManyToOne(() => WebAppUserEntity)
+  @JoinColumn({name: 'player2'})
 	player2: WebAppUserEntity['login'];
 
   @Column({
@@ -44,6 +46,7 @@ export class PongGameEntity {
   looser: string;
 
   @ManyToOne(() => GameTypeEntity)
+  @JoinColumn({name: 'game_type_id'})
   game_type_id: GameTypeEntity['game_type_id'];
 
   @OneToOne(() => ConversationEntity)

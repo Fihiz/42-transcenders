@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ConversationEntity } from "../conversation/conversation.entity";
 import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 
@@ -6,15 +6,12 @@ import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 @Entity('t_chatter')
 export class ChatterEntity {
 
-  @PrimaryGeneratedColumn({
-    type: "int"
-  })
-  id: number
-
   @ManyToOne(() => ConversationEntity, {primary: true})
+  @JoinColumn({name: 'conv_id'})
   conv_id: ConversationEntity['conv_id'];
 
-  @ManyToOne(() => WebAppUserEntity)
+  @ManyToOne(() => WebAppUserEntity, {primary: true})
+  @JoinColumn({name: 'login'})
 	login: WebAppUserEntity['login'];
 
   @Column({

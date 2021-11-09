@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ConversationEntity } from "../conversation/conversation.entity";
 import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 
@@ -12,9 +12,11 @@ export class InvitationEntity {
   id: number
 
   @ManyToOne(() => WebAppUserEntity)
+  @JoinColumn({name: 'emitter'})
   emitter: WebAppUserEntity['login'];
 
   @ManyToOne(() => WebAppUserEntity)
+  @JoinColumn({name: 'receiver'})
 	receiver: WebAppUserEntity['login'];
 
   @Column({
@@ -24,6 +26,7 @@ export class InvitationEntity {
   invitation_type: string;
 
   @OneToOne(() => ConversationEntity, {nullable: true})
+  @JoinColumn({name: 'conv_id'})
   room: ConversationEntity['conv_id'];
 
   @Column({

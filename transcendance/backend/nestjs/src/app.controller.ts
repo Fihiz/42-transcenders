@@ -1,17 +1,20 @@
 import { Controller, Get } from '@nestjs/common';
-import { getRepository } from 'typeorm';
-import { WebAppUserEntity } from './entity/webAppUser/webAppUser.entity';
+import { getRepository, getTreeRepository, Timestamp } from 'typeorm';
 import { WebAppUserService } from './entity/webAppUser/webAppUser.service';
-import { role } from './entity/webAppUser/webAppUser.entity';
-import { StatEntity } from './entity/stat/stat.entity';
+import { role, WebAppUserEntity } from './entity/webAppUser/webAppUser.entity';
 import { StatService } from './entity/stat/stat.service';
+import { StatEntity } from './entity/stat/stat.entity';
 import { RouterModule } from '@nestjs/core';
+import { WebAppUserModule } from './entity/webAppUser/webAppUser.module';
 
 
 @Controller()
 export class AppController {
 
-  constructor (private userService: WebAppUserService, private statService: StatService){}
+  private userService: WebAppUserService;
+  private statService: StatService;
+  constructor (){}
+  // constructor (private userService: WebAppUserService, private statService: StatService){}
   user: WebAppUserEntity = {
     login: "test",
     pseudo: "testps",

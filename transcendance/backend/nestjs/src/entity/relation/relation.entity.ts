@@ -1,14 +1,16 @@
-import { Column, Entity, ManyToOne  } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne  } from "typeorm";
 import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 
 
 @Entity('t_relation')
 export class RelationEntity {
 
-  @ManyToOne(() => WebAppUserEntity, { primary: true })
+  @ManyToOne(() => WebAppUserEntity, {primary: true})
+  @JoinColumn({name: 'login1'})
   user1: WebAppUserEntity['login'];
 
-  @ManyToOne(() => WebAppUserEntity)
+  @ManyToOne(() => WebAppUserEntity, {primary: true})
+  @JoinColumn({name: 'login2'})
 	user2: WebAppUserEntity['login'];
 
   @Column({

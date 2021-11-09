@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 
 
@@ -6,6 +6,7 @@ import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 export class ApiUserDataEntity {
 
   @OneToOne(() => WebAppUserEntity, {primary: true})
+  @JoinColumn({name: 'login'})
 	login: WebAppUserEntity['login'];
 
   @Column({

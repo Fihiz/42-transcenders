@@ -1,11 +1,12 @@
-import { Column, Entity, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 
 
 @Entity('t_stat')
 export class StatEntity {
-  
+
 	@OneToOne(()=> WebAppUserEntity, {primary: true})
+  @JoinColumn({name: 'login'})
   login: WebAppUserEntity['login'];
 
   @Column({

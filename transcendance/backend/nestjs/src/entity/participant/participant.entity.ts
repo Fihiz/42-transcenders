@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { PongGameEntity } from "../pongGame/pongGame.entity";
 import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 
@@ -7,9 +7,11 @@ import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 export class ParticipantEntity {
   
 	@ManyToOne(()=> PongGameEntity, {primary: true})
+  @JoinColumn({name: 'game_id'})
   game_id: PongGameEntity['game_id'];
 
-  @ManyToOne(()=> WebAppUserEntity)
+  @ManyToOne(()=> WebAppUserEntity, {primary: true})
+  @JoinColumn({name: 'login'})
   login: WebAppUserEntity['login'];
 
   @Column({

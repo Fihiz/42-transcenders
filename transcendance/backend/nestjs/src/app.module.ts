@@ -31,9 +31,25 @@ import { RelationEntity } from './entity/relation/relation.entity';
 import { RelationModule } from './entity/relation/relation.module';
 import { ChatterEntity } from './entity/chatter/chatter.entity';
 import { ChatterModule } from './entity/chatter/chatter.module';
+import { ParticipantModule } from './entity/participant/participant.module';
+import { ParticipantEntity } from './entity/participant/participant.entity';
+import { InvitationModule } from './entity/invitation/invitation.module';
+import { InvitationEntity } from './entity/invitation/invitation.entity';
 
 @Module({
-  imports: [
+  imports: [WebAppUserModule, 
+    StatModule, 
+    MessagesModule, 
+    ConversationModule, 
+    AchievementModule,
+    GameTypeModule,
+    ApiUserDataModule, 
+    AwardModule,
+    PongGameModule,
+    RelationModule,
+    ChatterModule,
+    ParticipantModule,
+    InvitationModule,
     ConfigModule.forRoot({
       isGlobal: true
     }),
@@ -53,21 +69,13 @@ import { ChatterModule } from './entity/chatter/chatter.module';
         AwardEntity,
         PongGameEntity,
         RelationEntity,
-        ChatterEntity],
+        ChatterEntity,
+        ParticipantEntity,
+        InvitationEntity,
+      ],
       autoLoadEntities: true,
       synchronize: true
     }),
-      WebAppUserModule, 
-      StatModule, 
-      MessagesModule, 
-      ConversationModule, 
-      AchievementModule,
-      GameTypeModule,
-      ApiUserDataModule, 
-      AwardModule,
-      PongGameModule,
-      RelationModule,
-      ChatterModule,
     TypeOrmModule.forFeature([WebAppUserEntity, 
       StatEntity, 
       MessagesEntity, 
@@ -79,6 +87,8 @@ import { ChatterModule } from './entity/chatter/chatter.module';
       PongGameEntity,
       RelationEntity,
       ChatterEntity,
+      ParticipantEntity,
+      InvitationEntity,
     ]),
   ],
   controllers: [AppController, CallbackController, DoubleAuthController, AuthController],

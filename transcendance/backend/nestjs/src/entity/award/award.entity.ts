@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 import { AchievementEntity } from "../achievement/achievement.entity"
 
@@ -6,11 +6,12 @@ import { AchievementEntity } from "../achievement/achievement.entity"
 @Entity('t_award')
 export class AwardEntity {
 
-  @ManyToOne(() => AchievementEntity)
-  @PrimaryColumn()
-  achievement_id: number;
+  @ManyToOne(() => AchievementEntity, {primary: true})
+  @JoinColumn({name: 'achievement_id'})
+  achievement_id: AchievementEntity['achievement_id'];
 
-  @ManyToOne(() => WebAppUserEntity)
+  @ManyToOne(() => WebAppUserEntity, {primary: true})
+  @JoinColumn({name: 'login'})
   login: WebAppUserEntity['login'];
 
   @Column({

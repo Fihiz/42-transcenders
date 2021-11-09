@@ -22,7 +22,10 @@ passport.use(new FortyTwoStrategy({
 @Controller('auth')
 export class AuthController {
 
-  constructor(private authService: AuthService, private userService: WebAppUserService){}
+  private authService: AuthService;
+  private userService: WebAppUserService;
+  constructor (){}
+  // constructor(private authService: AuthService, private userService: WebAppUserService){}
 
     @Get()
     async redirection(@Req() req, @Res() res) {
