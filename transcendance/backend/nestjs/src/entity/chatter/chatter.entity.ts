@@ -12,7 +12,7 @@ export class ChatterEntity {
   })
   id: number
 
-  @ManyToOne(() => ConversationEntity)
+  @ManyToOne(() => ConversationEntity, {primary: true})
   @JoinColumn()
   conv_id: ConversationEntity['conv_id'];
 

@@ -7,11 +7,11 @@ import { WebAppUser } from "../webAppUser/webAppUser.entity";
 @Entity('t_relation')
 export class RelationEntity {
 
-  @OneToOne(() => WebAppUser, { primary: true })
+  @ManyToOne(() => WebAppUser, { primary: true })
   @JoinColumn()
   user1: WebAppUser['login'];
 
-  @OneToOne(() => WebAppUser)
+  @ManyToOne(() => WebAppUser)
   @JoinColumn()
 	user2: WebAppUser['login'];
 
