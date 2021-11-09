@@ -7,5 +7,5 @@ import { AchievementService } from "./achievement.service";
     imports: [TypeOrmModule.forFeature([AchievementEntity])],
     providers: [AchievementService],
   })
-export class MEssagesModule {}
+export class AchievementModule {}
   

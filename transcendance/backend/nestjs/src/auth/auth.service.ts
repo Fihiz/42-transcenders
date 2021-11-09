@@ -1,7 +1,7 @@
 import { Res } from "@nestjs/common";
 import axios from "axios";
-import { role, WebAppUser } from "src/entity/webAppUser/webAppUser.entity";
-import { webAppUserService } from "src/entity/webAppUser/webAppUser.service";
+import { role, WebAppUserEntity } from "src/entity/webAppUser/webAppUser.entity";
+import { WebAppUserService } from "src/entity/webAppUser/webAppUser.service";
 import { consumers } from "stream";
 import { Repository, Timestamp } from "typeorm";
 const querystring = require('querystring');
@@ -16,9 +16,9 @@ export class AuthService {
       res.send('this is a fail')
     }
 
-    async registerData(data, userData: webAppUserService) {
+    async registerData(data, userData: WebAppUserService) {
       let res;
-      const user: WebAppUser = {
+      const user: WebAppUserEntity = {
         login: data.login,
         pseudo: data.login,
         avatar: "",

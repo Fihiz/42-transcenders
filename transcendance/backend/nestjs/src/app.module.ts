@@ -9,25 +9,28 @@ import { ChatModule } from './chat/chat.module';
 
 import "reflect-metadata";
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { WebAppUser } from './entity/webAppUser/webAppUser.entity';
-import { webAppUserModule } from './entity/webAppUser/webAppUser.module';
-import { StatModule } from './entity/Stat/stat.module';
-import { StatEntity } from './entity/Stat/stat.entity';
-import { webAppUserService } from './entity/webAppUser/webAppUser.service';
-import { StatService } from './entity/Stat/stat.service';
-import { MessagesService } from './entity/messages/messages.service';
-import { MessagesEntity } from './entity/messages/messages.entity';
-import { ConversationEntity } from './entity/conversation/conversation.entity';
-import { AchievementEntity } from './entity/achievement/achievement.entity';
-import { GameTypeService } from './entity/gameType/gameType.service';
-import { GameTypeEntity } from './entity/gameType/gameType.entity';
-import { ApiUserDataService } from './entity/apiUserData/apiUserData.service';
 import { ApiUserDataEntity } from './entity/apiUserData/apiUserData.entity';
+import { ApiUserDataModule } from './entity/apiUserData/apiUserData.module';
+import { WebAppUserEntity } from './entity/webAppUser/webAppUser.entity';
+import { WebAppUserModule } from './entity/webAppUser/webAppUser.module';
+import { StatEntity } from './entity/stat/stat.entity';
+import { StatModule } from './entity/stat/stat.module';
+import { MessagesEntity } from './entity/messages/messages.entity';
+import { MessagesModule } from './entity/messages/messages.module';
+import { ConversationEntity } from './entity/conversation/conversation.entity';
+import { ConversationModule } from './entity/conversation/conversation.module';
+import { AchievementEntity } from './entity/achievement/achievement.entity';
+import { AchievementModule } from './entity/achievement/achievement.module';
+import { GameTypeEntity } from './entity/gameType/gameType.entity';
+import { GameTypeModule } from './entity/gameType/gameType.module';
 import { AwardEntity } from './entity/award/award.entity';
+import { AwardModule } from './entity/award/award.module';
 import { PongGameEntity } from './entity/pongGame/pongGame.entity';
+import { PongGameModule } from './entity/pongGame/pongGame.module';
 import { RelationEntity } from './entity/relation/relation.entity';
+import { RelationModule } from './entity/relation/relation.module';
 import { ChatterEntity } from './entity/chatter/chatter.entity';
-import { AuthService } from './auth/auth.service';
+import { ChatterModule } from './entity/chatter/chatter.module';
 
 @Module({
   imports: [
@@ -40,14 +43,32 @@ import { AuthService } from './auth/auth.service';
       username: "admin",
       password: "admin",
       database: "db_pong",
-      entities: [WebAppUser, StatEntity],
+      entities: [WebAppUserEntity, 
+        StatEntity, 
+        MessagesEntity, 
+        ConversationEntity, 
+        AchievementEntity,
+        GameTypeEntity,
+        ApiUserDataEntity,
+        AwardEntity,
+        PongGameEntity,
+        RelationEntity,
+        ChatterEntity],
       autoLoadEntities: true,
       synchronize: true
     }),
-    ChatModule,
-    webAppUserModule,
-    StatModule,
-    TypeOrmModule.forFeature([WebAppUser, 
+      WebAppUserModule, 
+      StatModule, 
+      MessagesModule, 
+      ConversationModule, 
+      AchievementModule,
+      GameTypeModule,
+      ApiUserDataModule, 
+      AwardModule,
+      PongGameModule,
+      RelationModule,
+      ChatterModule,
+    TypeOrmModule.forFeature([WebAppUserEntity, 
       StatEntity, 
       MessagesEntity, 
       ConversationEntity, 
@@ -61,6 +82,6 @@ import { AuthService } from './auth/auth.service';
     ]),
   ],
   controllers: [AppController, CallbackController, DoubleAuthController, AuthController],
-  providers: [AppService,webAppUserService, StatService, AuthService],
+  providers: [AppService],
 })
 export class AppModule {}

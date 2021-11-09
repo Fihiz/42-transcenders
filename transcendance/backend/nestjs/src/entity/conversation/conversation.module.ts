@@ -7,5 +7,5 @@ import { ConversationService } from "./conversation.service";
     imports: [TypeOrmModule.forFeature([ConversationEntity])],
     providers: [ConversationService],
   })
-export class MEssagesModule {}
+export class ConversationModule {}
   

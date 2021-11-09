@@ -1,7 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ConversationEntity } from "../conversation/conversation.entity";
-import { ConversationService } from "../conversation/conversation.service";
-import { WebAppUser } from "../webAppUser/webAppUser.entity";
+import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 
 
 @Entity('t_chatter')
@@ -13,12 +12,10 @@ export class ChatterEntity {
   id: number
 
   @ManyToOne(() => ConversationEntity, {primary: true})
-  @JoinColumn()
   conv_id: ConversationEntity['conv_id'];
 
-  @ManyToOne(() => WebAppUser)
-  @JoinColumn()
-	login: WebAppUser['login'];
+  @ManyToOne(() => WebAppUserEntity)
+	login: WebAppUserEntity['login'];
 
   @Column({
     type: "varchar",
@@ -35,16 +32,16 @@ export class ChatterEntity {
   @Column({
     type: "timestamp",
   })
-  muted_until: Number;
+  muted_until: Date;
 
   @Column({
     type: "timestamp",
   })
-  created: Number;
+  created: Date;
 
   @Column({
     type: "timestamp",
   })
-  updated: Number;
+  updated: Date;
   
 }

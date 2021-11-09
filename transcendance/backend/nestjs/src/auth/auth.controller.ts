@@ -1,5 +1,5 @@
 import { BadRequestException, Controller, Get, Next, Req, Res } from '@nestjs/common';
-import { webAppUserService } from 'src/entity/webAppUser/webAppUser.service';
+import { WebAppUserService } from 'src/entity/webAppUser/webAppUser.service';
 import { AuthService } from './auth.service';
 export const passport = require('passport');
 const FortyTwoStrategy = require('passport-42').Strategy;
@@ -22,7 +22,7 @@ passport.use(new FortyTwoStrategy({
 @Controller('auth')
 export class AuthController {
 
-  constructor(private authService: AuthService, private userService: webAppUserService){}
+  constructor(private authService: AuthService, private userService: WebAppUserService){}
 
     @Get()
     async redirection(@Req() req, @Res() res) {

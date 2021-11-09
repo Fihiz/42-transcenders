@@ -1,13 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, Timestamp } from "typeorm";
-import { WebAppUser } from "../webAppUser/webAppUser.entity";
+import { Column, Entity, OneToOne } from "typeorm";
+import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 
 
 @Entity('t_apiUserData')
 export class ApiUserDataEntity {
 
-  @OneToOne(() => WebAppUser, {primary: true})
-  @JoinColumn()
-	login: WebAppUser['login'];
+  @OneToOne(() => WebAppUserEntity, {primary: true})
+	login: WebAppUserEntity['login'];
 
   @Column({
 		type: "varchar",
@@ -22,7 +21,7 @@ export class ApiUserDataEntity {
   first_name: string;
 
   @Column({
-		type: "date"
+		type: "timestamp"
   })
   birthday: Date;
 
@@ -33,13 +32,12 @@ export class ApiUserDataEntity {
   })
   mail: string;
 
-
   @Column({
 		type: "timestamp",
   })
   created: Date;
 
-    @Column({
+  @Column({
 		type: "timestamp",
   })
   update: Date;

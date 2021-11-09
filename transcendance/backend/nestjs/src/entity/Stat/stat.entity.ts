@@ -1,13 +1,12 @@
-import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
-import { WebAppUser } from "../webAppUser/webAppUser.entity";
+import { Column, Entity, OneToOne } from "typeorm";
+import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 
 
 @Entity('t_stat')
 export class StatEntity {
   
-	@OneToOne(()=> WebAppUser, {primary: true})
-	@JoinColumn()
-  login: WebAppUser['login'];
+	@OneToOne(()=> WebAppUserEntity, {primary: true})
+  login: WebAppUserEntity['login'];
 
   @Column({
 		default: 0,
@@ -34,13 +33,11 @@ export class StatEntity {
   point_for_ladder: number;
 
   @Column({
-		default: 0,
 		type: "int",
   })
   highest_score: number;
 
   @Column({
-		default: 0,
 		type: "int",
   })
   worst_score: number;
@@ -58,13 +55,11 @@ export class StatEntity {
   adversary_points: number;
 
   @Column({
-		default: 0,
 		type: "int",
   })
   longest_match: number;
 
   @Column({
-		default: 0,
 		type: "int",
   })
   shortest_match: number;
@@ -73,6 +68,7 @@ export class StatEntity {
     type: "timestamp",
   })
   created:Date;
+  
   @Column({
     type: "timestamp",
   })

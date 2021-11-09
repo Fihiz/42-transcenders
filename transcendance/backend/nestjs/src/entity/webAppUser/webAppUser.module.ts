@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { webAppUserService } from './webAppUser.service';
-import { WebAppUser } from './webAppUser.entity';
+import { WebAppUserService } from './webAppUser.service';
+import { WebAppUserEntity } from './webAppUser.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([WebAppUser])],
-  providers: [webAppUserService],
+  imports: [TypeOrmModule.forFeature([WebAppUserEntity])],
+  providers: [WebAppUserService],
 })
-export class webAppUserModule {}
+export class WebAppUserModule {}

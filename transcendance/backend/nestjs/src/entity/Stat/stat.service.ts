@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { getRepository, Repository } from "typeorm";
-import { WebAppUser } from "../webAppUser/webAppUser.entity";
+import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 import { StatEntity } from "./stat.entity";
 
 @Injectable()
@@ -44,9 +44,9 @@ export class StatService {
   }
 
   async modifie(set1: object, where1: string, where2: object) {
-    const user = await getRepository(WebAppUser)
+    const user = await getRepository(WebAppUserEntity)
     .createQueryBuilder()
-    .update(WebAppUser)
+    .update(WebAppUserEntity)
     .set(set1)
     .where(where1, where2)
     .execute();

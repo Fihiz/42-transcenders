@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 export enum role {
   "Owner",
@@ -7,7 +7,7 @@ export enum role {
 };
 
 @Entity('t_webapp_user')
-export class WebAppUser {
+export class WebAppUserEntity {
   @PrimaryColumn({
     type: 'varchar',
   })

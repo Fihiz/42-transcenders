@@ -1,19 +1,15 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryColumnCannotBeNullableError, PrimaryGeneratedColumn, Timestamp } from "typeorm";
-import { ConversationEntity } from "../conversation/conversation.entity";
-import { ConversationService } from "../conversation/conversation.service";
-import { WebAppUser } from "../webAppUser/webAppUser.entity";
+import { Column, Entity, ManyToOne  } from "typeorm";
+import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 
 
 @Entity('t_relation')
 export class RelationEntity {
 
-  @ManyToOne(() => WebAppUser, { primary: true })
-  @JoinColumn()
-  user1: WebAppUser['login'];
+  @ManyToOne(() => WebAppUserEntity, { primary: true })
+  user1: WebAppUserEntity['login'];
 
-  @ManyToOne(() => WebAppUser)
-  @JoinColumn()
-	user2: WebAppUser['login'];
+  @ManyToOne(() => WebAppUserEntity)
+	user2: WebAppUserEntity['login'];
 
   @Column({
     type: "varchar",
@@ -22,7 +18,7 @@ export class RelationEntity {
   friendship: string;
 
   @Column({
-    type: "varchar",
+    type: "timestamp",
     nullable: true,
   })
   friendship_birthday: Date;

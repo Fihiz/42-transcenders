@@ -7,5 +7,5 @@ import { ApiUserDataService } from "./apiUserData.service";
     imports: [TypeOrmModule.forFeature([ApiUserDataEntity])],
     providers: [ApiUserDataService],
   })
-export class MEssagesModule {}
+export class ApiUserDataModule{}
   

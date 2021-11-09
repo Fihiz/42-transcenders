@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
-import { WebAppUser } from './webAppUser.entity';
+import { WebAppUserEntity } from './webAppUser.entity';
 
 @Injectable()
-export class webAppUserService {
+export class WebAppUserService {
   constructor(
-    @InjectRepository(WebAppUser)
-    private users: Repository<WebAppUser>,
+    @InjectRepository(WebAppUserEntity)
+    private users: Repository<WebAppUserEntity>,
   ) {}
 
-  async create(user: WebAppUser): Promise<any> {
+  async create(user: WebAppUserEntity): Promise<any> {
     console.log('WepAppUser creation');
     try {
       const res= await this.users.insert(user);
@@ -32,19 +32,19 @@ export class webAppUserService {
     return this.users.findOne(login);
   }
 
-  update(id: number, newUser: WebAppUser) {
+  update(id: number, newUser: WebAppUserEntity) {
     return this.users.update("test", newUser);
   }
 
-  async remove(user: WebAppUser) {
+  async remove(user: WebAppUserEntity) {
     console.log('deletion');
     return (await this.users.delete(user));
   }
 
   async modifie(set1: object, where1: string, where2: object) {
-    const user = await getRepository(WebAppUser)
+    const user = await getRepository(WebAppUserEntity)
     .createQueryBuilder()
-    .update(WebAppUser)
+    .update(WebAppUserEntity)
     .set(set1)
     .where(where1, where2)
     .execute();

@@ -1,7 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ConversationEntity } from "../conversation/conversation.entity";
-import { ConversationService } from "../conversation/conversation.service";
-import { WebAppUser } from "../webAppUser/webAppUser.entity";
+import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 
 
 @Entity('t_messages')
@@ -11,12 +10,10 @@ export class MessagesEntity {
   id: number;
 
   @ManyToOne(() => ConversationEntity)
-  @JoinColumn()
 	conv_id: ConversationEntity['conv_id'];
 
-  @ManyToOne(() => WebAppUser)
-  @JoinColumn()
-  login: WebAppUser['login'];
+  @ManyToOne(() => WebAppUserEntity)
+  login: WebAppUserEntity['login'];
 
   @Column({
 		type: "varchar",

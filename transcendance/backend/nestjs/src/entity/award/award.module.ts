@@ -7,5 +7,5 @@ import { AwardService } from "./award.service";
     imports: [TypeOrmModule.forFeature([AwardEntity])],
     providers: [AwardService],
   })
-export class MEssagesModule {}
+export class AwardModule {}
   

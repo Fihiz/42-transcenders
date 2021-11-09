@@ -1,17 +1,18 @@
 import { Controller, Get } from '@nestjs/common';
-import { getRepository, getTreeRepository, Timestamp } from 'typeorm';
-import { webAppUserService } from './entity/webAppUser/webAppUser.service';
-import { role, WebAppUser } from './entity/webAppUser/webAppUser.entity';
-import { StatService } from './entity/Stat/stat.service';
-import { StatEntity } from './entity/Stat/stat.entity';
+import { getRepository } from 'typeorm';
+import { WebAppUserEntity } from './entity/webAppUser/webAppUser.entity';
+import { WebAppUserService } from './entity/webAppUser/webAppUser.service';
+import { role } from './entity/webAppUser/webAppUser.entity';
+import { StatEntity } from './entity/stat/stat.entity';
+import { StatService } from './entity/stat/stat.service';
 import { RouterModule } from '@nestjs/core';
 
 
 @Controller()
 export class AppController {
 
-  constructor (private userService: webAppUserService, private statService: StatService){}
-  user: WebAppUser = {
+  constructor (private userService: WebAppUserService, private statService: StatService){}
+  user: WebAppUserEntity = {
     login: "test",
     pseudo: "testps",
     avatar: "",
@@ -25,7 +26,7 @@ export class AppController {
     updated: new Date(),
   };
 
-  user2: WebAppUser = {
+  user2: WebAppUserEntity = {
       login: "test222",
       pseudo: "testps2",
       avatar: "",
@@ -58,9 +59,9 @@ export class AppController {
 
   @Get('modifie')
   async modifie() {
-    const user = await getRepository(WebAppUser)
+    const user = await getRepository(WebAppUserEntity)
     .createQueryBuilder()
-    .update(WebAppUser)
+    .update(WebAppUserEntity)
     .set({pseudo: "testPseudo"})
     .where("login = :test", {test: "test"})
     .execute();

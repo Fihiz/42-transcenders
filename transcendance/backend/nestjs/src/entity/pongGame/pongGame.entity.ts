@@ -1,8 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ConversationEntity } from "../conversation/conversation.entity";
-import { ConversationService } from "../conversation/conversation.service";
 import { GameTypeEntity } from "../gameType/gameType.entity";
-import { WebAppUser } from "../webAppUser/webAppUser.entity";
+import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 
 
 @Entity('t_pongGame')
@@ -11,13 +10,11 @@ export class PongGameEntity {
   @PrimaryGeneratedColumn()
   game_id: number;
 
-  @ManyToOne(() => WebAppUser)
-  @JoinColumn()
-	player1: WebAppUser['login'];
+  @ManyToOne(() => WebAppUserEntity)
+	player1: WebAppUserEntity['login'];
 
-  @ManyToOne(() => WebAppUser)
-  @JoinColumn()
-	player2: WebAppUser['login'];
+  @ManyToOne(() => WebAppUserEntity)
+	player2: WebAppUserEntity['login'];
 
   @Column({
     type: "int",
@@ -47,20 +44,18 @@ export class PongGameEntity {
   looser: string;
 
   @ManyToOne(() => GameTypeEntity)
-  @JoinColumn()
   game_type_id: GameTypeEntity['game_type_id'];
 
   @OneToOne(() => ConversationEntity)
-  @JoinColumn()
   room_id: ConversationEntity['conv_id'];
 
   @Column({
 		type: "int",
   })
-  created: Number;
+  created: Date;
 
     @Column({
 		type: "int",
   })
-  update: Number;
+  update: Date;
 }

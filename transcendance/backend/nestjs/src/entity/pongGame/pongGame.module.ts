@@ -7,5 +7,5 @@ import { PongGameService } from "./pongGame.service";
     imports: [TypeOrmModule.forFeature([PongGameEntity])],
     providers: [PongGameService],
   })
-export class pongGameModule {}
+export class PongGameModule {}
   

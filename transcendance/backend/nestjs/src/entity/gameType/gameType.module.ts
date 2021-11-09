@@ -8,5 +8,5 @@ import { GameTypeService } from "./gameType.service";
     imports: [TypeOrmModule.forFeature([GameTypeEntity])],
     providers: [GameTypeService],
   })
-export class MEssagesModule {}
+export class GameTypeModule {}
   

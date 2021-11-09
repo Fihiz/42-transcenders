@@ -1,5 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, Timestamp } from "typeorm";
-import { WebAppUser } from "../webAppUser/webAppUser.entity";
+import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { WebAppUserEntity } from "../webAppUser/webAppUser.entity";
 import { AchievementEntity } from "../achievement/achievement.entity"
 
 
@@ -10,12 +10,11 @@ export class AwardEntity {
   @PrimaryColumn()
   achievement_id: number;
 
-  @ManyToOne(() => WebAppUser)
-  @JoinColumn()
-  login: WebAppUser['login'];
+  @ManyToOne(() => WebAppUserEntity)
+  login: WebAppUserEntity['login'];
 
   @Column({
 		type: "timestamp",
   })
-  date: Number;
+  date: Date;
 }
