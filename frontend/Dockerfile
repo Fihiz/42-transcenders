@@ -1,5 +1,6 @@
 # Current version Node: 16
-FROM node:latest
+FROM node:16
+# FROM node:latest
 
 WORKDIR /usr/src/app/
 

@@ -4,19 +4,16 @@ version: "3.8"
 services:
     database:
         container_name: PostgreSQL
-        # restart: always
         image: postgres:latest
         env_file:
             - .env
         volumes:
-            - ./backend/postgresql/config:/docker-entrypoint-initdb.d
-            - ./backend/postgresql/database:/var/lib/postgresql/data
+            - ./backend/postgresql:/var/lib/postgresql/data
         networks:
             - back
 
     server:
         container_name: NestJS
-        # restart: always
         build:
             context: backend
             target: development
@@ -34,7 +31,6 @@ services:
 
     client:
         container_name: Angular
-        # restart: always
         build:
             context: ./frontend
         ports:
@@ -51,7 +47,6 @@ services:
 
     admin:
         container_name: Adminer
-        # restart: always
         image: adminer:latest
         ports:
             - 8080:8080
@@ -66,7 +61,7 @@ volumes:
         driver_opts:
             o: bind
             type: none
-            device: ${PWD}/backend/postgresql/database
+            device: ${PWD}/backend/postgresql
 
 networks:
     back:
