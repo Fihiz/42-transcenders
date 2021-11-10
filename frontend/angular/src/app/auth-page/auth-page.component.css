@@ -1,0 +1,12 @@
+.jumbotron {
+	background-image: 
+	url('../../assets/42logowhite.svg');
+	background-size: 12%;
+	min-height: 600px;
+}
+
+
+body {
+	margin-top: 2%;
+	text-align: center;
+}
