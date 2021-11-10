@@ -1,0 +1,71 @@
+<p>sidebar works!</p>
+<div class="sidebar">
+	<a
+	  href="/"
+	  class="
+		d-flex
+		align-items-center
+		pb-3
+		mb-3
+		link-dark
+		text-decoration-none
+		border-bottom
+		logo-link
+	  "
+	>
+	  <img class="fit-picture" src="../../../assets/canvalogotransparent.png" alt="Pong" />
+	</a>
+	<ul class="list-unstyled ps-0">
+	  <li class="mb-1">
+		<button
+		  class="btn btn-toggle align-items-center rounded collapsed"
+		  data-bs-toggle="collapse"
+		  data-bs-target="#home-collapse"
+		  aria-expanded="true"
+		>
+		  Profile
+		</button>
+		<div class="collapse show" id="home-collapse">
+		  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+			<li><a href="#" class="link-dark rounded">About me</a></li>
+			<li><a href="#" class="link-dark rounded">My friends</a></li>
+			<li><a href="#" class="link-dark rounded">Historic</a></li>
+		  </ul>
+		</div>
+	  </li>
+	  <li class="mb-1">
+		<button
+		  class="btn btn-toggle align-items-center rounded collapsed"
+		  data-bs-toggle="collapse"
+		  data-bs-target="#dashboard-collapse"
+		  aria-expanded="true"
+		>
+		  Pong
+		</button>
+		<div class="collapse show" id="dashboard-collapse">
+		  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+			<li><a href="#" class="link-dark rounded">Play</a></li>
+			<li><a href="#" class="link-dark rounded">Watch</a></li>
+			<li><a href="#" class="link-dark rounded">Rules</a></li>
+		  </ul>
+		</div>
+	  </li>
+	  <li class="border-top my-3"></li>
+	  <li class="mb-1">
+		<button
+		  class="btn btn-toggle align-items-center rounded collapsed"
+		  data-bs-toggle="collapse"
+		  data-bs-target="#account-collapse"
+		  aria-expanded="false"
+		>
+		  Sign out
+		</button>
+		<div class="collapse" id="account-collapse">
+		  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+			<li><a href="#" class="link-dark rounded">Sign out</a></li>
+			<li><a href="#" class="link-dark rounded">Profile</a></li>
+		  </ul>
+		</div>
+	  </li>
+	</ul>
+  </div>
