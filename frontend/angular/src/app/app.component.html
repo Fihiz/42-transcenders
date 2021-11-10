@@ -1,6 +1,4 @@
-<app-auth-page></app-auth-page>
-
-<span *ngIf="isAuth === false else isConnected"> <button type="button" class="btn btn-dark">Registeeeeer</button></span>
+<span *ngIf="isAuth === false else isConnected"> <app-auth-page [isAuthCheck]="isAuth" (isAuthChange)="isAuth=$event"></app-auth-page></span>
 <ng-template #isConnected>
    <h2>Regitered page component in coming</h2>
 </ng-template>

@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-auth-page',
   templateUrl: './auth-page.component.html',
   styleUrls: ['./auth-page.component.css']
 })
-export class AuthPageComponent implements OnInit {
+export class AuthPageComponent {
 
-  constructor() { }
+	@Input() isAuthCheck!: boolean;
+	@Output() isAuthChange = new EventEmitter<boolean>();
+  	constructor() { }
 
-  ngOnInit(): void {
-  }
+	onRegister () {
+		this.isAuthChange.emit(this.isAuthCheck = true);
+	}
 
 }
