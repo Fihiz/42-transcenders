@@ -1,5 +1,23 @@
+<!-- <div class="all">
+  <app-sidebar (handleLogOutClick)="sidebarLogOutEvent($event)"></app-sidebar>
+  <app-header></app-header>
+</div> -->
+<!-- <button type="button" class="btn btn-dark" (click)="onLogOut()">Log out</button> -->
+
 <div class="all">
-<app-sidebar (handleLogOutClick)="sidebarLogOutEvent($event)"></app-sidebar>
-<app-header></app-header>
+  <app-sidebar (handleLogOutClick)="sidebarLogOutEvent($event)"></app-sidebar>
+  <div class="col">
+    <div class="row">
+      <app-header></app-header>
+    </div>
+    <div class="row">
+      <div class="col">
+        <app-content></app-content>
+      </div>
+      <div class="col">
+        <app-chat></app-chat>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- <button type="button" class="btn btn-dark" (click)="onLogOut()">Log out</button> -->

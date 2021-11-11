@@ -7,6 +7,8 @@ import { AuthPageComponent } from './auth-page/auth-page.component';
 import { RegisteredPageComponent } from './registered-page/registered-page.component';
 import { SidebarComponent } from './registered-page/sidebar/sidebar.component';
 import { HeaderComponent } from './registered-page/header/header.component';
+import { ContentComponent } from './registered-page/content/content.component';
+import { ChatComponent } from './registered-page/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +16,9 @@ import { HeaderComponent } from './registered-page/header/header.component';
     AuthPageComponent,
     RegisteredPageComponent,
     SidebarComponent,
-    HeaderComponent
+    HeaderComponent,
+    ContentComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
