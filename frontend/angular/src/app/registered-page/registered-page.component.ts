@@ -7,13 +7,31 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 export class RegisteredPageComponent {
 
-	@Input() isAuthCheck!: boolean;
-	@Output() isAuthChange = new EventEmitter<boolean>();
+  @Output() notifyAppComponent = new EventEmitter();
 
   constructor() { }
 
-	onLogOut () {
-		this.isAuthChange.emit(this.isAuthCheck = false);
-	}
-
+  sidebarLogOutEvent(event: Event) {
+	this.notifyAppComponent.emit('event')
+  }
 }
+
+// import { Component, Input, Output, EventEmitter } from '@angular/core';
+
+// @Component({
+//   selector: 'app-registered-page',
+//   templateUrl: './registered-page.component.html',
+//   styleUrls: ['./registered-page.component.css']
+// })
+// export class RegisteredPageComponent {
+
+// 	@Input() isAuthCheck!: boolean;
+// 	@Output() isAuthChange = new EventEmitter<boolean>();
+
+//   constructor() { }
+
+// 	onLogOut () {
+// 		this.isAuthChange.emit(this.isAuthCheck = false);
+// 	}
+
+// }

@@ -60,6 +60,10 @@
   .btn-toggle-nav a:focus {
 	background-color: #ffffff;
   }
+
+  a {
+	  cursor: pointer;
+  }
   
   @media (max-width: 1000px) {
 	.sidebar {

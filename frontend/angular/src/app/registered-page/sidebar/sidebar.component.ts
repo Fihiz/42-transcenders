@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
+
+  @Output() handleLogOutClick = new EventEmitter();
 
   constructor() { }
 
-  ngOnInit(): void {
+  onLogOut () {
+    this.handleLogOutClick.emit('event');
   }
-
 }

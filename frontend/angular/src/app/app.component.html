@@ -1,7 +1,12 @@
 <span *ngIf="isAuth === false else isConnected"> <app-auth-page [isAuthCheck]="isAuth" (isAuthChange)="isAuth=$event"></app-auth-page></span>
 <ng-template #isConnected>
-   <app-registered-page [isAuthCheck]="isAuth" (isAuthChange)="isAuth=$event" ></app-registered-page>
+   <app-registered-page (notifyAppComponent)="appHandleClick($event)"></app-registered-page>
 </ng-template>
+
+<!-- <span *ngIf="isAuth === false else isConnected"> <app-auth-page [isAuthCheck]="isAuth" (isAuthChange)="isAuth=$event"></app-auth-page></span>
+<ng-template #isConnected>
+   <app-registered-page [isAuthCheck]="isAuth" (isAuthChange)="isAuth=$event" ></app-registered-page>
+</ng-template> -->
 
 
   

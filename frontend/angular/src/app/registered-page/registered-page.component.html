@@ -1,5 +1,5 @@
 <div class="all">
-<app-sidebar></app-sidebar>
+<app-sidebar (handleLogOutClick)="sidebarLogOutEvent($event)"></app-sidebar>
 <app-header></app-header>
 </div>
-<button type="button" class="btn btn-dark" (click)="onLogOut()">Log out</button>
+<!-- <button type="button" class="btn btn-dark" (click)="onLogOut()">Log out</button> -->

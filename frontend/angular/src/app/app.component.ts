@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
     isAuth: boolean = false;
+
+    appHandleClick(event: Event) {
+      console.log('grandma knows you clicked')
+      this.isAuth = false;
+    }
 }
