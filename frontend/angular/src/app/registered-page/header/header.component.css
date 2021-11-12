@@ -1,88 +1,83 @@
 header {
-	display: flex;
-	background: #e7d5d5;
-	height: auto;
-	min-height: 150px;
-	padding: 25px;
-  }
-  .rounded-circle {
-	width: 100px;
-	height: 100px;
-  }
-  
-  .title {
-	display: flex;
-	padding: 20px;
-  }
-  
-  .title p {
-	padding-left: 20px;
-  }
-  
-  .card-horizontal {
-	display: flex;
-	flex: 1 1 auto;
-  }
-  
+  display: flex;
+  background: #e7d5d5;
+  height: auto;
+  min-height: 150px;
+  padding: 25px;
+}
+.rounded-circle {
+  width: 100px;
+  height: 100px;
+}
+
+.title {
+  display: flex;
+  padding: 20px;
+}
+
+.title p {
+  padding-left: 20px;
+}
+
+.card-horizontal {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+.flex-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding-left: 0%;
+  padding-right: 0%;
+}
+
+.flex-grid > div {
+  margin: 10px;
+  padding: 0px;
+  /* border: 20px solid #ddd; */
+  background: #f7e5e5;
+  width: auto;
+}
+
+.flex-grid h3 {
+  text-align: center;
+  padding: 12px 15px;
+  font-size: 14px;
+  width: auto;
+  font-weight: 200;
+  border-bottom: 1.5px solid rgb(149, 191, 219);
+}
+
+.flex-grid p {
+  text-align: center;
+  width: auto;
+  font-weight: 600;
+}
+
+@media (max-width: 1000px) {
   .flex-grid {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-around;
+    flex-wrap: wrap;
   }
-  
+
   .flex-grid > div {
-	margin: 10px 10px 10px 10px;
-	padding: 0px;
-	/* border: 1px solid #ddd; */
-	background: #f7e5e5;
-	width: auto;
+    margin-right: 0;
   }
-  
-  .flex-grid h3 {
-	text-align: center;
-	padding: 12px 15px;
-	font-size: 14px;
-	width: auto;
-	font-weight: 200;
-	border-bottom: 1.5px solid rgb(149, 191, 219);
+}
+
+@media (max-width: 600px) {
+  .flex-grid > div {
+    margin: 5px;
+    padding: 0px;
+    height: auto;
   }
-  
-  .flex-grid p {
-	text-align: center;
-	width: auto;
-	font-weight: 600;
+
+  .flex-grid {
+    flex-direction: column;
+    flex-wrap: wrap;
   }
-  
-  @media (max-width: 1000px) {
-	.flex-grid {
-	  /* flex-direction: column; */
-	  flex-wrap: wrap;
-	}
-  
-	.flex-grid > div {
-	  margin-right: 0;
-	}
+
+  .flex-grid > div {
+    margin-right: 0;
   }
-  
-  @media (max-width: 600px) {
-	/* header {
-	  height: auto;
-	} */
-	.flex-grid > div {
-	  margin: 5px 5px 5px 5px;
-	  padding: 0px;
-	  /* border: 1px solid #ddd; */
-	  /* background: #fff; */
-	  height: auto;
-	}
-  
-	.flex-grid {
-	  flex-direction: column;
-	  flex-wrap: wrap;
-	}
-  
-	.flex-grid > div {
-	  margin-right: 0;
-	}
-  }
-  
+}

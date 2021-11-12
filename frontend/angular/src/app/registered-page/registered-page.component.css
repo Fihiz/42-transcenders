@@ -1,18 +1,14 @@
-.all {
-  display: flex;
-  /* min-height: 100%; */
-}
-.all app-sidebar {
-  min-height: 100%;
-  /* position: relative; */
-  /* background-color: aqua; */
-  /* background-image: url("../assets/bannerfigma.png"); */
-  /* background-color: rgb(129, 176, 218); */
-  /* background-size: cover; */
-}
-
 app-header {
   flex: 1;
-  /* padding: 25px; */
-  /* height: 200px; */
+  padding: 0px;
+}
+
+.col {
+  padding-left: 0%;
+  padding-right: 0%;
+}
+
+.row {
+  margin-left: 0%;
+  margin-right: 0%;
 }
