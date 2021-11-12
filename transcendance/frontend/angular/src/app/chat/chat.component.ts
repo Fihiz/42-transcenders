@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
-import { Observable } from 'rxjs';
+import { GlobalService} from '../globales.service';
+import { ChatService } from './chat.service';
 import { Message } from './message.model';
 
 
@@ -17,14 +18,22 @@ export class ChatComponent implements OnInit{
   messageTab: Array<Message> = [];
   socketId: string | null = null;
 
-  constructor(private message: Message, private socket: Socket) { 
-    this.getMessage().subscribe(data => {
+  constructor(private message: Message,
+     private chatService: ChatService) { 
+    this.chatService.getMessage().subscribe(data => {
       if (typeof(data) === "object")
         this.messageTab = data as unknown as Array<Message>;
     });
   }
 
+  onTest() {
+    console.log(GlobalService.test);
+    GlobalService.test = "test test 2";
+    console.log(GlobalService.test);
+  }
+
   onClick() {
+    console.log(GlobalService.test)
     let message: Message = this.message;
     const inputTo = <HTMLInputElement>document.getElementById("inputTo");
     const inputBody = <HTMLInputElement>document.getElementById("inputBody");
@@ -34,39 +43,8 @@ export class ChatComponent implements OnInit{
     message.id = this.socketId as string;
     inputBody.value = '';
     inputTo.value = '';
-    this.sendMessage(message);
+    this.chatService.sendMessage(message);
   }
 
-  sendMessage(message: Message | null | undefined) {
-    if (message) {
-      this.socket.emit('message', message);
-      console.log('message sended');
-    }
-  }
-
-  getMessage(): Observable<Array<string>> {
-    return this.socket.fromEvent('message') as Observable<Array<string>>;
-  }
-  
-  ngOnInit() {
-    this.socket.on('connect', () => {
-      this.socketId = this.socket.ioSocket.id;
-    });
-    while (this.pseudo === null)
-      this.pseudo = window.prompt("login please");
-    if (this.pseudo === '') 
-    {
-      console.log('disconnected');
-      this.socket.disconnect();
-    }
-    else {
-      const message: Message = {
-        id: this.socketId as string,
-        login: this.pseudo as string,
-        body: 'connection',
-        to: 'nobody'
-      }
-      this.socket.emit('introduction', message);
-    }
-  }
+  ngOnInit() {}
 }

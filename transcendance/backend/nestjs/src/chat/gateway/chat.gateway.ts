@@ -1,6 +1,7 @@
 import { OnGatewayConnection, SubscribeMessage, WebSocketGateway, OnGatewayDisconnect, WebSocketServer, MessageBody, ConnectedSocket } from '@nestjs/websockets';
 import { Message } from './message.model';
 import { Repository } from 'typeorm';
+import { urlToHttpOptions } from 'url';
 
 
 @WebSocketGateway({cors:{origin: 'http://127.0.0.1'}})
@@ -28,24 +29,35 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.messageData.push(errorMess);
       this.server.to(errorMess.id).emit('message', this.messageData);
     }
-    
   }
 
   @SubscribeMessage('introduction')
   handleIntroduce(@MessageBody() message: Message): void {
-    if (this.loginIdMap.has(message.login))
-      this.loginIdMap.get(message.login).push(message.id);
-    else {
-      this.loginIdMap.set(message.login, [message.id]);
+    if (message.id) {
+      if (this.loginIdMap.has(message.login))
+        this.loginIdMap.get(message.login).push(message.id);
+      else {
+        this.loginIdMap.set(message.login, [message.id]);
+      }
+      console.log(this.loginIdMap)
     }
   }
 
   handleConnection() {
-    this.server.emit('message', this.messageData);
-    console.log('connected ')
+    console.log('connected')
   }
 
-  handleDisconnect() {
+  handleDisconnect(@MessageBody() message) {
+    let keyIndex: string;
+    const theWantedId: string = message.id;
+    this.loginIdMap.forEach((arg, key) => {
+      arg.forEach((el) => {
+        if (el === theWantedId)
+          keyIndex = key;
+      })
+    })
+    const index = this.loginIdMap.get(keyIndex).indexOf(theWantedId);
+    this.loginIdMap.get(keyIndex).splice(index, 1);
     console.log('disconnected ')
   }
 }

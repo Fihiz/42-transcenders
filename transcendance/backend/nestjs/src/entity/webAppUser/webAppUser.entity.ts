@@ -19,7 +19,7 @@ export class WebAppUserEntity {
   pseudo: string;
 
   @Column({
-    type: "bytea",
+    type: "varchar",
   })
   avatar: string;
 

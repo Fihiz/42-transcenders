@@ -21,10 +21,10 @@ export class ApiUserDataEntity {
   })
   first_name: string;
 
-  @Column({
-		type: "timestamp"
-  })
-  birthday: Date;
+  // @Column({
+	// 	type: "timestamp"
+  // })
+  // birthday: Date;
 
   @Column({
 		type: "varchar",

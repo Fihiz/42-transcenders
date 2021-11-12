@@ -1,35 +1,53 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
+import { Socket } from 'ngx-socket-io';
+import { GlobalService } from '../globales.service';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css']
 })
+
 export class AuthComponent implements OnInit {
-  constructor(private router: Router) {}
+
+  constructor(private router: Router, 
+    private socket: Socket,
+    private authService: AuthService) {}
 
   delay(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
   }
 
   async ngOnInit() {
-    const url = this.router.url;
+    console.log(GlobalService.test)
     const code = this.router.url.split('?')[1]?.substr(5, 64)
     try {
     const res = await axios.get('http://127.0.0.1:3000/auth', {params: {code: code}});
-      console.log('it is me;')
-      if (res.status === 200)
+    const Res = res.data as unknown as any
+      if (Res.status === 'OK')
+      {
+        this.socket.on('connect', () => this.authService.introduce(this.socket, Res))
+        this.socket.connect();
         document.querySelector('.success-class')?.classList.remove('hidden');
+      }
+      else if (Res.status === 'AC')
+      {
+        this.socket.on('connect', () => this.authService.introduce(this.socket, Res));
+        this.socket.connect();
+        document.querySelector('.success-class')?.classList.remove('hidden');
+        console.log("already in the database");
+      }
       else
         document.querySelector('.fail-class')?.classList.remove('hidden');
-  }
-    catch {
-      console.log('fail');
-        document.querySelector('.fail-class')?.classList.remove('hidden');
     }
-    await this.delay(3000);
-     this.router.navigate(['/']);
+    catch (error){
+      console.log('ngInit Auth error = ', error);
+      document.querySelector('.fail-class')?.classList.remove('hidden');
+    }
+    await this.delay(2000);
+    this.router.navigate(['/']);
   }
 }

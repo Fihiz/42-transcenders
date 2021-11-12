@@ -5,11 +5,5 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './symbol42.component.html',
   styleUrls: ['./symbol42.component.css']
 })
-export class Symbol42Component implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+export class Symbol42Component {
 }

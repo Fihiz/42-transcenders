@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-const axios = require('axios');
+import { Router } from '@angular/router';
+import { GlobalService } from '../globales.service';
 const FORTYTWO_APP_ID = '4d5d28ff9d7de95a5193fdc23e41e968fb338bee441891bd99950308ef326a88';
-const FORTYTWO_APP_SECRET = '4236548f3e306db5d5d04bfbebb24ef6eef5da0d428cdf3350d45a8d92aecb6f';
+
 
 @Component({
   selector: 'app-login',
@@ -9,9 +10,10 @@ const FORTYTWO_APP_SECRET = '4236548f3e306db5d5d04bfbebb24ef6eef5da0d428cdf3350d
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  constructor() {}
+  constructor(private router: Router, private connectService: GlobalService) {}
 
   async onEvent() {
+    console.log(this.connectService.connected);
     const client_id=FORTYTWO_APP_ID;
     const redirect_uri="http://127.0.0.1:80/auth/";
     const response_type="code";

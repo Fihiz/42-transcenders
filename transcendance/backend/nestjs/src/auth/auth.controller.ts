@@ -1,4 +1,5 @@
-import { BadRequestException, Controller, Get, Next, Req, Res } from '@nestjs/common';
+import { Controller, Get, Next, Req, Res } from '@nestjs/common';
+import { ApiUserDataService } from 'src/entity/apiUserData/apiUserData.service';
 import { WebAppUserService } from 'src/entity/webAppUser/webAppUser.service';
 import { AuthService } from './auth.service';
 export const passport = require('passport');
@@ -14,53 +15,29 @@ passport.use(new FortyTwoStrategy({
     clientSecret: FORTYTWO_APP_SECRET,
     callbackURL: "http://127.0.0.1:3000/callback"
   },
-  async function() {
-    console.log('this is the callback function in fortytwotartegy');
-  }
-  ));
+  async () => console.log('this is the callback function in fortyTwoStrategy')));
 
 @Controller('auth')
 export class AuthController {
 
-  private authService: AuthService;
-  private userService: WebAppUserService;
-  constructor (){}
-  // constructor(private authService: AuthService, private userService: WebAppUserService){}
+  constructor(private authService: AuthService, private userService: WebAppUserService, private apiUserService: ApiUserDataService){}
 
-    @Get()
-    async redirection(@Req() req, @Res() res) {
-      console.log("redirection shrek:3000");
-      const codeUrl = req.query.code;
-      console.log(codeUrl);
-      try {
-        let theRes2;
-        console.log(this.authService);
-        const theRes = await this.authService.getLogInfo(codeUrl, res);
-        if (theRes2 = await this.authService.registerData(theRes?.data, this.userService) === 'ok')
-          res.send(theRes?.data)
-        else
-          this.authService.failLog(theRes2, res);
-        return 'ok';
-      }
-      catch (error) {
-          this.authService.failLog(error, res);
-          return 'fail';
-      }
+  @Get()
+  async redirection(@Req() req, @Res() res) {
+    const codeUrl = req.query.code;
+    try {
+      const theRes = await this.authService.getLogInfo(codeUrl, res);
+      const theRes2 = await this.authService.registerData(theRes?.data, this.userService, this.apiUserService)
+      if ( theRes2 === 'ok')
+        res.send({data: theRes.data, status: 'OK'});
+      else if (theRes2 === 'ac')
+        res.send({data: theRes.data, status: 'AC'});
+      else
+        return (this.authService.failLog(res));
     }
-  
-    @Get('login')
-    async login(@Req() req, @Res() res, @Next() next)
-    {
-      console.log('login');
-      console.log(req.data);
-      const authRes = await passport.authenticate('42', function(err, user, info) {
-        console.log('this is  an error');
-        if (err) { return next(err); }
-        if (!user) { return res.redirect('/login'); }
-        req.logIn(user, function(err) {
-          if (err) { return next(err); }
-          return res.redirect('/users/' + user.username);
-        });
-      })(req, res, next);
+    catch (error) {
+        console.log(error);
+        return (this.authService.failLog(res));
     }
+  }
 }

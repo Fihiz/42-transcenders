@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
+import { Observable } from 'rxjs';
 import { Message } from './message.model';
 
 @Injectable({
@@ -7,15 +8,21 @@ import { Message } from './message.model';
 })
 export class ChatService {
 
-  // constructor(private socket: Socket) { }
+  constructor(private socket: Socket) { }
 
-  // sendMessage(message: Message) {
-  //   this.socket.to(message.room).emit('message', message);
-  //   console.log('message sended');
-  // }
+  sendMessage(message: Message | null | undefined) {
+    if (message) {
+      this.socket.emit('message', message);
+      console.log('message sended');
+    }
+  }
 
-  // getMessage() {
-  //   console.log(this.socket.fromEvent('message'));
-  //   return this.socket.fromEvent('message');
-  // }
+  getMessage(): Observable<Array<string>> {
+    return this.socket.fromEvent('message') as Observable<Array<string>>;
+  }
+
+  getDisconnection(): void {
+    console.log('you have been disconnected');
+    this.socket.disconnect();
+  }
 }

@@ -12,16 +12,20 @@ export class ApiUserDataService {
 
 
   async create(user: ApiUserDataEntity): Promise<any> {
-    console.log('ApiUserData creation');
     try {
-      const res= await this.users.insert(user);
-      console.log(res);
-      return 'ok';
+      if (!(await this.users.findOne(user.login)))
+      {
+        await this.users.insert(user);
+        return 'ok';
+      }
+      else
+        return ('ac');
     }
     catch (error) {
-      return `error.severity: ${error.severity}, 
-\     code: ${error.code},
-\     detail: ${error.detail}`;
+      console.log('error create ApiUserDataEntity');
+        return `error.severity: ${error.severity}, 
+\       code: ${error.code},
+\       detail: ${error.detail}`;
     }
   }
 
