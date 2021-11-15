@@ -35,24 +35,24 @@ header {
 .flex-grid > div {
   margin: 10px;
   padding: 0px;
-  /* border: 20px solid #ddd; */
-  background: #f7e5e5;
-  width: auto;
+  width: 150px;
 }
 
 .flex-grid h3 {
   text-align: center;
-  padding: 12px 15px;
+  /* padding: 12px 15px; */
+  padding-top: 30%;
   font-size: 14px;
   width: auto;
   font-weight: 200;
-  border-bottom: 1.5px solid rgb(149, 191, 219);
+  /* border-bottom: 0.75px solid rgb(149, 191, 219); */
 }
 
 .flex-grid p {
   text-align: center;
   width: auto;
   font-weight: 600;
+  word-break: break-all;
 }
 
 @media (max-width: 1000px) {

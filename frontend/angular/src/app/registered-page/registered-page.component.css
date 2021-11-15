@@ -3,6 +3,20 @@ app-header {
   padding: 0px;
 }
 
+/* @media (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
+} */
+
+.right-col {
+  flex: 25%;
+}
+
+.left-col {
+  flex: 75%;
+}
+
 .col {
   padding-left: 0%;
   padding-right: 0%;
@@ -15,7 +29,9 @@ app-header {
 }
 
 .middle {
-  flex-grow: 1;
+  height: 100%;
+  /* Seems to work in the same way */
+  /* flex-grow: 1; */
 }
 
 .row {
