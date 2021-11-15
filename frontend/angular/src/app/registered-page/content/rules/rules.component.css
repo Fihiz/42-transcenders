@@ -1,0 +1,16 @@
+.col {
+  margin: 5%;
+  background-color: rgb(212, 146, 65);
+  /* min-width: 250px; */
+}
+
+.middle {
+  height: 100%;
+  /* Seems to work in the same way */
+  /* flex-grow: 1; */
+}
+
+.row {
+  margin-left: 0%;
+  margin-right: 0%;
+}
