@@ -6,6 +6,16 @@ app-header {
 .col {
   padding-left: 0%;
   padding-right: 0%;
+  background-color: bisque;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+}
+
+.middle {
+  flex-grow: 1;
 }
 
 .row {
