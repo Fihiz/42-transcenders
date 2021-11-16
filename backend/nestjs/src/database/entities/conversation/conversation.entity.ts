@@ -8,11 +8,6 @@ export class ConversationEntity {
   })
 	conv_id: number;
 
-  // @Column({
-	// 	type: "timestamp",
-  // })
-  // creation: Date;
-
   @Column({
 		type: "varchar",
     length: 10

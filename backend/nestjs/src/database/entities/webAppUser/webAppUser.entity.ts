@@ -21,7 +21,7 @@ export class WebAppUserEntity {
 
   @Column({
     type: "bytea",
-    nullable: true // 
+    nullable: true // Temporaire le temps de créer les images
   })
   avatar: string;
 
