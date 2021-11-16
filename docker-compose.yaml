@@ -1,40 +1,110 @@
+# # Current version Docker-compose: 3.8
+# version: "3.8"
+
+# services:
+#     # database:
+#     #     container_name: PostgreSQL
+#     #     # restart: always
+#     #     image: postgres:latest
+#     #     env_file:
+#     #         - .env
+#     #     volumes:
+#     #         - ./backend/postgresql/config:/docker-entrypoint-initdb.d
+#     #         - ./backend/postgresql/database:/var/lib/postgresql/data
+#     #     networks:
+#     #         - back
+
+#     # server:
+#     #     container_name: NestJS
+#     #     # restart: always
+#     #     build:
+#     #         context: backend
+#     #         target: development
+#     #     ports: # NO!
+#     #         - 3000:3000 # NO!
+#     #     networks:
+#     #         - back
+#     #         - front
+#     #     volumes:
+#     #         - ./backend/nestjs:/usr/src/app
+#     #         - /usr/src/app/node_modules
+#     #     depends_on:
+#     #         - database
+#     #     command: npm run start:dev
+
+#     client:
+#         container_name: Angular
+#         # restart: always
+#         build:
+#             context: ./frontend
+#         ports:
+#             - 80:4200
+#         networks:
+#             - front
+#         volumes:
+#             - ./frontend/angular:/usr/src/app
+#             - /usr/src/app/node_modules
+#         depends_on:
+#             - server
+#         command: >
+#             bash -c "npm install && ng serve --host 0.0.0.0"
+
+#     # admin:
+#     #     container_name: Adminer
+#     #     # restart: always
+#     #     image: adminer:latest
+#     #     ports:
+#     #         - 8080:8080
+#     #     networks:
+#     #         - back
+#     #     depends_on:
+#     #         - database
+
+# volumes:
+#     database:
+#         driver: local
+#         driver_opts:
+#             o: bind
+#             type: none
+#             device: ${PWD}/backend/postgresql/database
+
+# networks:
+#     back:
+#     front:
+
 # Current version Docker-compose: 3.8
 version: "3.8"
 
 services:
-    # database:
-    #     container_name: PostgreSQL
-    #     # restart: always
-    #     image: postgres:latest
-    #     env_file:
-    #         - .env
-    #     volumes:
-    #         - ./backend/postgresql/config:/docker-entrypoint-initdb.d
-    #         - ./backend/postgresql/database:/var/lib/postgresql/data
-    #     networks:
-    #         - back
+    database:
+        container_name: PostgreSQL
+        image: postgres:latest
+        env_file:
+            - .env
+        volumes:
+            - ./backend/postgresql:/var/lib/postgresql/data
+        networks:
+            - back
 
-    # server:
-    #     container_name: NestJS
-    #     # restart: always
-    #     build:
-    #         context: backend
-    #         target: development
-    #     ports: # NO!
-    #         - 3000:3000 # NO!
-    #     networks:
-    #         - back
-    #         - front
-    #     volumes:
-    #         - ./backend/nestjs:/usr/src/app
-    #         - /usr/src/app/node_modules
-    #     depends_on:
-    #         - database
-    #     command: npm run start:dev
+    server:
+        container_name: NestJS
+        build:
+            context: backend
+            target: development
+        ports: # NO!
+            - 3000:3000 # NO!
+        networks:
+            - back
+            - front
+        volumes:
+            - ./backend/nestjs:/usr/src/app
+            - /usr/src/app/node_modules
+        depends_on:
+            - database
+        command: npm run start:dev
 
     client:
         container_name: Angular
-        # restart: always
         build:
             context: ./frontend
         ports:
@@ -49,16 +119,15 @@ services:
         command: >
             bash -c "npm install && ng serve --host 0.0.0.0"
 
-    # admin:
-    #     container_name: Adminer
-    #     # restart: always
-    #     image: adminer:latest
-    #     ports:
-    #         - 8080:8080
-    #     networks:
-    #         - back
-    #     depends_on:
-    #         - database
+    admin:
+        container_name: Adminer
+        image: adminer:latest
+        ports:
+            - 8080:8080
+        networks:
+            - back
+        depends_on:
+            - database
 
 volumes:
     database:
@@ -66,7 +135,7 @@ volumes:
         driver_opts:
             o: bind
             type: none
-            device: ${PWD}/backend/postgresql/database
+            device: ${PWD}/backend/postgresql
 
 networks:
     back:
