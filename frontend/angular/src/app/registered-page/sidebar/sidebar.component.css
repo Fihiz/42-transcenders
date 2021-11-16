@@ -103,7 +103,7 @@ a {
     height: 90px;
   }
 
-    /* Scrollable header when horizontal screen */
+  /* Scrollable header when horizontal screen */
   .fixed {
     position: absolute;
   }
