@@ -1,6 +1,6 @@
 .col {
   margin: 5%;
-  background-color: rgb(212, 146, 65);
+  background-color: rgb(255, 255, 255);
   /* min-width: 250px; */
 }
 
@@ -13,4 +13,7 @@
 .row {
   margin-left: 0%;
   margin-right: 0%;
+}
+.block {
+  background-color: rgb(199, 190, 190);
 }
