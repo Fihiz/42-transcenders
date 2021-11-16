@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Socket } from 'ngx-socket-io';
 import { GlobalService} from '../globales.service';
 import { ChatService } from './chat.service';
 import { Message } from './message.model';
@@ -21,26 +20,20 @@ export class ChatComponent implements OnInit{
   constructor(private message: Message,
      private chatService: ChatService) { 
     this.chatService.getMessage().subscribe(data => {
+      console.log('data = ', data);
       if (typeof(data) === "object")
         this.messageTab = data as unknown as Array<Message>;
     });
   }
 
-  onTest() {
-    console.log(GlobalService.test);
-    GlobalService.test = "test test 2";
-    console.log(GlobalService.test);
-  }
-
   onClick() {
-    console.log(GlobalService.test)
     let message: Message = this.message;
     const inputTo = <HTMLInputElement>document.getElementById("inputTo");
     const inputBody = <HTMLInputElement>document.getElementById("inputBody");
     message.body = inputBody?.value;
-    message.login = this.pseudo as string;
+    message.login = GlobalService.login;
     message.to = inputTo?.value;
-    message.id = this.socketId as string;
+    message.id = GlobalService.socketId;
     inputBody.value = '';
     inputTo.value = '';
     this.chatService.sendMessage(message);

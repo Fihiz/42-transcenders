@@ -1,11 +1,9 @@
 import { Res } from "@nestjs/common";
 import axios from "axios";
-import { ApiUserDataEntity } from "src/entity/apiUserData/apiUserData.entity";
-import { ApiUserDataService } from "src/entity/apiUserData/apiUserData.service";
-import { role, WebAppUserEntity } from "src/entity/webAppUser/webAppUser.entity";
-import { WebAppUserService } from "src/entity/webAppUser/webAppUser.service";
-import { consumers } from "stream";
-import { Repository, Timestamp } from "typeorm";
+import { ApiUserDataEntity } from "src/database/entities/apiUserData/apiUserData.entity";
+import { ApiUserDataService } from "src/database/entities/apiUserData/apiUserData.service";
+import { role, WebAppUserEntity } from "src/database/entities/webAppUser/webAppUser.entity";
+import { WebAppUserService } from "src/database/entities/webAppUser/webAppUser.service";
 const querystring = require('querystring');
 
 export class AuthService {

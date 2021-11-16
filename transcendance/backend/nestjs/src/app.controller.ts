@@ -1,9 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
 import { getRepository} from 'typeorm';
-import { WebAppUserService } from './entity/webAppUser/webAppUser.service';
-import { WebAppUserEntity } from './entity/webAppUser/webAppUser.entity';
-import { StatService } from './entity/Stat/stat.service';
-import { StatEntity } from './entity/Stat/stat.entity';
+import { StatEntity } from './database/entities/stat/stat.entity';
+import { StatService } from './database/entities/stat/stat.service';
+import { WebAppUserEntity } from './database/entities/webAppUser/webAppUser.entity';
+import { WebAppUserService } from './database/entities/webAppUser/webAppUser.service';
+
 
 
 @Controller()

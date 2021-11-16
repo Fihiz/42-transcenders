@@ -15,7 +15,7 @@ const config: SocketIoConfig = { url: 'http://127.0.0.1:3000', options: {autoCon
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'auth', component: AuthComponent},
-  { path: 'chat', component: ChatComponent}
+  { path: 'chat', component: ChatComponent},
 ]
 
 @NgModule({
@@ -24,7 +24,7 @@ const appRoutes: Routes = [
     LoginComponent,
     Symbol42Component,
     AuthComponent,
-    ChatComponent
+    ChatComponent,
   ],
   imports: [
     BrowserModule,

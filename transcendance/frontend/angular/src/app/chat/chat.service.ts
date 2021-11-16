@@ -18,11 +18,18 @@ export class ChatService {
   }
 
   getMessage(): Observable<Array<string>> {
+    console.log('message');
     return this.socket.fromEvent('message') as Observable<Array<string>>;
   }
 
-  getDisconnection(): void {
-    console.log('you have been disconnected');
-    this.socket.disconnect();
+  getDisconnection(): Observable<string> {
+    console.log('disconnected (getDisconnection)');
+    const event =  this.socket.fromEvent('disconnection') as Observable<string>;
+    console.log(event)
+    return(event)
+  }
+
+  getSocket(): Socket {
+    return (this.socket);
   }
 }

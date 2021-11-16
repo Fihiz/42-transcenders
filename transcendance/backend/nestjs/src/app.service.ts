@@ -9,6 +9,8 @@ export class AppService {
 }
 
 export class Data {
+  static loginIdMap: Map<string, Array<string>> = new Map<string, Array<string>>();
+
   accessToken: '';
   config = {
     client: {
@@ -21,4 +23,11 @@ export class Data {
     },
   };
   client = new AuthorizationCode(this.config);
+}
+
+export class Message {
+  login: string = "login";
+  id:any = "id";
+  body:string = "body";
+  to: string = "room";
 }

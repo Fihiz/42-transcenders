@@ -5,7 +5,7 @@ import { Injectable } from "@angular/core";
   providedIn: 'root'
 })
 export class GlobalService {
-  static test:string = "test";
-  connected: boolean = false;
-  login: string = 'login';
+  static connected: boolean = false;
+  static login: string | undefined = undefined;
+  static socketId: string | undefined = undefined;
 };

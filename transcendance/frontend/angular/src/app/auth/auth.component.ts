@@ -22,7 +22,6 @@ export class AuthComponent implements OnInit {
   }
 
   async ngOnInit() {
-    console.log(GlobalService.test)
     const code = this.router.url.split('?')[1]?.substr(5, 64)
     try {
     const res = await axios.get('http://127.0.0.1:3000/auth', {params: {code: code}});
@@ -48,6 +47,6 @@ export class AuthComponent implements OnInit {
       document.querySelector('.fail-class')?.classList.remove('hidden');
     }
     await this.delay(2000);
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
   }
 }

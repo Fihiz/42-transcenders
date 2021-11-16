@@ -1,10 +1,10 @@
 import { Controller, Get, Next, Req, Res } from '@nestjs/common';
-import { ApiUserDataService } from 'src/entity/apiUserData/apiUserData.service';
-import { WebAppUserService } from 'src/entity/webAppUser/webAppUser.service';
+import { ApiUserDataService } from 'src/database/entities/apiUserData/apiUserData.service';
+import { WebAppUserService } from 'src/database/entities/webAppUser/webAppUser.service';
+
 import { AuthService } from './auth.service';
 export const passport = require('passport');
 const FortyTwoStrategy = require('passport-42').Strategy;
-const axios = require('axios');
 
 
 const FORTYTWO_APP_ID = '4d5d28ff9d7de95a5193fdc23e41e968fb338bee441891bd99950308ef326a88';

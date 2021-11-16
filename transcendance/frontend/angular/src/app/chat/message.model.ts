@@ -4,8 +4,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class Message {
-    login: string = "login";
-    id:string = "id";
-    body:string = "body";
-    to: string = "room";
+    login: string | undefined = "login";
+    id:string | undefined = "id";
+    body:string | undefined = "body";
+    to: string | undefined = "room";
 }

@@ -1,31 +1,33 @@
+import "reflect-metadata";
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DoubleAuthController } from './double-auth/double-auth.controller';
-import { AuthController } from './auth/auth.controller';
 import { ConfigModule } from '@nestjs/config';
 import { ChatModule } from './chat/chat.module';
-import "reflect-metadata";
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { WebAppUserEntity } from './entity/webAppUser/webAppUser.entity';
-import { WebAppUserModule } from './entity/webAppUser/webAppUser.module';
-import { StatModule } from './entity/Stat/stat.module';
-import { StatEntity } from './entity/Stat/stat.entity';
-import { WebAppUserService } from './entity/webAppUser/webAppUser.service';
-import { StatService } from './entity/Stat/stat.service';
-import { MessagesEntity } from './entity/messages/messages.entity';
-import { ConversationEntity } from './entity/conversation/conversation.entity';
-import { AchievementEntity } from './entity/achievement/achievement.entity';
-import { GameTypeEntity } from './entity/gameType/gameType.entity';
-import { ApiUserDataService } from './entity/apiUserData/apiUserData.service';
-import { ApiUserDataEntity } from './entity/apiUserData/apiUserData.entity';
-import { AwardEntity } from './entity/award/award.entity';
-import { PongGameEntity } from './entity/pongGame/pongGame.entity';
-import { RelationEntity } from './entity/relation/relation.entity';
-import { ChatterEntity } from './entity/chatter/chatter.entity';
+import { AppController } from './app.controller';
 import { AuthService } from './auth/auth.service';
-import { ParticipantEntity } from './entity/participant/participant.entity';
-import { InvitationEntity } from './entity/invitation/invitation.entity';
+import { ChatService } from './chat/chat.service';
+import { AuthController } from './auth/auth.controller';
+import { ConnectionModule } from './connection/connection.module';
+import { StatModule } from './database/entities/stat/stat.module';
+import { StatEntity } from './database/entities/stat/stat.entity';
+import { StatService } from './database/entities/stat/stat.service';
+import { AwardEntity } from './database/entities/award/award.entity';
+import { MessageEntity } from './database/entities/message/message.entity';
+import { ChatterEntity } from './database/entities/chatter/chatter.entity';
+import { DoubleAuthController } from './double-auth/double-auth.controller';
+import { GameTypeEntity } from './database/entities/gameType/gameType.entity';
+import { PongGameEntity } from './database/entities/pongGame/pongGame.entity';
+import { RelationEntity } from './database/entities/relation/relation.entity';
+import { WebAppUserModule } from './database/entities/webAppUser/webAppUser.module';
+import { WebAppUserEntity } from './database/entities/webAppUser/webAppUser.entity';
+import { InvitationEntity } from './database/entities/invitation/invitation.entity';
+import { WebAppUserService } from './database/entities/webAppUser/webAppUser.service';
+import { AchievementEntity } from './database/entities/achievement/achievement.entity';
+import { ApiUserDataEntity } from './database/entities/apiUserData/apiUserData.entity';
+import { ParticipantEntity } from './database/entities/participant/participant.entity';
+import { ApiUserDataService } from './database/entities/apiUserData/apiUserData.service';
+import { ConversationEntity } from './database/entities/conversation/conversation.entity';
 
 @Module({
   imports: [
@@ -38,16 +40,18 @@ import { InvitationEntity } from './entity/invitation/invitation.entity';
       username: "admin",
       password: "admin",
       database: "db_pong",
-      entities: [WebAppUserEntity, StatEntity],
+      entities: [],
       autoLoadEntities: true,
       synchronize: true
     }),
     ChatModule,
     WebAppUserModule,
     StatModule,
-    TypeOrmModule.forFeature([WebAppUserEntity, 
+    ConnectionModule,
+    TypeOrmModule.forFeature([
+      WebAppUserEntity, 
       StatEntity, 
-      MessagesEntity, 
+      MessageEntity,
       ConversationEntity, 
       AchievementEntity,
       GameTypeEntity,
@@ -61,6 +65,6 @@ import { InvitationEntity } from './entity/invitation/invitation.entity';
     ]),
   ],
   controllers: [AppController,  DoubleAuthController, AuthController],
-  providers: [AppService,WebAppUserService, StatService, AuthService, ApiUserDataService],
+  providers: [AppService,WebAppUserService, StatService, AuthService, ApiUserDataService, ChatService],
 })
 export class AppModule {}
