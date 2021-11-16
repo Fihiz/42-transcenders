@@ -92,3 +92,19 @@ a {
     height: 90px;
   }
 }
+
+@media (max-height: 500px) {
+  .sidebar {
+    width: 140px;
+  }
+
+  .fit-picture {
+    width: 90px;
+    height: 90px;
+  }
+
+    /* Scrollable header when horizontal screen */
+  .fixed {
+    position: absolute;
+  }
+}

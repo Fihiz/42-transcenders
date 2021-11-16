@@ -63,6 +63,11 @@ header {
   .flex-grid > div {
     margin-right: 0;
   }
+
+  /* Smaller header */
+  .flex-grid h3 {
+    padding-top: 5%;
+  }
 }
 
 @media (max-width: 600px) {
@@ -75,6 +80,11 @@ header {
   .flex-grid {
     flex-direction: column;
     flex-wrap: wrap;
+  }
+
+  /* Smaller header */
+  .flex-grid h3 {
+    padding-top: 5%;
   }
 
   .flex-grid > div {
