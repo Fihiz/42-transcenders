@@ -8,7 +8,7 @@ export class AppController {
   constructor(private readonly appService: AppService, private userService: UserService) {}
 
   @Get()
-  @Headers('Access-Control-Allow-Origin', '*')
+  // @Headers('Access-Control-Allow-Origin', '*')
     getUser() : User {
       return this.userService.getUser();
     }

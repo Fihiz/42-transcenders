@@ -22,6 +22,6 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('inited');
-    this.userService.getUser().subscribe((user: User) => (this.user = user));
+    // this.userService.getUser().subscribe((user: User) => (this.user = user));
   }
 }
