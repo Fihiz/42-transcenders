@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
 import { Socket } from 'ngx-socket-io';
-import { GlobalService } from '../globales.service';
 import { AuthService } from './auth.service';
 
 @Component({

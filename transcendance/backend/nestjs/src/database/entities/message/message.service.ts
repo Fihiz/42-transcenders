@@ -14,7 +14,7 @@ export class MessageService {
   async create(user: MessageEntity): Promise<any> {
     console.log('MessageEntity creation');
     try {
-      if (!this.users.findOne(user.id)) {
+      if (!(await this.users.findOne(user.id))) {
         const res= await this.users.insert(user);
         console.log(res);
         return 'ok';

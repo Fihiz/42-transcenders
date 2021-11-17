@@ -14,7 +14,7 @@ export class GameTypeService {
   async create(user: GameTypeEntity): Promise<any> {
     console.log('GameTypeEntity creation');
     try {
-      if (!this.users.findOne(user.game_type_id)) {
+      if (!(await this.users.findOne(user.game_type_id))) {
         const res= await this.users.insert(user);
         console.log(res);
         return 'ok';

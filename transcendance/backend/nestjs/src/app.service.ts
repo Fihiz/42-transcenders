@@ -26,8 +26,10 @@ export class Data {
 }
 
 export class Message {
-  login: string = "login";
   id:any = "id";
+  conv_id: number = 0;
+  login: string = "login";
+  date: Date = new Date();
   body:string = "body";
-  to: string = "room";
+  to: string | null = null;
 }

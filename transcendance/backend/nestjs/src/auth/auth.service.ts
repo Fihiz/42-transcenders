@@ -10,7 +10,6 @@ export class AuthService {
 
   constructor(){}
   failLog(@Res() res) {
-    res.status(200)
     res.send('error');
   }
 

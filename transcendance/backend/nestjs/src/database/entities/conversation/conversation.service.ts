@@ -14,7 +14,7 @@ export class ConversationService {
   async create(user: ConversationEntity): Promise<any> {
     console.log('ConversationEntity creation');
     try {
-      if (!this.users.findOne(user.conv_id)) {
+      if (!(await this.users.findOne(user.conv_id))) {
         const res= await this.users.insert(user);
         console.log(res);
         return 'ok';

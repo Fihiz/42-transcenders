@@ -28,6 +28,7 @@ import { ApiUserDataEntity } from './database/entities/apiUserData/apiUserData.e
 import { ParticipantEntity } from './database/entities/participant/participant.entity';
 import { ApiUserDataService } from './database/entities/apiUserData/apiUserData.service';
 import { ConversationEntity } from './database/entities/conversation/conversation.entity';
+import { ConversationService } from "./database/entities/conversation/conversation.service";
 
 @Module({
   imports: [
@@ -65,6 +66,6 @@ import { ConversationEntity } from './database/entities/conversation/conversatio
     ]),
   ],
   controllers: [AppController,  DoubleAuthController, AuthController],
-  providers: [AppService,WebAppUserService, StatService, AuthService, ApiUserDataService, ChatService],
+  providers: [AppService,WebAppUserService, StatService, AuthService, ApiUserDataService, ChatService, ConversationService],
 })
 export class AppModule {}

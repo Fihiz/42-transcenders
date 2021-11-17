@@ -14,7 +14,7 @@ export class AwardService {
   async create(user: AwardEntity): Promise<any> {
     console.log('AwardEntity creation');
     try {
-      if (!this.users.findOne(user.achievement_id)) {
+      if (!(await this.users.findOne(user.achievement_id))) {
         const res= await this.users.insert(user);
         console.log(res);
         return 'ok';

@@ -14,7 +14,7 @@ export class ParticipantService {
   async create(user: ParticipantEntity): Promise<any> {
     console.log('ParticipantEntity creation');
     try {
-      if (!this.users.findOne(user.login)) {
+      if (!(await this.users.findOne(user.login))) {
         const res= await this.users.insert(user);
         console.log(res);
         return 'ok';

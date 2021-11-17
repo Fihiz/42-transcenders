@@ -14,7 +14,7 @@ export class InvitationService {
   async create(user: InvitationEntity): Promise<any> {
     console.log('InvitationEntity creation');
     try {
-      if (!this.users.findOne(user.id)) {
+      if (!(await this.users.findOne(user.id))) {
         const res= await this.users.insert(user);
         console.log(res);
         return 'ok';

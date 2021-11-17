@@ -28,8 +28,8 @@ export class WebAppUserService {
     }
   }
 
-  findAll() {
-    return (this.users.find());
+  findAll(login) {
+    return (this.users.find({ where: {login: "pgoudett"}}));
   }
 
   findOne(login: string) {

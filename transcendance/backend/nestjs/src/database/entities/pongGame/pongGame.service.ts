@@ -14,7 +14,7 @@ export class PongGameService {
   async create(user: PongGameEntity): Promise<any> {
     console.log('PongGameEntity creation');
     try {
-      if (!this.users.findOne(user.game_id)) {
+      if (!(await this.users.findOne(user.game_id))) {
         const res= await this.users.insert(user);
         console.log(res);
         return 'ok';

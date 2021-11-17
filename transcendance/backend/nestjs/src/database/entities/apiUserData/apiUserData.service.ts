@@ -14,7 +14,7 @@ export class ApiUserDataService {
   async create(user: ApiUserDataEntity): Promise<any> {
     console.log('ApiUserData creation');
     try {
-      if (!this.users.findOne(user.login)) {
+      if (!(await this.users.findOne(user.login))) {
         const res= await this.users.insert(user);
         console.log(res);
         return 'ok';

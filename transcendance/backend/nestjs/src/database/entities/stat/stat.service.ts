@@ -15,7 +15,7 @@ export class StatService {
   async create(user: StatEntity): Promise<any> {
     console.log('StatEntity creation');
     try {
-      if (!this.users.findOne(user.login)) {
+      if (!(await this.users.findOne(user.login))) {
         const res= await this.users.insert(user);
         console.log(res);
         return 'ok';

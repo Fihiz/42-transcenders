@@ -14,7 +14,8 @@ export class RelationService {
   async create(user: RelationEntity): Promise<any> {
     console.log('RelationEntity creation');
     try {
-      if (!this.users.findOne(user.user1)) {
+      if (!(await this.users.findOne(user.user1)))
+       {
         const res= await this.users.insert(user);
         console.log(res);
         return 'ok';

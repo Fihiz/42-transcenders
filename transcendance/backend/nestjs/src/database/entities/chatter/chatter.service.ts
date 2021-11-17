@@ -14,7 +14,7 @@ export class ChatterService {
   async create(user: ChatterEntity): Promise<any> {
     console.log('ChatterEntity creation');
     try {
-      if (!this.users.findOne(user.conv_id)) {
+      if (!(await this.users.findOne(user.conv_id))) {
         const res= await this.users.insert(user);
         console.log(res);
         return 'ok';
@@ -29,12 +29,17 @@ export class ChatterService {
     }
   }
 
-  findAll() {
-    return (this.users.find());
+  findAll(id: number) {
+    return (this.users.find({where: {conv_id: id.toString()}}));
   }
 
-  findOne(conv_id: number) {
-    return this.users.findOne(conv_id);
+  findOne(conv_id: number = 0, login: string | null = null) {
+    if (conv_id === 0)
+      return (this.users.findOne(login));
+    else if (login === null)
+      return this.users.findOne(conv_id);
+    else
+      return ('error');
   }
 
   update(id: number, newUser: ChatterEntity) {
