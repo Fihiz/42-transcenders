@@ -5,7 +5,6 @@ INSERT INTO "t_webapp_user_data" ("login", "pseudo", "avatar", "status", "bio", 
 ('Moldu_04', 'MolduPseudo_04', NULL, 'offline', 'Plaaaaz', '0', '0', 1, 'User', '1980-01-01 12:42:00', '1980-01-01 12:42:00'),
 ('Moldu_05', 'MolduPseudo_05', NULL, 'online', 'Coinnng', '0', '0', 0, 'User', '1980-01-01 12:42:00', '1980-01-01 12:42:00');
 
--- /!\ birthday: non fournis pas l'api (voir Pgoudet)
 INSERT INTO "t_api_user_data" ("last_name", "first_name", "mail", "created", "update", "login") VALUES
 ('Moldu', 'First', 'firstmoldu@moldu.fr', '1980-01-01 12:42:00', '1980-01-01 12:42:00', 'Moldu_01'),
 ('Moldu', 'Second', 'secondmoldu@moldu.fr', '1980-01-01 12:42:00', '1980-01-01 12:42:00', 'Moldu_02'),
@@ -56,7 +55,6 @@ INSERT INTO "t_game_type" ("game_type_id", "game_aspect", "ball_size", "map_type
 (1, 'default', 10, 'default', 1, 50),
 (2, 'winter', 15, 'snowball', 3, 75);
 
--- /!\ creation_date ?
 INSERT INTO "t_conversation" ("conv_id", "room_type", "room_name", "password", "created", "updated") VALUES
 (1, 'private', 'TranscendersParty', NULL, '1980-01-01 12:42:00', '1980-01-01 12:42:00'),
 (2, 'public', 'Moldu_05 VS Moldu_01', '1234', '1980-01-01 12:42:00', '1980-01-01 12:42:00');
