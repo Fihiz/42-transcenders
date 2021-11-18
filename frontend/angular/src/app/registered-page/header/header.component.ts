@@ -20,8 +20,16 @@ export class HeaderComponent implements OnInit {
 
   constructor(private userService: UserFromBackService) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     console.log('inited');
-    // this.userService.getUser().subscribe((user: User) => (this.user = user));
+
+    try {
+      this.userService.getUser1();
+      this.user = await this.userService.getUser();
+      console.log(this.user.login);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 }

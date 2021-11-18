@@ -1,23 +1,33 @@
 import { Injectable } from '@angular/core';
 import { User } from './interfaces/user';
 import { Observable } from 'rxjs';
+import axios from 'axios';
+// import * as axios from 'axios';
 
-import * as axios from 'axios';
+// const axios = require('axios');
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserFromBackService {
   constructor() {}
+  getUser1() {
+    console.log('User 1 est ici');
+  }
+  async getUser(): Promise<User> {
+    try {
+      const res = await axios.get('http://127.0.0.1:3000');
+      const resData = res.data;
+      console.log('Our result is: ', resData);
+      return resData;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
 }
 
-
-
-
-
-
-
-// OLD
+// OLD;
 // import { Injectable } from '@angular/core';
 // import { HttpClient, HttpHeaders } from '@angular/common/http';
 // import { User } from './interfaces/user';

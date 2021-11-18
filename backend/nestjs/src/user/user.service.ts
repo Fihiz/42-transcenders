@@ -11,9 +11,17 @@ export class UserService {
         scored_points: 18,
         created: new Date(),
         updated: new Date()
-    },];
+    },{
+        avatar: '0.0',
+        login: 'rlepart',
+        pseudo: 'Didier Minette',
+        points_for_ladder: 50,
+        scored_points: 32,
+        created: new Date(),
+        updated: new Date()
+    }];
 
     getUser() : User {
-        return this.users[0];
+        return this.users[1];
     }
 }
