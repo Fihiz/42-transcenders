@@ -1,6 +1,8 @@
 header {
   display: flex;
-  background: #e7d5d5;
+  /* background: #e7d5d5; */
+  background:rgb(245, 111, 111);
+  
   height: auto;
   min-height: 150px;
   padding: 25px;
