@@ -18,7 +18,9 @@ export class AuthService {
           id: socket.ioSocket.id,
           login: Res.data.login,
           body: 'connection',
-          to: 'nobody'
+          to: ['nobody'],
+          conv_id:0,
+          date: new Date()
         }
         socket.emit('introduction', message);
     }

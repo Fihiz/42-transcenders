@@ -31,5 +31,5 @@ export class Message {
   login: string = "login";
   date: Date = new Date();
   body:string = "body";
-  to: string | null = null;
+  to: Array<string> = [];
 }

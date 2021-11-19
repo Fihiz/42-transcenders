@@ -17,7 +17,6 @@ export class StatService {
     try {
       if (!(await this.users.findOne(user.login))) {
         const res= await this.users.insert(user);
-        console.log(res);
         return 'ok';
       }
       else

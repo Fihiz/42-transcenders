@@ -29,6 +29,11 @@ import { ParticipantEntity } from './database/entities/participant/participant.e
 import { ApiUserDataService } from './database/entities/apiUserData/apiUserData.service';
 import { ConversationEntity } from './database/entities/conversation/conversation.entity';
 import { ConversationService } from "./database/entities/conversation/conversation.service";
+import { ChatterService } from "./database/entities/chatter/chatter.service";
+import { ChatterModule } from "./database/entities/chatter/chatter.module";
+import { ConversationModule } from "./database/entities/conversation/conversation.module";
+import { MessageModule } from "./database/entities/message/message.module";
+import { MessageService } from "./database/entities/message/message.service";
 
 @Module({
   imports: [
@@ -41,7 +46,19 @@ import { ConversationService } from "./database/entities/conversation/conversati
       username: "admin",
       password: "admin",
       database: "db_pong",
-      entities: [],
+      entities: [AchievementEntity,
+      ApiUserDataEntity,
+      AwardEntity,
+      ChatterEntity,
+      ConversationEntity,
+      GameTypeEntity,
+      InvitationEntity,
+      MessageEntity,
+      ParticipantEntity,
+      PongGameEntity,
+      RelationEntity,
+      StatEntity,
+      WebAppUserEntity],
       autoLoadEntities: true,
       synchronize: true
     }),
@@ -49,6 +66,9 @@ import { ConversationService } from "./database/entities/conversation/conversati
     WebAppUserModule,
     StatModule,
     ConnectionModule,
+    MessageModule,
+    ChatterModule,
+    ConversationModule,
     TypeOrmModule.forFeature([
       WebAppUserEntity, 
       StatEntity, 
@@ -66,6 +86,13 @@ import { ConversationService } from "./database/entities/conversation/conversati
     ]),
   ],
   controllers: [AppController,  DoubleAuthController, AuthController],
-  providers: [AppService,WebAppUserService, StatService, AuthService, ApiUserDataService, ChatService, ConversationService],
+  providers: [AppService,
+    WebAppUserService, 
+    StatService, 
+    AuthService, 
+    ApiUserDataService,
+    ChatterService,
+    ConversationService,
+    MessageService],
 })
 export class AppModule {}

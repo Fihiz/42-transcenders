@@ -18,5 +18,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage('message')
-	messageFunc(@MessageBody() message: Message) {this.chatService.handleMessage(this.server,message);}
+	messageFunc(@MessageBody() message: Message) {
+		this.chatService.handleMessage(this.server,message);
+	}
 }

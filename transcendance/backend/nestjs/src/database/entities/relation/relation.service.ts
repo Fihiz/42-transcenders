@@ -17,7 +17,6 @@ export class RelationService {
       if (!(await this.users.findOne(user.user1)))
        {
         const res= await this.users.insert(user);
-        console.log(res);
         return 'ok';
       }
       else

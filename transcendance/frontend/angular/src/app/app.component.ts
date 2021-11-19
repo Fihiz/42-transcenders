@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-const axios = require('axios');
 
 
 @Component({

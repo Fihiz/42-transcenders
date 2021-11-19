@@ -14,13 +14,8 @@ export class MessageService {
   async create(user: MessageEntity): Promise<any> {
     console.log('MessageEntity creation');
     try {
-      if (!(await this.users.findOne(user.id))) {
-        const res= await this.users.insert(user);
-        console.log(res);
-        return 'ok';
-      }
-      else
-        return('ac');
+      const res= await this.users.insert(user);
+      return 'ok';
     }
     catch (error) {
       return `error.severity: ${error.severity}, 
@@ -30,7 +25,7 @@ export class MessageService {
   }
 
   findAll() {
-    return (this.users.find());
+    return (this.users.find({select: ['login']}));
   }
 
   findOne(id: number) {

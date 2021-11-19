@@ -6,6 +6,7 @@ import { ChatterService } from "./chatter.service";
 @Module({
     imports: [TypeOrmModule.forFeature([ChatterEntity])],
     providers: [ChatterService],
+    exports: [ChatterModule],
   })
 export class ChatterModule {}
   

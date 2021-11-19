@@ -16,7 +16,6 @@ export class ConversationService {
     try {
       if (!(await this.users.findOne(user.conv_id))) {
         const res= await this.users.insert(user);
-        console.log(res);
         return 'ok';
       }
       else

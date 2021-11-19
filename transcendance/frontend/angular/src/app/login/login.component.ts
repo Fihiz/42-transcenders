@@ -20,9 +20,11 @@ export class LoginComponent implements OnInit {
     console.log('log-out front');
     const mess: Message = {
       id:this.LoginService.getSocket().ioSocket.id,
-      login: GlobalService.login,
-      to:'nobody',
+      login: GlobalService.login as string,
+      to:['nobody'],
       body:'loging-out',
+      date: new Date(),
+      conv_id: 0
     };
     this.LoginService.getSocket().emit('log-out', mess);
   }

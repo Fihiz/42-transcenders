@@ -16,7 +16,6 @@ export class PongGameService {
     try {
       if (!(await this.users.findOne(user.game_id))) {
         const res= await this.users.insert(user);
-        console.log(res);
         return 'ok';
       }
       else

@@ -14,9 +14,8 @@ export class AchievementService {
   async create(user: AchievementEntity): Promise<any> {
     console.log('AchievementEntity creation');
     try {
-      if (!this.users.findOne(user.achievement_id)) {
+      if (!(await this.users.findOne(user.achievement_id))) {
         const res= await this.users.insert(user);
-        console.log(res);
         return 'ok';
       }
       else

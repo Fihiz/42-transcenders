@@ -14,9 +14,8 @@ export class ChatterService {
   async create(user: ChatterEntity): Promise<any> {
     console.log('ChatterEntity creation');
     try {
-      if (!(await this.users.findOne(user.conv_id))) {
+      if (!(await this.users.findOne())) {
         const res= await this.users.insert(user);
-        console.log(res);
         return 'ok';
       }
       else
@@ -30,7 +29,7 @@ export class ChatterService {
   }
 
   findAll(id: number) {
-    return (this.users.find({where: {conv_id: id.toString()}}));
+    return (this.users.find({where: {conv_id: id}, relations: ['login']}));
   }
 
   findOne(conv_id: number = 0, login: string | null = null) {

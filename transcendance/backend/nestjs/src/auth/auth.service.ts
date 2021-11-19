@@ -49,20 +49,21 @@ export class AuthService {
     try {
       const userDataRes = await userData.create(user);
       const apiUserRes2 = await apiUser.create(userApi);
-      console.log('userDataRes = ', userDataRes, ' apiUserRes2 = ', apiUserRes2);
+      // console.log('userDataRes = ', userDataRes, ' apiUserRes2 = ', apiUserRes2);
       if ( userDataRes === 'ok' && await  apiUserRes2 === 'ok')
         return('ok');
       else if (userDataRes === 'ac' && apiUserRes2 === 'ac')
         return ('ac');
       else {
-        console.log('error registerData');
+        // console.log('error registerData');
         this.failLog(res);
       }
     }
     catch (error) {
-      console.log('error registerData =', error);
+      // console.log('error registerData =', error);
       this.failLog(res);
     }
+    // console.log(apiUser.findAll());
   }
 
   async getAccessToken(codeUrl) {
@@ -86,7 +87,7 @@ export class AuthService {
       const theRes = await axios.get('https://api.intra.42.fr/v2/me', {
         headers: { Authorization: `Bearer ${accessToken.data.access_token}` },
       });
-    console.log(`hello ${theRes.data.login}`);
+    // console.log(`hello ${theRes.data.login}`);
     return (theRes);
   }
 };
