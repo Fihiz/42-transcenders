@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from 'src/app/interfaces/user';
+import { WebAppUserEntity } from 'src/app/interfaces/user';
 import { UserFromBackService } from 'src/app/user-from-back.service';
 
 @Component({
@@ -8,24 +8,35 @@ import { UserFromBackService } from 'src/app/user-from-back.service';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  user: User = {
-    avatar: '',
-    login: '',
+  user: WebAppUserEntity = {
+    login: 'patrice',
     pseudo: '',
-    points_for_ladder: 0,
-    scored_points: 0,
+    avatar: '',
+    status: '',
+    bio: '',
+    pending_queue: false,
+    banned: false,
+    admonishement: 0,
+    app_role: '',
     created: new Date(),
     updated: new Date(),
   };
+
+  users: WebAppUserEntity[] = [];
 
   constructor(private userService: UserFromBackService) {}
 
   async ngOnInit(): Promise<void> {
     console.log('inited');
-
     try {
-      this.userService.getUser1();
       this.user = await this.userService.getUser();
+      console.log(this.user.login);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+    try {
+      this.users = await this.userService.getUsers();
       console.log(this.user.login);
     } catch (error) {
       console.log(error);

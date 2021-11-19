@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [TypeOrmModule.forFeature([WebAppUserEntity])],
+  exports: [WebAppUserService],
   providers: [WebAppUserService],
 })
 export class WebAppUserModule {}

@@ -1,24 +1,30 @@
 import { Injectable } from '@angular/core';
-import { User } from './interfaces/user';
-import { Observable } from 'rxjs';
+import { WebAppUserEntity } from './interfaces/user';
 import axios from 'axios';
-// import * as axios from 'axios';
-
-// const axios = require('axios');
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserFromBackService {
   constructor() {}
-  getUser1() {
-    console.log('User 1 est ici');
-  }
-  async getUser(): Promise<User> {
+
+  async getUser(): Promise<WebAppUserEntity> {
     try {
-      const res = await axios.get('http://127.0.0.1:3000');
+      const res = await axios.get('http://127.0.0.1:3000/user');
       const resData = res.data;
-      console.log('Our result is: ', resData);
+      console.log('Our result USER is: ', resData);
+      return resData;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async getUsers(): Promise<WebAppUserEntity[]> {
+    try {
+      const res = await axios.get('http://127.0.0.1:3000/users');
+      const resData = res.data;
+      console.log('Our result USERS is: ', resData);
       return resData;
     } catch (error) {
       console.log(error);
