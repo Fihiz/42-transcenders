@@ -1,4 +1,4 @@
-Our [final common core project](https://cdn.intra.42.fr/pdf/pdf/27779/en.subject.pdf) for 42.
+Our [final common core project](https://cdn.intra.42.fr/pdf/pdf/31816/en.subject.pdf) for 42.
 
 *__Purpose__*  
 We'll need to build a website for "a mighty pong contest", to help users play pong against each other. There will be an admin view, a chat with moderators, real-time multiplayer online games...

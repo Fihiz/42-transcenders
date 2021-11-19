@@ -11,6 +11,12 @@ import { ContentComponent } from './registered-page/content/content.component';
 import { ChatComponent } from './registered-page/chat/chat.component';
 import { WelcomeComponent } from './registered-page/content/welcome/welcome.component';
 import { RulesComponent } from './registered-page/content/rules/rules.component';
+import { AboutMeComponent } from './registered-page/content/about-me/about-me.component';
+import { RankingComponent } from './registered-page/content/ranking/ranking.component';
+import { StatsComponent } from './registered-page/content/stats/stats.component';
+import { LiveComponent } from './registered-page/content/live/live.component';
+import { FriendsComponent } from './registered-page/content/friends/friends.component';
+import { PlayComponent } from './registered-page/content/play/play.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +28,13 @@ import { RulesComponent } from './registered-page/content/rules/rules.component'
     ContentComponent,
     ChatComponent,
     WelcomeComponent,
-    RulesComponent
+    RulesComponent,
+    AboutMeComponent,
+    RankingComponent,
+    StatsComponent,
+    LiveComponent,
+    FriendsComponent,
+    PlayComponent
   ],
   imports: [
     BrowserModule,
