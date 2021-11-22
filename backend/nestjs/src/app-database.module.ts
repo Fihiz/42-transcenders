@@ -1,49 +1,49 @@
-// import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { ApiUserDataEntity } from './entities/apiUserData/apiUserData.entity';
-// import { WebAppUserEntity } from './entities/webAppUser/webAppUser.entity';
-// import { AchievementEntity } from './entities/achievement/achievement.entity';
-// import { AwardEntity } from './entities/award/award.entity';
-// import { ChatterEntity } from './entities/chatter/chatter.entity';
-// import { ConversationEntity } from './entities/conversation/conversation.entity';
-// import { GameTypeEntity } from './entities/gameType/gameType.entity';
-// import { InvitationEntity } from './entities/invitation/invitation.entity';
-// import { MessageEntity } from './entities/message/message.entity';
-// import { ParticipantEntity } from './entities/participant/participant.entity';
-// import { PongGameEntity } from './entities/pongGame/pongGame.entity';
-// import { RelationEntity } from './entities/relation/relation.entity';
-// import { StatEntity } from './entities/stat/stat.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AchievementEntity } from './entities/eb-achievement.entity';
+import { ApiUserDataEntity } from './entities/eb-api-user-data.entity';
+import { AwardEntity } from './entities/eb-award.entity';
+import { ChatterEntity } from './entities/eb-chatter.entity';
+import { ConversationEntity } from './entities/eb-conversation.entity';
+import { GameTypeEntity } from './entities/eb-game-type.entity';
+import { InvitationEntity } from './entities/eb-invitation.entity';
+import { MessageEntity } from './entities/eb-message.entity';
+import { ParticipantEntity } from './entities/eb-participant.entity';
+import { PongGameEntity } from './entities/eb-pong-game.entity';
+import { RelationEntity } from './entities/eb-relation.entity';
+import { StatEntity } from './entities/eb-stat.entity';
+import { WebAppUserEntity } from './entities/eb-web-app-user.entity';
 
-// @Module({
-//   imports: [
-//     TypeOrmModule.forRoot({
-//       type: 'postgres',
-//       host: 'database',
-//       port: 5432,
-//       username: 'admin',
-//       password: 'admin',
-//       database: 'db_pong',
-//       entities: [
-//         AchievementEntity,
-//         ApiUserDataEntity,
-//         AwardEntity,
-//         ChatterEntity,
-//         ConversationEntity,
-//         GameTypeEntity,
-//         InvitationEntity,
-//         MessageEntity,
-//         ParticipantEntity,
-//         PongGameEntity,
-//         RelationEntity,
-//         StatEntity,
-//         WebAppUserEntity,
-//       ],
-//       synchronize: true,
-//     }),
-//   ],
-//   exports: [DatabaseModule],
-//   controllers: [],
-//   providers: []
-// })
-// export class DatabaseModule {}
+@Module({
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'database',
+      port: 5432,
+      username: 'admin',
+      password: 'admin',
+      database: 'db_pong',
+      entities: [
+        AchievementEntity,
+        ApiUserDataEntity,
+        AwardEntity,
+        ChatterEntity,
+        ConversationEntity,
+        GameTypeEntity,
+        InvitationEntity,
+        MessageEntity,
+        ParticipantEntity,
+        PongGameEntity,
+        RelationEntity,
+        StatEntity,
+        WebAppUserEntity,
+      ],
+      synchronize: true,
+    }),
+  ],
+  exports: [AppDatabaseModule],
+  controllers: [],
+  providers: []
+})
+export class AppDatabaseModule {}

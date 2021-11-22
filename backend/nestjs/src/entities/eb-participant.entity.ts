@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { PongGameEntity } from "./eb-game-type.entity";
+import { PongGameEntity } from "./eb-pong-game.entity";
 import { WebAppUserEntity } from "./eb-web-app-user.entity";
 
 @Entity('t_participant')
