@@ -4,7 +4,7 @@ import { if_game } from '../interfaces/if-game';
 @Injectable({
   providedIn: 'root',
 })
-export class SfGameService {
+export class GameService {
   game?: if_game;
 
   constructor() {}

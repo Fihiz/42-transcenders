@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SfUserService } from './sf-user.service';
+import { UserService } from './sf-user.service';
 
-describe('SfUserService', () => {
-  let service: SfUserService;
+describe('UserService', () => {
+  let service: UserService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SfUserService);
+    service = TestBed.inject(UserService);
   });
 
   it('should be created', () => {

@@ -4,7 +4,7 @@ import { if_social } from '../interfaces/if-social';
 @Injectable({
   providedIn: 'root',
 })
-export class SfSocialService {
+export class SocialService {
   social?: if_social;
 
   constructor() {}

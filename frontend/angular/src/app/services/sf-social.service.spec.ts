@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SfSocialService } from './sf-social.service';
+import { SocialService } from './sf-social.service';
 
-describe('SfSocialService', () => {
-  let service: SfSocialService;
+describe('SocialService', () => {
+  let service: SocialService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SfSocialService);
+    service = TestBed.inject(SocialService);
   });
 
   it('should be created', () => {
