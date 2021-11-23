@@ -1,1 +1,7 @@
-<p>WELCOME WORKS</p>
+<div *ngIf="status" class="alert alert-success" role="alert">
+    Welcome ! You have successfully logged in !
+</div>    
+
+<div *ngIf="!status" class="alert alert-danger" role="alert">
+    Oh, oh... Something went wrong ! There is no connexion.
+</div>

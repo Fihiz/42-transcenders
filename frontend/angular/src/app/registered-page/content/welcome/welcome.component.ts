@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { OnlineStatusService, OnlineStatusType } from 'ngx-online-status';
 
 @Component({
   selector: 'app-welcome',
@@ -7,7 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WelcomeComponent implements OnInit {
 
-  constructor() { }
+  status?: OnlineStatusType = 1;
+
+  constructor(private onlineStatusService: OnlineStatusService) {
+    this.onlineStatusService.status.subscribe((status: OnlineStatusType) => {
+      this.status = status;
+    });
+  }
 
   ngOnInit(): void {
   }

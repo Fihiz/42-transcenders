@@ -18,6 +18,8 @@ import { LiveComponent } from './registered-page/content/live/live.component';
 import { FriendsComponent } from './registered-page/content/friends/friends.component';
 import { PlayComponent } from './registered-page/content/play/play.component';
 
+import { OnlineStatusModule } from 'ngx-online-status';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,7 +40,8 @@ import { PlayComponent } from './registered-page/content/play/play.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    OnlineStatusModule
   ],
   providers: [],
   bootstrap: [AppComponent]
