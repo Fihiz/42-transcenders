@@ -32,22 +32,18 @@ export class UserService {
     return (this.webUsers.find());
   }
 
-  async findWebOne(login: string) : Promise<any> {
+  async findOneUser(login: string) : Promise<any> {
     const user : ApiUserDataEntity = await getRepository(ApiUserDataEntity)
       .createQueryBuilder("userAlias")
       .where("userAlias.login = :login", { login: login })
       .leftJoinAndSelect('userAlias.login', 'login')
       .getOne();
-    console.log("Back User:", user); // What we need to split (two primary login make object in object)
+    // console.log("Back User:", user); // What we need to split (two primary login make object in object)
     const appUser : object = {...user}.login as unknown as object; // Get the api login that contains the current object webAppUser (object in object)
-    console.log("Split of webAppUser:", appUser);
+    // console.log("Split of webAppUser:", appUser);
     const merge : object = {...user, ...appUser}; // Merging what we splitted above (all the datas of WebAppUser) + ApiUserData
     // console.log("merge", merge);
     return (merge);
-  }
-
-  findApiOne(login: string) {
-    return this.apiUsers.findOne(login);
   }
 
   update(id: number, newUser: WebAppUserEntity) {

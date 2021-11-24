@@ -7,7 +7,7 @@ export class UserController {
 
     @Get()
     getWebAppUser () : Promise<any> {
-      const res = this.userService.findWebOne("Moldu_01");
+      const res = this.userService.findOneUser("Moldu_01");
       console.log("Our res into cb-user controller: ", res);
       return(res);
     }
