@@ -15,6 +15,7 @@ export class UserService {
       const res = await axios.get('http://127.0.0.1:3000/cb-user');
       const resData = res.data;
       console.log('Our result USER is: ', resData);
+      console.log(resData);
       return resData;
     } catch (error) {
       console.log(error);
