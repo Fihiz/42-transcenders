@@ -8,7 +8,7 @@ import { OnlineStatusService, OnlineStatusType } from 'ngx-online-status';
 })
 export class WelcomeComponent implements OnInit {
 
-  status?: OnlineStatusType = 1;
+  status: OnlineStatusType = 1;
 
   constructor(private onlineStatusService: OnlineStatusService) {
     this.onlineStatusService.status.subscribe((status: OnlineStatusType) => {

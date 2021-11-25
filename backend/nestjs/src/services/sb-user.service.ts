@@ -4,7 +4,6 @@ import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { ApiUserDataEntity } from 'src/entities/eb-api-user-data.entity';
 import { getRepository, Repository } from 'typeorm';
 
-
 @Injectable()
 export class UserService {
   constructor(
@@ -38,11 +37,8 @@ export class UserService {
       .where("userAlias.login = :login", { login: login })
       .leftJoinAndSelect('userAlias.login', 'login')
       .getOne();
-    // console.log("Back User:", user); // What we need to split (two primary login make object in object)
-    const appUser : object = {...user}.login as unknown as object; // Get the api login that contains the current object webAppUser (object in object)
-    // console.log("Split of webAppUser:", appUser);
-    const merge : object = {...user, ...appUser}; // Merging what we splitted above (all the datas of WebAppUser) + ApiUserData
-    // console.log("merge", merge);
+    const appUser : object = {...user}.login as unknown as object;
+    const merge : object = {...user, ...appUser};
     return (merge);
   }
 
