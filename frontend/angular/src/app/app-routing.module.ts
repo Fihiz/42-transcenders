@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthComponent } from './auth/auth.component';
+import { LoginComponent } from './login/login.component';
 import { AboutMeComponent } from './registered-page/content/about-me/about-me.component';
 import { FriendsComponent } from './registered-page/content/friends/friends.component';
 import { LiveComponent } from './registered-page/content/live/live.component';
@@ -10,6 +12,8 @@ import { StatsComponent } from './registered-page/content/stats/stats.component'
 import { WelcomeComponent } from './registered-page/content/welcome/welcome.component';
 
 const routes: Routes = [
+  { path: 'login', component: LoginComponent },
+  { path: 'auth', component: AuthComponent },
   { path: 'welcome', component: WelcomeComponent },
   { path: 'profile/about-me', component: AboutMeComponent },
   { path: 'profile/my-friends', component: FriendsComponent },

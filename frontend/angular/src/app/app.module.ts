@@ -19,6 +19,8 @@ import { FriendsComponent } from './registered-page/content/friends/friends.comp
 import { PlayComponent } from './registered-page/content/play/play.component';
 
 import { OnlineStatusModule } from 'ngx-online-status';
+import { LoginComponent } from './login/login.component';
+import { AuthComponent } from './auth/auth.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { OnlineStatusModule } from 'ngx-online-status';
     StatsComponent,
     LiveComponent,
     FriendsComponent,
-    PlayComponent
+    PlayComponent,
+    LoginComponent,
+    AuthComponent
   ],
   imports: [
     BrowserModule,
