@@ -8,6 +8,7 @@ const FORTYTWO_APP_ID = '4d5d28ff9d7de95a5193fdc23e41e968fb338bee441891bd9995030
 })
 export class LoginComponent implements OnInit {
 
+  login?: string;
   constructor() { }
 
   async onEvent() {

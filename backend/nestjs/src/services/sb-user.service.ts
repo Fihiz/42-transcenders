@@ -16,7 +16,7 @@ export class UserService {
   async createWebUser(user: WebAppUserEntity): Promise<any> {
     console.log('WepAppUser creation');
     try {
-      if (!await this.webUsers.findOneUser(user.login)) {
+      if (!await this.findOneUser(user.login)) {
         const res= await this.webUsers.insert(user);
         return 'ok';
       }
@@ -33,7 +33,7 @@ export class UserService {
   async createApiUser(user: ApiUserDataEntity): Promise<any> {
     console.log('WepAppUser creation');
     try {
-      if (!await this.apiUsers.findOneUser(user.login)) {
+      if (!await this.findOneUser(user.login)) {
         const res= await this.apiUsers.insert(user);
         return 'ok';
       }

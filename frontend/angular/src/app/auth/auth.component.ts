@@ -20,7 +20,7 @@ export class AuthComponent implements OnInit {
   async ngOnInit() {
     const code = this.router.url.split('?')[1]?.substr(5, 64)
     try {
-    const res = await axios.get('http://127.0.0.1:3000/auth', {params: {code: code}});
+    const res = await axios.get('http://127.0.0.1:3000/cb-auth', {params: {code: code}});
     const Res = res.data as unknown as any
       if (Res.status === 'OK')
       {

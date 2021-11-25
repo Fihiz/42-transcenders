@@ -2,6 +2,7 @@ import { Injectable, Res } from '@nestjs/common';
 import axios from "axios";
 import { ApiUserDataEntity } from 'src/entities/eb-api-user-data.entity';
 import { role, WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
+import { UserService } from './sb-user.service';
 
 const querystring = require('querystring');
 
@@ -41,13 +42,13 @@ export class AuthService {
         return (userApi);
       }
     
-      async registerData(data, userData: WebAppUserService, apiUser: ApiUserDataService) {
+      async registerData(data, userData: UserService) {
         let res;
         const user = this.initUser(data);
         const userApi = this.initUserApi(data);
         try {
-          const userDataRes = await userData.create(user);
-          const apiUserRes2 = await apiUser.create(userApi);
+          const userDataRes = await userData.createWebUser(user);
+          const apiUserRes2 = await userData.createApiUser(userApi);
           // console.log('userDataRes = ', userDataRes, ' apiUserRes2 = ', apiUserRes2);
           if ( userDataRes === 'ok' && await  apiUserRes2 === 'ok')
             return('ok');

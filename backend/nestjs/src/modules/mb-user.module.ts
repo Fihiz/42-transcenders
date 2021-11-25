@@ -9,5 +9,6 @@ import { UserService } from 'src/services/sb-user.service';
     imports: [TypeOrmModule.forFeature([WebAppUserEntity, ApiUserDataEntity])],
     providers: [UserService],
     controllers: [UserController],
+    exports: [UserService]
 })
 export class UserModule {}
