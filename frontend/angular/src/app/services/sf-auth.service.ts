@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class SfAuthService {
+export class AuthService {
 
   // introduce(socket: Socket, Res: any) {
   //   GlobalService.login = Res.data.login;

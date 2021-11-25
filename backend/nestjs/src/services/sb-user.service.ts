@@ -13,12 +13,15 @@ export class UserService {
     private apiUsers: Repository<ApiUserDataEntity>
   ) {}
 
-  async create(user: WebAppUserEntity): Promise<any> {
+  async createWebUser(user: WebAppUserEntity): Promise<any> {
     console.log('WepAppUser creation');
     try {
-      const res= await this.webUsers.insert(user);
-      console.log(res);
-      return 'ok';
+      if (!await this.webUsers.findOneUser(user.login)) {
+        const res= await this.webUsers.insert(user);
+        return 'ok';
+      }
+      else
+        return('ac');
     }
     catch (error) {
       return `error.severity: ${error.severity}, 
@@ -27,8 +30,29 @@ export class UserService {
     }
   }
 
-  findAll() {
+  async createApiUser(user: ApiUserDataEntity): Promise<any> {
+    console.log('WepAppUser creation');
+    try {
+      if (!await this.apiUsers.findOneUser(user.login)) {
+        const res= await this.apiUsers.insert(user);
+        return 'ok';
+      }
+      else
+        return('ac');
+    }
+    catch (error) {
+      return `error.severity: ${error.severity}, 
+\     code: ${error.code},
+\     detail: ${error.detail}`;
+    }
+  }
+
+  findAllWebUser() {
     return (this.webUsers.find());
+  }
+
+  findAllApiUser() {
+    return (this.apiUsers.find());
   }
 
   async findOneUser(login: string) : Promise<any> {
@@ -51,10 +75,10 @@ export class UserService {
     return (await this.webUsers.delete(user));
   }
 
-  async modifie(set1: object, where1: string, where2: object) {
-    const user = await getRepository(WebAppUserEntity)
+  async modifie(set1: object, where1: string, where2: object, entity) {
+    const user = await getRepository(entity)
     .createQueryBuilder()
-    .update(WebAppUserEntity)
+    .update(entity)
     .set(set1)
     .where(where1, where2)
     .execute();
