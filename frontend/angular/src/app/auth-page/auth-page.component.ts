@@ -30,4 +30,9 @@ export class AuthPageComponent {
 		// this.loginForApp.emit("Pgoudz");
 	}
 
+	authLoginEvent(event: Event) {
+		console.log('coucou', event);
+		this.loginForApp.emit('event');
+	}
+
 }

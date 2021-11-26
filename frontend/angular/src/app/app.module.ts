@@ -19,7 +19,8 @@ import { FriendsComponent } from './registered-page/content/friends/friends.comp
 import { PlayComponent } from './registered-page/content/play/play.component';
 
 import { OnlineStatusModule } from 'ngx-online-status';
-import { AuthComponent } from './auth/auth.component';
+import { AuthComponent } from './auth-page/auth/auth.component';
+
 
 @NgModule({
   declarations: [
