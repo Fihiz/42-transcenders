@@ -6,9 +6,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  isAuth: boolean = false;
+  
+  /* OLD */
+  // isAuth: boolean = false;
 
-  appHandleClick(event: Event) {
-    this.isAuth = false;
-  }
+  // appHandleClick(event: Event) {
+  //   this.isAuth = false;
+  // }
+
+  login? : string;
+  constructor() {}
+
 }
