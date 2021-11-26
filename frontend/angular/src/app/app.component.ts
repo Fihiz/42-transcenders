@@ -10,11 +10,11 @@ export class AppComponent {
   /* OLD */
   // isAuth: boolean = false;
 
-  // appHandleClick(event: Event) {
-  //   this.isAuth = false;
-  // }
-
   login? : string;
   constructor() {}
+
+  logOutHandleClick(event: Event) {
+    this.login = undefined;
+  }
 
 }
