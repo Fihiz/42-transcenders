@@ -19,6 +19,8 @@ import { FriendsComponent } from './registered-page/content/friends/friends.comp
 import { PlayComponent } from './registered-page/content/play/play.component';
 
 import { OnlineStatusModule } from 'ngx-online-status';
+import { GlobalService } from './services/sf-global.service';
+import { AuthComponent } from './auth-page/auth/auth.component';
 
 @NgModule({
   declarations: [
@@ -36,14 +38,11 @@ import { OnlineStatusModule } from 'ngx-online-status';
     StatsComponent,
     LiveComponent,
     FriendsComponent,
-    PlayComponent
+    PlayComponent,
+    AuthComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    OnlineStatusModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+  imports: [BrowserModule, AppRoutingModule, OnlineStatusModule],
+  providers: [GlobalService],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

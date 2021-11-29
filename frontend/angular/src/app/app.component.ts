@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { GlobalService } from './services/sf-global.service';
 
 @Component({
   selector: 'app-root',
@@ -6,9 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  isAuth: boolean = false;
+  constructor(public global: GlobalService) {}
 
-  appHandleClick(event: Event) {
-    this.isAuth = false;
+  logOutHandleClick(event: Event) {
+    this.global.login = undefined;
   }
 }
