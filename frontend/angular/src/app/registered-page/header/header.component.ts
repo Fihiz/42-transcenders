@@ -9,6 +9,7 @@ import { UserService } from 'src/app/services/sf-user.service';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
+  /* Need to deal with later (case of update ?) */
   // user: if_user = {
   //   login: '',
   //   pseudo: '',

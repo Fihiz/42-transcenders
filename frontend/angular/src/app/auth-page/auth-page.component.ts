@@ -25,6 +25,6 @@ export class AuthPageComponent {
       response_type +
       '&state=' +
       state;
-    window.location.href = url;
+    window.location.href = url; // Keeping it into the component or a dedicated service ?
   }
 }
