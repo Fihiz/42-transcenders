@@ -1,8 +1,8 @@
 header {
   display: flex;
   /* background: #e7d5d5; */
-  background:rgb(245, 111, 111);
-  
+  background: rgb(245, 111, 111);
+
   height: auto;
   min-height: 150px;
   padding: 25px;
@@ -55,6 +55,10 @@ header {
   width: auto;
   font-weight: 600;
   word-break: break-all;
+}
+
+img {
+  object-fit: cover;
 }
 
 @media (max-width: 1000px) {

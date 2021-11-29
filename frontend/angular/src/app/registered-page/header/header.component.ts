@@ -31,12 +31,12 @@ export class HeaderComponent implements OnInit {
   constructor(public userService: UserService, public global: GlobalService) {}
 
   async ngOnInit(): Promise<void> {
-    try {
-      // this.user = await this.userService.getUser();
-      // console.log(this.user.login);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    // try {
+    //   this.user = await this.userService.getUser();
+    //   console.log(this.user.login);
+    // } catch (error) {
+    //   console.log(error);
+    //   throw error;
+    // }
   }
 }

@@ -7,7 +7,7 @@ export class UserController {
 
     @Get()
     async getWebAppUser () : Promise<any> {
-      const res = await this.userService.findOneUser("Moldu_01");
+      const res = await this.userService.findOneWebUser("Moldu_01"); // ?
       console.log("Our res into cb-user controller: ", res);
       return(res);
     }

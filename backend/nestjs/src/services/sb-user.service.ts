@@ -13,12 +13,15 @@ export class UserService {
     private apiUsers: Repository<ApiUserDataEntity>
   ) {}
 
-  async create(user: WebAppUserEntity): Promise<any> {
+  async createAppUser(user: WebAppUserEntity): Promise<any> {
     console.log('WepAppUser creation');
     try {
-      const res= await this.webUsers.insert(user);
-      console.log(res);
-      return 'ok';
+      if (!await this.webUsers.findOne(user.login)) {
+        const res= await this.webUsers.insert(user);
+        return 'ok';
+      }
+      else
+        return ('ac');
     }
     catch (error) {
       return `error.severity: ${error.severity}, 
@@ -27,11 +30,32 @@ export class UserService {
     }
   }
 
-  findAll() {
+  async createApiUserData(apiUsers: ApiUserDataEntity): Promise<any> {
+    console.log('WepAppUser creation');
+    try {
+      if (!await this.apiUsers.findOne(apiUsers.login)) {
+        const res= await this.apiUsers.insert(apiUsers);
+        return 'ok';
+      }
+      else
+        return ('ac');
+    }
+    catch (error) {
+      return `error.severity: ${error.severity}, 
+\     code: ${error.code},
+\     detail: ${error.detail}`;
+    }
+  }
+
+  findAllAppUser() {
     return (this.webUsers.find());
   }
 
-  async findOneUser(login: string) : Promise<any> {
+  findAllApiUserData() {
+    return (this.apiUsers.find());
+  }
+
+  async findOneApiUser(login: string) : Promise<any> {
     const user : ApiUserDataEntity = await getRepository(ApiUserDataEntity)
       .createQueryBuilder("userAlias")
       .where("userAlias.login = :login", { login: login })
@@ -42,19 +66,48 @@ export class UserService {
     return (merge);
   }
 
-  update(id: number, newUser: WebAppUserEntity) {
+  async findOneWebUser(login: string) : Promise<any> {
+    const user : WebAppUserEntity = await getRepository(WebAppUserEntity)
+      .createQueryBuilder("userAlias")
+      .where("userAlias.login = :login", { login: login })
+      .leftJoinAndSelect('userAlias.login', 'login')
+      .getOne();
+    const appUser : object = {...user}.login as unknown as object;
+    const merge : object = {...user, ...appUser};
+    return (merge);
+  }
+
+  updateWebAppUser(id: number, newUser: WebAppUserEntity) {
     return this.webUsers.update("test", newUser);
   }
 
-  async remove(user: WebAppUserEntity) {
+  updateApiUserData(id: number, newUser: ApiUserDataEntity) {
+    return this.apiUsers.update("test", newUser);
+  }
+
+  async removeWebAppUser(user: WebAppUserEntity) {
     console.log('deletion');
     return (await this.webUsers.delete(user));
   }
 
-  async modifie(set1: object, where1: string, where2: object) {
+  async removeApiUserData(user: WebAppUserEntity) {
+    console.log('deletion');
+    return (await this.apiUsers.delete(user));
+  }
+
+  async modifieWebAppUser(set1: object, where1: string, where2: object) {
     const user = await getRepository(WebAppUserEntity)
     .createQueryBuilder()
     .update(WebAppUserEntity)
+    .set(set1)
+    .where(where1, where2)
+    .execute();
+  }
+
+  async modifieApiUserData(set1: object, where1: string, where2: object) {
+    const user = await getRepository(ApiUserDataEntity)
+    .createQueryBuilder()
+    .update(ApiUserDataEntity)
     .set(set1)
     .where(where1, where2)
     .execute();
