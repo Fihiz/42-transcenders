@@ -19,12 +19,8 @@ export class WebAppUserEntity {
   })
   pseudo: string;
 
-  // @Column({
-  //   type: "bytea",
-  //   nullable: true // Temporaire le temps de créer les images
-  // })
   @Column({
-    type: "varchar"
+    type: "varchar" // bytea
   })
   avatar: string;
 

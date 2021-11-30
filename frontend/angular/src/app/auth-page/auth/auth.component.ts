@@ -12,14 +12,6 @@ export class AuthComponent implements OnInit {
   constructor(private userService: UserService, private router: Router) {}
 
   async ngOnInit(): Promise<void> {
-    console.log(`URL is ${this.router.url}`);
-    const code: string = this.router.url.split('?')[1]?.substr(5, 64);
-    try {
-      // await this.userService.getLoggedIn(code);
-      await this.userService.getLoggedIn(code);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    await this.userService.getLoggedIn(); // maybe try catch
   }
 }
