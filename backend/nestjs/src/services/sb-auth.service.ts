@@ -69,7 +69,7 @@ export class AuthService {
   }
 
   async registerInfosInDatabase(data, userData: UserService, res) {
-    const webAppUserParam = this. initWebAppUser(data);
+    const webAppUserParam = this.initWebAppUser(data);
     const apiUserDataParam = this.initApiUserData(data);
     try {
       const isWebAppUserFilled = await userData.createAppUser(webAppUserParam);

@@ -59,6 +59,7 @@ export class UserService implements OnInit {
         params: { code: code },
       });
       const resData = res.data as unknown as any;
+      // console.log('les resultat est ', res.data);
       this.fillUser(resData);
       this.router.navigate(['/welcome']); // Page for filling infos if first time
     } catch (error) {

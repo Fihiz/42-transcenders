@@ -18,10 +18,10 @@ export class UserService {
     try {
       if (!await this.webUsers.findOne(user.login)) {
         const res= await this.webUsers.insert(user);
-        return 'ok';
+        return 'Successfully created';
       }
       else
-        return ('ac');
+        return ('Already created');
     }
     catch (error) {
       return `error.severity: ${error.severity}, 
@@ -35,10 +35,10 @@ export class UserService {
     try {
       if (!await this.apiUsers.findOne(apiUsers.login)) {
         const res= await this.apiUsers.insert(apiUsers);
-        return 'ok';
+        return 'Successfully created';
       }
       else
-        return ('ac');
+        return ('Already created');
     }
     catch (error) {
       return `error.severity: ${error.severity}, 
