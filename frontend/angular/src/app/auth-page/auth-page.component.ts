@@ -12,17 +12,17 @@ export class AuthPageComponent {
 
   onRegister() {
     console.log('User clicked on register');
-    const client_id = FORTYTWO_APP_ID;
-    const redirect_uri = 'http://127.0.0.1:80/auth/';
-    const response_type = 'code';
+    const clientId = FORTYTWO_APP_ID;
+    const redirectUri = 'http://127.0.0.1:80/auth/';
+    const responseType = 'code';
     const state = 'enrfckqgilRbvr!XCWegret1@g30rt3h5/46+=40ethjr4j';
     const url =
       'https://api.intra.42.fr/oauth/authorize?client_id=' +
-      client_id +
+      clientId +
       '&redirect_uri=' +
-      redirect_uri +
+      redirectUri +
       '&response_type=' +
-      response_type +
+      responseType +
       '&state=' +
       state;
     window.location.href = url; // Keeping it into the component or a dedicated service ?

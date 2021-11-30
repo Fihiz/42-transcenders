@@ -11,12 +11,12 @@ export class AuthController {
     async redirection(@Req() req, @Res() resp) {
         const codeUrl = req.query.code;
         try {
-            const userInfo = await this.authService.getLogInfo(codeUrl);
-            const areDataRegistered = await this.authService.registerData(userInfo?.data, this.userService, resp);
-            if ( areDataRegistered === 'ok')
-              resp.send({data: userInfo.data, status: 'OK'});
-            else if (areDataRegistered === 'ac')
-              resp.send({data: userInfo.data, status: 'AC'});
+            const userApiInfos = await this.authService.getInfosFromApi(codeUrl);
+            const areDataRegistered = await this.authService.registerInfosInDatabase(userApiInfos?.data, this.userService, resp);
+            if ( areDataRegistered === 'Successfully created')
+              resp.send({data: userApiInfos.data, status: 'OK'});
+            else if (areDataRegistered === 'Already created')
+              resp.send({data: userApiInfos.data, status: 'AC'});
             else
               return (this.authService.failLog(resp));
           }

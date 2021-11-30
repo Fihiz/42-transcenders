@@ -24,7 +24,7 @@ export class AuthService {
     return(token_access);
   }
 
-  async getLogInfo(codeUrl) {
+  async getInfosFromApi(codeUrl) {
     const accessToken = await this.getAccessToken(codeUrl);
       const theRes = await axios.get('https://api.intra.42.fr/v2/me', {
         headers: { Authorization: `Bearer ${accessToken.data.access_token}` },
@@ -38,7 +38,7 @@ export class AuthService {
     res.send('error');
   }
 
-  initUser(data) {
+  initWebAppUser(data) {
     const user: WebAppUserEntity = {
       login: data.login,
       pseudo: data.login,
@@ -55,7 +55,8 @@ export class AuthService {
     return (user);
   }
 
-  initUserApi(data) {
+  // initialisation en doublon
+  initApiUserData(data) {
     const userApi: ApiUserDataEntity = {
       first_name: data.first_name,
       last_name: data.last_name,
@@ -67,17 +68,17 @@ export class AuthService {
     return (userApi);
   }
 
-  async registerData(data, userData: UserService, res) {
-    const user = this.initUser(data);
-    const userApi = this.initUserApi(data);
+  async registerInfosInDatabase(data, userData: UserService, res) {
+    const webAppUserParam = this. initWebAppUser(data);
+    const apiUserDataParam = this.initApiUserData(data);
     try {
-      const userDataRes = await userData.createAppUser(user);
-      const apiUserRes2 = await userData.createApiUserData(userApi);
-      console.log(`res 1 : ${userDataRes} res 2 : ${apiUserRes2}`);
-      if ( userDataRes === 'ok' && await  apiUserRes2 === 'ok')
-        return('ok');
-      else if (userDataRes === 'ac' && apiUserRes2 === 'ac')
-        return ('ac');
+      const isWebAppUserFilled = await userData.createAppUser(webAppUserParam);
+      const isApiUserDataFilled = await userData.createApiUserData(apiUserDataParam);
+      console.log(`res 1 : ${isWebAppUserFilled} res 2 : ${isApiUserDataFilled}`);
+      if ( isWebAppUserFilled === 'Successfully created' && await  isApiUserDataFilled === 'Successfully created')
+        return('Successfully created');
+      else if (isWebAppUserFilled === 'Already created' && isApiUserDataFilled === 'Already created')
+        return ('Already created');
       else {
         this.failLog(res);
       }
