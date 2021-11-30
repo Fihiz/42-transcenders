@@ -45,19 +45,14 @@ export class UserService implements OnInit {
   //   }
   // }
 
-  fillUser(resData: any): void {
-    this.global.login = resData.data.login;
-    this.user.mail = resData.data.email;
-    this.user.login = resData.data.login;
-    this.user.pseudo = resData.data.login; // later
-    this.user.avatar = resData.data.image_url;
-  }
-
   async getLoggedIn(code: string): Promise<void> {
     try {
       const res = await axios.get('http://127.0.0.1:3000/cb-auth', {
         params: { code: code },
       });
+
+      // ici, reçoit l api mais on veut recevoir l objet complet
+
       const resData = res.data as unknown as any;
       // console.log('les resultat est ', res.data);
       this.fillUser(resData);
@@ -67,4 +62,32 @@ export class UserService implements OnInit {
       this.router.navigate(['/']);
     }
   }
+
+  fillUser(resData: any): void {
+    console.log('notre objet est ', resData);
+    this.global.login = resData.data.login;
+    this.user.mail = resData.data.email;
+    this.user.login = resData.data.login;
+    this.user.pseudo = resData.data.login; // later
+    this.user.avatar = resData.data.avatar;
+    this.user.status = resData.data.status;
+  }
+
+  // async getLoggedIn(code: string): Promise<void> {
+  //   try {
+  //     const res = await axios.get('http://127.0.0.1:3000/cb-auth', {
+  //       params: { code: code },
+  //     });
+
+  //     // ici, reçoit l api mais on veut recevoir l objet complet
+
+  //     const resData = res.data as unknown as any;
+  //     // console.log('les resultat est ', res.data);
+  //     this.fillUser(resData);
+  //     this.router.navigate(['/welcome']); // Page for filling infos if first time
+  //   } catch (error) {
+  //     console.log('ngInit Auth error = ', error);
+  //     this.router.navigate(['/']);
+  //   }
+  // }
 }

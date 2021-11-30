@@ -15,6 +15,7 @@ export class AuthComponent implements OnInit {
     console.log(`URL is ${this.router.url}`);
     const code: string = this.router.url.split('?')[1]?.substr(5, 64);
     try {
+      // await this.userService.getLoggedIn(code);
       await this.userService.getLoggedIn(code);
     } catch (error) {
       console.log(error);

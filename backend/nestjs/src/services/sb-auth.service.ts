@@ -55,7 +55,6 @@ export class AuthService {
     return (user);
   }
 
-  // initialisation en doublon
   initApiUserData(data) {
     const userApi: ApiUserDataEntity = {
       first_name: data.first_name,
@@ -75,7 +74,7 @@ export class AuthService {
       const isWebAppUserFilled = await userData.createAppUser(webAppUserParam);
       const isApiUserDataFilled = await userData.createApiUserData(apiUserDataParam);
       console.log(`res 1 : ${isWebAppUserFilled} res 2 : ${isApiUserDataFilled}`);
-      if ( isWebAppUserFilled === 'Successfully created' && await  isApiUserDataFilled === 'Successfully created')
+      if ( isWebAppUserFilled === 'Successfully created' && isApiUserDataFilled === 'Successfully created')
         return('Successfully created');
       else if (isWebAppUserFilled === 'Already created' && isApiUserDataFilled === 'Already created')
         return ('Already created');

@@ -66,17 +66,6 @@ export class UserService {
     return (merge);
   }
 
-  async findOneWebUser(login: string) : Promise<any> {
-    const user : WebAppUserEntity = await getRepository(WebAppUserEntity)
-      .createQueryBuilder("userAlias")
-      .where("userAlias.login = :login", { login: login })
-      .leftJoinAndSelect('userAlias.login', 'login')
-      .getOne();
-    const appUser : object = {...user}.login as unknown as object;
-    const merge : object = {...user, ...appUser};
-    return (merge);
-  }
-
   updateWebAppUser(id: number, newUser: WebAppUserEntity) {
     return this.webUsers.update("test", newUser);
   }

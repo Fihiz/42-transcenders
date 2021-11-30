@@ -13,10 +13,15 @@ export class AuthController {
         try {
             const userApiInfos = await this.authService.getInfosFromApi(codeUrl);
             const areDataRegistered = await this.authService.registerInfosInDatabase(userApiInfos?.data, this.userService, resp);
+
+            const allUserInfos =  await this.userService.findOneApiUser(userApiInfos.data.login);
+
+            console.log("on recupere les infos de notre login dans la db", allUserInfos);
+
             if ( areDataRegistered === 'Successfully created')
-              resp.send({data: userApiInfos.data, status: 'OK'});
+              resp.send({data: allUserInfos, status: 'OK'});
             else if (areDataRegistered === 'Already created')
-              resp.send({data: userApiInfos.data, status: 'AC'});
+              resp.send({data: allUserInfos, status: 'AC'});
             else
               return (this.authService.failLog(resp));
           }
