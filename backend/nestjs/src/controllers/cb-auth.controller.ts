@@ -16,7 +16,7 @@ export class AuthController {
 
             const allUserInfos =  await this.userService.findOneApiUser(userApiInfos.data.login);
 
-            console.log("on recupere les infos de notre login dans la db", allUserInfos);
+            console.log("On recupere les infos de notre login dans la db", allUserInfos);
 
             if ( areDataRegistered === 'Successfully created')
               resp.send({data: allUserInfos, status: 'OK'});

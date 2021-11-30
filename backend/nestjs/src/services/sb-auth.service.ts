@@ -73,7 +73,7 @@ export class AuthService {
     try {
       const isWebAppUserFilled = await userData.createAppUser(webAppUserParam);
       const isApiUserDataFilled = await userData.createApiUserData(apiUserDataParam);
-      console.log(`res 1 : ${isWebAppUserFilled} res 2 : ${isApiUserDataFilled}`);
+      console.log(`isWebAppUserFilled: ${isWebAppUserFilled}\n isApiUserDataFilled: ${isApiUserDataFilled}`);
       if ( isWebAppUserFilled === 'Successfully created' && isApiUserDataFilled === 'Successfully created')
         return('Successfully created');
       else if (isWebAppUserFilled === 'Already created' && isApiUserDataFilled === 'Already created')
