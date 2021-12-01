@@ -21,6 +21,7 @@ import { PlayComponent } from './registered-page/content/play/play.component';
 import { OnlineStatusModule } from 'ngx-online-status';
 import { GlobalService } from './services/sf-global.service';
 import { AuthComponent } from './auth-page/auth/auth.component';
+import { InputPromptComponent } from './auth-page/input-prompt/input-prompt.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { AuthComponent } from './auth-page/auth/auth.component';
     FriendsComponent,
     PlayComponent,
     AuthComponent,
+    InputPromptComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, OnlineStatusModule],
   providers: [GlobalService],

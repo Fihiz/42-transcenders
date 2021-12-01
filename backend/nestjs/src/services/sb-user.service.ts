@@ -61,6 +61,9 @@ export class UserService {
       .where("userAlias.login = :login", { login: login })
       .leftJoinAndSelect('userAlias.login', 'login')
       .getOne();
+    // console.log('user from db is : ', user);
+    if (user === undefined)
+      return undefined;
     const appUser : object = {...user}.login as unknown as object;
     const merge : object = {...user, ...appUser};
     return (merge);

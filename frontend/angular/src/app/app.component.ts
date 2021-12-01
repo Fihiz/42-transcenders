@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from './services/sf-auth.service';
 import { GlobalService } from './services/sf-global.service';
-import { UserService } from './services/sf-user.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +8,7 @@ import { UserService } from './services/sf-user.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  constructor(public global: GlobalService, public user: UserService) {}
+  constructor(public global: GlobalService, public user: AuthService) {}
 
   logOutHandleClick(event: Event) {
     console.log('Status depuis app-component: ', this.user.user.status);

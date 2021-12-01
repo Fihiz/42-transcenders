@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { UserService } from 'src/app/services/sf-user.service';
+import { AuthService } from 'src/app/services/sf-auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -9,9 +8,9 @@ import { UserService } from 'src/app/services/sf-user.service';
   styleUrls: ['./auth.component.css'],
 })
 export class AuthComponent implements OnInit {
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   async ngOnInit(): Promise<void> {
-    await this.userService.getLoggedIn(); // maybe try catch
+    await this.authService.getLoggedIn(); // maybe try catch
   }
 }
