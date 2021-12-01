@@ -49,28 +49,48 @@ export class UserService implements OnInit {
   //   }
   // }
 
-  fillUser(resData: any): void {
-    this.global.login = resData.data.login;
-    this.user.mail = resData.data.email;
-    this.user.login = resData.data.login;
-    this.user.pseudo = resData.data.login; // later
-    this.user.avatar = resData.data.avatar;
-    this.user.status = resData.data.status;
-  }
+  // fillUser(resData: any): void {
+  //   this.global.login = resData.data.login;
+  //   this.user.mail = resData.data.email;
+  //   this.user.login = resData.data.login;
+  //   this.user.pseudo = resData.data.login; // later
+  //   this.user.avatar = resData.data.avatar;
+  //   this.user.status = resData.data.status;
+  // }
 
-  apiStatus(response: any) {
+  // test()
+
+  async apiStatus(response: any) {
     console.log('response is :', response);
     // if (res.status == 'Already created')
     // on recup l'user
     // else if ('not exist yes')
     // on register les data apres avoir demande a l'user de fill ce qui nous manque et on recup l'user
-    if (response.isFound == 'found') {
-      this.user = response.data;
-      this.global.login = response.data.login;
-    } else {
-      console.log('pas trouve');
-      // document.getElementById('auth').node;
-    }
+
+    // if (response.isFound == 'found') {
+    //   this.user = response.data;
+    //   this.global.login = response.data.login;
+    // } else {
+      console.log('1');
+      document.getElementById('auth')?.appendChild(document.createElement('app-input-prompt'));
+      document.getElementById('toOpenModal')?.click();
+      // attendre de cliquer sur submit pour poursuivre
+      await test();
+      console.log('3');
+      console.log(document.getElementById('pseudo-input'));
+      // await listenForClick();
+      // this.user.pseudo = document.getElementById('pseudo-input').value;
+    // }
     console.log('user is: ', this.user);
   }
+}
+
+function test(): Promise<unknown>
+{
+  return new Promise(function (resolved) {
+    document.getElementById('submit')?.addEventListener('click', function () {
+      console.log('2- clicked !!!');
+      resolved('OK'); // ?
+    });
+  });
 }
