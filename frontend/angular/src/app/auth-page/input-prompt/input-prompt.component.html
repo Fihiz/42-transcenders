@@ -1,6 +1,5 @@
 <html lang="en">
   <head>
-    <title>Bootstrap Example</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
@@ -37,6 +36,9 @@
                   id="pseudo-input"
                   maxlength="20"
                   placeholder="20 chars max"
+                  pattern="[A-Za-z0-9]+"
+                  title="Only letters and numbers accepted"
+                  required
                 />
               </div>
               <div class="form-group">
@@ -46,24 +48,25 @@
                   id="bio-input"
                   maxlength="200"
                   placeholder="200 chars max"
+                  required
                 ></textarea>
               </div>
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                <button
+                type="submit"
+                id="submit"
+                class="btn btn-danger"
+                >
+                Submit
+                </button>
+              </div>
             </form>
-          </div>
-
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <button
-              type="button"
-              id="submit"
-              class="btn btn-danger"
-              data-bs-dismiss="modal"
-            >
-              Submit
-            </button>
           </div>
         </div>
       </div>
     </div>
   </body>
 </html>
+
+<!-- data-bs-dismiss="modal" -->
