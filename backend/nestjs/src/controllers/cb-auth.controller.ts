@@ -23,7 +23,7 @@ export class AuthController {
             const userApiInfos = await this.authService.getInfosFromApi(codeUrl);
             // protéger si l'user autorise pas.
             const allUserInfos =  await this.userService.findOneApiUser(userApiInfos.data.login);
-            console.log(allUserInfos);
+            console.log('allUserInfos :', allUserInfos);
             if (allUserInfos === undefined)
             {
               resp.send({data: userApiInfos.data, isFound: 'not found'});
@@ -50,7 +50,7 @@ export class AuthController {
 
           }
         catch (error) {
-            console.log(error);
+            console.log(error); /* Fail ? */
         }
     }
 }
