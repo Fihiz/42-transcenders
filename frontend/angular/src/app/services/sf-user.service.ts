@@ -12,13 +12,13 @@ export class UserService implements OnInit {
   user: if_user = {
     login: '',
     pseudo: '',
-    avatar: '', /* ? */
+    avatar: '',
     status: 'online', /* If we pass here, it means user is looking for connection so... */
     bio: '',
     pending_queue: false,
     banned: false,
     admonishement: 0,
-    app_role: '', /* ? */
+    app_role: 'user', /* ? */
     created_web_app: new Date(), // to remove
     updated_web_app: new Date(), // to remove
     last_name: '',
@@ -60,7 +60,7 @@ export class UserService implements OnInit {
   // }
   /* END OLD */
 
-  async apiStatus(response: any) {
+  async apiStatus(response: any) : Promise<void> {
     console.log('response is :', response);
     
     /* MISSION */
@@ -78,10 +78,12 @@ export class UserService implements OnInit {
       // document.getElementById('auth')?.appendChild(document.createElement('app-input-prompt'));
       document.getElementById('toOpenModal')?.click();
       /* Await for a click on submit to pursue */
-      await handleSubmitClick();
+      await this.handleSubmitClick();
 
       console.log('3- We can now pursue to fill infos');
+      // this.global.login = response.data.login; /* Registered-page condition */
       this.user.login = response.data.login;
+      this.user.avatar = response.data.image_url; /* May be changed from form later ? */
       this.user.first_name = response.data.first_name;
       this.user.last_name = response.data.last_name;
       this.user.mail = response.data.email;
@@ -94,15 +96,15 @@ export class UserService implements OnInit {
     console.log('4- We can register user in db')
     console.log('Final user is: ', this.user);
   }
-}
 
-function handleSubmitClick(): Promise<unknown>
-{
-  return new Promise(function (resolve) {
-    document.getElementById('submit')?.addEventListener('click', function () {
-      console.log('2- User clicked on submit !!!');
-      resolve('OK'); /* ? */
+  handleSubmitClick(): Promise<unknown>
+  {
+    return new Promise(function (resolve) {
+      document.getElementById('submit')?.addEventListener('click', function () {
+        console.log('2- User clicked on submit !!!');
+        resolve('OK'); /* ? */
+      });
+      /* reject */
     });
-    /* reject */
-  });
+  }
 }
