@@ -3,21 +3,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
-  <body class="modal-open" >
-    <div id="toOpenModal"
+  <body class="modal-open">
+    <div
+      id="toOpenModal"
       data-bs-toggle="modal"
-      data-bs-target="#myModal">
-    </div>
-
+      data-bs-target="#myModal"
+    ></div>
     <!-- The Modal -->
     <div class="modal" id="myModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <!-- Modal Header -->
           <div class="modal-header">
-            <h4 class="modal-title">
-              Tell us more about you...
-            </h4>
+            <h4 class="modal-title">Tell us more about you...</h4>
             <button
               type="button"
               class="btn-close"
@@ -27,46 +25,51 @@
 
           <!-- Modal body -->
           <div class="modal-body">
-            <form>
+            <form [formGroup]="profileForm">
               <div class="form-group">
-                <label for="pseudo-input" class="col-form-label">Your pseudo</label>
+                <label for="pseudo" class="col-form-label"> Pseudo </label>
+                <h6><em>Only letters and numbers are accepted</em></h6>
                 <input
-                  type="text"
+                  id="pseudo"
                   class="form-control"
-                  id="pseudo-input"
+                  type="text"
                   maxlength="20"
-                  placeholder="20 chars max"
+                  formControlName="pseudo"
                   pattern="[A-Za-z0-9]+"
-                  title="Only letters and numbers accepted"
-                  required
                 />
               </div>
+
               <div class="form-group">
-                <label for="bio-input" class="col-form-label">Your bio</label>
+                <label for="bio" class="col-form-label"> Bio </label>
                 <textarea
+                  id="bio"
                   class="form-control"
-                  id="bio-input"
+                  type="text"
                   maxlength="200"
-                  placeholder="200 chars max"
-                  required
+                  formControlName="bio"
                 ></textarea>
               </div>
-              <!-- Modal footer -->
-              <div class="modal-footer">
-                <button
-                type="submit"
-                id="submit"
-                class="btn btn-danger"
-                >
-                Submit
-                </button>
-              </div>
             </form>
+            <br />
+            <button
+              id="submitId"
+              type="button"
+              [disabled]="!profileForm.valid"
+              data-bs-dismiss="modal"
+              class="btn btn-primary"
+            >
+              Submit
+            </button>
+            <div class="padding-text">
+              <h6><em>Complete the form to enable button</em></h6>
+            </div>
+
+            <h6>
+              <em>Form Status: {{ profileForm.status }}</em>
+            </h6>
           </div>
         </div>
       </div>
     </div>
   </body>
 </html>
-
-<!-- data-bs-dismiss="modal" -->

@@ -22,6 +22,7 @@ import { OnlineStatusModule } from 'ngx-online-status';
 import { GlobalService } from './services/sf-global.service';
 import { AuthComponent } from './auth-page/auth/auth.component';
 import { InputPromptComponent } from './auth-page/input-prompt/input-prompt.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,12 @@ import { InputPromptComponent } from './auth-page/input-prompt/input-prompt.comp
     AuthComponent,
     InputPromptComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, OnlineStatusModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    OnlineStatusModule,
+    ReactiveFormsModule,
+  ],
   providers: [GlobalService],
   bootstrap: [AppComponent],
 })
