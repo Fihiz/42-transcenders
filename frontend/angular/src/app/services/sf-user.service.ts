@@ -33,72 +33,54 @@ export class UserService implements OnInit {
 
   ngOnInit() {}
 
-  /* OLD */
-  // async getLoggedIn(): Promise<void> {
-  //   console.log(`URL is ${this.router.url}`);
-  //   const code: string = this.router.url.split('?')[1]?.substr(5, 64);
-  //   try {
-  //     const res = await axios.get('http://127.0.0.1:3000/cb-auth', {
-  //       params: { code: code },
-  //     });
-
-  //     const resData = res.data as unknown as any;
-  //     this.fillUser(resData);
-  //     this.router.navigate(['/welcome']); // Page for filling infos if first time
-  //   } catch (error) {
-  //     console.log('ngInit Auth error = ', error);
-  //     this.router.navigate(['/']);
-  //   }
-  // }
-
-  // fillUser(resData: any): void {
-  //   this.global.login = resData.data.login;
-  //   this.user.mail = resData.data.email;
-  //   this.user.login = resData.data.login;
-  //   this.user.pseudo = resData.data.login; // later
-  //   this.user.avatar = resData.data.avatar;
-  //   this.user.status = resData.data.status;
-  // }
-  /* END OLD */
-
   async apiStatus(response: any): Promise<void> {
     console.log('response is :', response);
 
-    /* MISSION */
-    // if (res.status == 'Already created')
-    // on recup l'user
-    // else if ('not exist yes')
-    // on register les data apres avoir demande a l'user de fill ce qui nous manque et on recup l'user
-    /* END MISSION */
+    if (response.isFound == 'found') {
+      this.user = response.data;
+      this.global.login = response.data.login;
+    }
+    else {
+      document.getElementById('toOpenModal')?.click();
+      await this.handleSubmitClick();
 
-    // if (response.isFound == 'found') {
-    //   this.user = response.data;
-    //   this.global.login = response.data.login;
-    // } else {
-    console.log('1- Entering apiStatus');
-    // document.getElementById('auth')?.appendChild(document.createElement('app-input-prompt'));
-    document.getElementById('toOpenModal')?.click();
-    /* Await for a click on submit to pursue */
-    await this.handleSubmitClick();
+      this.fillUserInfos(response);
+      this.registerBackInRequest(response);
+    }
+  }
 
-    console.log('3- We can now pursue to fill infos');
-    // this.global.login = response.data.login; /* Registered-page condition */
+  async registerBackInRequest(response: any) {
+    try {
+      const registerData = await axios.post('http://127.0.0.1:3000/cb-auth/registerData', {
+        data: this.user,
+      });
+      console.log(registerData)
+      if (registerData.data !== 'Successfully created')
+        this.router.navigate(['/auth']);
+      else {
+      console.log('the result of the registerData request is = ', registerData);
+      this.global.login = response.data.login; /* Registered-page condition */
+      this.router.navigate(['/auth']);
+      }
+    }
+    catch (error) {
+      console.log('the registerData request failed with ', error);
+      this.router.navigate(['/auth']);
+    }
+  }
+
+  fillUserInfos(response : any) : void {
     this.user.login = response.data.login;
-    this.user.avatar =
-      response.data.image_url; /* May be changed from form later ? */
+    this.user.avatar = response.data.image_url; /* May be changed from form later ? */
     this.user.first_name = response.data.first_name;
     this.user.last_name = response.data.last_name;
     this.user.mail = response.data.email;
     this.user.pseudo = (<HTMLInputElement>(
       document.getElementById('pseudo')
-    )).value;
-    this.user.bio = (<HTMLInputElement>document.getElementById('bio')).value;
-    // App-role, ... ?
-    console.log('this.user.pseudo: ', this.user.pseudo);
-    console.log('this.user.bio: ', this.user.bio);
-    // }
-    console.log('4- We can register user in db');
-    console.log('Final user is: ', this.user);
+      )).value;
+      this.user.bio = (<HTMLInputElement>document.getElementById('bio')).value;
+      console.log('Final user is: ', this.user);
+
   }
 
   handleSubmitClick(): Promise<unknown> {
@@ -110,7 +92,8 @@ export class UserService implements OnInit {
 
           resolve('OK'); /* ? */
         });
-      /* reject */
+        /* reject */
+        // check unique pseudo
     });
   }
 }

@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
+import { role, WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { ApiUserDataEntity } from 'src/entities/eb-api-user-data.entity';
 import { getRepository, Repository } from 'typeorm';
+import { CreateUserDto } from 'src/dtos/createUser.dto';
 
 @Injectable()
 export class UserService {
@@ -103,5 +104,29 @@ export class UserService {
     .set(set1)
     .where(where1, where2)
     .execute();
+  }
+
+  failLog(@Res() res) {
+    res.send('error');
+  }
+
+  async registerInfosInDatabase(data: CreateUserDto, userData: UserService, res) {
+    const webAppUserParam: WebAppUserEntity = data;
+    const apiUserDataParam: ApiUserDataEntity = data;
+    try {
+      const isWebAppUserFilled = await userData.createAppUser(webAppUserParam);
+      const isApiUserDataFilled = await userData.createApiUserData(apiUserDataParam);
+      console.log(`res 1 : ${isWebAppUserFilled} res 2 : ${isApiUserDataFilled}`);
+      if ( isWebAppUserFilled === 'Successfully created' && isApiUserDataFilled === 'Successfully created')
+        return('Successfully created');
+      else if (isWebAppUserFilled === 'Already created' && isApiUserDataFilled === 'Already created')
+        return ('Already created');
+      else {
+        this.failLog(res);
+      }
+    }
+    catch (error) {
+      this.failLog(res);
+    }
   }
 }

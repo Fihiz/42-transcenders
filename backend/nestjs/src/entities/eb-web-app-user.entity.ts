@@ -6,6 +6,12 @@ export enum role {
   "User"
 };
 
+export enum status {
+  "connected",
+  "disconnected",
+  "inGame"
+};
+
 @Entity('t_webapp_user_data')
 export class WebAppUserEntity {
 
@@ -28,7 +34,7 @@ export class WebAppUserEntity {
     type: "varchar",
     default: "offline"
   })
-  status: string;
+  status: status;
 
   @Column({
     type: "varchar"

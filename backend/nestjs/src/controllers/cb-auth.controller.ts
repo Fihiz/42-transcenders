@@ -1,20 +1,13 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Req, Res, Post } from '@nestjs/common';
+import { CreateUserDto } from 'src/dtos/createUser.dto';
 import { AuthService } from 'src/services/sb-auth.service';
 import { UserService } from 'src/services/sb-user.service';
-
-// avec userService:
-      // if (res.status == 'Already created')
-      // on recup l'user
-      // else if ('not exist yes')
-      // on register les data apres avoir demande a l'user de fill ce qui nous manque et on recup l'user
-      // const resData = res.data as unknown as any;
-      // this.fillUser(resData);
-      // this.router.navigate(['/welcome']); // Page for filling infos if first time
 
 @Controller('cb-auth')
 export class AuthController {
 
-    constructor(private authService: AuthService, private userService: UserService) {}
+    constructor(private authService: AuthService,
+                private userService: UserService) {}
 
     @Get()
     async redirection(@Req() req, @Res() resp) {
@@ -52,5 +45,12 @@ export class AuthController {
         catch (error) {
             console.log(error); /* Fail ? */
         }
+    }
+
+    @Post('registerData')
+    async registerdata(@Req() req, @Res() res, @Body('data') createUserDto: CreateUserDto) {
+        console.log('createUserdto = ', createUserDto);
+        const areDataRegistered = await this.userService.registerInfosInDatabase(createUserDto, this.userService, res);
+        res.send(areDataRegistered);
     }
 }

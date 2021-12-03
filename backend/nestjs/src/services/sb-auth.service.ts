@@ -34,56 +34,7 @@ export class AuthService {
   }
 
 
-  failLog(@Res() res) {
-    res.send('error');
-  }
 
-  // initWebAppUser(data) {
-  //   const user: WebAppUserEntity = {
-  //     login: data.login,
-  //     pseudo: data.login,
-  //     avatar: data.image_url,
-  //     status: "connected",
-  //     bio: "need to be written",
-  //     pending_queue: false,
-  //     banned: false,
-  //     admonishement: 0,
-  //     app_role: role.User,
-  //     created: new Date(),
-  //     updated: new Date(),
-  //   };
-  //   return (user);
-  // }
 
-  // initApiUserData(data) {
-  //   const userApi: ApiUserDataEntity = {
-  //     first_name: data.first_name,
-  //     last_name: data.last_name,
-  //     login: data.login,
-  //     mail: data.email,
-  //     created:new Date(),
-  //     updated:new Date(),
-  //   }
-  //   return (userApi);
-  // }
 
-  // async registerInfosInDatabase(data, userData: UserService, res) {
-  //   const webAppUserParam = this.initWebAppUser(data);
-  //   const apiUserDataParam = this.initApiUserData(data);
-  //   try {
-  //     const isWebAppUserFilled = await userData.createAppUser(webAppUserParam);
-  //     const isApiUserDataFilled = await userData.createApiUserData(apiUserDataParam);
-  //     console.log(`res 1 : ${isWebAppUserFilled} res 2 : ${isApiUserDataFilled}`);
-  //     if ( isWebAppUserFilled === 'Successfully created' && isApiUserDataFilled === 'Successfully created')
-  //       return('Successfully created');
-  //     else if (isWebAppUserFilled === 'Already created' && isApiUserDataFilled === 'Already created')
-  //       return ('Already created');
-  //     else {
-  //       this.failLog(res);
-  //     }
-  //   }
-  //   catch (error) {
-  //     this.failLog(res);
-  //   }
-  // }
 }
