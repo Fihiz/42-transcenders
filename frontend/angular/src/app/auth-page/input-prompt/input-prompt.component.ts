@@ -35,6 +35,14 @@ export class InputPromptComponent implements OnInit {
       url: 'https://cdn.intra.42.fr/users/large_jobenass.jpg',
     },
     {
+      alt: 'lpieri',
+      url: 'https://cdn.intra.42.fr/users/large_lpieri.jpg',
+    },
+    {
+      alt: 'pgoudet',
+      url: 'https://cdn.intra.42.fr/users/large_pgoudet.jpg',
+    },
+    {
       alt: 'rlepart',
       url: 'https://cdn.intra.42.fr/users/large_rlepart.jpg',
     },
