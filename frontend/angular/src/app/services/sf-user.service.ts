@@ -29,18 +29,18 @@ export class UserService implements OnInit {
     updated_api: new Date(), // to rename updated
   };
 
+  readyToDisplayForm: boolean = false;
+
   constructor(public global: GlobalService, private router: Router) {}
 
   ngOnInit() {}
 
   async apiStatus(response: any): Promise<void> {
-    console.log('response is :', response);
-
     if (response.isFound == 'found') {
       this.user = response.data;
-      this.global.login = response.data.login;
-    }
-    else {
+      this.global.login = response.data.login; // TO PUT BACK GLOBAL LOGIN
+    } else {
+      console.log('response is :', response);
       document.getElementById('toOpenModal')?.click();
       await this.handleSubmitClick();
 
@@ -51,36 +51,51 @@ export class UserService implements OnInit {
 
   async registerBackInRequest(response: any) {
     try {
-      const registerData = await axios.post('http://127.0.0.1:3000/cb-auth/registerData', {
-        data: this.user,
-      });
-      console.log(registerData)
+      const registerData = await axios.post(
+        'http://127.0.0.1:3000/cb-auth/registerData',
+        {
+          data: this.user,
+        }
+      );
+      console.log(registerData);
       if (registerData.data !== 'Successfully created')
         this.router.navigate(['/auth']);
       else {
-      console.log('the result of the registerData request is = ', registerData);
-      this.global.login = response.data.login; /* Registered-page condition */
-      this.router.navigate(['/auth']);
+        console.log(
+          'the result of the registerData request is = ',
+          registerData
+        );
+        // TO PUT BACK GLOBAL LOGIN
+        this.global.login = response.data.login; /* Registered-page condition */
+        this.router.navigate(['/auth']);
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log('the registerData request failed with ', error);
       this.router.navigate(['/auth']);
     }
   }
 
-  fillUserInfos(response : any) : void {
+  fillUserInfos(response: any): void {
+    console.log((<HTMLInputElement>document.getElementById('avatarUrl')).value);
     this.user.login = response.data.login;
-    this.user.avatar = response.data.image_url; /* May be changed from form later ? */
+    if (
+      (<HTMLInputElement>document.getElementById('avatarUrl')).value ===
+      '../../../assets/myIntraPictureBlack.png'
+    ) {
+      this.user.avatar = response.data.image_url;
+    } else {
+      this.user.avatar = (<HTMLInputElement>(
+        document.getElementById('avatarUrl')
+      )).value;
+    }
     this.user.first_name = response.data.first_name;
     this.user.last_name = response.data.last_name;
     this.user.mail = response.data.email;
     this.user.pseudo = (<HTMLInputElement>(
       document.getElementById('pseudo')
-      )).value;
-      this.user.bio = (<HTMLInputElement>document.getElementById('bio')).value;
-      console.log('Final user is: ', this.user);
-
+    )).value;
+    this.user.bio = (<HTMLInputElement>document.getElementById('bio')).value;
+    console.log('Final user is: ', this.user);
   }
 
   handleSubmitClick(): Promise<unknown> {
@@ -92,8 +107,8 @@ export class UserService implements OnInit {
 
           resolve('OK'); /* ? */
         });
-        /* reject */
-        // check unique pseudo
+      /* reject */
+      // check unique pseudo
     });
   }
 }
