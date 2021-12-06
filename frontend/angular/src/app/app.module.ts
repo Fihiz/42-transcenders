@@ -17,12 +17,14 @@ import { StatsComponent } from './registered-page/content/stats/stats.component'
 import { LiveComponent } from './registered-page/content/live/live.component';
 import { FriendsComponent } from './registered-page/content/friends/friends.component';
 import { PlayComponent } from './registered-page/content/play/play.component';
-
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { OnlineStatusModule } from 'ngx-online-status';
 import { GlobalService } from './services/sf-global.service';
 import { AuthComponent } from './auth-page/auth/auth.component';
 import { InputPromptComponent } from './auth-page/input-prompt/input-prompt.component';
 import { ReactiveFormsModule } from '@angular/forms';
+
+const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoConnect: false} };
 
 @NgModule({
   declarations: [
@@ -49,6 +51,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     OnlineStatusModule,
     ReactiveFormsModule,
+    SocketIoModule.forRoot(config),
   ],
   providers: [GlobalService],
   bootstrap: [AppComponent],

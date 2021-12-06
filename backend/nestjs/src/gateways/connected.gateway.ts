@@ -9,17 +9,20 @@ export class ConnectedGateway {
 
 	handleConnection() {
 			console.log('connection connected')
-		}
+	}
 
 	handleDisconnect(@MessageBody() message) {
 		let keyIndex: string;
 		const theWantedId: string = message.id;
+		console.log('message.id', message.id);
+		console.log('the map = ', GlobalDataService.loginIdMap);
 		GlobalDataService.loginIdMap.forEach((arg, key) => {
 			arg.forEach((el) => {
 				if (el === theWantedId)
 					keyIndex = key;
 			})
 		})
+		console.log('keyIndex', keyIndex);
 		const index = GlobalDataService.loginIdMap.get(keyIndex).indexOf(theWantedId);
 		GlobalDataService.loginIdMap.get(keyIndex).splice(index, 1);
 		console.log('map after disconnect', GlobalDataService.loginIdMap);
@@ -39,7 +42,9 @@ export class ConnectedGateway {
 
 	@SubscribeMessage('log-out')
 	handleLeaving(@MessageBody() message: Message): void {
+		console.log('log out');
 		const dest = GlobalDataService.loginIdMap.get(message.login);
+		console.log('dest = ', dest);
 		this.server.to(dest).emit('disconnection', 'disconnection');
 	}
 }

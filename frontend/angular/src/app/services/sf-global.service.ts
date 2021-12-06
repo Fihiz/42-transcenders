@@ -5,5 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class GlobalService {
   login: string | undefined = undefined;
+  socketId: string | undefined = undefined;
   constructor() {}
 }

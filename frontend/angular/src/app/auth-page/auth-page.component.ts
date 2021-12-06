@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-const FORTYTWO_APP_ID =
-  '4d5d28ff9d7de95a5193fdc23e41e968fb338bee441891bd99950308ef326a88';
 
 @Component({
   selector: 'app-auth-page',
@@ -12,7 +10,7 @@ export class AuthPageComponent {
 
   onRegister() {
     console.log('User clicked on register');
-    const clientId = FORTYTWO_APP_ID;
+    const clientId = '433f62b085e15cdb9994c692a7fc5af7e43eb3ca173bae63a421b26fa176c29a';
     const redirectUri = 'http://127.0.0.1:80/auth/';
     const responseType = 'code';
     const state = 'enrfckqgilRbvr!XCWegret1@g30rt3h5/46+=40ethjr4j';

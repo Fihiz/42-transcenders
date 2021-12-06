@@ -14,38 +14,29 @@ export class AuthController {
         const codeUrl = req.query.code;
         try {
             const userApiInfos = await this.authService.getInfosFromApi(codeUrl);
-            // protéger si l'user autorise pas.
+            if (!userApiInfos) {
+                resp.send({data: "error"});
+                return ;
+            }
             const allUserInfos =  await this.userService.findOneApiUser(userApiInfos.data.login);
-            console.log('allUserInfos :', allUserInfos);
+            console.log('1');
             if (allUserInfos === undefined)
             {
               resp.send({data: userApiInfos.data, isFound: 'not found'});
+              return ;
               // on invite le user a rentrer ses infos de premiere fois et l'enregistrer (pseudo -> ne doit pas deja exister, biom avatar)
             }
-            else
+            else {
                 resp.send({data: allUserInfos, isFound: 'found'});
-
-
-            // move
-            // const areDataRegistered = await this.authService.registerInfosInDatabase(userApiInfos?.data, this.userService, resp);
-
-            // const allUserInfos =  await this.userService.findOneApiUser(userApiInfos.data.login);
-
-            // console.log("on recupere les infos de notre login dans la db", allUserInfos);
-
-            // if ( areDataRegistered === 'Successfully created')
-            //   resp.send({data: allUserInfos, status: 'OK'});
-            // else if (areDataRegistered === 'Already created')
-            //   resp.send({data: allUserInfos, status: 'AC'});
-            // else
-            //   return (this.authService.failLog(resp));
-
-
+            }
           }
         catch (error) {
-            console.log(error); /* Fail ? */
+            console.log(error.response.data);
+            console.log('fail redirection');
+            // resp.send('error');
         }
     }
+
 
     @Post('registerData')
     async registerdata(@Req() req, @Res() res, @Body('data') createUserDto: CreateUserDto) {

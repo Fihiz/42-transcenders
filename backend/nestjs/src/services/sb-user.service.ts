@@ -32,7 +32,7 @@ export class UserService {
   }
 
   async createApiUserData(apiUsers: ApiUserDataEntity): Promise<any> {
-    console.log('WepAppUser creation');
+    console.log('ApiUserData creation');
     try {
       if (!await this.apiUsers.findOne(apiUsers.login)) {
         const res= await this.apiUsers.insert(apiUsers);
