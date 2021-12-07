@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { Injectable } from "@nestjs/common";
-import { MessageDto } from "src/dtos/createUser.dto";
+// import { MessageDto } from "src/dtos/createUser.dto";
 
 @Injectable()
 export class ChatService {
