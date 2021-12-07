@@ -62,7 +62,6 @@ export class UserService {
       .where("userAlias.login = :login", { login: login })
       .leftJoinAndSelect('userAlias.login', 'login')
       .getOne();
-    // console.log('user from db is : ', user);
     if (user === undefined)
       return undefined;
     const appUser : object = {...user}.login as unknown as object;
@@ -116,7 +115,6 @@ export class UserService {
     try {
       const isWebAppUserFilled = await userData.createAppUser(webAppUserParam);
       const isApiUserDataFilled = await userData.createApiUserData(apiUserDataParam);
-      console.log(`res 1 : ${isWebAppUserFilled} res 2 : ${isApiUserDataFilled}`);
       if ( isWebAppUserFilled === 'Successfully created' && isApiUserDataFilled === 'Successfully created')
         return('Successfully created');
       else if (isWebAppUserFilled === 'Already created' && isApiUserDataFilled === 'Already created')

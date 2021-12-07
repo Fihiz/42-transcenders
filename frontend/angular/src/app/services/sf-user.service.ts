@@ -15,25 +15,24 @@ export class UserService implements OnInit {
     login: '',
     pseudo: '',
     avatar: '',
-    status:
-      'online' /* If we pass here, it means user is looking for connection so... */,
+    status: 'online',
     bio: '',
     pending_queue: false,
     banned: false,
     admonishement: 0,
-    app_role: 'user' /* ? */,
-    created_web_app: new Date(), // to remove
-    updated_web_app: new Date(), // to remove
+    app_role: 'user',
     last_name: '',
     first_name: '',
     mail: '',
-    created_api: new Date(), // to rename created
-    updated_api: new Date(), // to rename updated
+    created: new Date(),
+    updated: new Date(),
   };
 
   readyToDisplayForm: boolean = false;
 
-  constructor(public global: GlobalService, private router: Router, private socket: Socket) {}
+  constructor(public global: GlobalService,
+              private router: Router,
+              private socket: Socket) {}
 
   ngOnInit() {}
 
@@ -41,7 +40,7 @@ export class UserService implements OnInit {
     if (response.isFound == 'found') {
       this.router.navigate(['/welcome']);
       this.user = response.data;
-      this.global.login = response.data.login; // TO PUT BACK GLOBAL LOGIN
+      this.global.login = response.data.login;
       console.log('connnneccctionnnnn');
       this.socket.on('connect', () => {
         console.log('conection')
@@ -88,9 +87,7 @@ export class UserService implements OnInit {
           'the result of the registerData request is = ',
           registerData
         );
-        // TO PUT BACK GLOBAL LOGIN
-        console.log('testtttttestt');
-        this.global.login = response.data.login; /* Registered-page condition */
+        this.global.login = response.data.login;
         this.socket.on('connect', () => {
           console.log('conection')
           this.introduce( this.socket);
@@ -124,7 +121,6 @@ export class UserService implements OnInit {
       document.getElementById('pseudo')
     )).value;
     this.user.bio = (<HTMLInputElement>document.getElementById('bio')).value;
-    console.log('Final user is: ', this.user);
   }
 
   handleSubmitClick(): Promise<unknown> {
@@ -133,11 +129,8 @@ export class UserService implements OnInit {
         .getElementById('submitId')
         ?.addEventListener('click', function () {
           console.log('2- User clicked on submit !!!');
-
-          resolve('OK'); /* ? */
+          resolve('OK');
         });
-      /* reject */
-      // check unique pseudo
     });
   }
 }

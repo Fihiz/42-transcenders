@@ -19,7 +19,6 @@ export class AuthController {
                 return ;
             }
             const allUserInfos =  await this.userService.findOneApiUser(userApiInfos.data.login);
-            console.log('1');
             if (allUserInfos === undefined)
             {
               resp.send({data: userApiInfos.data, isFound: 'not found'});
@@ -40,7 +39,6 @@ export class AuthController {
 
     @Post('registerData')
     async registerdata(@Req() req, @Res() res, @Body('data') createUserDto: CreateUserDto) {
-        console.log('createUserdto = ', createUserDto);
         const areDataRegistered = await this.userService.registerInfosInDatabase(createUserDto, this.userService, res);
         res.send(areDataRegistered);
     }

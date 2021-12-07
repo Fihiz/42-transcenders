@@ -27,7 +27,6 @@ export class AuthService {
       const theRes = await axios.get('https://api.intra.42.fr/v2/me', {
         headers: { Authorization: `Bearer ${accessToken.data.access_token}` },
       });
-    console.log(`Hello ${theRes.data.login}\nYour password is : ******************`);
     return (theRes);
     }
     catch (error) {

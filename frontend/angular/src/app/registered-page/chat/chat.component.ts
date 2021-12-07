@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { if_message } from 'src/app/interfaces/if-message';
 
 @Component({
   selector: 'app-chat',
@@ -6,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
+
+  messageTab: Array<if_message> = [];
+
 
   constructor() { }
 

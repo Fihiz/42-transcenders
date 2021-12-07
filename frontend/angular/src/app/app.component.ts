@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { if_message } from './interfaces/if-message';
 import { GlobalService } from './services/sf-global.service';
 import { Socket } from 'ngx-socket-io';
@@ -10,10 +11,9 @@ import { UserService } from './services/sf-user.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  constructor(public global: GlobalService, public user: UserService, private socket: Socket) {}
+  constructor(public global: GlobalService, public user: UserService, private socket: Socket, private router: Router) {}
 
   onLogOutHandleClick(event: Event) {
-    console.log('log-out front');
     const mess: if_message = {
       id: this.global.socketId,
       login: this.global.login as string,
@@ -22,20 +22,16 @@ export class AppComponent implements OnInit {
       date: new Date(),
       conv_id: 0
     };
-    console.log('test')
     this.socket.emit('log-out', mess);
-    console.log('Status depuis app-component: ', this.user.user.status);
-    // this.global.login = undefined;
-    /* ! Requete a faire au back pour deconnecter */
   }
   
   ngOnInit(): void {
-    console.log('ngOnInit');
     this.socket.on('disconnection', () => {
       console.log('disconnection');
       this.socket.disconnect();
       this.global.login = undefined;
       this.user.user.status = 'offline';
+      this.router.navigate(['/']); // -> signaler a tt le monde
     });
   }
 }
