@@ -23,7 +23,6 @@ export class AuthController {
             {
               resp.send({data: userApiInfos.data, isFound: 'not found'});
               return ;
-              // on invite le user a rentrer ses infos de premiere fois et l'enregistrer (pseudo -> ne doit pas deja exister, biom avatar)
             }
             else {
                 resp.send({data: allUserInfos, isFound: 'found'});
@@ -32,7 +31,6 @@ export class AuthController {
         catch (error) {
             console.log(error.response.data);
             console.log('fail redirection');
-            // resp.send('error');
         }
     }
 

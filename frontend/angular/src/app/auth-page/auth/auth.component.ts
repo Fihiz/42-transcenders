@@ -11,7 +11,6 @@ export class AuthComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   async ngOnInit(): Promise<void> {
-    console.log('auth component');
     await this.authService.getLoggedIn(); // maybe try catch
   }
 }

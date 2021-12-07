@@ -1,9 +1,11 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { ChatServiceBis } from "src/services/sb-chat-bis.service";
 import { GlobalDataService, Message } from 'src/services/sb-global-data.service';
+import { json } from "stream/consumers";
 
 @WebSocketGateway({cors:{origin: 'http://127.0.0.1'}})
 export class ConnectedGateway {
-  constructor(){}
+  constructor(private chatServiceBis: ChatServiceBis){}
 	@WebSocketServer()
 	server;
 
@@ -37,6 +39,7 @@ export class ConnectedGateway {
 			}
 			console.log('new connection', GlobalDataService.loginIdMap)
 		}
+		this.server.emit('usersOnLine', this.chatServiceBis.getUsersConnected(GlobalDataService.loginIdMap));
 	}
 
 	@SubscribeMessage('log-out')

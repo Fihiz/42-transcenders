@@ -41,9 +41,7 @@ export class UserService implements OnInit {
       this.router.navigate(['/welcome']);
       this.user = response.data;
       this.global.login = response.data.login;
-      console.log('connnneccctionnnnn');
       this.socket.on('connect', () => {
-        console.log('conection')
         this.introduce(this.socket);
       });
       this.socket.connect();
@@ -79,7 +77,6 @@ export class UserService implements OnInit {
           data: this.user,
         }
       );
-      console.log('registerData = ', registerData);
       if (registerData.data !== 'Successfully created')
         this.router.navigate(['/auth']);
       else {
@@ -89,7 +86,6 @@ export class UserService implements OnInit {
         );
         this.global.login = response.data.login;
         this.socket.on('connect', () => {
-          console.log('conection')
           this.introduce( this.socket);
         });
         this.socket.connect();

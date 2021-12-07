@@ -1,5 +1,5 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { MessageDto } from "src/dtos/createUser.dto";
+import { MessageDto } from "src/dtos/messages.dto";
 import { ChatServiceBis } from "src/services/sb-chat-bis.service";
 import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService } from "src/services/sb-global-data.service";
@@ -15,7 +15,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleConnection() {
 			console.log('chat connected')
-			this.server.emit('usersOnLine', this.chatServiceBis.getUsersConnected(GlobalDataService.loginIdMap))
 		}
 
 	handleDisconnect() {
