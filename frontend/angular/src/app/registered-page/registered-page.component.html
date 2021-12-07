@@ -1,0 +1,16 @@
+<div class="d-flex">
+  <app-sidebar (handleLogOutClick)="sidebarLogOutEvent($event)"></app-sidebar>
+  <div class="col right">
+    <div class="row">
+      <app-header></app-header>
+    </div>
+    <div class="row middle">
+      <div class="col left-col">
+        <app-content></app-content>
+      </div>
+      <div class="col right-col">
+        <app-chat></app-chat>
+      </div>
+    </div>
+  </div>
+</div>

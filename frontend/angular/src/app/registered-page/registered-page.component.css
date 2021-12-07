@@ -1,0 +1,40 @@
+app-header {
+  flex: 1;
+  padding: 0px;
+}
+
+/* @media (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
+} */
+
+.right-col {
+  flex: 25%;
+}
+
+.left-col {
+  flex: 75%;
+}
+
+.col {
+  padding-left: 0%;
+  padding-right: 0%;
+  background-color: rgb(245, 201, 89);
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+}
+
+.middle {
+  height: 100%;
+  /* Seems to work in the same way */
+  /* flex-grow: 1; */
+}
+
+.row {
+  margin-left: 0%;
+  margin-right: 0%;
+}

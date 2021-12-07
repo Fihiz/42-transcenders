@@ -1,0 +1,21 @@
+<div class="chat-box">
+	<div class="header">
+			<!-- <div class="online"></div> -->
+			<!-- <img src="../../assets/rond-rouge.jpeg" class="rond-rouge hidden">
+			<img src="../../assets/rond-vert.jpeg" class="rond-vert"> -->
+			<!-- <a class="pseudo">{{pseudo}}</a> -->
+	</div>
+	<div class="usersConnected">
+		<a id = "mess-1" *ngFor="let user of usersOnLine">{{ user }}</a> 
+	</div>
+	<div class="message">
+			<a id = "mess-1" *ngFor="let theMessage of messageTab">{{ theMessage.body }}</a> 
+	</div>
+	<div class='in'>
+			<input type="text" class="inputB" id="inputBody" placeholder="ecrivez votre message">
+			<input type="text" class="inputT" id="inputTo" placeholder="to">
+			<button type="button" class="send" value="send">send</button>
+			<!-- <button type="button" class="send" (click)="onTest()" value="send">test button</button> -->
+
+	</div>
+</div>

@@ -9,8 +9,7 @@ services:
         env_file:
             - .env
         volumes:
-            - ./backend/postgresql/config:/docker-entrypoint-initdb.d
-            - ./backend/postgresql/database:/var/lib/postgresql/data
+            - ./backend/postgresql:/var/lib/postgresql/data
         networks:
             - back
 
@@ -66,7 +65,7 @@ volumes:
         driver_opts:
             o: bind
             type: none
-            device: ${PWD}/backend/postgresql/database
+            device: ${PWD}/backend/postgresql
 
 networks:
     back:

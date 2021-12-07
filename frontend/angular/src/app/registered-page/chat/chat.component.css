@@ -1,0 +1,7 @@
+body {
+  background-color: rgb(216, 144, 166);
+  background-size: 100%;
+  min-width: 200px;
+  min-height: 100%;
+  padding: 15px;
+}
