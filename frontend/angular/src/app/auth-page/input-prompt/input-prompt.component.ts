@@ -20,7 +20,7 @@ export class InputPromptComponent implements OnInit {
   }[] = [
     {
       alt: 'My Intra Pic',
-      url: '../../../assets/myIntraPictureBlack.png',
+      url: '../../../assets/profile-pictures/myIntraPictureBlack.png',
     },
     {
       alt: 'ageraud',
