@@ -22,11 +22,13 @@ export class ConnectedGateway {
 					keyIndex = key;
 			})
 		})
-		const index = GlobalDataService.loginIdMap.get(keyIndex).indexOf(theWantedId);
-		GlobalDataService.loginIdMap.get(keyIndex).splice(index, 1);
-		if (GlobalDataService.loginIdMap.get(keyIndex).length === 0)
-			GlobalDataService.loginIdMap.delete(keyIndex); // -> signaler a tt le monde
-		console.log('map after disconnect', GlobalDataService.loginIdMap);
+		if (keyIndex) {
+			const index = GlobalDataService.loginIdMap.get(keyIndex).indexOf(theWantedId);
+			GlobalDataService.loginIdMap.get(keyIndex).splice(index, 1);
+			if (GlobalDataService.loginIdMap.get(keyIndex).length === 0)
+				GlobalDataService.loginIdMap.delete(keyIndex); // -> signaler a tt le monde
+			console.log('map after disconnect', GlobalDataService.loginIdMap);
+		}
 	}
 
 	@SubscribeMessage('introduction')
