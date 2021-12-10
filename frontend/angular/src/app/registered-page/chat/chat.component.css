@@ -1,6 +1,6 @@
 body {
-	max-height: 79vh;
-	/* max-height: 85vh; */
+
+	max-height: 80vh;
     height: 100%;
     margin: 0px;
 }
@@ -9,15 +9,113 @@ body {
     background-color: aquamarine;
 }
 
-.row {
-    height: 50%;
-    overflow-y: scroll;
-}
 
 .top {
-    background-color: burlywood;
+	background-color: maroon;
+	height: 50%;
+	/* overflow-y: auto; */
+	
 }
 
 .bottom {
-    background-color: rgb(135, 163, 222);
+	background-color: rgb(135, 163, 222);
+	height: 50%;
+	overflow-y: auto;
+}
+
+.search {
+	background-color: darkkhaki ;
+	/* overflow-y: auto; */
+	height: 40px;
+	
+}
+
+.list-conv {
+ 	background-color: lightcoral;
+	overflow-y: auto;
+	max-height: 70%;
+}
+
+/* PEOPLE LIST */
+.people-list {
+    -moz-transition: .5s;
+    -o-transition: .5s;
+    -webkit-transition: .5s;
+    transition: .5s
+}
+
+.people-list .chat-list li {
+    padding: 10px 15px;
+    list-style: none;
+    border-radius: 3px
+}
+
+.people-list .chat-list li:hover {
+    background: #efefef;
+    cursor: pointer
+}
+
+.people-list .chat-list li.active {
+    background: #efefef
+}
+
+.people-list .chat-list li .name {
+    font-size: 15px
+}
+
+.people-list .chat-list img {
+	width: 45px;
+	height: 45px;
+	object-fit: cover;
+    border-radius: 50%
+}
+
+.people-list img {
+
+    float: left;
+    border-radius: 50%
+}
+
+.people-list .about {
+    float: left;
+    padding-left: 8px
+}
+
+.people-list .status {
+    color: #999;
+    font-size: 13px
+}
+
+/* STATUS */
+.online,
+.offline,
+.me {
+    margin-right: 2px;
+    font-size: 8px;
+    vertical-align: middle
+}
+
+.online {
+    color: #86c541
+}
+
+.offline {
+    color: #e47297
+}
+
+.me {
+    color: #1d8ecd
+}
+
+.float-right {
+    float: right
+}
+
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0
 }

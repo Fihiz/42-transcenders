@@ -14,7 +14,7 @@
 .row {
   margin-left: 0%;
   margin-right: 0%;
-  overflow-y: scroll; /*to scroll*/
+  overflow-y: auto; /*to scroll*/
 }
 .block {
   background-color: rgb(245, 237, 237);
