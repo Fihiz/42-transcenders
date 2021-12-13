@@ -1,0 +1,15 @@
+.padding-text {
+  padding-top: 3%;
+}
+
+.rounded-circle {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin: 3%;
+}
+
+.title-form {
+  font-family: "Comfortaa";
+  font-size: 25px;
+}

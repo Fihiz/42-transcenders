@@ -1,0 +1,32 @@
+app-header {
+  flex: 1;
+  padding: 0px;
+}
+
+.right-col {
+  flex: 40%;
+  background-color: rgb(245, 201, 89);
+}
+
+.left-col {
+  flex: 60%;
+}
+
+.col {
+  padding-left: 0%;
+  padding-right: 0%;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+}
+
+.middle {
+  height: 100%;
+}
+
+.row {
+  margin-left: 0%;
+  margin-right: 0%;
+}

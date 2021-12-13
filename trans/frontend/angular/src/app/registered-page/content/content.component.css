@@ -1,0 +1,12 @@
+body {
+  background-color: rgb(255, 255, 255);
+  background-size: 100%;
+  min-width: 200px;
+  min-height: 100%;
+  /* word-break: break-all; */
+  padding: 15px;
+}
+
+/* p {
+  word-break: break-all;
+} */

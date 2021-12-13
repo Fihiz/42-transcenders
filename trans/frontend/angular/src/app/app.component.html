@@ -1,0 +1,8 @@
+<span *ngIf="global.login === undefined; else isConnected">
+  <app-auth-page></app-auth-page
+></span>
+<ng-template #isConnected>
+  <app-registered-page
+    (notifyAppComponent)="onLogOutHandleClick($event)"
+  ></app-registered-page>
+</ng-template>

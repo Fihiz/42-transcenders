@@ -1,0 +1,21 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+@import url("https://fonts.googleapis.com/css?family=Comfortaa:400");
+
+h1,
+h2,
+h3,
+h4,
+p,
+li {
+  font-family: "Comfortaa";
+}
+
+p {
+  text-align: justify;
+  text-justify: inter-word;
+}
+h6 {
+  font-size: xx-small;
+  color: darkgrey;
+}
