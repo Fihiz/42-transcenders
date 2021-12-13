@@ -11,14 +11,14 @@ body {
 
 .top {
   background-color: lavender;
-  height: 50%;
+  height: 35%;
   /* overflow-y: auto; */
   min-height: 250px;
 }
 
 .bottom {
   background-color: rgb(19, 38, 80);
-  height: 50%;
+  height: 65%;
 
   overflow-y: auto;
   min-height: 250px;
@@ -48,7 +48,7 @@ body {
 .b-messages {
   background-color: thistle;
   overflow-y: auto;
-  max-height: 79%;
+  max-height: 76%;
 }
 .b-typing {
   background-color: silver;
@@ -142,7 +142,7 @@ body {
 
 /* CHAT */
 
-.card {
+/* .card {
   background: #fff;
   transition: 0.5s;
   border: 0;
@@ -151,7 +151,7 @@ body {
   position: relative;
   width: 100%;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
-}
+} */
 
 .chat-app .people-list {
   width: 280px;
@@ -185,7 +185,6 @@ body {
 
 .chat .chat-history {
   padding: 20px;
-  border-bottom: 2px solid #fff;
 }
 
 .chat .chat-history ul {
@@ -264,14 +263,13 @@ body {
 
 .chat .chat-history .other-message:after {
   border-bottom-color: #e8f1f3;
-  left: 93%;
+  left: 88%;
 }
 
 .chat .chat-message {
   padding: 20px;
 }
 
-.chat {
-  /* margin-left: 280px; */
-  border-left: 1px solid #eaeaea;
+.text-right {
+  text-align: end;
 }
