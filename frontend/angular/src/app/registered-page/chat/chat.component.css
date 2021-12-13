@@ -273,3 +273,10 @@ body {
 .text-right {
   text-align: end;
 }
+
+
+/* Three points and search bar */
+
+.navbar {
+	justify-content: space-between;
+}
