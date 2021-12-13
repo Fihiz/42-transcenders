@@ -26,6 +26,7 @@ body {
 
 .chat-pong {
   text-align: center;
+  align-items: center;
   margin-top: 15px;
 }
 
@@ -275,8 +276,22 @@ body {
 }
 
 
+/* Head */
+/*
+h3 {
+	margin: 0px;
+}*/
+
 /* Three points and search bar */
+
+.container {
+	padding: 0px;
+}
 
 .navbar {
 	justify-content: space-between;
+}
+
+.bi, .btn-outline-success {
+	color:#528FAC;
 }
