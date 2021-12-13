@@ -14,8 +14,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	server;
 
 	handleConnection() {
-			console.log('chat connected')
-		}
+		console.log('chat connected')
+	}
 
 	handleDisconnect() {
 		console.log('chat disconnection');

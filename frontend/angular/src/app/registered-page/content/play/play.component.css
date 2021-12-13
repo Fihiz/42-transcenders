@@ -1,8 +1,11 @@
 body{
     text-align: center;
-  }
-  canvas{
-    display: block;
-    margin: 0px auto;
-    background: rgb(187, 101, 101);
-  }
+}
+
+canvas{
+  width: 80%;
+  max-width: 800px;
+  display: block;
+  margin: 0px auto;
+  background: rgb(187, 101, 101);
+}
