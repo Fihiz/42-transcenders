@@ -3,10 +3,12 @@ header {
   /* background: #e7d5d5; */
   background: rgb(249,125,100);
 
+  
   height: auto;
   min-height: 150px;
   padding: 25px;
 }
+
 .rounded-circle {
   width: 100px;
   height: 100px;
@@ -27,17 +29,19 @@ header {
 }
 
 .flex-grid {
+	align-items: inherit;  /* test espace*/
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  /* justify-content: space-around;*/ /*  test espace */
+  justify-content: center; /*  test espace */
   padding-left: 0%;
   padding-right: 0%;
 }
 
 .flex-grid > div {
-  margin: 10px;
+  margin: 10px; /* test espace*/
   padding: 0px;
-  width: 200px;
+  width: 150px; /* test espace*/
 }
 
 .flex-grid h3 {
