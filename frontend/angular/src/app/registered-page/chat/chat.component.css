@@ -296,3 +296,7 @@ body {
 .form-inline {
   flex-flow: nowrap;
 }
+
+#header-conv-nav {
+  justify-content: flex-start;
+}
