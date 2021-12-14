@@ -5,18 +5,49 @@
 
 <body>
   <div class="row top">
-    <div class="chat-pong">PONG CHAT</div>
-    <div class="search">
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Search..." />
-        <div class="input-group-prepend">
-          <!-- <span class="input-group-text"><i class="fa fa-search"></i></span> -->
-          <button type="button" class="btn btn-outline-primary">
-            <i class="fa fa-search"></i>
-          </button>
-        </div>
-      </div>
+    <!-- <div class="chat-pong">PONG CHAT</div> -->
+    <div class="chat-pong">
+      <h4>
+        <span class="badge badge-dark"
+          >Pong chat <i class="bi bi-chat"></i
+        ></span>
+      </h4>
     </div>
+    <!--OK-->
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <!--<a class="navbar-brand" href="#">Navbar</a>-->
+        <div class="dropdown">
+          <button
+            class="btn btn-light btn-sm"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">Join a room</a>
+            <a class="dropdown-item" href="#">Create a room</a>
+          </div>
+        </div>
+
+        <form class="form-inline">
+          <input
+            class="form-control mr-sm-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+          <button class="btn btn-outline-light my-2 my-sm-0" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+      </nav>
+    </div>
+    <!--OK-->
     <div class="list-conv">
       <div id="plist" class="people-list">
         <ul class="list-unstyled chat-list mt-2 mb-0">
@@ -122,9 +153,42 @@
   </div>
 
   <div class="row bottom">
-    <div class="b-conv-name">
-      <div class="chat">
-        <div class="chat-header clearfix">
+    <!-- <div class="b-conv-name"> -->
+    <!-- <div class="chat"> -->
+    <!-- test -->
+    <!-- <div class="container">
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="dropdown">
+              <button
+                class="btn btn-light btn-sm"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i class="bi bi-three-dots-vertical"></i>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Join a room</a>
+                <a class="dropdown-item" href="#">Create a room</a>
+              </div>
+            </div>
+
+            <form class="form-inline">
+              <input
+                class="form-control mr-sm-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+              />
+              <button class="btn btn-outline-light my-2 my-sm-0" type="submit">
+                <i class="bi bi-search"></i>
+              </button>
+            </form>
+          </nav>
+        </div> -->
+    <!-- <div class="chat-header clearfix">
           <div class="row">
             <div class="col-lg-6">
               <a
@@ -150,9 +214,9 @@
               ></a>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </div> -->
+    <!-- </div> -->
+    <!-- </div> -->
 
     <div class="b-messages">
       <!-- <div class="card chat-app"> -->
