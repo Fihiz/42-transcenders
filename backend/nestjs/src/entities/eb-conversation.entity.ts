@@ -38,3 +38,4 @@ export class ConversationEntity {
   })
   updated: Date;
 }
+

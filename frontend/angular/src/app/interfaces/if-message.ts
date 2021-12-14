@@ -5,4 +5,5 @@ export interface if_message {
     date: Date;
     body:string;
     to: Array<string>;
+    avatar: string;
 }

@@ -20,7 +20,8 @@ export class AppComponent implements OnInit {
       to:['nobody'],
       body:'loging-out',
       date: new Date(),
-      conv_id: 0
+      conv_id: 0,
+      avatar: '',
     };
     this.socket.emit('log-out', mess);
   }

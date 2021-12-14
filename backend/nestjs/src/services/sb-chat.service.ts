@@ -1,178 +1,185 @@
-import { Server } from "socket.io";
 import { Injectable } from "@nestjs/common";
-// import { MessageDto } from "src/dtos/createUser.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { ConversationDto } from "src/dtos/conversation.dto";
+import { MessageDto } from "src/dtos/messages.dto";
+import { ChatterEntity } from "src/entities/eb-chatter.entity";
+import { ConversationEntity } from "src/entities/eb-conversation.entity";
+import { MessageEntity } from "src/entities/eb-message.entity";
+import { Repository } from "typeorm";
+import { GlobalDataService } from "./sb-global-data.service";
 
 @Injectable()
 export class ChatService {
-//   static id: number = 1;
 
-//   messageData: Array<MessageDto> = [];
-//   constructor(
-//     private chatterService: ChatterService,
-//     private convService: ConversationService,
-//     private messageService: MessageService,
-//     private webAppUser: WebAppUserService,
-//     ){}
-  
-//   async check_conv(message: MessageDto): Promise<boolean> {
-//     let ret = true;
-//     if (!message.login || !(await this.webAppUser.findOne(message.login))) ret = false;
-//     for (const to of message.to) if (!(await this.webAppUser.findOne(to))) ret = false;
-//     return ret;
-//   }
+		private convId: number = 0;
+    private messId = 0;
 
-//   async chatterCreation(message: MessageDto) {
-//     const res = await this.chatterService.create({
-//       chat_role: 'admin',
-//       conv_id: message.conv_id,
-//       created: new Date(),
-//       is_present: 'yes',
-//       login: message.login,
-//       muted_until: new Date(),
-//       updated: new Date(),
-//     });
-//     const resb = await this.chatterService.create({
-//       chat_role: 'admin',
-//       conv_id: message.conv_id,
-//       created: new Date(),
-//       is_present: 'yes',
-//       login: message.to[0],
-//       muted_until: new Date(),
-//       updated: new Date(),
-//     });
-//     if ( resb !== 'ok' && resb != 'ac' && res !== 'ok' && res != 'ac')
-//       return ('error');
-//     return ('ok');
-//   }
+		constructor(
+				@InjectRepository(MessageEntity)
+				private messages: Repository<MessageEntity>,
+				@InjectRepository(ConversationEntity)
+				private conversation: Repository<ConversationEntity>,
+        @InjectRepository(ChatterEntity)
+				private chatter: Repository<ChatterEntity>) {}
 
-//   async convCreation(message: MessageDto) {
-//     ChatService.id++;
-//     if (await this.convService.create({
-//       conv_id: message.conv_id,
-//       created: new Date(),
-//       password: null,
-//       room_name: message.login + '-' + message.to + message.conv_id.toString(),
-//       room_type: 'private',
-//       updated: new Date(),
-//       to: message.to,
-//       emitter: message.login,
-//     }) !== 'ok')
-//       return ('error');
-//   }
+		async createConv(conv: ConversationDto): Promise<number | ConversationEntity | string> {
+				console.log('Conversation creation');
+				try {
+						const isFind = await this.findOneConversation(this.convId + 1)
+						if (!isFind) {
+						this.convId++;
+						conv.id = this.convId;
+						await this.conversation.insert(conv);
+						return (this.convId);
+					}
+					else
+						return (isFind);
+				}
+				catch (error) {
+					return `error.severity: ${error.severity}, 
+		\     code: ${error.code},
+		\     detail: ${error.detail}`;
+				}
+		}
 
-//   async messageCreation(message: MessageDto) {
-//     const creation = await this.messageService.create({
-//       content: message.body,
-//       conv_id: message.conv_id,
-//       date: new Date(),
-//       id: message.id,
-//       login: message.login,
-//     });
-//     ChatService.id++;
-//     return creation !== 'ok'? 'error' : 'ok';
-//   }
+    async createChatter(chatter: ChatterEntity): Promise<number | ChatterEntity | string> {
+      console.log('Chatter creation');
+      try {
+          const isFind = await this.findOneChatter(chatter.conv_id, chatter.login)
+          if (!isFind) {
+          await this.chatter.insert(chatter);
+          return (chatter);
+        }
+        else
+          return (isFind);
+      }
+      catch (error) {
+        return `error.severity: ${error.severity}, 
+  \     code: ${error.code},
+  \     detail: ${error.detail}`;
+      }
+    }
 
-//   async noConv(message: MessageDto) {
-//     if (! await this.webAppUser.findOne(message.to[0])) return ('not found');
-//     if (await this.convCreation(message) === 'error' ||
-//         await this.messageCreation(message) === 'error' ||
-//         await this.chatterCreation(message) === 'error')
-//         return ('error');
-//     return ('ok');
-//   }
+    async createMessage(message: MessageEntity): Promise<number | MessageEntity | string> {
+      console.log('Message creation');
+      try {
+          await this.messages.insert(message);
+          return (message);
+      }
+      catch (error) {
+        return `error.severity: ${error.severity}, 
+  \     code: ${error.code},
+  \     detail: ${error.detail}`;
+      }
+    }
 
-//   async getReceiver(tabLogin: Set<string>, emitter: string): Promise<Array<string>> {
-//     const tabReceiver: Array<string> = [];
-//     tabLogin.forEach(login => {
-//       Data.loginIdMap.get(login)?.forEach(id => {
-//         tabReceiver.push(id);
-//       })
-//     })
-//     Data.loginIdMap.get(emitter).forEach(id => {
-//       tabReceiver.push(id);
-//     })
-//     return (tabReceiver);
-//   }
+    async findOneChatter(id: number, name: string) {
+      return (await this.chatter.findOne({where: {conv_id: id, login: name}}));
+    }
 
-//   async conv(message: MessageDto) {
-//     const tabLogin: Set<string> = new Set([]);
-//     if (await this.messageCreation(message) !== 'ok') return (null);
-//     let chatter = (await this.chatterService.findAll(message.conv_id));
-//     if (chatter.length === 0) {
-//       if (await this.messageCreation(message) === 'error' ||
-//           await this.chatterCreation(message) === 'error')
-//             return(null);
-//       chatter = (await this.chatterService.findAll(message.conv_id));
-//     }
-//     console.log('chatter = ', chatter);
-//     chatter.forEach(chatter => {
-//       const tmp = chatter.login as unknown as WebAppUserEntity;
-//       tabLogin.add(tmp.login);
-//     });
-//     return (await this.getReceiver(tabLogin, message.login));
-//   }
+		async findOneConversation(id: number) : Promise<any> {
+			return this.conversation.findOne(id);
+		}
 
-//   errorMessage(server: Server, message: MessageDto): void {
-//     const errorMess: MessageDto = {
-//         conv_id: 0,
-//         date: new Date(),
-//         id: message.id as string,
-//         login: message.login as string,
-//         body: 'error in contact',
-//         to: ['sender'],
-//       }
-//     this.messageData.push(errorMess);
-//     server.to(errorMess.id).emit('errorMessage', this.messageData);
-//     this.messageData.pop();
-//   }
+    async findOneMessage(id: number) {
+      return this.messages.find({id: id});
+    }
+		
+    async findAllConv(login: string): Promise<Array<ConversationEntity>> {
+      const chatterArray = (await this.chatter.find({
+         join: {
+          alias: "conv",
+          leftJoinAndSelect: {
+            conv_id: "conv.conv_id",
+          }},
+         where: {login: login},
+      }));
+      const convArray = new Array<ConversationEntity>();
+      for (const chatter of chatterArray) {
+        const convId = chatter.conv_id as any;
+        const tmp  = await this.conversation.find({conv_id: convId.conv_id});
+        if (tmp)
+          convArray.push(...tmp);
+      }
+      return(convArray);
+    }
 
-//   async getMessage(message: MessageDto) {
-//     console.log(message.conv_id);
-//     const messages: MessageEntity[] = await this.messageService.findAll(message.conv_id);
-//     const finalMessages: MessageDto[] = [];
-//     for (const mess of messages) {
-//       const tmp: MessageDto = {
-//         id: mess.id,
-//         body: mess.content,
-//         conv_id: mess.conv_id,
-//         date: mess.date,
-//         login: mess.login,
-//         to: message.to,
-//       };
-//       finalMessages.push(tmp);
-//     }
-//     return (finalMessages);
-//   }
+		getUsersConnected(map: Map<string, Array<string>>) {
+				const users: Array<string> = new Array<string>();
+				
+				if (!map.size)
+						return (null);
+				let it = map.keys();
+				let tmp;
+				while ((tmp = it.next().value) != undefined) {
+						users.push(tmp);
+				}
+				return (users);
+		}
 
-//   async handleMessage(server:Server, message: MessageDto): Promise<void> {
-//     console.log("message to =====>>>>>>>>> ", message.to, 'message from ========>>>>>>', message.login);
-//     if ((await this.check_conv(message))) {
-//       console.log('conv_id = ', message.conv_id);
-//       // if (!(await this.convService.findOne(message.conv_id))) { // ne passe jamais la car creer avant
-//       //   console.log(' >>>>>>>> 12');
-//       //   if (await this.noConv(message) === 'error') this.errorMessage(server, message);
-//       //   else {
-//       //     console.log(' >>>>>>>> 1');
-//       //     const tabReceiver: Array<string> = Data.loginIdMap.get(message.login);
-//       //     this.messageData = await this.getMessage(message);
-//       //     Data.loginIdMap.get(message.to[0])?.forEach(id =>  tabReceiver.push(id));
-//       //     console.log('tabReciever = ', tabReceiver);
-//       //     server.to(tabReceiver).emit('message', this.messageData);
-//       //   }
-//       // }
-//       // else {
-//         console.log(' >>>>>>>> 2');
-//         const Receiver = await this.conv(message);
-//         if (Receiver === null) this.errorMessage(server, message);
-//         else {
-//           console.log('receiv = ', Receiver);
-//           this.messageData = await this.getMessage(message);
-//           server.to(Receiver).emit('message', this.messageData);
-//         }
-//       // }
-//     }
-//     else {
-//       console.log('error in format');
-//       this.errorMessage(server, message);
-//     }
+		async findAllMessages(id: number) {
+				return (this.messages.find({conv_id: id}));
+		}
+
+
+	async getReceiver(tabLogin: Set<string>, emitter: string): Promise<Array<string>> {
+		const tabReceiver: Array<string> = [];
+		tabLogin.forEach(login => {
+				GlobalDataService.loginIdMap.get(login)?.forEach(id => {
+				tabReceiver.push(id);
+			})
+		})
+			GlobalDataService.loginIdMap.get(emitter).forEach(id => {
+			tabReceiver.push(id);
+		})
+		return (tabReceiver);
+	}
+
+  async getReceiverMessages(convId: number): Promise<Array<string>> {
+		const chatters = await this.chatter.find({where: {conv_id: convId}});
+    const tabReceiver: Array<string> = new Array<string>();
+    for (const chatter of chatters) tabReceiver.push(chatter.login);
+		return (tabReceiver);
+	}
+
+
+  async getMessage(message: MessageDto) {
+    console.log(message.conv_id);
+    const messages: MessageEntity[] = await this.findAllMessages(message.conv_id);
+    const finalMessages: MessageDto[] = [];
+    for (const mess of messages) {
+      const tmp: MessageDto = {
+        id: mess.id,
+        body: mess.content,
+        conv_id: mess.conv_id,
+        date: mess.date,
+        login: mess.login,
+        to: message.to,
+      };
+      finalMessages.push(tmp);
+    }
+    return (finalMessages);
   }
+
+  async handleMessage(emission) {
+    const message = emission.data
+    const doesConvExists = await this.findOneConversation(message.conv_id);
+    console.log(doesConvExists)
+    if (doesConvExists) {
+      const messRegistered: MessageEntity = {
+        content: message.body,
+        conv_id: message.conv_id,
+        date: message.date,
+        id: ++this.messId,
+        login: emission.login
+      }
+      await this.createMessage(messRegistered);
+      const convMEssages = await this.getMessage(message);
+      console.log("conversation messages = ", convMEssages)
+      return (convMEssages);
+    }
+    else
+      return ('Error: Conv not exists')
+  }
+
+}
