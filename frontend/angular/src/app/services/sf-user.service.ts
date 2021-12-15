@@ -49,14 +49,15 @@ export class UserService implements OnInit {
       console.log('response is :', response);
       document.getElementById('toOpenModal')?.click();
       await this.handleSubmitClick();
-
+      
       this.fillUserInfos(response);
       this.registerBackInRequest(response);
     }
   }
-
+  
   introduce(socket: Socket) {
     this.global.socketId = socket.ioSocket.id;
+    console.log('socketId1 = ', this.global.socketId);
     const message: if_message = {
         id: socket.ioSocket.id,
         login: this.global.login as string,
@@ -80,7 +81,6 @@ export class UserService implements OnInit {
       if (registerData.data !== 'Successfully created')
         this.router.navigate(['/auth']);
       else {
-
         this.global.login = response.data.login;
         this.socket.on('connect', () => {
           this.introduce( this.socket);

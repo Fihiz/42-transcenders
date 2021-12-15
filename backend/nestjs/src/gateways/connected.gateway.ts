@@ -1,4 +1,5 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { ConversationEntity } from "src/entities/eb-conversation.entity";
 import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService, Message } from 'src/services/sb-global-data.service';
 import { json } from "stream/consumers";
@@ -32,7 +33,8 @@ export class ConnectedGateway {
 	}
 
 	@SubscribeMessage('introduction')
-	handleIntroduce(@MessageBody() message: Message): void {
+	async handleIntroduce(@MessageBody() message: Message): Promise<void> {
+    let conversations: Array<ConversationEntity>;
 		if (message.id) {
 			if (GlobalDataService.loginIdMap.has(message.login))
 			GlobalDataService.loginIdMap.get(message.login).push(message.id);
@@ -40,9 +42,10 @@ export class ConnectedGateway {
 				GlobalDataService.loginIdMap.set(message.login, [message.id]);
 			}
 			console.log('new connection', GlobalDataService.loginIdMap)
-      this.chatService.findAllConv(message.login);
+      conversations = await this.chatService.findAllConv(message.login);
 		}
-		this.server.emit('usersOnLine', this.chatService.getUsersConnected(GlobalDataService.loginIdMap));
+		this.server.emit('users', await this.chatService.getUsers());
+    this.server.emit('allConversations', conversations);
 	}
 
 	@SubscribeMessage('log-out')

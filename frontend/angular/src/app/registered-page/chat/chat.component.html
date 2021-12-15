@@ -26,8 +26,8 @@
             <i class="bi bi-three-dots-vertical"></i>
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">Join a room</a>
-            <a class="dropdown-item" href="#" (click)="onCreateRoom()">Create a room</a>
+            <a class="dropdown-item">Join a room</a>
+            <a class="dropdown-item" (click)="onCreateRoom()">Create a room</a>
           </div>
         </div>
 
@@ -37,8 +37,9 @@
             type="search"
             placeholder="Search"
             aria-label="Search"
+            id="search-user"
           />
-          <button class="btn btn-outline-light my-2 my-sm-0" type="submit">
+          <button class="btn btn-outline-light my-2 my-sm-0" type="button" (click)="onSelectOneToOneUserConv()">
             <i class="bi bi-search"></i>
           </button>
         </form>
@@ -92,7 +93,7 @@
               />
             </div>
             <div class="chat-about">
-              <h6 class="m-b-0">Aiden Chavez</h6>
+              <h6 class="m-b-0">{{ currentConv.name }}</h6>
             </div>
           </nav>
         </div>

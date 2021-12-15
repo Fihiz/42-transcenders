@@ -1,11 +1,15 @@
+export enum convType {
+  "public",
+  "private",
+  "protected"
+}
+
 export interface if_conversation {
     id: number;
     avatar: string;
-    type: string;
+    type: convType;
     name: string;
     password: string;
-    created: Date;
-    updated: Date;
     members: Set<string>
   }
   

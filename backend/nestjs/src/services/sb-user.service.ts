@@ -48,8 +48,8 @@ export class UserService {
     }
   }
 
-  findAllAppUser() {
-    return (this.webUsers.find());
+  async findAllAppUser() {
+    return (await this.webUsers.find());
   }
 
   findAllApiUserData() {

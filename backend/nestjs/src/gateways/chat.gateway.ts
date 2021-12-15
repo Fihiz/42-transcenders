@@ -44,9 +44,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('message')
 		const messages = await this.chatService.handleMessage(emission);
     if (typeof(messages) !== 'string') {
-      const recievers = await this.chatService.getReceiverMessages(emission.data.conv_id);
-      const tmp = new Set<string>(recievers);
-      this.server.to(await this.chatService.getReceiver(tmp, emission.login)).emit('allMessages', messages);
+      const receivers = await this.chatService.getReceiverMessages(emission.data.conv_id);
+      const tmp = new Set<string>(receivers);
+      this.server.to(this.chatService.getReceiver(tmp, emission.login)).emit('allMessages', messages);
     }
     else
       this.errorResponse(emission);
@@ -73,6 +73,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async createConv(@MessageBody() emission, @MessageBody('data') message: ConversationDto) {
     console.log('new conversation')
 		const convId = await this.chatService.createConv(message);
+    console.log('convId = ', convId);
 		if (typeof(convId) ==='number') {
       for (const name of message.members) {
         const chatter: ChatterEntity = {
@@ -91,6 +92,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			message.id = convId
 			this.server.to(this.chatService.getReceiver(message.members, emission.login)).emit('newConversation', message);
 		}
+    else {
+      this.conv_id--;
+      console.log(emission.socketId);
+      this.server.to(emission.socketId).emit('error', convId);
+    }
 	}
 
 	@SubscribeMessage('allConversations')

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { if_message } from 'src/app/interfaces/if-message';
-import { if_conversation } from 'src/app/interfaces/if_conversation';
+import { convType, if_conversation } from 'src/app/interfaces/if_conversation';
 import { if_emission } from 'src/app/interfaces/if_emmission';
 import { ChatService } from 'src/app/services/sf-chat.service';
 import { GlobalService } from 'src/app/services/sf-global.service';
@@ -14,8 +14,15 @@ import { GlobalService } from 'src/app/services/sf-global.service';
 export class ChatComponent implements OnInit {
 
   convMessages: Array<if_message> = [];
-  usersOnLine: Set<string> = new Set();
-  currentConv: number = 0;
+  users: Array<string> = new Array();
+  currentConv: if_conversation = {
+    avatar: '',
+    id: 0,
+    members: new Set(),
+    name: '',
+    password: '',
+    type: convType.public,
+  };
   listConv: Array<if_conversation> = [];
   emission: if_emission = {
     login: this.global.login as string,
@@ -38,26 +45,21 @@ export class ChatComponent implements OnInit {
       date: new Date(),
       body: content,
     }
+    this.emission.socketId = this.global.socketId as string;
     this.socket.emit('message', this.emission);
   }
 
-  onSelectUser(value: string) {
-		const doesConvExists: if_conversation |  undefined = this.chatService.conversationExists(value, this.listConv);
-		if (doesConvExists)
-		{
-			this.currentConv = doesConvExists.id
-			const message: if_message = {
-				id: this.global.socketId,
-				avatar: '',
-				conv_id: this.currentConv,
-				login: this.global.login as string,
-				date: new Date(),
-				body: this.currentConv.toString(),
-				to: []
-			}
-			this.emission.data = message;
-			this.socket.emit('getMessages', this.emission);
-		}
+  onSelectOneToOneUserConv() {
+    const userPseudo: string = (<HTMLInputElement>document.getElementById('search-user'))?.value;
+    console.log('value = ', userPseudo);
+    console.log('this.users = ', this.users)
+    if (this.users.find(pseudo => pseudo === userPseudo)) {
+      console.log('test')
+      this.currentConv = this.listConv.find(conv => {
+        conv.members.size == 2 && conv.members.has(userPseudo);
+      }) as if_conversation;
+      console.log('current_conv = ', this.currentConv)
+    }
 	}
 
   onCreateRoom() {
@@ -65,15 +67,14 @@ export class ChatComponent implements OnInit {
     // recuperer les valeurs pour creer la conversation
     const newConv: if_conversation = {
       avatar: "",
-      created: new Date(),
       id: 0,
       name: 'room1',
       password: '',
-      type: "public",
-      updated: new Date(),
+      type: convType.public,
       members: new Set<string>()
     }
     this.emission.data = newConv;
+    this.emission.socketId = this.global.socketId as string,
     this.socket.emit('newConversation', this.emission);
   }
 
@@ -90,12 +91,17 @@ export class ChatComponent implements OnInit {
       to: []
     }
     this.emission.data = message;
+    this.emission.socketId = this.global.socketId as string,
     this.socket.emit('getMessages', this.emission);
   }
 
+
+
+
   ngOnInit(): void {
-    this.socket.on('usersOnLine', (data: any) => {
-        this.usersOnLine = data;
+    this.socket.on('users', (data: any) => {
+      console.log('users = ', data)
+        this.users = data;
     });
     this.socket.on('allMessages', (data: any) => {
       console.log("data = ", data)
@@ -104,11 +110,15 @@ export class ChatComponent implements OnInit {
       }
     });
     this.socket.on('allConversations', (data: any) => {
+      console.log('allConversations = ', data);
       this.listConv = data as Array<if_conversation>;
     });
     this.socket.on('newConversation', (data: any) => {
       this.listConv.push(data);
     });
+    this.socket.on('error', (data: any) => {
+      alert(data);
+    })
   }
   
 }

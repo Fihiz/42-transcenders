@@ -5,8 +5,10 @@ import { MessageDto } from "src/dtos/messages.dto";
 import { ChatterEntity } from "src/entities/eb-chatter.entity";
 import { ConversationEntity } from "src/entities/eb-conversation.entity";
 import { MessageEntity } from "src/entities/eb-message.entity";
+import { WebAppUserEntity } from "src/entities/eb-web-app-user.entity";
 import { Repository } from "typeorm";
 import { GlobalDataService } from "./sb-global-data.service";
+import { UserService } from "./sb-user.service";
 
 @Injectable()
 export class ChatService {
@@ -20,7 +22,8 @@ export class ChatService {
 				@InjectRepository(ConversationEntity)
 				private conversation: Repository<ConversationEntity>,
         @InjectRepository(ChatterEntity)
-				private chatter: Repository<ChatterEntity>) {}
+				private chatter: Repository<ChatterEntity>,
+        private userService: UserService) {}
 
 		async createConv(conv: ConversationDto): Promise<number | ConversationEntity | string> {
 				console.log('Conversation creation');
@@ -104,25 +107,24 @@ export class ChatService {
       return(convArray);
     }
 
-		getUsersConnected(map: Map<string, Array<string>>) {
-				const users: Array<string> = new Array<string>();
-				
-				if (!map.size)
-						return (null);
-				let it = map.keys();
-				let tmp;
-				while ((tmp = it.next().value) != undefined) {
-						users.push(tmp);
-				}
+		async getUsers() {
+				const tmp: Array<WebAppUserEntity> = await this.userService.findAllAppUser();
+        const users: Array<string> = new Array<string>();
+        for (const user of tmp) {
+          users.push(user.login);
+        }
 				return (users);
 		}
+
+    
+
 
 		async findAllMessages(id: number) {
 				return (this.messages.find({conv_id: id}));
 		}
 
 
-	async getReceiver(tabLogin: Set<string>, emitter: string): Promise<Array<string>> {
+	getReceiver(tabLogin: Set<string>, emitter: string): Array<string> {
 		const tabReceiver: Array<string> = [];
 		tabLogin.forEach(login => {
 				GlobalDataService.loginIdMap.get(login)?.forEach(id => {
