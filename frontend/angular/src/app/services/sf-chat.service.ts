@@ -19,4 +19,8 @@ export class ChatService {
 		}
 		return (theConv)
 	}
+
+  createPrivateRoom(pseudo1:string, pseudo2:string) {
+    
+  }
 }

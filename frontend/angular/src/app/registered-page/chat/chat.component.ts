@@ -52,12 +52,22 @@ export class ChatComponent implements OnInit {
   onSelectOneToOneUserConv() {
     const userPseudo: string = (<HTMLInputElement>document.getElementById('search-user'))?.value;
     console.log('value = ', userPseudo);
-    console.log('this.users = ', this.users)
+    console.log('this.users = ', this.users);
     if (this.users.find(pseudo => pseudo === userPseudo)) {
       console.log('test')
-      this.currentConv = this.listConv.find(conv => {
-        conv.members.size == 2 && conv.members.has(userPseudo);
-      }) as if_conversation;
+      let tmp;
+      if (tmp = this.listConv.find(conv => conv.members.size == 2 && conv.members.has(userPseudo)) as if_conversation)
+        this.currentConv = tmp;
+      else {
+        // this.socket.emit('newConversation', {
+        //   id: 0,
+        //   avatar: '',
+        //   type: 'private',
+        //   name: userPseudo,
+        //   password: ,
+        //   members: 
+        // })
+      }
       console.log('current_conv = ', this.currentConv)
     }
 	}
