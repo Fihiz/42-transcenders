@@ -1,10 +1,10 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { GameService } from '../services/sb-game.service'
 
-@WebSocketGateway({cors:{origin: '10.4.5.7'}})
+@WebSocketGateway({cors:{origin: '*'}})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	index: number = 0;
-	users: string[] = [];
+	users: {id: string, login: string}[] = [];
 
 	@WebSocketServer()
 	server;
@@ -25,92 +25,113 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	emitUpdate(test:GameGateway) {
-		// test.gameService.game.ball.x = Math.floor(Math.random() * 600);
-		// test.gameService.game.ball.y = Math.floor(Math.random() * 250);
+		// console.log('updating game', test.gameService.game);
 		test.gameService.updateAll();
-		test.server.emit('update', test.gameService.game);
+		test.server.emit('update', test.gameService.game.changing);
 		setTimeout(test.emitUpdate, 1000/60, test);
 	}
 
 	@SubscribeMessage('hello')
 	setConnected(@MessageBody() body: any) {
 		// console.log(this);
-		console.log(body.id, 'successfully joined the game');
-		this.users.push(body.id);
+		console.log(body.login, 'successfully joined the game');
+		this.users.push({id: body.id, login: body.login});
 		if (this.index === 0)
 		{
-			this.gameService.game.leftPaddle.id = body.id;
+			this.gameService.game.changing.leftPaddle.login = body.login;
 			this.index++;
 		}
-		else if (this.index === 1 && this.gameService.game.leftPaddle.id != body.id)
+		else if (this.index === 1 && this.gameService.game.changing.leftPaddle.login != body.login)
 		{
-			this.gameService.game.rightPaddle.id = body.id;
+			this.gameService.game.changing.rightPaddle.login = body.login;
 			this.index++;
 		}
-		this.emitAll(`${body.id} joined the game`);
-		this.server.to(body.id).emit('update', this.gameService.game);
+		this.emitAll(`${body.login} joined the game`);
+		this.server.to(body.id).emit('welcome', this.gameService.game);
 	}
 
 	@SubscribeMessage('bye')
 	setDisconnected(@MessageBody() body: any) {
-		console.log(body.id, 'successfully left the game');
-		this.users.splice(this.users.findIndex((v) => v == body.id), 1);
+		console.log(body.login, 'successfully left the game');
+		this.users.splice(this.users.findIndex((v) => v.id == body.id), 1);
 		// console.log('users', this.users);
-		this.emitAll(`${body.id} left the game`);
+		this.emitAll(`${body.login} left the game`);
 		// this.server.emit('quit');
 	}
 
 	@SubscribeMessage('ready')
 	setReady(@MessageBody() body: any) {
-		console.log(body.id, 'is ready');
-		if (this.gameService.game.leftPaddle.ready === false ||
-			this.gameService.game.rightPaddle.ready === false)
-		{
-			if (body.id === this.gameService.game.leftPaddle.id)
-				this.gameService.game.leftPaddle.ready = true;
-			else if (body.id === this.gameService.game.rightPaddle.id)
-				this.gameService.game.rightPaddle.ready = true;
-			if (this.gameService.game.leftPaddle.ready === true &&
-				this.gameService.game.rightPaddle.ready === true)
-				this.emitUpdate(this);
-		}
+		console.log("someone pressed ready", body, this.users.find((user) => user.id === body.id).login);
+		// if (this.gameService.game.changing.leftPaddle.ready === false ||
+		// 	this.gameService.game.changing.rightPaddle.ready === false)
+		// {
+			if (this.users.find((user) => user.id === body.id).login === this.gameService.game.changing.leftPaddle.login &&
+				this.gameService.game.changing.leftPaddle.ready === false)
+			{
+				console.log(this.users.find((user) => user.id === body.id).login, 'is ready');
+				this.gameService.game.changing.leftPaddle.ready = true;
+				if (this.gameService.game.changing.rightPaddle.ready === true)
+					this.gameService.game.changing.countdown = Math.min(this.gameService.game.changing.countdown, 180);
+				else
+				{
+					this.gameService.game.changing.countdown = 1800;
+					this.emitUpdate(this);
+				}
+			}
+			else if (this.users.find((user) => user.id === body.id).login === this.gameService.game.changing.rightPaddle.login &&
+				this.gameService.game.changing.rightPaddle.ready === false)
+			{
+				console.log(this.users.find((user) => user.id === body.id).login, 'is ready');
+				this.gameService.game.changing.rightPaddle.ready = true;
+				if (this.gameService.game.changing.leftPaddle.ready === true)
+					this.gameService.game.changing.countdown = Math.min(this.gameService.game.changing.countdown, 180);
+				else
+				{
+					this.gameService.game.changing.countdown = 1800;
+					this.emitUpdate(this);
+				}
+			}
+			// if (this.gameService.game.changing.leftPaddle.ready === true &&
+			// 	this.gameService.game.changing.rightPaddle.ready === true)
+			// 	this.emitUpdate(this);
+		// }
 	}
 
 	@SubscribeMessage('pressed')
 	getPressed(@MessageBody() body: any) {
-		// console.log(body.id, 'pressed \'', body.key, '\'');
-		if (body.id === this.gameService.game.leftPaddle.id)
+		// console.log(body.login, 'pressed \'', body.key, '\'');
+		if (this.users.find((user) => user.id === body.id).login === this.gameService.game.changing.leftPaddle.login)
 		{
 			if (body.key == 'ArrowUp')
-				this.gameService.game.leftPaddle.up = true;
+				this.gameService.game.changing.leftPaddle.up = true;
 			else if (body.key == 'ArrowDown')
-				this.gameService.game.leftPaddle.down = true;
+				this.gameService.game.changing.leftPaddle.down = true;
 		}
-		else if (body.id === this.gameService.game.rightPaddle.id)
+		else if (this.users.find((user) => user.id === body.id).login === this.gameService.game.changing.rightPaddle.login)
 		{
 			if (body.key == 'ArrowUp')
-				this.gameService.game.rightPaddle.up = true;
+				this.gameService.game.changing.rightPaddle.up = true;
 			else if (body.key == 'ArrowDown')
-				this.gameService.game.rightPaddle.down = true;
+				this.gameService.game.changing.rightPaddle.down = true;
 		}
 	}
 
 	@SubscribeMessage('released')
 	getReleased(@MessageBody() body: any) {
-		// console.log(body.id, 'released \'', body.key, '\'');
-		if (body.id === this.gameService.game.leftPaddle.id)
+		// console.log(body.login, 'released \'', body.key, '\'');
+		if (this.users.find((user) => user.id === body.id).login === this.gameService.game.changing.leftPaddle.login)
 		{
 			if (body.key == 'ArrowUp')
-				this.gameService.game.leftPaddle.up = false;
+				this.gameService.game.changing.leftPaddle.up = false;
 			else if (body.key == 'ArrowDown')
-				this.gameService.game.leftPaddle.down = false;
+				this.gameService.game.changing.leftPaddle.down = false;
 		}
-		else if (body.id === this.gameService.game.rightPaddle.id)
+		else if (this.users.find((user) => user.id === body.id).login === this.gameService.game.changing.rightPaddle.login)
 		{
 			if (body.key == 'ArrowUp')
-				this.gameService.game.rightPaddle.up = false;
+				this.gameService.game.changing.rightPaddle.up = false;
 			else if (body.key == 'ArrowDown')
-				this.gameService.game.rightPaddle.down = false;
+				this.gameService.game.changing.rightPaddle.down = false;
 		}
 	}
 }

@@ -11,9 +11,9 @@ export class AuthController {
 
     @Get()
     async redirection(@Req() req, @Res() resp) {
-        const codeUrl = req.query.code;
+        const query = req.query;
         try {
-            const userApiInfos = await this.authService.getInfosFromApi(codeUrl);
+            const userApiInfos = await this.authService.getInfosFromApi(query);
             if (!userApiInfos) {
                 resp.send({data: "error"});
                 return ;

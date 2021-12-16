@@ -9,9 +9,30 @@ export class AuthPageComponent {
   constructor() {}
 
   onRegister() {
+
+    const knownHost: string[] = [
+      "10.4.3.7",
+      "10.4.3.5",
+      "10.4.3.3",
+      "10.4.3.1",
+      "10.4.4.7",
+      "10.4.4.5",
+      "10.4.4.3",
+      "10.4.4.1",
+      "10.4.5.7",
+      "10.4.5.5",
+      "10.4.5.3",
+      "10.4.5.1",
+    ];
+
     console.log('User clicked on register');
-    const clientId = '433f62b085e15cdb9994c692a7fc5af7e43eb3ca173bae63a421b26fa176c29a';
-    const redirectUri = 'http://127.0.0.1:80/auth/';
+    let redirectUri;
+    if (knownHost.find(str => str === window.location.host))
+      redirectUri = `http://${window.location.host}:80/auth/`;
+    else
+      redirectUri = 'http://127.0.0.1:80/auth/';
+    // const clientId = '433f62b085e15cdb9994c692a7fc5af7e43eb3ca173bae63a421b26fa176c29a';
+    const clientId = 'd13f8d3b287c4cb4ffa5e23f265383e2e33b4e0b0370efa35d0c36e3da0cb988';
     const responseType = 'code';
     const state = 'enrfckqgilRbvr!XCWegret1@g30rt3h5/46+=40ethjr4j';
     const url =

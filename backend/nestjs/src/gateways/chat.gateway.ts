@@ -4,7 +4,7 @@ import { ChatServiceBis } from "src/services/sb-chat-bis.service";
 import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService } from "src/services/sb-global-data.service";
 
-@WebSocketGateway({cors:{origin: 'http://127.0.0.1'}})
+@WebSocketGateway({cors:{origin: '*'}})
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	conv_id: number = 0;
 

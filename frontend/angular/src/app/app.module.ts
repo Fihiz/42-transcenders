@@ -25,7 +25,7 @@ import { InputPromptComponent } from './auth-page/input-prompt/input-prompt.comp
 import { ReactiveFormsModule } from '@angular/forms';
 import { NotFoundComponent } from './registered-page/content/not-found/not-found.component';
 
-const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoConnect: false} };
+const config: SocketIoConfig = { url: `http://${window.location.host}:3000`,  options: {autoConnect: false} };
 
 @NgModule({
   declarations: [

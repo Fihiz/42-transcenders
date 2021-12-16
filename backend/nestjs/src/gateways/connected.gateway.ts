@@ -3,7 +3,7 @@ import { ChatServiceBis } from "src/services/sb-chat-bis.service";
 import { GlobalDataService, Message } from 'src/services/sb-global-data.service';
 import { json } from "stream/consumers";
 
-@WebSocketGateway({cors:{origin: 'http://127.0.0.1'}})
+@WebSocketGateway({cors:{origin: 'http://*'}})
 export class ConnectedGateway {
   constructor(private chatServiceBis: ChatServiceBis){}
 	@WebSocketServer()

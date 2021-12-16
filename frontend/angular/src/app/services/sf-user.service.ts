@@ -72,7 +72,7 @@ export class UserService implements OnInit {
     console.log("registerBackInRequest");
     try {
       const registerData = await axios.post(
-        'http://127.0.0.1:3000/cb-auth/registerData',
+        `http://${window.location.host}:3000/cb-auth/registerData`,
         {
           data: this.user,
         }
