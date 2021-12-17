@@ -1,12 +1,14 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { ConversationEntity } from "src/entities/eb-conversation.entity";
+import { ConvService } from "src/services/newConv/sb-conv.service";
 import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService, Message } from 'src/services/sb-global-data.service';
 import { json } from "stream/consumers";
 
 @WebSocketGateway({cors:{origin: 'http://127.0.0.1'}})
 export class ConnectedGateway {
-  constructor(private chatService: ChatService){}
+  constructor(private chatService: ChatService,
+              private convService: ConvService){}
 	@WebSocketServer()
 	server;
 
@@ -42,7 +44,7 @@ export class ConnectedGateway {
 				GlobalDataService.loginIdMap.set(message.login, [message.id]);
 			}
 			console.log('new connection', GlobalDataService.loginIdMap)
-      conversations = await this.chatService.findAllConv(message.login);
+      conversations = await this.convService.findAllConv(message.login);
 		}
 		this.server.emit('users', await this.chatService.getUsers());
     this.server.emit('allConversations', conversations);

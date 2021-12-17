@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ConversationDto } from "src/dtos/conversation.dto";
 import { MessageDto } from "src/dtos/messages.dto";
 import { ChatterEntity } from "src/entities/eb-chatter.entity";
 import { ConversationEntity } from "src/entities/eb-conversation.entity";
 import { MessageEntity } from "src/entities/eb-message.entity";
 import { WebAppUserEntity } from "src/entities/eb-web-app-user.entity";
 import { Repository } from "typeorm";
+import { ConvService } from "./newConv/sb-conv.service";
 import { GlobalDataService } from "./sb-global-data.service";
 import { UserService } from "./sb-user.service";
 
@@ -19,42 +19,25 @@ export class ChatService {
 		constructor(
 				@InjectRepository(MessageEntity)
 				private messages: Repository<MessageEntity>,
-				@InjectRepository(ConversationEntity)
-				private conversation: Repository<ConversationEntity>,
+        @InjectRepository(ConversationEntity)
+        private conversation: Repository<ConversationEntity>,
         @InjectRepository(ChatterEntity)
 				private chatter: Repository<ChatterEntity>,
-        private userService: UserService) {}
+        private userService: UserService,
+        private newConvService: ConvService) {}
 
-		async createConv(conv: ConversationDto): Promise<number | ConversationEntity | string> {
-				console.log('Conversation creation');
-				try {
-						const isFind = await this.findOneConversation(this.convId + 1)
-						if (!isFind) {
-						this.convId++;
-						conv.id = this.convId;
-						await this.conversation.insert(conv);
-						return (this.convId);
-					}
-					else
-						return (isFind);
-				}
-				catch (error) {
-					return `error.severity: ${error.severity}, 
-		\     code: ${error.code},
-		\     detail: ${error.detail}`;
-				}
-		}
+		
 
-    async createChatter(chatter: ChatterEntity): Promise<number | ChatterEntity | string> {
+    async createChatter(chatter: ChatterEntity) {
       console.log('Chatter creation');
       try {
           const isFind = await this.findOneChatter(chatter.conv_id, chatter.login)
           if (!isFind) {
-          await this.chatter.insert(chatter);
-          return (chatter);
+          const chatterInserted = await this.chatter.insert(chatter);
+          return (chatterInserted);
         }
         else
-          return (isFind);
+          return ('ac');
       }
       catch (error) {
         return `error.severity: ${error.severity}, 
@@ -76,52 +59,31 @@ export class ChatService {
       }
     }
 
-    async findOneChatter(id: number, name: string) {
-      return (await this.chatter.findOne({where: {conv_id: id, login: name}}));
-    }
+  async findOneChatter(id: number, name: string) {
+    return (await this.chatter.findOne({where: {conv_id: id, login: name}}));
+  }
 
-		async findOneConversation(id: number) : Promise<any> {
-			return this.conversation.findOne(id);
-		}
 
-    async findOneMessage(id: number) {
-      return this.messages.find({id: id});
-    }
-		
-    async findAllConv(login: string): Promise<Array<ConversationEntity>> {
-      const chatterArray = (await this.chatter.find({
-         join: {
-          alias: "conv",
-          leftJoinAndSelect: {
-            conv_id: "conv.conv_id",
-          }},
-         where: {login: login},
-      }));
-      const convArray = new Array<ConversationEntity>();
-      for (const chatter of chatterArray) {
-        const convId = chatter.conv_id as any;
-        const tmp  = await this.conversation.find({conv_id: convId.conv_id});
-        if (tmp)
-          convArray.push(...tmp);
+
+  async findOneMessage(id: number) {
+    return this.messages.find({id: id});
+  }
+	
+
+
+	async getUsers() {
+			const tmp: Array<WebAppUserEntity> = await this.userService.findAllAppUser();
+      const users: Array<string> = new Array<string>();
+      for (const user of tmp) {
+        users.push(user.login);
       }
-      return(convArray);
-    }
-
-		async getUsers() {
-				const tmp: Array<WebAppUserEntity> = await this.userService.findAllAppUser();
-        const users: Array<string> = new Array<string>();
-        for (const user of tmp) {
-          users.push(user.login);
-        }
-				return (users);
-		}
-
-    
+			return (users);
+	}
 
 
-		async findAllMessages(id: number) {
-				return (this.messages.find({conv_id: id}));
-		}
+	async findAllMessages(id: number) {
+			return (this.messages.find({conv_id: id}));
+	}
 
 
 	getReceiver(tabLogin: Set<string>, emitter: string): Array<string> {
@@ -146,7 +108,6 @@ export class ChatService {
 
 
   async getMessage(message: MessageDto) {
-    console.log(message.conv_id);
     const messages: MessageEntity[] = await this.findAllMessages(message.conv_id);
     const finalMessages: MessageDto[] = [];
     for (const mess of messages) {
@@ -165,7 +126,7 @@ export class ChatService {
 
   async handleMessage(emission) {
     const message = emission.data
-    const doesConvExists = await this.findOneConversation(message.conv_id);
+    const doesConvExists = await this.newConvService.findOneConversation(message.conv_id);
     console.log(doesConvExists)
     if (doesConvExists) {
       const messRegistered: MessageEntity = {

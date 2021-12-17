@@ -33,12 +33,17 @@
 
         <form class="form-inline">
           <input
-            class="form-control mr-sm-2"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-            id="search-user"
-          />
+          class="form-control mr-sm-2"
+          type="text"
+          placeholder="Search"
+          aria-label="Search"
+          id="search-user"
+          list="user-list"
+        />
+          <datalist id="user-list" >
+            <option *ngFor="let user of users">{{ user }}</option>
+          </datalist>
+
           <button class="btn btn-outline-light my-2 my-sm-0" type="button" (click)="onSelectOneToOneUserConv()">
             <i class="bi bi-search"></i>
           </button>
@@ -50,8 +55,8 @@
         <ul class="list-unstyled chat-list mt-2 mb-0">
  
           <div class="conversations" *ngFor="let conversation of listConv">
-            <img src="{{ conversation.avatar }}" alt="avatar">
-            <!-- <button class="name" (click)="onSelectConv(conversation.id)">{{ conversation }}></button> -->
+            <img src="{{ conversation.avatar }}">
+            <button class="name" (click)="onSelectConv(conversation.id)">{{ conversation.name }}></button>
           </div>
 
         </ul>
@@ -88,7 +93,7 @@
             </div>
             <div class="chat-header clearfix">
               <img
-                src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                src="{{ currentConv.avatar }}"
                 alt="avatar"
               />
             </div>
@@ -108,7 +113,7 @@
               <img src="{{ message.avatar }}" alt='avatar'>
                <div>{{ message.body }}</div>
                <div>{{ message.date }}</div>
-          </div>
+            </div>
           </ul>
         </div>
       </div>

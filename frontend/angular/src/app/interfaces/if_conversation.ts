@@ -10,6 +10,6 @@ export interface if_conversation {
     type: convType;
     name: string;
     password: string;
-    members: Set<string>
+    members: Array<string>
   }
   

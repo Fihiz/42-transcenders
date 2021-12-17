@@ -41,6 +41,7 @@ body {
 .list-conv {
   background-color: seashell;
   overflow-y: auto;
+  min-height: 60%;
   max-height: 70%;
 }
 .b-conv-name {
@@ -51,6 +52,7 @@ body {
 .b-messages {
   background-color: thistle;
   overflow-y: auto;
+  min-height: 60%;
   max-height: 70%;
 }
 .b-typing {
@@ -295,6 +297,10 @@ body {
 /*Line Search with wen no wrap (wrapping was a pb)*/
 .form-inline {
   flex-flow: nowrap;
+}
+
+.name {
+  border-style: hidden;
 }
 
 #header-conv-nav {

@@ -46,7 +46,6 @@ export class UserService implements OnInit {
       });
       this.socket.connect();
     } else {
-      console.log('response is :', response);
       document.getElementById('toOpenModal')?.click();
       await this.handleSubmitClick();
       
@@ -57,7 +56,6 @@ export class UserService implements OnInit {
   
   introduce(socket: Socket) {
     this.global.socketId = socket.ioSocket.id;
-    console.log('socketId1 = ', this.global.socketId);
     const message: if_message = {
         id: socket.ioSocket.id,
         login: this.global.login as string,

@@ -1,8 +1,8 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { ConversationDto } from "src/dtos/conversation.dto";
 import { MessageDto } from "src/dtos/messages.dto";
 import { ChatterEntity } from "src/entities/eb-chatter.entity";
-import { MessageEntity } from "src/entities/eb-message.entity";
+import { ConversationEntity } from "src/entities/eb-conversation.entity";
+import { ConvService } from "src/services/newConv/sb-conv.service";
 import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService } from "src/services/sb-global-data.service";
 
@@ -10,7 +10,8 @@ import { GlobalDataService } from "src/services/sb-global-data.service";
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	conv_id: number = 0;
 
-	constructor(private chatService: ChatService){}
+	constructor(private chatService: ChatService,
+              private ConvService: ConvService){}
 	@WebSocketServer()
 	server;
 
@@ -56,7 +57,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async getMessages(@MessageBody() emission, @MessageBody('data') message: MessageDto) {
     console.log('getMessages')
 		const messages = await this.chatService.findAllMessages(Number(message.body));
-		// console.log('messages of the conv ', message.body, 'are: ', messages);
 		const response: MessageDto = {
 			conv_id: message.conv_id,
 			body: messages,
@@ -65,17 +65,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			login: '',
 			to: GlobalDataService.loginIdMap.get(emission.login),
 		}
-		console.log("conv_id = ", response.conv_id)
 		this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('allMessages', response);
 	}
 
 	@SubscribeMessage('newConversation')
-	async createConv(@MessageBody() emission, @MessageBody('data') message: ConversationDto) {
-    console.log('new conversation')
-		const convId = await this.chatService.createConv(message);
-    console.log('convId = ', convId);
-		if (typeof(convId) ==='number') {
-      for (const name of message.members) {
+	async newConversation(@MessageBody() emission, @MessageBody('data') newConvDatas: ConversationEntity) {
+		const tmp = await this.ConvService.createConv(newConvDatas) as any;
+    if (tmp.success === true) {
+      const convId  = tmp.data.identifiers[0].conv_id;
+      for (const name of newConvDatas.members) {
         const chatter: ChatterEntity = {
           chat_role: (name === emission.login) ? "admin" : "chatter",
           conv_id: convId,
@@ -85,17 +83,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           muted_until: new Date(),
           updated: new Date()
         };
-        const checkCreationChatter = this.chatService.createChatter(chatter)
-        if (typeof(checkCreationChatter) === "string")
+        const checkCreationChatter = await this.chatService.createChatter(chatter)
+        console.log('checkCreation = ', checkCreationChatter);
+        if (typeof(checkCreationChatter) === "string" && checkCreationChatter != 'ac')
           this.emitFail(emission.login, checkCreationChatter);
       }
-			message.id = convId
-			this.server.to(this.chatService.getReceiver(message.members, emission.login)).emit('newConversation', message);
+			newConvDatas.conv_id = convId
+			this.server.to(this.chatService.getReceiver(new Set(newConvDatas.members), emission.login)).emit('newConversation', newConvDatas);
 		}
+    else if (typeof(tmp.data) !== 'string') {
+      this.server.to(this.chatService.getReceiver(new Set(newConvDatas.members), emission.login)).emit('newConversation', tmp.data);
+    }
     else {
       this.conv_id--;
-      console.log(emission.socketId);
-      this.server.to(emission.socketId).emit('error', convId);
+      console.log('Emission ', emission.socketId);
+      this.server.to(emission.socketId).emit('error', tmp);
     }
 	}
 
@@ -103,6 +105,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async getConv(@MessageBody() emission) {
     console.log('allConversation')
     console.log('emitter = ', GlobalDataService.loginIdMap.get(emission.login))
-		this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('allConversations', await this.chatService.findAllConv(emission.login));
+		this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('allConversations', await this.ConvService.findAllConv(emission.login));
 	}
 }

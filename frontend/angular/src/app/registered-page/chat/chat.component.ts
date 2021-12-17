@@ -18,7 +18,7 @@ export class ChatComponent implements OnInit {
   currentConv: if_conversation = {
     avatar: '',
     id: 0,
-    members: new Set(),
+    members: new Array(),
     name: '',
     password: '',
     type: convType.public,
@@ -50,24 +50,37 @@ export class ChatComponent implements OnInit {
   }
 
   onSelectOneToOneUserConv() {
-    const userPseudo: string = (<HTMLInputElement>document.getElementById('search-user'))?.value;
-    console.log('value = ', userPseudo);
-    console.log('this.users = ', this.users);
-    if (this.users.find(pseudo => pseudo === userPseudo)) {
-      console.log('test')
-      let tmp;
-      if (tmp = this.listConv.find(conv => conv.members.size == 2 && conv.members.has(userPseudo)) as if_conversation)
-        this.currentConv = tmp;
-      else {
-        // this.socket.emit('newConversation', {
-        //   id: 0,
-        //   avatar: '',
-        //   type: 'private',
-        //   name: userPseudo,
-        //   password: ,
-        //   members: 
-        // })
-      }
+    const selectedUser: string = (<HTMLInputElement>document.getElementById('search-user'))?.value;
+
+    let tmp;
+    /* check si selctedUser === au client et si la conv existe */
+    if (selectedUser === this.global.login &&
+       (tmp = this.listConv.find(
+         conv => conv.members[0] === conv.members[1] 
+         && conv.members[0] === selectedUser
+         ) as if_conversation)) {
+      this.currentConv = tmp
+    }
+    else if (selectedUser != this.global.login &&
+            (tmp = this.listConv.find(
+              conv => conv.members.find(
+                member => member === selectedUser)
+            ) as if_conversation)) {
+      console.log('conv found')
+      this.currentConv = tmp;
+    }
+    else {
+      this.socket.emit('newConversation', {
+        login: this.global.login,
+        socketId: this.global.socketId,
+        data: {
+          id: 0,
+          avatar: '../../../assets/profile-picture/ageraud.jpeg',
+          type: 'private',
+          name: this.chatService.createPrivateRoom(this.global.login as string, selectedUser),
+          password: '',
+          members: new Array<string>(selectedUser, this.global.login as string)
+      }})
       console.log('current_conv = ', this.currentConv)
     }
 	}
@@ -81,7 +94,7 @@ export class ChatComponent implements OnInit {
       name: 'room1',
       password: '',
       type: convType.public,
-      members: new Set<string>()
+      members: new Array<string>()
     }
     this.emission.data = newConv;
     this.emission.socketId = this.global.socketId as string,
@@ -125,6 +138,7 @@ export class ChatComponent implements OnInit {
     });
     this.socket.on('newConversation', (data: any) => {
       this.listConv.push(data);
+      this.currentConv = data;
     });
     this.socket.on('error', (data: any) => {
       alert(data);
