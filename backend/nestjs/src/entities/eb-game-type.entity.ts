@@ -10,7 +10,7 @@ export class GameTypeEntity {
 
   @Column({
 		type: "varchar",
-    length: 20,
+    length: 50,
     default: "default"
   })
   game_aspect: string;

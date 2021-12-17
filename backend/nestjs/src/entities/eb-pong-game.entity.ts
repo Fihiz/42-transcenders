@@ -3,6 +3,12 @@ import { ConversationEntity } from "./eb-conversation.entity";
 import { GameTypeEntity } from "./eb-game-type.entity";
 import { WebAppUserEntity } from "./eb-web-app-user.entity";
 
+export enum status {
+  Creation = "creation",
+  Playing = "playing",
+  Finished = "finished"
+};
+
 @Entity('t_pong_game')
 export class PongGameEntity {
 
@@ -32,7 +38,7 @@ export class PongGameEntity {
   @Column({
     type: "varchar"
   })
-  game_status: string;
+  game_status: status;
 
   @Column({
     type: "varchar",
