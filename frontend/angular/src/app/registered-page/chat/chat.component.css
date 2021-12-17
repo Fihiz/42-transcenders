@@ -11,29 +11,32 @@ body {
 
 .top {
   background-color: lavender;
-  height: 35%;
+  /* height: 35%; */
+  height: 50%;
   /* overflow-y: auto; */
   min-height: 250px;
 }
 
 .bottom {
-  background-color: rgb(19, 38, 80);
-  height: 65%;
+  background-color: rgb(86, 122, 201);
+  /* height: 65%; */
+  height: 50%;
 
   overflow-y: auto;
   min-height: 250px;
+  /* position: relative; */
 }
 
 .chat-pong {
   text-align: center;
   margin-top: 15px;
 }
-
+/* 
 .search {
-  background-color: lightcyan;
-  /* overflow-y: auto; */
-  height: 40px;
-}
+  background-color: lightcyan; */
+/* overflow-y: auto; */
+/* height: 40px;
+} */
 
 .list-conv {
   background-color: seashell;
@@ -41,14 +44,14 @@ body {
   max-height: 70%;
 }
 .b-conv-name {
-  background-color: whitesmoke;
+  background-color: rgb(214, 76, 76);
   /* text-align: center; */
   /* max-height: 20%; */
 }
 .b-messages {
   background-color: thistle;
   overflow-y: auto;
-  max-height: 76%;
+  max-height: 70%;
 }
 .b-typing {
   background-color: silver;
@@ -272,4 +275,28 @@ body {
 
 .text-right {
   text-align: end;
+}
+
+/* Three points and search bar */
+
+.container {
+  padding: 0px;
+}
+
+.navbar {
+  justify-content: space-between;
+}
+
+.bi,
+.btn-outline-success {
+  color: #528fac;
+}
+
+/*Line Search with wen no wrap (wrapping was a pb)*/
+.form-inline {
+  flex-flow: nowrap;
+}
+
+#header-conv-nav {
+  justify-content: flex-start;
 }
