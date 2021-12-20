@@ -19,42 +19,9 @@ export class GameService {
     changing: {
       status: string,
       countdown : number;
-      ball : {
-        speed: number,
-        color: string,
-        width: number,
-        height: number,
-        x: number,
-        y: number,
-        dx: number,
-        dy: number,
-      },
-      leftPaddle : {
-        login: string,
-        speed: number,
-        color: string,
-        width: number,
-        length: number,
-        x: number,
-        y: number,
-        up: boolean,
-        down: boolean,
-        ready: boolean,
-        score: number,
-      },
-      rightPaddle : {
-        login: string,
-        speed: number,
-        color: string,
-        width: number,
-        length: number,
-        x: number,
-        y: number,
-        up: boolean,
-        down: boolean,
-        ready: boolean,
-        score: number,
-      },
+      ball : Ball,
+      leftPaddle : Paddle,
+      rightPaddle : Paddle,
     },
   };
 
@@ -77,87 +44,27 @@ export class GameService {
       changing: {
         status: "Starting",
         countdown : -1,
-        ball : {
-          speed: 10,
-          color: "#43B6B2",
-          width: 10,
-          height: 10,
-          x: 345,
-          y: 195,
-          dx: dx,
-          dy: Math.sqrt(1 - Math.pow(dx, 2)),
-        },
-        leftPaddle : {
-          login: '',
-          speed: 12,
-          color: "#F9C53F",
-          width: 5,
-          length: 50,
-          x: 25,
-          y: 175,
-          up: false,
-          down: false,
-          ready: false,
-          score: 0,
-        },
-        rightPaddle : {
-          login: '',
-          speed: 12,
-          color: "#F97D64",
-          width: 5,
-          length: 50,
-          x: 670,
-          y: 175,
-          up: false,
-          down: false,
-          ready: false,
-          score: 0,
-        },
+        ball : new Ball("#43B6B2", 345, 195, 10, 10, 6),
+        leftPaddle : new Paddle('', "#F9C53F", 25, 175, 7, 50, 8),
+        rightPaddle : new Paddle('', "#F97D64", 675 - 7, 175, 7, 50, 8)
+        // x: this.game.board.width - this.game.border.marginLeftRight - this.game.border.width - this.game.changing.rightPaddle.width - 5,
       }
     }
   }
 
   updateAll() {
-    if (this.game.changing.status === 'finished')
+    if (this.game.changing.status === 'Finished')
       return;
+
 
     if (this.game.changing.leftPaddle.ready === false && this.game.changing.rightPaddle.ready === false)
       return ;
 
-    if (this.game.changing.leftPaddle.up === true && this.game.changing.leftPaddle.down === false)
-    {
-      if (this.game.changing.leftPaddle.y - this.game.changing.leftPaddle.speed > this.game.border.marginTopBot + this.game.border.width)
-        this.game.changing.leftPaddle.y -= this.game.changing.leftPaddle.speed;
-      else
-        this.game.changing.leftPaddle.y = this.game.border.marginTopBot + this.game.border.width;
-    }
-    else if (this.game.changing.leftPaddle.down === true && this.game.changing.leftPaddle.up === false)
-    {
-      if (this.game.changing.leftPaddle.y + this.game.changing.leftPaddle.speed + this.game.changing.leftPaddle.length < this.game.board.height - this.game.border.marginTopBot - this.game.border.width)
-        this.game.changing.leftPaddle.y += this.game.changing.leftPaddle.speed;
-      else
-        this.game.changing.leftPaddle.y = this.game.board.height - this.game.border.marginTopBot - this.game.border.width - this.game.changing.leftPaddle.length;
-    }
 
-
-    if (this.game.changing.rightPaddle.up === true && this.game.changing.rightPaddle.down === false)
-    {
-      if (this.game.changing.rightPaddle.y - this.game.changing.rightPaddle.speed > this.game.border.marginTopBot + this.game.border.width)
-      {
-        this.game.changing.rightPaddle.y -= this.game.changing.rightPaddle.speed;
-      }
-      else
-      {
-        this.game.changing.rightPaddle.y = this.game.border.marginTopBot + this.game.border.width;
-      }
-    }
-    else if (this.game.changing.rightPaddle.down === true && this.game.changing.rightPaddle.up === false)
-    {
-      if (this.game.changing.rightPaddle.y + this.game.changing.rightPaddle.speed + this.game.changing.rightPaddle.length < this.game.board.height - this.game.border.marginTopBot - this.game.border.width)
-        this.game.changing.rightPaddle.y += this.game.changing.rightPaddle.speed;
-      else
-        this.game.changing.rightPaddle.y = this.game.board.height - this.game.border.marginTopBot - this.game.border.width - this.game.changing.rightPaddle.length;
-    }
+    // this.game.changing.rightPaddle.update(this.game);
+    // this.game.changing.leftPaddle.update(this.game);
+    this.game.changing.rightPaddle.update(this);
+    this.game.changing.leftPaddle.update(this);
 
 
     if (this.game.changing.countdown > 0)
@@ -169,64 +76,139 @@ export class GameService {
     }
 
 
-    // if (this.game.changing.ball.x + this.game.changing.ball.dx * this.game.changing.ball.speed < this.game.border.marginLeftRight + this.game.border.width ||
-    //     this.game.changing.ball.x + this.game.changing.ball.dx * this.game.changing.ball.speed + this.game.changing.ball.width > this.game.board.width - this.game.border.marginLeftRight - this.game.border.width)
-    //     this.game.changing.ball.dx *= -1;
-
-    if (this.game.changing.ball.y + this.game.changing.ball.dy * this.game.changing.ball.speed < this.game.border.marginTopBot + this.game.border.width ||
-      this.game.changing.ball.y + this.game.changing.ball.dy * this.game.changing.ball.speed + this.game.changing.ball.height > this.game.board.height - this.game.border.marginTopBot - this.game.border.width)
-        this.game.changing.ball.dy *= -1;
+    // this.game.changing.ball.update(this.game);
+    this.game.changing.ball.update(this);
+  }
+}
 
 
-    if(this.game.changing.ball.dx < 0 &&
-      this.game.changing.ball.x < this.game.changing.leftPaddle.x + this.game.changing.leftPaddle.width &&
-      this.game.changing.ball.x + this.game.changing.ball.width > this.game.changing.leftPaddle.x)
-      if (this.game.changing.ball.y < this.game.changing.leftPaddle.y + this.game.changing.leftPaddle.length &&
-        this.game.changing.ball.y + this.game.changing.ball.height > this.game.changing.leftPaddle.y)
-        this.game.changing.ball.dx *= -1;
+class Ball {
+
+  speed: number;
+  color: string;
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+
+  constructor(color: string, x: number, y: number, width: number, height: number, speed: number) {
+    let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
+    this.speed = speed;
+    this.color = color;
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
+    this.dx = dx;
+    this.dy = Math.sqrt(1 - Math.pow(dx, 2));
+  }
+
+  update(gameService: GameService) {
+    if (this.y + this.dy * this.speed < gameService.game.border.marginTopBot + gameService.game.border.width ||
+      this.y + this.dy * this.speed + this.height > gameService.game.board.height - gameService.game.border.marginTopBot - gameService.game.border.width)
+        this.dy *= -1;
 
 
-    if(this.game.changing.ball.dx > 0 &&
-      this.game.changing.ball.x < this.game.changing.rightPaddle.x + this.game.changing.rightPaddle.width &&
-      this.game.changing.ball.x + this.game.changing.ball.width > this.game.changing.rightPaddle.x)
-      if (this.game.changing.ball.y < this.game.changing.rightPaddle.y + this.game.changing.rightPaddle.length &&
-        this.game.changing.ball.y + this.game.changing.ball.height > this.game.changing.rightPaddle.y)
-        this.game.changing.ball.dx *= -1;
+    if(this.dx < 0 &&
+      this.x < gameService.game.changing.leftPaddle.x + gameService.game.changing.leftPaddle.width &&
+      this.x + this.width > gameService.game.changing.leftPaddle.x)
+      if (this.y < gameService.game.changing.leftPaddle.y + gameService.game.changing.leftPaddle.length &&
+        this.y + this.height > gameService.game.changing.leftPaddle.y)
+        this.dx *= -1;
 
-    if (this.game.changing.ball.x + this.game.changing.ball.width < this.game.changing.leftPaddle.x)
+
+    if(this.dx > 0 &&
+      this.x < gameService.game.changing.rightPaddle.x + gameService.game.changing.rightPaddle.width &&
+      this.x + this.width > gameService.game.changing.rightPaddle.x)
+      if (this.y < gameService.game.changing.rightPaddle.y + gameService.game.changing.rightPaddle.length &&
+        this.y + this.height > gameService.game.changing.rightPaddle.y)
+        this.dx *= -1;
+
+
+    if (this.x + this.width < gameService.game.changing.leftPaddle.x)
     {
       let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
-      this.game.changing.rightPaddle.score++;
-      this.game.changing.ball.x = 345;
-      this.game.changing.ball.y = 195;
-      this.game.changing.ball.dx = dx;
-      this.game.changing.ball.dy = Math.sqrt(1 - Math.pow(dx, 2));
-      if (this.game.changing.rightPaddle.score === 10)
+      gameService.game.changing.rightPaddle.score++;
+      this.x = 345;
+      this.y = 195;
+      this.dx = dx;
+      this.dy = Math.sqrt(1 - Math.pow(dx, 2));
+      if (gameService.game.changing.rightPaddle.score === 10)
       {
-        this.game.changing.ball.dx = 0;
-        this.game.changing.ball.dy = 0;
-        this.game.changing.status = "Finished";
+        this.dx = 0;
+        this.dy = 0;
+        gameService.game.changing.status = "Finished";
       }
     }
 
-    if (this.game.changing.ball.x > this.game.changing.rightPaddle.x + this.game.changing.rightPaddle.width)
+
+    if (this.x > gameService.game.changing.rightPaddle.x + gameService.game.changing.rightPaddle.width)
     {
       let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
-      this.game.changing.leftPaddle.score++;
-      this.game.changing.ball.x = 345;
-      this.game.changing.ball.y = 195;
-      this.game.changing.ball.dx = dx;
-      this.game.changing.ball.dy = Math.sqrt(1 - Math.pow(dx, 2));
-      if (this.game.changing.leftPaddle.score === 10)
+      gameService.game.changing.leftPaddle.score++;
+      this.x = 345;
+      this.y = 195;
+      this.dx = dx;
+      this.dy = Math.sqrt(1 - Math.pow(dx, 2));
+      if (gameService.game.changing.leftPaddle.score === 10)
       {
-        this.game.changing.ball.dx = 0;
-        this.game.changing.ball.dy = 0;
-        this.game.changing.status = "Finished";
+        this.dx = 0;
+        this.dy = 0;
+        gameService.game.changing.status = "Finished";
       }
     }
 
 
-    this.game.changing.ball.x += this.game.changing.ball.dx * this.game.changing.ball.speed;
-    this.game.changing.ball.y += this.game.changing.ball.dy * this.game.changing.ball.speed;
+    this.x += this.dx * this.speed;
+    this.y += this.dy * this.speed;
+  }
+}
+
+
+class Paddle {
+
+  login: string;
+  speed: number;
+  color: string;
+  width: number;
+  length: number;
+  x: number;
+  y: number;
+  up: boolean;
+  down: boolean;
+  ready: boolean;
+  score: number;
+
+  constructor(login: string, color: string, x: number, y: number, width: number, length: number, speed: number) {
+    this.login = login;
+    this.speed = speed;
+    this.color = color;
+    this.width = width;
+    this.length = length;
+    this.x = x;
+    this.y = y;
+    this.up = false;
+    this.down = false;
+    this.score = 0;
+    this.ready = false;
+  }
+
+  update(game: GameService) {
+    if (this.up === true && this.down === false)
+    {
+      if (this.y - this.speed > game.game.border.marginTopBot + game.game.border.width)
+        this.y -= this.speed;
+      else
+        this.y = game.game.border.marginTopBot + game.game.border.width;
+    }
+    else if (this.down === true && this.up === false)
+    {
+      if (this.y + this.speed + this.length < game.game.board.height - game.game.border.marginTopBot - game.game.border.width)
+        this.y += this.speed;
+      else
+        this.y = game.game.board.height - game.game.border.marginTopBot - game.game.border.width - this.length;
+    }
   }
 }

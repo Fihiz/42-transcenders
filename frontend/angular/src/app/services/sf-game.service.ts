@@ -140,13 +140,13 @@ export class GameService {
         test.gameCanvas.removeEventListener("click", test.listenClick);
       }
 
-      drawLoop() {
+      drawBoard() {
         // board bg color
         this.gameContext.fillStyle = this.game.board.color;
         this.gameContext.fillRect(0,0,this.gameCanvas.width,this.gameCanvas.height);
         
-        this.gameContext.fillStyle = this.game.fontColor;
         // scores
+        this.gameContext.fillStyle = this.game.fontColor;
         if (this.game.leftPaddle.score === 10)
           this.gameContext.fillText(this.game.leftPaddle.score.toString(), 312, 50);
         else
@@ -171,13 +171,9 @@ export class GameService {
           this.gameContext.fillRect((this.game.board.width - this.game.border.width) / 2, j, this.game.border.width, this.game.border.length);
           this.gameContext.fillRect(this.game.board.width - this.game.border.marginLeftRight - this.game.border.width, j, this.game.border.width, this.game.border.length);
         }
+      }
 
-        this.game.ball.draw(this.gameContext);
-
-        this.game.leftPaddle.draw(this.gameContext);
-
-        this.game.rightPaddle.draw(this.gameContext);
-        
+      drawCountdown() {
         // countdown
         if (this.game.countdown > 0)
         {
@@ -191,7 +187,9 @@ export class GameService {
             this .gameContext.fillText(Math.ceil(this.game.countdown / 60).toString(), this.game.board.width / 2 - 58, this.game.board.height - 130);
           this.gameContext.font = "30px Comfortaa";
         }
+      }
 
+      drawReady() {
         // ready check
         if ((this.game.leftPaddle.login === this.global.login && this.game.leftPaddle.ready === false ||
           this.game.rightPaddle.login === this.global.login && this.game.rightPaddle.ready === false) &&
@@ -205,9 +203,15 @@ export class GameService {
           this.gameContext.fillStyle = 'rgba(50, 68, 72, 0.5)';
           this.gameContext.fillRect(0, 0, this.game.board.width, this.game.board.height);
           this.gameContext.fillStyle = this.game.fontColor;
-          this.gameContext.fillText("click here if you're ready", 175, this.game.board.height / 2 + 15, 350);
+          this.gameContext.fillText("click here if you're ready".toUpperCase(), 175, this.game.board.height / 2 + 15, 350);
         }
+      }
 
+      // drawButtons() {
+
+      // }
+
+      drawEnd() {
         // end screen
         if (this.game.status === "Finished")
         {
@@ -217,35 +221,54 @@ export class GameService {
           if (this.game.leftPaddle.login === this.global.login && this.game.leftPaddle.score === 10 ||
             this.game.rightPaddle.login === this.global.login && this.game.rightPaddle.score === 10)
           {
-            this.gameContext.fillText("you won the game", 200, this.game.board.height / 2 + 15, 300);
+            this.gameContext.fillText("YOU WON THE GAME", 200, this.game.board.height / 2 + 15, 300);
             // console.log(`you won the game`);
           }
           else if (this.game.leftPaddle.login === this.global.login ||
             this.game.rightPaddle.login === this.global.login)
           {
-            this.gameContext.fillText("you lost the game", 200, this.game.board.height / 2 + 15, 300);
+            this.gameContext.fillText("YOU LOST THE GAME", 200, this.game.board.height / 2 + 15, 300);
             // console.log(`you lost the game`);
           }
           else
           {
             if (this.game.leftPaddle.score === 10)
             {
-              this.gameContext.fillText(`${this.game.leftPaddle.login} won the game !`, 200, this.game.board.height / 2 + 15, 300);
+              this.gameContext.fillText(`${this.game.leftPaddle.login} won the game !`.toUpperCase(), 200, this.game.board.height / 2 + 15, 300);
               // console.log(`${this.game.leftPaddle.login} won the game`);
             }
             else if (this.game.rightPaddle.score === 10)
             {
-              this.gameContext.fillText(`${this.game.rightPaddle.login} won the game`, 200, this.game.board.height / 2 + 15, 300);
+              this.gameContext.fillText(`${this.game.rightPaddle.login} won the game`.toUpperCase(), 200, this.game.board.height / 2 + 15, 300);
               // console.log(`${this.game.rightPaddle.login} won the game`);
             }
             else
             {
-              this.gameContext.fillText(`Something went wrong, no one won the game....`, 200, this.game.board.height / 2 + 15, 300);
+              this.gameContext.fillText(`Something went wrong, no one won the game....`.toUpperCase(), 200, this.game.board.height / 2 + 15, 300);
               // console.log(`Something went wrong, no one won the game....`);
             }
           }
+          // this.drawButtons();
           cancelAnimationFrame(frameId);
         }
+      }
+
+      drawOverlay() {
+        this.drawCountdown();
+        this.drawReady();
+        this.drawEnd();
+      }
+
+      drawLoop() {
+        this.drawBoard();
+
+        this.game.ball.draw(this.gameContext);
+
+        this.game.leftPaddle.draw(this.gameContext);
+
+        this.game.rightPaddle.draw(this.gameContext);
+
+        this.drawOverlay();
       }
 
       callDrawLoop(test : Game) {
