@@ -14,16 +14,6 @@ export class GameController {
     
     constructor(private gameService: GameService) {}
 
-    /**/ // CREATION ENTRIES FOR TESTS CREATION PARTY
-    // @Post('necessary')
-    // async createRoomGame() {
-        // await this.gameService.createGameType("https://dummyimage.com/150x100/324448/aaa", "Classic", 1, 1, 1);
-        // await this.gameService.createGameType("https://dummyimage.com/150x100/43B6B2/aaa", "Modern", 2, 2, 2);
-        // await this.gameService.createGameType("https://dummyimage.com/150x100/F97D64/aaa", "Custom", 5, 5, 5);
-        // await this.gameService.createConversarion();
-    // }
-    /**/
-
     @Get('types')
     async getTypesOfGame(): Promise<GameTypeEntity[]> | undefined {
         return this.gameService.getAllTypesOfGame();
@@ -43,22 +33,20 @@ export class GameController {
 
     @Post('party')
     async playNewGame(@Body() createPartyDto: CreatePartyDto): Promise<PongGameEntity> | undefined {
-        //
-        createPartyDto.login = "jobenass";
-        createPartyDto.game_aspect = "https://dummyimage.com/150x100/324448/aaa";
-        createPartyDto.map_type = "Classic";
-        createPartyDto.ball_size = 1;
-        createPartyDto.initial_speed = 1;
-        createPartyDto.racket_size = 1;
-        //
-        const found: PongGameEntity[] = await this.gameService.searchAllNewParties(createPartyDto);
-        if (found.length !== 0) {
-            const party = await this.gameService.matchParty(found);
-            // return this.gameService.joinParty(party.game_id, createPartyDto.login);
-            return this.gameService.joinParty(party, createPartyDto.login);
+        const type: GameTypeEntity = await this.gameService.searchOneTypeOfGame(createPartyDto);
+        const current: PongGameEntity = await this.gameService.searchOnePartyInProgress(createPartyDto);
+        if (current)
+            return current;
+        else {
+            const found: PongGameEntity[] = await this.gameService.searchAllNewParties(createPartyDto, type);
+            if (found.length !== 0) {
+                const party = await this.gameService.matchParty(found);
+                return this.gameService.joinParty(party, createPartyDto);
+            }
+            // const room: ConversationEntity = await this.gameService.createConversation();
+            // return this.gameService.createParty(createPartyDto, room);
+            return this.gameService.createParty(createPartyDto, type);
         }
-        const room: ConversationEntity = await this.gameService.createConversation();
-        return this.gameService.createParty(createPartyDto, room);
     }
 
 }

@@ -244,7 +244,7 @@ export class PlayComponent implements OnInit {
     this.sets = await this.gameService.getTypesOfParty();
   }
 
-  async setParty(type: if_game_type) {
+  async setParty(type: string) {
     await this.gameService.setParty(type);
   }
 

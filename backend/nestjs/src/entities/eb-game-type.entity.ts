@@ -1,5 +1,11 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
+export enum types {
+  Classic = "Classic",
+  School = "School",
+  Custom = "Custom"
+};
+
 @Entity('t_game_type')
 export class GameTypeEntity {
 

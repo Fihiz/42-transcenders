@@ -13,9 +13,9 @@ export class CreatePartyDto {
     // room_id: number;
     // game_type_id: 0,
     login: string;
-    game_aspect: string;
-    ball_size: number;
+    // game_aspect: string;
+    // ball_size: number;
     map_type: string;
-    initial_speed: number;
-    racket_size: number;
+    // initial_speed: number;
+    // racket_size: number;
 }
