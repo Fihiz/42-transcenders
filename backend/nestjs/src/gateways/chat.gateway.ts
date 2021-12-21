@@ -38,7 +38,7 @@ export class ChatGateway {
 
 	@SubscribeMessage('message') // Client emit a message
 	handleMassage(@MessageBody() content: string) : void {
-		console.log(this.inc++, "Je passe dans le subscribe message");
+		console.log(this.inc++, "Passing into 'message' subscribe, content is: ", content);
 		this.server.emit('message', content); // We broadcast it to the server
 	}
 }

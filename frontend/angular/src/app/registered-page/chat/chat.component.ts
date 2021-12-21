@@ -15,33 +15,53 @@ export class ChatComponent implements OnInit {
 
 	usersOnLine: Array<string> = new Array();
 	inputMessage : string = '';
-//  ulMessages : Array<string> = [];
+  	ulMessages : any;
 
 
   constructor(private socket: Socket) { }
 
-  // Indépendant du this.socket.emit qui trouve le bon subscribe - multi Socket ?
+  // - multi Socket - ?
   ngOnInit(): void {
     this.socket.on('usersOnLine', (data: any) => {
 		console.log('usersOnLine = ', data)
         this.usersOnLine = data;
     });
+	this.socket.on('message', ( data: any) => {
+		this.handleNewMessage(data);
+	});
   }
 
   /* Sending to the server */
   handleSubmitNewMessage() {
 	this.inputMessage = (<HTMLInputElement>(document.getElementById('input-message'))).value;
+	this.ulMessages = (<HTMLInputElement>(document.getElementById('ul-messages')));
 	console.log(this.inputMessage);
-	this.socket.emit('message', {data : this.inputMessage} );
-	/* handleMassage(@MessageBody() content: string) : void
-	content = this.inputMessage */
+	
+	/* Protecting empty line, -add a protect-placeholder as input-prompt to block submit if empty?- */
+	if (this.inputMessage)
+		this.socket.emit('message', this.inputMessage );
+	
+	/* Clean the sending line, may be different ways to deal with */
+	if (this.inputMessage)
+	{
+		console.log('Cleaning line');
+		(<HTMLInputElement>(document.getElementById('input-message'))).value = '';
+	}
+
+	/* REMINDER FROM GATEWAY: handleMassage(@MessageBody() content: string) : void
+		-> content = this.inputMessage */
   }
 
-  /* Need a way to listen incoming messages and populate them */
+	
+ 	
+	/* A way to listen incoming messages and populate them */
+  	handleNewMessage(inputMessage : string) {
+	 this.ulMessages.appendChild(this.buildNewMessage(inputMessage));
+  	}
 
-//  this.socket.on('')
-
-//  handleNewMessage = (message) => {
-//	 this.ul
-//  }
+  	buildNewMessage(inputMessage : string) {
+	  const li = document.createElement("li");
+	  li.appendChild(document.createTextNode(inputMessage));
+	  return li;
+  	}
 }
