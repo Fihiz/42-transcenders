@@ -5,61 +5,67 @@
 
 <body>
   <div class="row top">
-	  <div class="chat-pong"><h4><span class="badge badge-dark">Pong chat <i class="bi bi-chat"></i></span></h4>
-	  </div>
-	  <!--OK-->
-	  <div class="container">
-	  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<!--<a class="navbar-brand" href="#">Navbar</a>-->
-		<div class="dropdown">
-			<button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<i class="bi bi-three-dots-vertical"></i>
-			</button>
-			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-				<a class="dropdown-item" href="#">Join a room</a>
-			  <a class="dropdown-item" href="#">Create a room</a>
-			</div>
-		  </div>
+    <div class="chat-pong">
+      <h4>
+        <span class="badge badge-dark"
+          >Pong chat <i class="bi bi-chat"></i
+        ></span>
+      </h4>
+    </div>
 
-		  		<form class="form-inline">
-			<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-			<button class="btn btn-outline-light my-2 my-sm-0" type="submit"><i class="bi bi-search"></i></button>
-		  </form>
-		<!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		  <span class="navbar-toggler-icon"></span>
-		</button>-->
-	  
-		<!--<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		  <input type="text" class="form-control" placeholder="Search..." />
-        <div class="input-group-prepend">
-          <button type="button" class="btn btn-outline-primary">
-            <i class="fa fa-search"></i>
+    <!--OK-->
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="dropdown">
+          <button
+            class="btn btn-light btn-sm"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="bi bi-three-dots-vertical"></i>
           </button>
-		</div>
-		</div>-->
-	  </nav>
-	    <!--OK-->
-
-
-
-
-
-		
-	</div>
-
-
-
-
-    <!--<div class="search">
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Search..." />
-        <div class="input-group-prepend">
-          <button type="button" class="btn btn-outline-primary">
-            <i class="fa fa-search"></i>
-          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">Join a room</a>
+            <a class="dropdown-item" href="#">Create a room</a>
+          </div>
         </div>
-      </div>
-    </div>-->
+
+		<!--OLD-->
+        <!--<form class="form-inline">
+          <input
+            class="form-control mr-sm-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />-->
+		  <!--OLD-->
+
+		<!--SEARCH ONLINE USERS-->
+		<form class="form-inline">
+		<input
+		class="form-control mr-sm-2"
+		type="text"
+		placeholder="Search"
+		aria-label="Search"
+		id="search-user"
+		list="user-list"
+		/>
+		<datalist id="user-list" >
+			<option *ngFor="let user of usersOnLine">{{ user }}</option>
+		</datalist>
+		<!--SEARCH ONLINE USERS-->
+
+          <button class="btn btn-outline-light my-2 my-sm-0" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+      </nav>
+    </div>
+    <!--OK-->
+
     <div class="list-conv">
       <div id="plist" class="people-list">
         <ul class="list-unstyled chat-list mt-2 mb-0">
@@ -75,7 +81,7 @@
               </div>
             </div>
           </li>
-          <li class="clearfix">
+          <!--<li class="clearfix">
             <img
               src="../../../assets/profile-pictures/pgoudet.jpeg"
               alt="avatar"
@@ -158,7 +164,7 @@
                 <i class="fa fa-circle offline"></i> offline since Oct 28
               </div>
             </div>
-          </li>
+          </li>-->
         </ul>
       </div>
     </div>
@@ -167,7 +173,55 @@
   <div class="row bottom">
     <div class="b-conv-name">
       <div class="chat">
-        <div class="chat-header clearfix">
+        <!-- test -->
+        <div class="container">
+          <nav
+            class="navbar navbar-expand-lg navbar-light bg-light"
+            id="header-conv-nav"
+          >
+            <div class="dropdown">
+              <button
+                class="btn btn-light btn-sm"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i class="bi bi-three-dots-vertical"></i>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Add a friend</a>
+                <a class="dropdown-item" href="#">Invite to play</a>
+                <a class="dropdown-item" href="#">Mute</a>
+                <a class="dropdown-item" href="#">Ban</a>
+                <a class="dropdown-item" href="#">Leave</a>
+              </div>
+            </div>
+            <div class="chat-header clearfix">
+              <img
+                src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                alt="avatar"
+              />
+            </div>
+            <div class="chat-about">
+              <h6 class="m-b-0">Aiden Chavez</h6>
+            </div>
+
+            <!-- <form class="form-inline">
+              <input
+                class="form-control mr-sm-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+              />
+              <button class="btn btn-outline-light my-2 my-sm-0" type="submit">
+                <i class="bi bi-search"></i>
+              </button>
+            </form> -->
+          </nav>
+        </div>
+        <!-- <div class="chat-header clearfix">
           <div class="row">
             <div class="col-lg-6">
               <a
@@ -184,21 +238,13 @@
                 <h6 class="m-b-0">Aiden Chavez</h6>
               </div>
             </div>
-            <div class="col-lg-6 hidden-sm text-right">
-              <a href="javascript:void(0);" class="btn btn-outline-secondary"
-                ><i class="fa fa-camera"></i
-              ></a>
-              <a href="javascript:void(0);" class="btn btn-outline-primary"
-                ><i class="fa fa-image"></i
-              ></a>
-            </div>
+      
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
     <div class="b-messages">
-      <!-- <div class="card chat-app"> -->
       <div class="chat">
         <div class="chat-history">
           <ul class="m-b-0">
@@ -232,7 +278,6 @@
           </ul>
         </div>
       </div>
-      <!-- </div> -->
     </div>
     <div class="b-typing">
       <!-- <div class="chat-message clearfix">
@@ -250,13 +295,14 @@
 
       <div class="input-group">
         <input
+		  id="input-message"
           type="text"
           class="form-control"
-          placeholder="Enter text here..."
+          placeholder="Type a message..."
         />
         <div class="input-group-prepend">
           <!-- <span class="input-group-text"><i class="fa fa-search"></i></span> -->
-          <button type="button" class="btn btn-outline-primary">
+          <button type="button" class="btn btn-outline-primary" (click)="handleSubmitNewMessage()">
             <i class="fa fa-send"></i>
           </button>
         </div>

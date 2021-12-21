@@ -27,7 +27,7 @@ import { NotFoundComponent } from './registered-page/content/not-found/not-found
 import { GlobalService } from './services/sf-global.service';
 
 
-
+/* In case your front is not served from the same domain as your server, you have to pass the URL of your server. */
 const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoConnect: false} };
 
 @NgModule({
