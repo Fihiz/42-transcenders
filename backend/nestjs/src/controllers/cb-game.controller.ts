@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
 
 import { GameService } from 'src/services/sb-game.service';
 import { Response } from '@nestjs/common';
@@ -22,15 +22,27 @@ export class GameController {
     @Get('parties')
     async getPartiesInProgress(@Response() res): Promise<PongGameEntity[]> | undefined {
         const task: PongGameEntity[] = await this.gameService.getAllPartiesInProgress()
-        if (task === undefined) {
-            throw new InternalServerErrorException(`Query on table PongGame has failed !`);
+        // if (task === undefined) {
+            // throw new InternalServerErrorException(`Query on table PongGame has failed !`);
             // return undefined;
-        }
+        // }
         res.status(200).send(task);
         return task;
 
     }
 
+    @Get('party/:login')
+    async getPartyWithId(@Param('login') login: string): Promise<PongGameEntity> | undefined {
+        const task: PongGameEntity = await this.gameService.getPartyByLogin(login);
+        return task;
+    }
+
+    @Get('party/:id')
+    async getPartyWithLogin(@Param('id') id: number): Promise<PongGameEntity> | undefined {
+        const task: PongGameEntity = await this.gameService.getPartyById(id);
+        return task;
+    }
+    
     @Post('party')
     async playNewGame(@Body() createPartyDto: CreatePartyDto): Promise<PongGameEntity> | undefined {
         const type: GameTypeEntity = await this.gameService.searchOneTypeOfGame(createPartyDto);

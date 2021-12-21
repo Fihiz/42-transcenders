@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { GameService } from 'src/app/services/sf-game.service';
-import { if_game_type } from 'src/app/interfaces/if-game';
+import { if_game_object, if_game_type } from 'src/app/interfaces/if-game';
+
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-play',
@@ -232,12 +234,21 @@ export class PlayComponent implements OnInit {
 //     requestAnimationFrame(game.gameLoop);
 //   }
 
+  play?: if_game_object;
   sets: if_game_type[] = []; 
 
-  constructor(private gameService: GameService) { }
+  constructor(private gameService: GameService, private router: Router) { }
 
   ngOnInit() {
-    this.getSetsParty();
+    this.getPlayParty();
+    if (this.play)
+      this.getSetsParty();
+  }
+
+  async getPlayParty() {
+    this.play = await this.gameService.getPartyByLogin();
+    if (this.play)
+      this.router.navigate([`./pong/game/${this.play.game_id}`]);
   }
 
   async getSetsParty() {

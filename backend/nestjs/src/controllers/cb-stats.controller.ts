@@ -11,10 +11,10 @@ export class StatsController {
     constructor(private statsService: StatsService) {}
 
     @Get('ranking')
-    async getPartiesInProgress(@Response() res): Promise<StatEntity[]> {
+    async getPartiesFinished(@Response() res): Promise<StatEntity[]> {
         const task: StatEntity[] = await this.statsService.getAllPlayerScores()
-        if (task === undefined)
-            throw new InternalServerErrorException(`Query on table Stats has failed !`);
+        // if (task === undefined)
+            // throw new InternalServerErrorException(`Query on table Stats has failed !`);
         res.status(200).send(task);
         return task;
     }

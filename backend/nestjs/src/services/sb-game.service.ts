@@ -230,4 +230,43 @@ export class GameService {
 		})
 	}
 
+
+//
+
+	async getPartyById(id: number): Promise<PongGameEntity> | undefined {
+		const pongRepository = getRepository(PongGameEntity);
+		return pongRepository.findOne({
+			where: { game_id: id }
+		})
+		.then((response) => {
+			console.log(`SUCCESS`);
+			return response;
+		})
+		.catch((error) => {
+			console.log(`ERROR`, error);
+			return undefined;
+		})
+	}
+
+
+	async getPartyByLogin(login: string): Promise<PongGameEntity> | undefined {
+		const pongRepository = getRepository(PongGameEntity);
+		return pongRepository.findOne({
+			where: [
+				{ player1: login, game_status: status.Playing },
+				{ player2: login, game_status: status.Playing }
+			]
+		})
+		.then((response) => {
+			console.log(`SUCCESS`);
+			return response;
+		})
+		.catch((error) => {
+			console.log(`ERROR`, error);
+			return undefined;
+		})
+	}
+
+//
+
 }

@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, MoreThan } from 'typeorm';
 
 import { AchievementEntity } from 'src/entities/eb-achievement.entity';
 import { AwardEntity } from 'src/entities/eb-award.entity';
 import { StatEntity } from 'src/entities/eb-stat.entity';
+
+import { NotFoundException, InternalServerErrorException } from '@nestjs/common';
 
 @Injectable()
 export class StatsService {
@@ -19,16 +21,23 @@ export class StatsService {
     ) {}
 
     async getAllPlayerScores(): Promise<StatEntity[]> | undefined {
-        const scores: StatEntity[] = await getRepository(StatEntity)
-        .createQueryBuilder("statsAlias")
-        .where("statsAlias.match_number > :match_number", { match_number: 0 })
-        .orderBy("statsAlias.points_for_ladder", "DESC")
-        .addOrderBy("statsAlias.login", "ASC")
-        .leftJoinAndSelect('statsAlias.login', 'login')
-        .getMany();
-        if (scores === undefined)
-            return (undefined);
-        return (scores);
+        const statsRepository = getRepository(StatEntity);
+        return statsRepository.find({
+            relations: ["login"],
+            where: { match_number: MoreThan(0) },
+            order: { points_for_ladder: "DESC", login: "ASC" }
+        })
+        .then((response) => {
+            const scores = response;
+            console.log(`Get scores players has succeeded.`);
+            return scores;
+        })
+        .catch((error) => {
+            console.log(`Get scores players has failed...`);
+            console.log(`details:`, error);
+            // throw new InternalServerErrorException( { error: "whaaat !!?" } );
+            return undefined;
+        })
     }
 
 }

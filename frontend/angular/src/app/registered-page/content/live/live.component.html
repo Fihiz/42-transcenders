@@ -2,7 +2,7 @@
 <p class="count">Current games played: {{ size }}</p>
 <div class="list">
 	<li class="item" *ngFor="let party of parties">
-		<a href="#">
+		<a routerLink="../game/{{ party.game_id }}">
 			<img class="party" src="https://dummyimage.com/200x130/08638C/aaa">
 			<p class="left">{{ party.player1.pseudo }}</p>
 			<p class="versus">VS</p>

@@ -41,11 +41,23 @@ export class GameService {
     }
     else if (type === "School") {
       login = "Moldu_01";
+      type = "School";
+    }
+    else if (type === "Moldu_02") {
+      login = "Moldu_02";
       type = "Classic";
     }
-    else if (type === "Custom") {
-      login = "Moldu_02";
-      // type = "Classic";
+    else if (type === "Moldu_03") {
+      login = "Moldu_03";
+      type = "Classic";
+    }
+    else if (type === "Moldu_04") {
+      login = "Moldu_04";
+      type = "Classic";
+    }
+    else if (type === "Moldu_05") {
+      login = "Moldu_05";
+      type = "Classic";
     }
     const data = {
       login: login,
@@ -58,6 +70,20 @@ export class GameService {
     .catch((error) => {
       console.log(error);
     });
+  }
+
+  async getPartyById(id: number): Promise<if_game_object> {
+    const response = await axios.get(`http://127.0.0.1:3000/cb-game/party/${id}`);
+    console.log(response);
+    const party = response.data;
+    return party;
+  }
+
+  async getPartyByLogin(): Promise<if_game_object> {
+    const login = this.globalService.login;
+    const response = await axios.get(`http://127.0.0.1:3000/cb-game/party/${login}`);
+    const party = response.data;
+    return party;
   }
 
 }

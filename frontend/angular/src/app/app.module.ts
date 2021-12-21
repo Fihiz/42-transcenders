@@ -24,6 +24,7 @@ import { AuthComponent } from './auth-page/auth/auth.component';
 import { InputPromptComponent } from './auth-page/input-prompt/input-prompt.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NotFoundComponent } from './registered-page/content/not-found/not-found.component';
+import { GameComponent } from './registered-page/content/game/game.component';
 
 const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoConnect: false} };
 
@@ -47,6 +48,7 @@ const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoCo
     AuthComponent,
     InputPromptComponent,
     NotFoundComponent,
+    GameComponent,
   ],
   imports: [
     BrowserModule,

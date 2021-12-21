@@ -15,4 +15,7 @@ INSERT INTO "t_api_user_data" ("last_name", "first_name", "mail", "created", "up
 INSERT INTO "t_game_type" ("game_type_id", "game_aspect", "ball_size", "map_type", "initial_speed", "racket_size") VALUES
 (1, 'https://dummyimage.com/150x100/324448/aaa', 1, 'Classic', 1, 50),
 (2, 'https://dummyimage.com/150x100/43B6B2/aaa', 10, 'School', 2, 75),
-(3, 'https://dummyimage.com/150x100/F97D64/aaa', 15, 'Custom', 3, 75);
+-- (3, 'https://dummyimage.com/150x100/F97D64/aaa', 15, 'Custom', 3, 75);
+(3, 'https://dummyimage.com/150x100/F97D64/aaa', 15, 'Moldu_03', 3, 75),
+(4, 'https://dummyimage.com/150x100/F97D64/aaa', 15, 'Moldu_04', 3, 75),
+(5, 'https://dummyimage.com/150x100/F97D64/aaa', 15, 'Moldu_05', 3, 75);
