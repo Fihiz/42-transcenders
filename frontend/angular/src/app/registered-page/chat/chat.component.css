@@ -305,4 +305,5 @@ body {
   
   #header-conv-nav {
 	justify-content: flex-start;
+	padding: 0px; /* To not hide the send bar on my mac on mobile version */
   }

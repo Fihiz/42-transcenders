@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NgxTypedJsComponent } from 'ngx-typed-js';
+//import { NgxTypedJsComponent } from 'ngx-typed-js';
 
 @Component({
   selector: 'app-auth-page',
@@ -7,7 +7,7 @@ import { NgxTypedJsComponent } from 'ngx-typed-js';
   styleUrls: ['./auth-page.component.css'],
 })
 export class AuthPageComponent {
-	@ViewChild(NgxTypedJsComponent) typed: NgxTypedJsComponent | undefined;
+	//@ViewChild(NgxTypedJsComponent) typed: NgxTypedJsComponent | undefined;
   constructor() {}
 
   onRegister() {
