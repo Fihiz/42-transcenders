@@ -26,9 +26,20 @@
             <i class="bi bi-three-dots-vertical"></i>
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item">Join a room</a>
-            <a class="dropdown-item" (click)="onCreateRoom()">Create a room</a>
+            <a class="dropdown-item" (click)="onActivateJoinRoomForm()">Join a room</a>
+            <a class="dropdown-item" (click)="onActivateRoomForm()">Create a room</a>
           </div>
+					<div class="hidden creationRoomForm" id="creationRoomForm">
+						<input class="inputs" placeholder="room-name" id="room-name">
+						<input class="inputs" placeholder="members" id="members">
+						<input class="inputs" placeholder="psswd (optionnal)" id="password">
+						<button value="submit" (click)="onCreateRoom()" class='button-interactRoom'>submit</button>
+					</div>
+					<div class="hidden joinRoomForm" id="joinRoomForm">
+						<input class="inputs" placeholder="room-name" id="room-name-join">
+            <input class="inputs" placeholder="room-password" id="room-password-join">
+						<button value="submit" (click)="onJoinRoom()" class='button-interactRoom'>submit</button>
+					</div>
         </div>
 
         <form class="form-inline">
@@ -53,12 +64,21 @@
     <div class="list-conv">
       <div id="plist" class="people-list">
         <ul class="list-unstyled chat-list mt-2 mb-0">
- 
           <div class="conversations" *ngFor="let conversation of listConv">
-            <img src="{{ conversation.avatar }}">
-            <button class="name" (click)="onSelectConv(conversation.id)">{{ conversation.name }}></button>
+            <li class="clearfix">
+              <img
+                src="{{ conversation.avatar }}"
+                alt="avatar"
+              />
+              <div class="about">
+                <button class="name" (click)="onSelectConv(conversation.conv_id)">{{ conversation.name }}></button>
+                <div class="status">
+                  <i class="fa fa-circle online"></i> online
+                </div>
+              </div>
+            </li>
+            <li class="clearfix">
           </div>
-
         </ul>
       </div>
     </div>
@@ -92,10 +112,6 @@
               </div>
             </div>
             <div class="chat-header clearfix">
-              <img
-                src="{{ currentConv.avatar }}"
-                alt="avatar"
-              />
             </div>
             <div class="chat-about">
               <h6 class="m-b-0">{{ currentConv.name }}</h6>
@@ -110,9 +126,18 @@
         <div class="chat-history">
           <ul class="m-b-0">
             <div class="messages" *ngFor="let message of convMessages">
-              <img src="{{ message.avatar }}" alt='avatar'>
-               <div>{{ message.body }}</div>
-               <div>{{ message.date }}</div>
+              <li class="clearfix">
+                <div class="message-data text-right">
+                  <span class="message-data-time">{{ message.date }}</span>
+                  <img
+                    src="{{ message.avatar }}"
+                    alt="avatar"
+                  />
+                </div>
+                <div class="message other-message float-right">
+                  {{ message.content }}
+                </div>
+              </li>
             </div>
           </ul>
         </div>
@@ -124,6 +149,7 @@
           type="text"
           class="form-control"
           placeholder="Enter text here..."
+					id="input-message"
         />
         <div class="input-group-prepend">
           <button type="button" class="btn btn-outline-primary" (click)="onSendMessage()">

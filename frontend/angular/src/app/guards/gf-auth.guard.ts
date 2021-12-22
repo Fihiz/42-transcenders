@@ -38,7 +38,6 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    console.log('notre global login', this.global.login);
     if (
       this.global.login != undefined
       // ||

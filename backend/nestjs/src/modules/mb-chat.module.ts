@@ -7,7 +7,8 @@ import { ConversationEntity } from 'src/entities/eb-conversation.entity';
 import { MessageEntity } from 'src/entities/eb-message.entity';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { ChatGateway } from 'src/gateways/chat.gateway';
-import { ConvService } from 'src/services/newConv/sb-conv.service';
+import { ChatterService } from 'src/services/chatter/sb-chatter.service';
+import { ConvService } from 'src/services/Conv/sb-conv.service';
 import { ChatService } from 'src/services/sb-chat.service';
 import { UserService } from 'src/services/sb-user.service';
 import { Repository } from 'typeorm';
@@ -16,7 +17,7 @@ import { ConvModule } from './mb-conv.module';
 
 @Module({
     imports: [Repository, ConvModule, TypeOrmModule.forFeature([ ChatterEntity, ConversationEntity, WebAppUserEntity, MessageEntity, ApiUserDataEntity])],
-    providers: [ ChatService, UserService, ChatGateway, ConvService],
+    providers: [ ChatService, UserService, ChatGateway, ConvService, ChatterService],
     controllers: [ChatController],
 })
 export class ChatModule {}

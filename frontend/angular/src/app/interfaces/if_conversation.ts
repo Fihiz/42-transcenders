@@ -1,13 +1,8 @@
-export enum convType {
-  "public",
-  "private",
-  "protected"
-}
 
 export interface if_conversation {
-    id: number;
+    conv_id: number;
     avatar: string;
-    type: convType;
+    type: string;
     name: string;
     password: string;
     members: Array<string>

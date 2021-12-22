@@ -5,7 +5,6 @@ import { if_message } from '../interfaces/if-message';
 import { Socket } from "ngx-socket-io";
 import { if_user } from '../interfaces/if-user';
 import { GlobalService } from './sf-global.service';
-import { ThrowStmt } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root',
@@ -59,7 +58,7 @@ export class UserService implements OnInit {
     const message: if_message = {
         id: socket.ioSocket.id,
         login: this.global.login as string,
-        body: 'connection',
+        content: 'connection',
         to: ['nobody'],
         conv_id:0,
         date: new Date(),

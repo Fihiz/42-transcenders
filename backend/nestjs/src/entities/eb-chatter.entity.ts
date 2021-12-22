@@ -28,17 +28,5 @@ export class ChatterEntity {
     type: "timestamp"
   })
   muted_until: Date;
-
-  @Column({
-    type: "timestamp",
-    default: new Date()
-  })
-  created: Date;
-
-  @Column({
-    type: "timestamp",
-    default: new Date()
-  })
-  updated: Date;
   
 }

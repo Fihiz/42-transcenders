@@ -306,3 +306,38 @@ body {
 #header-conv-nav {
   justify-content: flex-start;
 }
+
+.hidden {
+	display: none;
+	color: black;
+}
+
+.creationRoomForm {
+  width: 100%;
+  display: flexbox;
+  flex-wrap: wrap;
+  flex-direction: column;
+  border: lightcoral;
+  border-style: groove;
+}
+
+.button-interactRoom {
+  width: 100%;
+  border-style: dotted;
+}
+
+.joinRoomForm {
+  width: 100%;
+  display: flexbox;
+  justify-self: center;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: lightcoral;
+  border-style: groove;
+}
+
+.inputs {
+  width: 100%;
+}

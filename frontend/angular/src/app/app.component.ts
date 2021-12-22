@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
       id: this.global.socketId,
       login: this.global.login as string,
       to:['nobody'],
-      body:'loging-out',
+      content:'loging-out',
       date: new Date(),
       conv_id: 0,
       avatar: '',

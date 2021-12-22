@@ -1,6 +1,6 @@
-import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { ConversationEntity } from "src/entities/eb-conversation.entity";
-import { ConvService } from "src/services/newConv/sb-conv.service";
+import { ConvService } from "src/services/Conv/sb-conv.service";
 import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService, Message } from 'src/services/sb-global-data.service';
 import { json } from "stream/consumers";
@@ -29,8 +29,7 @@ export class ConnectedGateway {
 			const index = GlobalDataService.loginIdMap.get(keyIndex).indexOf(theWantedId);
 			GlobalDataService.loginIdMap.get(keyIndex).splice(index, 1);
 			if (GlobalDataService.loginIdMap.get(keyIndex).length === 0)
-				GlobalDataService.loginIdMap.delete(keyIndex); // -> signaler a tt le monde
-			console.log('map after disconnect', GlobalDataService.loginIdMap);
+				GlobalDataService.loginIdMap.delete(keyIndex)
 		}
 	}
 
@@ -43,11 +42,10 @@ export class ConnectedGateway {
 			else {
 				GlobalDataService.loginIdMap.set(message.login, [message.id]);
 			}
-			console.log('new connection', GlobalDataService.loginIdMap)
       conversations = await this.convService.findAllConv(message.login);
 		}
 		this.server.emit('users', await this.chatService.getUsers());
-    this.server.emit('allConversations', conversations);
+    this.server.to(GlobalDataService.loginIdMap.get(message.login)).emit('allConversations', conversations);
 	}
 
 	@SubscribeMessage('log-out')

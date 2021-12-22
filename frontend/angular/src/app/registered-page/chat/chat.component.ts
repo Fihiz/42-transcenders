@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { if_message } from 'src/app/interfaces/if-message';
-import { convType, if_conversation } from 'src/app/interfaces/if_conversation';
+import { if_conversation } from 'src/app/interfaces/if_conversation';
 import { if_emission } from 'src/app/interfaces/if_emmission';
 import { ChatService } from 'src/app/services/sf-chat.service';
 import { GlobalService } from 'src/app/services/sf-global.service';
@@ -17,11 +17,11 @@ export class ChatComponent implements OnInit {
   users: Array<string> = new Array();
   currentConv: if_conversation = {
     avatar: '',
-    id: 0,
+    conv_id: 0,
     members: new Array(),
     name: '',
     password: '',
-    type: convType.public,
+    type: 'public',
   };
   listConv: Array<if_conversation> = [];
   emission: if_emission = {
@@ -37,103 +37,90 @@ export class ChatComponent implements OnInit {
 
 
   onSendMessage() {
-    const content = "content message test";
-    // recuperer le message
+    const content = (<HTMLInputElement>document.getElementById('input-message')).value;
     console.log('sendMEssage')
     this.emission.data = {
-      conv_id: this.currentConv,
+      conv_id: this.currentConv.conv_id,
       date: new Date(),
-      body: content,
+      content: content
     }
     this.emission.socketId = this.global.socketId as string;
     this.socket.emit('message', this.emission);
   }
 
   onSelectOneToOneUserConv() {
+		console.log('selectOneToOneUser');
     const selectedUser: string = (<HTMLInputElement>document.getElementById('search-user'))?.value;
-
-    let tmp;
-    /* check si selctedUser === au client et si la conv existe */
-    if (selectedUser === this.global.login &&
-       (tmp = this.listConv.find(
-         conv => conv.members[0] === conv.members[1] 
-         && conv.members[0] === selectedUser
-         ) as if_conversation)) {
-      this.currentConv = tmp
+    const LoginEqUsr = this.chatService.loginEqSelectedUsrANDmembersEqLogin(this.listConv, selectedUser);
+    const LoginDifUsr = this.chatService.loginDifSelectedUsrANDuserFound(this.listConv, selectedUser);
+    (<HTMLInputElement>document.getElementById('search-user')).value = '';
+    if (LoginEqUsr) {
+      console.log('conv found 0');
+      this.currentConv = LoginEqUsr;
+      this.emission = this.chatService.emission('getMessages', this.currentConv, this.currentConv.conv_id);
     }
-    else if (selectedUser != this.global.login &&
-            (tmp = this.listConv.find(
-              conv => conv.members.find(
-                member => member === selectedUser)
-            ) as if_conversation)) {
-      console.log('conv found')
-      this.currentConv = tmp;
+    else if (LoginDifUsr) {
+      console.log('conv found 1')
+      this.currentConv = LoginDifUsr;
+      this.emission = this.chatService.emission('getMessages', this.currentConv, this.currentConv.conv_id);
     }
     else {
-      this.socket.emit('newConversation', {
-        login: this.global.login,
-        socketId: this.global.socketId,
-        data: {
-          id: 0,
-          avatar: '../../../assets/profile-picture/ageraud.jpeg',
-          type: 'private',
-          name: this.chatService.createPrivateRoom(this.global.login as string, selectedUser),
-          password: '',
-          members: new Array<string>(selectedUser, this.global.login as string)
-      }})
-      console.log('current_conv = ', this.currentConv)
+      const data = this.chatService.createPrivateRoom(selectedUser);
+      this.emission = this.chatService.emission('newConversation', this.currentConv, 0, data);
     }
 	}
 
-  onCreateRoom() {
+	onActivateRoomForm() {
+		document.getElementById("creationRoomForm")?.classList.remove("hidden");
+    document.getElementById('joinRoomForm')?.classList.add('hidden');
+	}
+
+  async onCreateRoom() {
     console.log("create room");
-    // recuperer les valeurs pour creer la conversation
+    const res = await this.chatService.takeAndCheck()
+    if (res.status != 'ok')
+      alert('error in room parameters');
     const newConv: if_conversation = {
       avatar: "",
-      id: 0,
-      name: 'room1',
-      password: '',
-      type: convType.public,
-      members: new Array<string>()
+      conv_id: 0,
+      name: res.data.roomName,
+      password: res.data.password,
+      type: res.data.password.length === 0 ? 'public' : 'protected',
+      members: res.data.members
     }
-    this.emission.data = newConv;
-    this.emission.socketId = this.global.socketId as string,
-    this.socket.emit('newConversation', this.emission);
+    this.emission = this.chatService.emission('newConversation', this.currentConv, 0, newConv);
   }
 
   onSelectConv(value: any) {
-    console.log("value = ", value)
-    this.currentConv = value;
-    const message: if_message = {
-      id: this.global.socketId,
-      avatar: '',
-      conv_id: value,
-      login: this.global.login as string,
-      date: new Date(),
-      body: this.currentConv.toString(),
-      to: []
-    }
-    this.emission.data = message;
-    this.emission.socketId = this.global.socketId as string,
-    this.socket.emit('getMessages', this.emission);
+		console.log('SelectRoom');
+		this.currentConv = this.chatService.getConvFromId(value, this.listConv, this.currentConv);
+    this.emission = this.chatService.emission('getMessages', this.currentConv, value);
   }
 
 
+	onActivateJoinRoomForm() {
+		document.getElementById('joinRoomForm')?.classList.remove('hidden');
+    document.getElementById('creationRoomForm')?.classList.add('hidden');
+	}
 
+	onJoinRoom() {
+		document.getElementById('joinRoomForm')?.classList.add('hidden');
+		const roomName = (<HTMLInputElement>document.getElementById('room-name-join'))?.value;
+    const roomPassword = (<HTMLInputElement>document.getElementById('room-password-join'))?.value;
+    this.emission = this.chatService.emission('joinRoom', this.currentConv, 0, {roomName: roomName, roomPassword: roomPassword});
+	}
 
   ngOnInit(): void {
     this.socket.on('users', (data: any) => {
-      console.log('users = ', data)
         this.users = data;
     });
-    this.socket.on('allMessages', (data: any) => {
-      console.log("data = ", data)
-      if (this.currentConv == data.conv_id) {
-        this.convMessages = data.body;
-      }
+    this.socket.on('allMessages', (data: if_message[]) => {
+			this.convMessages.splice(0, this.convMessages.length);
+			for (const mess of data) {
+				this.convMessages.push(mess);
+			}
     });
     this.socket.on('allConversations', (data: any) => {
-      console.log('allConversations = ', data);
       this.listConv = data as Array<if_conversation>;
     });
     this.socket.on('newConversation', (data: any) => {

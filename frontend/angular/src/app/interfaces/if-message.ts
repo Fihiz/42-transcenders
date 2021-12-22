@@ -3,7 +3,7 @@ export interface if_message {
     conv_id: number;
     login: string;
     date: Date;
-    body:string;
+    content:string;
     to: Array<string>;
     avatar: string;
 }
