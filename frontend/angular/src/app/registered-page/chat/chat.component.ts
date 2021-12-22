@@ -41,7 +41,7 @@ export class ChatComponent implements OnInit {
 	if (this.inputMessage)
 		this.socket.emit('message', this.inputMessage );
 	
-	/* Clean the sending line, may be different ways to deal with */
+	/* Clean the sending line, may have different ways to deal with */
 	if (this.inputMessage)
 	{
 		console.log('Cleaning line');
@@ -63,5 +63,6 @@ export class ChatComponent implements OnInit {
 	  const li = document.createElement("li");
 	  li.appendChild(document.createTextNode(inputMessage));
 	  return li;
+		//let original = document.getElementsByClassName("messages-to-print");
   	}
 }

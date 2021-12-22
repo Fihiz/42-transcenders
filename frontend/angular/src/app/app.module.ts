@@ -25,6 +25,7 @@ import { InputPromptComponent } from './auth-page/input-prompt/input-prompt.comp
 import { NotFoundComponent } from './registered-page/content/not-found/not-found.component';
 
 import { GlobalService } from './services/sf-global.service';
+import { NgxTypedJsModule } from 'ngx-typed-js';
 
 
 /* In case your front is not served from the same domain as your server, you have to pass the URL of your server. */
@@ -57,6 +58,7 @@ const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoCo
     OnlineStatusModule,
     ReactiveFormsModule,
     SocketIoModule.forRoot(config),
+	NgxTypedJsModule
   ],
   providers: [GlobalService],
   bootstrap: [AppComponent],
