@@ -59,8 +59,8 @@ export class ChatGateway {
 
 	@SubscribeMessage('newConversation')
 	async newConversation(@MessageBody() emission, @MessageBody('data') newConvDatas: ConversationEntity) {
-    if (await this.ConvService.newConvcheckValue(newConvDatas) === false)
-      return (this.emitFail(emission.login, 'error in input'));
+    // if (await this.ConvService.newConvcheckValue(newConvDatas) === false)
+    //   return (this.emitFail(emission.login, 'error in input'));
 		const tmp = await this.ConvService.createConv(newConvDatas) as any;
     if (tmp.success === true) {
       const convId  = tmp.data.identifiers[0].conv_id;

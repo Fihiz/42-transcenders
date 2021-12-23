@@ -36,8 +36,13 @@ export class ChatComponent implements OnInit {
 							private chatService : ChatService) { }
 
 
+	clearInputValues (str: string) {
+		(<HTMLInputElement>document.getElementById(str)).value="";
+	}
+
   onSendMessage() {
-    const content = (<HTMLInputElement>document.getElementById('input-message')).value;
+	const content = (<HTMLInputElement>document.getElementById('input-message')).value;
+	this.clearInputValues('input-message');
     console.log('sendMEssage')
     this.emission.data = {
       conv_id: this.currentConv.conv_id,
@@ -47,6 +52,12 @@ export class ChatComponent implements OnInit {
     this.emission.socketId = this.global.socketId as string;
     this.socket.emit('message', this.emission);
   }
+
+  keyUpEnter(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+        this.onSendMessage();
+    }
+}
 
   onSelectOneToOneUserConv() {
 		console.log('selectOneToOneUser');
@@ -106,7 +117,9 @@ export class ChatComponent implements OnInit {
 	onJoinRoom() {
 		document.getElementById('joinRoomForm')?.classList.add('hidden');
 		const roomName = (<HTMLInputElement>document.getElementById('room-name-join'))?.value;
-    const roomPassword = (<HTMLInputElement>document.getElementById('room-password-join'))?.value;
+	const roomPassword = (<HTMLInputElement>document.getElementById('room-password-join'))?.value;
+	this.clearInputValues('room-name-join');
+	this.clearInputValues('room-password-join');
     this.emission = this.chatService.emission('joinRoom', this.currentConv, 0, {roomName: roomName, roomPassword: roomPassword});
 	}
 

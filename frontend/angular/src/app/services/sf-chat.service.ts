@@ -72,11 +72,20 @@ export class ChatService {
     return (emission);
   }
 
+  clearInputValues (str: string) {
+	(<HTMLInputElement>document.getElementById(str)).value="";
+  }
+
   async takeAndCheck() {
     const roomName = (<HTMLInputElement>document.getElementById("room-name")).value;
     const members = (<HTMLInputElement>document.getElementById("members")).value.split(', ');
     const password = (<HTMLInputElement>document.getElementById("password")).value;
-    document.getElementById('creationRoomForm')?.classList.add('hidden');
+	document.getElementById('creationRoomForm')?.classList.add('hidden');
+	// clear values in inputs
+	this.clearInputValues("room-name");
+	this.clearInputValues("members");
+	this.clearInputValues("password");
+
     const response = (await axios.post("http://127.0.0.1:3000/cb-chat/check", {data: roomName,})).data;
     if (response === 'ok') {
       return ({

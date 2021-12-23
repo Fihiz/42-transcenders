@@ -14,7 +14,97 @@
     </div>
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="dropdown">
+		  <!-- NEW TEST DROPDOWN -->
+		<div class="dropdown">
+
+			<button
+			  class="btn btn-light btn-sm"
+			  type="button"
+			  id="dropdownMenuButton"
+			  data-toggle="dropdown"
+			  aria-haspopup="true"
+			  aria-expanded="false">
+			<i class="bi bi-three-dots-vertical"></i>
+			</button>
+		  
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			  
+			  <!--join a room-->
+			  <li>
+				<a class="dropdown-item">
+				  Join a room &raquo;
+				</a>
+				<ul class="dropdown-menu dropdown-submenu">
+				  <li>
+					  <!-- SOIT DANS UN A-DROPDOWN, le +: centré mais texte depasse  -->
+					<!-- <a class="dropdown-item">
+					  <input class="form-control" 
+					  placeholder="Room name"
+					  type="room-btn">
+					  <input class="form-control"
+					  placeholder="Password (if needed)"
+					  type="room-btn">
+					<button type="submit" class="btn btn-dark">Submit</button></a> -->
+					<!-- SOIT 3 INPUTS, le +: texte ne depasse plus du placeholder  -->
+					
+					<input class="form-control" 
+					  placeholder="Room name"
+					  id="room-name-join"
+					  type="room-btn"
+					  >
+					  <input class="form-control"
+					  id="room-password-join"
+					  placeholder="Password (if needed)"
+					  type="room-btn"
+					  >
+					  <button type="submit"
+					  class="btn btn-secondary btn-sm btn-block"
+					  (click)="onJoinRoom()"
+					  >
+					  Submit</button>
+					
+				  </li>
+				  
+				</ul>
+			  </li>
+		  
+			  <!--create a room-->
+			  <li>
+				  <a class="dropdown-item">
+					Create a room &raquo;
+				  </a>
+				  <ul class="dropdown-menu dropdown-submenu">
+					<li>
+						<input class="form-control"
+						id="room-name"
+						placeholder="Room name"
+						type="room-btn"
+						>
+						<input class="form-control"
+						id="members"
+						placeholder="Members"
+						type="room-btn"
+						>
+						<input class="form-control"
+						id="password"
+						placeholder="Password (optional)"
+						type="room-btn"
+						>
+						<button type="submit"
+						class="btn btn-secondary btn-sm btn-block"
+						(click)="onCreateRoom()"
+						>
+						Submit</button>
+
+					</li>
+				  </ul>
+			  </li>
+		  
+			</ul>
+		  </div>
+
+		  <!-- ORIGINAL DROPDOWN -->
+        <!-- <div class="dropdown">
           <button
             class="btn btn-light btn-sm"
             type="button"
@@ -40,7 +130,7 @@
             <input class="inputs" placeholder="room-password" id="room-password-join">
 						<button value="submit" (click)="onJoinRoom()" class='button-interactRoom'>submit</button>
 					</div>
-        </div>
+        </div> -->
 
         <form class="form-inline">
           <input
@@ -150,6 +240,7 @@
           class="form-control"
           placeholder="Enter text here..."
 					id="input-message"
+			(keyup)="keyUpEnter($event)"
         />
         <div class="input-group-prepend">
           <button type="button" class="btn btn-outline-primary" (click)="onSendMessage()">

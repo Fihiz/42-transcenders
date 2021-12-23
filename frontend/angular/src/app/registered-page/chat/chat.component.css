@@ -341,3 +341,38 @@ body {
 .inputs {
   width: 100%;
 }
+
+ /* NEW TEST DROPDOWN */
+.dropdown-menu li {
+	position: relative;
+  }
+  .dropdown-menu .dropdown-submenu {
+	display: none;
+	position: absolute;
+	left: 100%;
+	top: -7px;
+  }
+  .dropdown-menu .dropdown-submenu-left {
+	right: 100%;
+	left: auto;
+  }
+  .dropdown-menu > li:hover > .dropdown-submenu {
+	display: block;
+  }
+  
+  /* .dropdown-item {
+	  background-color: white;
+  } */
+
+  /* .dropdown-item:hover{
+    background-color: red;
+  } */
+
+  a:hover {
+	background-color: lightgray;
+	cursor: pointer;
+  }
+  
+  input[type="room-btn"]::placeholder {  
+	font-size: 12px;	
+} 
