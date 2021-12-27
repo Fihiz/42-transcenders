@@ -73,7 +73,7 @@ export class ChatService {
   }
 
   clearInputValues (str: string) {
-	(<HTMLInputElement>document.getElementById(str)).value="";
+	(<HTMLInputElement>document.getElementById(str)).value = "";
   }
 
   async takeAndCheck() {

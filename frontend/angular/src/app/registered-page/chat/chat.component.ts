@@ -35,14 +35,15 @@ export class ChatComponent implements OnInit {
               private global: GlobalService,
 							private chatService : ChatService) { }
 
-
+  /* Normally not needed twice, can use the chat-service one */
 	clearInputValues (str: string) {
-		(<HTMLInputElement>document.getElementById(str)).value="";
+		(<HTMLInputElement>document.getElementById(str)).value = "";
 	}
 
   onSendMessage() {
 	const content = (<HTMLInputElement>document.getElementById('input-message')).value;
-	this.clearInputValues('input-message');
+	// this.clearInputValues('input-message');
+  this.chatService.clearInputValues('input-message');
     console.log('sendMEssage')
     this.emission.data = {
       conv_id: this.currentConv.conv_id,
@@ -118,8 +119,10 @@ export class ChatComponent implements OnInit {
 		document.getElementById('joinRoomForm')?.classList.add('hidden');
 		const roomName = (<HTMLInputElement>document.getElementById('room-name-join'))?.value;
 	const roomPassword = (<HTMLInputElement>document.getElementById('room-password-join'))?.value;
-	this.clearInputValues('room-name-join');
-	this.clearInputValues('room-password-join');
+	// this.clearInputValues('room-name-join');
+  this.chatService.clearInputValues('room-name-join');
+	// this.clearInputValues('room-password-join');
+  this.chatService.clearInputValues('room-password-join');
     this.emission = this.chatService.emission('joinRoom', this.currentConv, 0, {roomName: roomName, roomPassword: roomPassword});
 	}
 
