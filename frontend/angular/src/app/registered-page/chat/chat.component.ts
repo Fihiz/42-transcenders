@@ -36,9 +36,9 @@ export class ChatComponent implements OnInit {
 							private chatService : ChatService) { }
 
   /* Normally not needed twice, can use the chat-service one */
-	clearInputValues (str: string) {
-		(<HTMLInputElement>document.getElementById(str)).value = "";
-	}
+	// clearInputValues (str: string) {
+	// 	(<HTMLInputElement>document.getElementById(str)).value = "";
+	// }
 
   onSendMessage() {
 	const content = (<HTMLInputElement>document.getElementById('input-message')).value;

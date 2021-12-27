@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { OnlineStatusModule } from 'ngx-online-status';
 import { ReactiveFormsModule} from '@angular/forms';
+import { NgxTypedJsModule } from 'ngx-typed-js';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -57,6 +58,7 @@ const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoCo
     OnlineStatusModule,
     ReactiveFormsModule,
     SocketIoModule.forRoot(config),
+    NgxTypedJsModule
   ],
   providers: [GlobalService],
   bootstrap: [AppComponent],
