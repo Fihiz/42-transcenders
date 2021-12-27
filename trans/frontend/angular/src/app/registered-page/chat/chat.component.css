@@ -1,333 +1,348 @@
-/* MAIN */
-
 body {
-    background-color: rgb(216, 144, 166);
-    background-size: 100%;
-    min-width: 200px;
-    height: 100%;
-    min-height: 100%;
-    padding: 15px;
-
+  max-height: 80vh;
+  height: 100%;
+  margin: 0px;
+  /* min-height: 200px; */
 }
 
-.container {
-    background-color: chocolate;
-    height: 100%;
+.col {
+  background-color: aquamarine;
 }
 
-.row {
-    background-color: cornflowerblue;
-    height: 100%;
+.top {
+  background-color: lavender;
+  /* height: 35%; */
+  height: 50%;
+  /* overflow-y: auto; */
+  min-height: 250px;
 }
 
-.col-lg-12 {
-    background-color: cyan;
-    height: 100%;
+.bottom {
+  background-color: rgb(86, 122, 201);
+  /* height: 65%; */
+  height: 50%;
+
+  overflow-y: auto;
+  min-height: 250px;
+  /* position: relative; */
 }
 
-.card {
-/*test*/
-    /* min-height: 900px; */
-    min-height: 200px;
-    height: 100%;
-    background:rgb(56, 56, 66);
-    transition: .5s;
-    border: 0;
-    margin-bottom: 30px;
-    border-radius: .55rem;
-    position: relative;
-    width: 100%;
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
+.chat-pong {
+  text-align: center;
+  margin-top: 15px;
+}
+/* 
+.search {
+  background-color: lightcyan; */
+/* overflow-y: auto; */
+/* height: 40px;
+} */
+
+.list-conv {
+  background-color: seashell;
+  overflow-y: auto;
+  min-height: 60%;
+  max-height: 70%;
+}
+.b-conv-name {
+  background-color: rgb(214, 76, 76);
+  /* text-align: center; */
+  /* max-height: 20%; */
+}
+.b-messages {
+  background-color: thistle;
+  overflow-y: auto;
+  min-height: 60%;
+  max-height: 70%;
+}
+.b-typing {
+  background-color: silver;
+  /* text-align: center; */
 }
 
-/* SCROLLABLE /*
-/*test*/
-.scrollable-people{
-overflow-y: auto;
-max-height: 600px;
-height: fit-content;
-}
-.scrollable-message{
-overflow-y: auto;
-max-height: 600px;
-}
+/* ---------  BOOTDEY  -------------- */
 
-
-/* CHAT-APP */
-
-.chat-app .people-list {
-    background-color: darkgreen;
-    height: 100%;
-    width: 280px;
-    position: absolute;
-    left: 0;
-    top: 0;
-    padding: 20px;
-    z-index: 7
-}
-
-.chat-app .chat {
-    margin-left: 280px;
-    border-left: 1px solid #eaeaea;
-}
-
-.chat {
-background-color: darkmagenta;
-height: 100%;
-}
-
-/* PEOPLE */
-
+/* PEOPLE LIST */
 .people-list {
-    -moz-transition: .5s;
-    -o-transition: .5s;
-    -webkit-transition: .5s;
-    transition: .5s
+  -moz-transition: 0.5s;
+  -o-transition: 0.5s;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
 }
 
 .people-list .chat-list li {
-    padding: 10px 15px;
-    list-style: none;
-    border-radius: 3px
+  padding: 10px 15px;
+  list-style: none;
+  border-radius: 3px;
 }
 
 .people-list .chat-list li:hover {
-    background: #efefef;
-    cursor: pointer
+  background: #efefef;
+  cursor: pointer;
 }
 
 .people-list .chat-list li.active {
-    background: #efefef
+  background: #efefef;
 }
 
 .people-list .chat-list li .name {
-    font-size: 15px
+  font-size: 15px;
 }
 
 .people-list .chat-list img {
-    width: 45px;
-    border-radius: 50%
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .people-list img {
-    float: left;
-    border-radius: 50%
+  float: left;
+  border-radius: 50%;
 }
 
 .people-list .about {
-    float: left;
-    padding-left: 8px
+  float: left;
+  padding-left: 8px;
 }
 
 .people-list .status {
-    color: #999;
-    font-size: 13px
-}
-
-/* CHAT HEADER */
-
-.chat .chat-header {
-    padding: 15px 20px;
-    border-bottom: 2px solid #f4f7f6;
-    
-    /* height: 10%; */
-}
-
-.chat-header {
-background-color: deeppink;
-height: 10%;
-}
-
-.chat .chat-header img {
-    float: left;
-    border-radius: 40px;
-    width: 40px
-}
-
-.chat .chat-header .chat-about {
-    float: left;
-    padding-left: 10px
-}
-
-/* HISTORY */
-
-.chat .chat-history {
-    padding: 20px;
-    border-bottom: 2px solid #fff;
-    /* background-color: darksalmon; */
-    /* min-height: 100%; */
-    /*test*/
-    /* min-height: 600px; */
-}
-
-.chat-history {
-background-color: rgb(113, 144, 120);
-height: 80%;
-}
-
-.chat .chat-history ul {
-    padding: 0
-}
-
-.chat .chat-history ul li {
-    list-style: none;
-    margin-bottom: 30px
-}
-
-.chat .chat-history ul li:last-child {
-    margin-bottom: 0px
-}
-
-.chat .chat-history .message-data {
-    margin-bottom: 15px
-}
-
-.chat .chat-history .message-data img {
-    border-radius: 40px;
-    width: 40px
-}
-
-.chat .chat-history .message-data-time {
-    color: #434651;
-    padding-left: 6px
-}
-
-.chat .chat-history .message {
-    color: #444;
-    padding: 18px 20px;
-    line-height: 26px;
-    font-size: 16px;
-    border-radius: 7px;
-    display: inline-block;
-    position: relative
-}
-
-.chat .chat-history .message:after {
-    bottom: 100%;
-    left: 7%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-bottom-color: #fff;
-    border-width: 10px;
-    margin-left: -10px
-}
-
-.chat .chat-history .my-message {
-    background: #efefef
-}
-
-.chat .chat-history .my-message:after {
-    bottom: 100%;
-    left: 30px;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-bottom-color: #efefef;
-    border-width: 10px;
-    margin-left: -10px
-}
-
-.chat .chat-history .other-message {
-    background: #e8f1f3;
-    text-align: right
-}
-
-.chat .chat-history .other-message:after {
-    border-bottom-color: #e8f1f3;
-    left: 93%
-}
-
-/* CHAT-MESSAGE */
-
-.chat .chat-message {
-    padding: 20px
+  color: #999;
+  font-size: 13px;
 }
 
 /* STATUS */
 .online,
 .offline,
 .me {
-    margin-right: 2px;
-    font-size: 8px;
-    vertical-align: middle
+  margin-right: 2px;
+  font-size: 8px;
+  vertical-align: middle;
 }
 
 .online {
-    color: #86c541
+  color: #86c541;
 }
 
 .offline {
-    color: #e47297
+  color: #e47297;
 }
 
 .me {
-    color: #1d8ecd
+  color: #1d8ecd;
 }
 
 .float-right {
-    float: right
+  float: right;
 }
 
 .clearfix:after {
-    visibility: hidden;
-    display: block;
-    font-size: 0;
-    content: " ";
-    clear: both;
-    height: 0
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
 }
 
-/* RESIZE MEDIA */
+/* CHAT */
 
-@media only screen and (max-width: 767px) {
-    .chat-app .people-list {
-        height: 465px;
-        width: 100%;
-        overflow-x: auto;
-        background: #fff;
-        left: -400px;
-        display: none
-    }
-    .chat-app .people-list.open {
-        left: 0
-    }
-    .chat-app .chat {
-        margin: 0
-    }
-    .chat-app .chat .chat-header {
-        border-radius: 0.55rem 0.55rem 0 0
-    }
-    .chat-app .chat-history {
-        height: 300px;
-        overflow-x: auto
-    }
+/* .card {
+  background: #fff;
+  transition: 0.5s;
+  border: 0;
+  margin-bottom: 30px;
+  border-radius: 0.55rem;
+  position: relative;
+  width: 100%;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
+} */
+
+.chat-app .people-list {
+  width: 280px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 20px;
+  z-index: 7;
 }
 
-@media only screen and (min-width: 768px) and (max-width: 992px) {
-    .chat-app .chat-list {
-        height: 650px;
-        overflow-x: auto
-    }
-    .chat-app .chat-history {
-        height: 600px;
-        overflow-x: auto
-    }
+.chat-app .chat {
+  margin-left: 280px;
+  border-left: 1px solid #eaeaea;
 }
 
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-    .chat-app .chat-list {
-        height: 480px;
-        overflow-x: auto
-    }
-    .chat-app .chat-history {
-        height: calc(100vh - 350px);
-        overflow-x: auto
-    }
+.chat .chat-header {
+  padding: 15px 20px;
+  border-bottom: 2px solid #f4f7f6;
+}
+
+.chat .chat-header img {
+  float: left;
+  border-radius: 40px;
+  width: 40px;
+}
+
+.chat .chat-header .chat-about {
+  float: left;
+  padding-left: 10px;
+}
+
+.chat .chat-history {
+  padding: 20px;
+}
+
+.chat .chat-history ul {
+  padding: 0;
+}
+
+.chat .chat-history ul li {
+  list-style: none;
+  margin-bottom: 30px;
+}
+
+.chat .chat-history ul li:last-child {
+  margin-bottom: 0px;
+}
+
+.chat .chat-history .message-data {
+  margin-bottom: 15px;
+}
+
+.chat .chat-history .message-data img {
+  border-radius: 40px;
+  width: 40px;
+}
+
+.chat .chat-history .message-data-time {
+  color: #434651;
+  padding-left: 6px;
+}
+
+.chat .chat-history .message {
+  color: #444;
+  padding: 18px 20px;
+  line-height: 26px;
+  font-size: 16px;
+  border-radius: 7px;
+  display: inline-block;
+  position: relative;
+}
+
+.chat .chat-history .message:after {
+  bottom: 100%;
+  left: 7%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-bottom-color: #fff;
+  border-width: 10px;
+  margin-left: -10px;
+}
+
+.chat .chat-history .my-message {
+  background: #efefef;
+}
+
+.chat .chat-history .my-message:after {
+  bottom: 100%;
+  left: 30px;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-bottom-color: #efefef;
+  border-width: 10px;
+  margin-left: -10px;
+}
+
+.chat .chat-history .other-message {
+  background: #e8f1f3;
+  text-align: right;
+}
+
+.chat .chat-history .other-message:after {
+  border-bottom-color: #e8f1f3;
+  left: 88%;
+}
+
+.chat .chat-message {
+  padding: 20px;
+}
+
+.text-right {
+  text-align: end;
+}
+
+/* Three points and search bar */
+
+.container {
+  padding: 0px;
+}
+
+.navbar {
+  justify-content: space-between;
+}
+
+.bi,
+.btn-outline-success {
+  color: #528fac;
+}
+
+/*Line Search with wen no wrap (wrapping was a pb)*/
+.form-inline {
+  flex-flow: nowrap;
+}
+
+.name {
+  border-style: hidden;
+}
+
+#header-conv-nav {
+  justify-content: flex-start;
+}
+
+.hidden {
+	display: none;
+	color: black;
+}
+
+.creationRoomForm {
+  width: 100%;
+  display: flexbox;
+  flex-wrap: wrap;
+  flex-direction: column;
+  border: lightcoral;
+  border-style: groove;
+}
+
+.button-interactRoom {
+  width: 100%;
+  border-style: dotted;
+}
+
+.joinRoomForm {
+  width: 100%;
+  display: flexbox;
+  justify-self: center;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: lightcoral;
+  border-style: groove;
+}
+
+.inputs {
+  width: 100%;
+}
+
+.add-user-form {
+  height: 100%;
+  width: 100%;
 }

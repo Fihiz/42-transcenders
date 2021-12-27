@@ -23,7 +23,7 @@ export class InvitationEntity {
   })
   invitation_type: string;
 
-  @OneToOne(() => ConversationEntity, {nullable: true})
+  @OneToOne(() => ConversationEntity, {primary: true})
   @JoinColumn({name: 'room'})
   room: ConversationEntity['conv_id'];
 

@@ -1,73 +1,179 @@
+<link
+  href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+  rel="stylesheet"
+/>
+
 <body>
-    
-
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-
-<div class="container">
-<div class="row clearfix">
-    <div class="col-lg-12">
-        <div class="card chat-app">
-            
-            <div id="plist" class="people-list">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search...">
-                    <div class="input-group-prepend">
-                        <!-- <span class="input-group-text"><i class="fa fa-search"></i></span> -->
-                        <button type="button" class="btn btn-outline-primary"><i class="fa fa-search"></i></button>
-                    </div>
-                </div>
-                <div class="scrollable-people">
-                <ul class="list-unstyled chat-list mt-2 mb-0">
-                    <div class="conversations" *ngFor="let conversation of listConv">
-                        <img src="{{ conversation.avatar }}" alt="avatar">
-                        <button class="name" (click)="onSelectConv(conversation.id)">{{ conversation.name }}></button>
-                    </div>
-                </ul>
-            </div>
-        </div>
-            <div class="chat">
-                <div class="chat-header clearfix">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-                            </a>
-                            <div class="chat-about">
-                                <h6 class="m-b-0">Aiden Chavez</h6>
-                                <!-- <small>Last seen: 2 hours ago</small> -->
-                            </div>
-                        </div>
-                        <div class="col-lg-6 hidden-sm text-right">
-                            <a href="javascript:void(0);" class="btn btn-outline-secondary" (click)="onCreateRoom()"><i class="fa fa-camera"></i></a>
-                            <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
-                            <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
-                            <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="scrollable-message">
-                <div class="chat-history">
-                    <ul class="m-b-0">
-                       <div class="messages" *ngFor="let message of convMessages">
-                           <img src="{{ message.avatar }}" alt='avatar'>
-                            <div>{{ message.body }}</div>
-                            <div>{{ message.date }}</div>
-                       </div>
-
-                    </ul>
-                </div>
-            </div>
-                <div class="chat-message clearfix">
-                    <div class="input-group mb-0">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-send"></i></span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Enter text here...">                                    
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="row top">
+    <div class="chat-pong">
+      <h4>
+        <span class="badge badge-dark"
+          >Pong chat <i class="bi bi-chat"></i
+        ></span>
+      </h4>
     </div>
-</div>
-</div>
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="dropdown">
+          <button
+            class="btn btn-light btn-sm"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" (click)="onActivateJoinRoomForm()">Join a room</a>
+            <a class="dropdown-item" (click)="onActivateRoomForm()">Create a room</a>
+          </div>
+					<div class="hidden creationRoomForm" id="creationRoomForm">
+						<input class="inputs" placeholder="room-name" id="room-name">
+						<input class="inputs" placeholder="members" id="members">
+						<input class="inputs" placeholder="psswd (optionnal)" id="password">
+						<button value="submit" (click)="onCreateRoom()" class='button-interactRoom'>submit</button>
+					</div>
+					<div class="hidden joinRoomForm" id="joinRoomForm">
+						<input class="inputs" placeholder="room-name" id="room-name-join">
+            <input class="inputs" placeholder="room-password" id="room-password-join">
+						<button value="submit" (click)="onJoinRoom()" class='button-interactRoom'>submit</button>
+					</div>
+        </div>
+
+        <form class="form-inline">
+          <input
+          class="form-control mr-sm-2"
+          type="text"
+          placeholder="Search"
+          aria-label="Search"
+          id="search-user"
+          list="user-list"
+        />
+          <datalist id="user-list" >
+            <option *ngFor="let user of users">{{ user }}</option>
+          </datalist>
+
+          <button class="btn btn-outline-light my-2 my-sm-0" type="button" (click)="onSelectOneToOneUserConv()">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+      </nav>
+    </div>
+    <div class="list-conv">
+      <div id="plist" class="people-list">
+        <ul class="list-unstyled chat-list mt-2 mb-0">
+          <div class="conversations" *ngFor="let conversation of listConv">
+            <li class="clearfix">
+              <img
+                src="{{ conversation.avatar }}"
+                alt="avatar"
+              />
+              <div class="about">
+                <button class="name" (click)="onSelectConv(conversation.conv_id)">{{ conversation.name }}></button>
+                <div class="status">
+                  <i class="fa fa-circle online"></i> online
+                </div>
+              </div>
+            </li>
+            <li class="clearfix">
+          </div>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row bottom">
+    <div class="b-conv-name">
+      <div class="chat">
+        <div class="container">
+          <nav
+            class="navbar navbar-expand-lg navbar-light bg-light"
+            id="header-conv-nav"
+          >
+            <div class="dropdown">
+              <button
+                class="btn btn-light btn-sm"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i class="bi bi-three-dots-vertical"></i>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" (click)="onActivateAddfriend()">Add a friend</a>
+                <a class="dropdown-item" href="#">Invite to play</a>
+                <a class="dropdown-item" (click)="onActivateMute()">Mute</a>
+                <a class="dropdown-item" (click)="onActivateBan()">Ban</a>
+                <a class="dropdown-item" (click)="onActivateLeave()">Leave</a>
+              </div>
+            </div>
+            <div class="hidden add-user-form" id="add-user-form">
+              <form class="form-inline">
+                <input
+                class="form-control mr-sm-2"
+                type="text"
+                placeholder="Search"
+                aria-label="Search"
+                id="search-friend"
+                list="user-list"
+              />
+              <datalist id="user-list" >
+                <option *ngFor="let user of users">{{ user }}</option>
+              </datalist>
+              <button class="" type="button" (click)="onAddFriend()">
+                add friend
+              </button>
+              </form>
+            </div>
+            <div class="chat-header clearfix"></div>
+            <div class="chat-about">
+              <h6 class="m-b-0">{{ currentConv.name }}</h6>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="b-messages">
+      <div class="chat">
+        <div class="chat-history">
+          <ul class="m-b-0">
+            <div class="messages" *ngFor="let message of convMessages">
+              <li class="clearfix">
+                <div class="message-data text-right">
+                  <span class="message-data-time">{{ message.date }}</span>
+                  <img
+                    src="{{ message.avatar }}"
+                    alt="avatar"
+                  />
+                </div>
+                <div class="message other-message float-right">
+                  {{ message.content }}
+                </div>
+              </li>
+            </div>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="b-typing">
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter text here..."
+					id="input-message"
+        />
+        <div class="input-group-prepend">
+          <button type="button" class="btn btn-outline-primary" (click)="onSendMessage()">
+            <i class="fa fa-send"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>

@@ -1,11 +1,10 @@
+
 export interface if_conversation {
-    id: number;
+    conv_id: number;
     avatar: string;
     type: string;
     name: string;
     password: string;
-    created: Date;
-    updated: Date;
-    members: Set<string>
+    members: Array<string>
   }
   

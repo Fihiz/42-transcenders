@@ -17,11 +17,11 @@ export class AppComponent implements OnInit {
     const mess: if_message = {
       id: this.global.socketId,
       login: this.global.login as string,
-      avatar: '',
       to:['nobody'],
-      body:'loging-out',
+      content:'loging-out',
       date: new Date(),
-      conv_id: 0
+      conv_id: 0,
+      avatar: '',
     };
     this.socket.emit('log-out', mess);
   }
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
     this.socket.on('disconnection', () => {
       console.log('disconnection');
       this.socket.disconnect();
-      this.router.navigate(['/']); // -> signaler a tt le monde
+      this.router.navigate(['/']);
       this.global.login = undefined;
       this.user.user.status = 'offline';
     });

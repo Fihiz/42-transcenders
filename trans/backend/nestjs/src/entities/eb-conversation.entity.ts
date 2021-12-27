@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('t_conversation')
 export class ConversationEntity {
@@ -10,15 +10,13 @@ export class ConversationEntity {
 
   @Column({
 		type: "varchar",
-    length: 10
   })
-  room_type: string;
+  type: string;
 
   @Column({
 		type: "varchar",
-    length: 20
   })
-  room_name: string;
+  name: string;
 
   @Column({
 		type: "varchar",
@@ -27,14 +25,9 @@ export class ConversationEntity {
   password: string;
 
   @Column({
-		type: "timestamp",
-    default: new Date()
+		type: "varchar",
+    array: true
   })
-  created: Date;
-
-  @Column({
-		type: "timestamp",
-    default: new Date()
-  })
-  updated: Date;
+  members: Array<string>;
 }
+

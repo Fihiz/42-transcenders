@@ -1,9 +1,9 @@
 export interface if_message {
     id:any;
-    avatar: string;
     conv_id: number;
     login: string;
-    date: Date;
-    body:string;
+    date: Date | string;
+    content:string;
     to: Array<string>;
+    avatar: string;
 }
