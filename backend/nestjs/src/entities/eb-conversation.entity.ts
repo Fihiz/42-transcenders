@@ -29,5 +29,10 @@ export class ConversationEntity {
     array: true
   })
   members: Array<string>;
+
+  @Column({
+    type: "varchar"
+  })
+  avatar: string
 }
 

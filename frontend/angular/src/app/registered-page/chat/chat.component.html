@@ -161,10 +161,6 @@
           <div class="conversations" *ngFor="let conversation of listConv">
             <li class="clearfix">
               <img src="{{ conversation.avatar }}" alt="avatar" />
-              <img
-                src="../../../assets/profile-pictures/ageraud.jpeg"
-                alt="avatar"
-              />
               <div class="about">
                 <button
                   class="name"
@@ -240,7 +236,12 @@
               </form>
             </div>
             <!-- pgoudet -->
-            <div class="chat-header clearfix"></div>
+            <div class="chat-header clearfix">
+              <span *ngIf="currentConv.avatar">
+                <img src="{{ currentConv.avatar }}" alt="avatar" />
+              </span>
+            </div>
+
             <div class="chat-about">
               <h6 class="m-b-0">{{ currentConv.name }}</h6>
             </div>
