@@ -44,14 +44,23 @@ export class ChatComponent implements OnInit {
 	const content = (<HTMLInputElement>document.getElementById('input-message')).value;
 	// this.clearInputValues('input-message');
   this.chatService.clearInputValues('input-message');
-    console.log('sendMEssage')
-    this.emission.data = {
-      conv_id: this.currentConv.conv_id,
-      date: new Date(),
-      content: content
+    console.log('sendMEssage');
+    /* Protecting empty line or white spaces thanks to trim
+    -add a protect-placeholder to disable send button
+    as input-prompt to block submit if empty?- */
+    if (content.trim().length !== 0)
+    {
+      console.log('Prepare emission for emit');
+      this.emission.data = {
+        conv_id: this.currentConv.conv_id,
+        date: new Date(),
+        content: content
+      }
+      this.emission.socketId = this.global.socketId as string;
+      this.socket.emit('message', this.emission);
     }
-    this.emission.socketId = this.global.socketId as string;
-    this.socket.emit('message', this.emission);
+    else
+      console.log('Warning : cannot send an empty message');
   }
 
   keyUpEnter(event: KeyboardEvent) {
