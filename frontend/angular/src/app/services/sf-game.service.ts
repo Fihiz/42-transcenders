@@ -1,17 +1,27 @@
-import { Injectable } from '@angular/core';
-import { if_game } from '../interfaces/if-game';
+import { Injectable, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Socket } from "ngx-socket-io";
+import { GameComponent } from '../registered-page/content/game/game.component';
 import { GlobalService } from './sf-global.service';
+
+let frameId: number;
+let globalSocket: Socket;
+let loop: number = 0;
+let up: boolean = false;
+let down: boolean = false;
+let right: boolean = false;
+let left: boolean = false;
+let space: boolean = false;
+let loaded: boolean = false;
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameService {
 
-  gameCanvas : any;
-  gameContext : any;
+  game?: any;
 
-  constructor(private socket: Socket, private global: GlobalService) {
+  constructor(private socket: Socket, private global: GlobalService, private router: Router) {
     this.socket.on('message', (message : any) => {
       console.log(this.socket.ioSocket.id, ' : ', message);
     });
@@ -19,8 +29,34 @@ export class GameService {
     globalSocket = this.socket;
   }
 
-  emitLogin() {
-    this.socket.emit('hello', {id: this.socket.ioSocket.id, login: this.global.login});
+  listenKeyPress(e:KeyboardEvent) {
+    if (e.key === "ArrowUp" && up === false)
+      up = true;
+    else if (e.key === "ArrowDown" && down === false)
+      down = true;
+    else if (e.key === "ArrowLeft" && left === false)
+      left = true;
+    else if (e.key === "ArrowRight" && right === false)
+      right = true;
+    else if (e.key === " " && space === false)
+      space = true;
+  }
+
+  listenKeyRelease(e:KeyboardEvent) {
+    if (e.key === "ArrowUp")
+      up = false;
+    else if (e.key === "ArrowDown")
+      down = false;
+    else if (e.key === "ArrowLeft")
+      left = false;
+    else if (e.key === "ArrowRight")
+      right = false;
+    else if (e.key === " ")
+      space = false;
+  }
+
+  emitLogin(gameId: number) {
+    this.socket.emit('hello', {id: this.socket.ioSocket.id, login: this.global.login, gameId: gameId});
   }
 
   emitLogout() {
@@ -89,7 +125,7 @@ export class GameService {
       gameCanvas: HTMLCanvasElement;
       gameContext: CanvasRenderingContext2D;
 
-      constructor(private global: GlobalService) {
+      constructor(private global: GlobalService, private router: Router) {
         this.gameCanvas = <HTMLCanvasElement>document.getElementById("game-canvas");
         this.gameContext = <CanvasRenderingContext2D>this.gameCanvas.getContext("2d");
         this.listenForReadyClick = false;
@@ -123,7 +159,12 @@ export class GameService {
           this.game.ball.update(game.ball);
         });
         globalSocket.on('welcome', (fullGame : any) => {
-          // console.log(fullGame);
+          console.log(fullGame);
+          if (fullGame.notFound === true)
+          {
+            this.router.navigate(['/pong/live']);
+            return ;
+          }
           this.game.board = fullGame.board;
           this.game.border = fullGame.border;
           this.game.fontColor = fullGame.fontColor;
@@ -133,6 +174,16 @@ export class GameService {
           this.game.rightPaddle.update(fullGame.changing.rightPaddle);
           this.game.ball.update(fullGame.changing.ball);
         });
+      }
+
+      stopListen() {
+        // globalSocket.off('update');
+        // console.log(globalSocket);
+        if (globalSocket?.ioSocket?._callbacks?.$welcome)
+          delete globalSocket.ioSocket._callbacks.$welcome;
+        if (globalSocket?.ioSocket?._callbacks?.$update)
+          delete globalSocket.ioSocket._callbacks.$update;
+        // console.log('after', globalSocket);
       }
 
       listenClick(e: MouseEvent) {
@@ -207,10 +258,6 @@ export class GameService {
         }
       }
 
-      // drawButtons() {
-
-      // }
-
       drawEnd() {
         // end screen
         if (this.game.status === "Finished")
@@ -248,7 +295,7 @@ export class GameService {
               // console.log(`Something went wrong, no one won the game....`);
             }
           }
-          // this.drawButtons();
+          frameId = -1;
           cancelAnimationFrame(frameId);
         }
       }
@@ -273,11 +320,12 @@ export class GameService {
 
       callDrawLoop(test : Game) {
         test.drawLoop();
+        if (frameId != -1 && loop == 1)
+          frameId = requestAnimationFrame(test.callback);
       }
       
       callback() {
         setTimeout(test.callDrawLoop, 1000/60, test);
-        frameId = requestAnimationFrame(test.callback);
       }
     }
 
@@ -359,16 +407,1187 @@ export class GameService {
       }
     }
 
-    let test = new Game(this.global);
+    let test = new Game(this.global, this.router);
+    this.game = test;
+    loop = 1;
     frameId = requestAnimationFrame(test.callback);
   }
 
   stopDrawing() {
     cancelAnimationFrame(frameId);
+    frameId = -1;
+    loop = 0;
+    if (this.game)
+    {
+      this.game.stopListen();
+      // delete this.game;
+      // console.log(this.game);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  listenClick(e:MouseEvent) {/** */
+    if (loaded === false &&
+      e.target === (<HTMLCanvasElement>document.getElementById("game-canvas")) &&
+      e.offsetX < 10 && e.offsetY < 10)
+      {
+        loaded = true;
+        class Game {
+          map: string[][];
+          items: number;
+          charX: number;
+          charY: number;
+          charH: number;
+          charW: number;
+          charVSpeed: number;
+          charFrame: number;
+          charLookingLeft: boolean;
+          charItems: number;
+          itemChar: string[];
+          itemImageData: ImageData;
+          wallImageData: ImageData;
+          ladderImageData: ImageData;
+          gameCanvas: HTMLCanvasElement;
+          gameContext: CanvasRenderingContext2D;
+    
+          constructor() {
+            this.map = [
+              "WWWWWWWWWWW".split(''),
+              "W   IdI   W".split(''),
+              "W W WWW WLW".split(''),
+              "W W     WLW".split(''),
+              "W WWWWWWWLW".split(''),
+              "W       WLW".split(''),
+              "W       WIW".split(''),
+              "WW      WLW".split(''),
+              "W       WLW".split(''),
+              "W       WLW".split(''),
+              "W       WLWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW".split(''),
+              "W         I     I            WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWIILIIWWWWWWWWWWWWWWWWWWddW   W".split(''),
+              "W         WWWLWW             WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWIWLWIWWWWWWWWWWWWWWWWWW    WLW".split(''),
+              "WI           L               WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWLWWWWWWWWWWWWWWWWWWWW WWWWLW".split(''),
+              "W            L     I         WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWLWWWWWWWWWWWWWWWWWWdW WdWWLW".split(''),
+              "W     LWWWWWWW  WWWWW     I  WWWWWWWWWWWWW   I                                              IWWLW".split(''),
+              "W     L                                  W WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW WWWWWWWLW".split(''),
+              "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWLW W                                      W           WLW".split(''),
+              "W                                       LW W  W W W WWWWW WWWWWWWWWWWWWWWWWWWWWWWWW  WWWWWWWW WLW".split(''),
+              "W    L                                  LW W  WWWWWWW  IW WIW   WIWIWIW                    IW WLW".split(''),
+              "W    L I                                LW W WI W   W WWW W   W         WWWWWWWWWWWWWW  WW WIWWLW".split(''),
+              "W    L I                                LWdW  W W W W   W WWWWW WWWWWWWW   W   W   WIW     WI WLW".split(''),
+              "W    L I             W L W              LW WW W W W WWW W                W   W   W   W     dW WLW".split(''),
+              "W    L              LW I WL       LWW WWWWI   W W W   W WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW  WWWWW WLW".split(''),
+              "W    L              LWdddWL       L           W   W W                                         WLW".split(''),
+              "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWLWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWLW".split(''),
+              "W                                                                                             WLW".split(''),
+              "W   I                                               L     IL                        I       I WLW".split(''),
+              "W           I       W                              I   L                 L                L   WLW".split(''),
+              "W                            W                                                                WLW".split(''),
+              "WW      W             I                                          I    L       L               WLW".split(''),
+              "W                                                                          I            L     WLW".split(''),
+              "W          I     W               W                                                            WLW".split(''),
+              "W    W                                                                L         L             WLW".split(''),
+              "W                        W                                   L             L           L      WLW".split(''),
+              "W          W                                                                                  WLW".split(''),
+              "W                                   W                 L                                       WLW".split(''),
+              "W                W                                                   L             L          WLW".split(''),
+              "W      W                 W          WWWWWWWWWWWWWWWWWWWWWWWWWWWWW                             WLW".split(''),
+              "W                                                                                             WLW".split(''),
+              "W                                                                    L            I       I   WLW".split(''),
+              "W                   W               I                                  L                L     WLW".split(''),
+              "W                            W                                                                WLW".split(''),
+              "WW      W             I                                          I    L       L               WLW".split(''),
+              "W                                                                          I            L     WLW".split(''),
+              "W          I     W               W                                                            WLW".split(''),
+              "W    W                                                                L         L             WLW".split(''),
+              "W                        W                                   L             L           L      WLW".split(''),
+              "W          W                                                                                  WLW".split(''),
+              "W                                   W                                                         WLW".split(''),
+              "W                                                                                             WLW".split(''),
+              "W                                                                                             LLW".split(''),
+              "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW".split(''),
+            ];
+            this.charItems = 0;
+            this.items = 0;
+            for(let i = 1; i < 2022; i++)
+            {
+              if (i === 1024)
+                this.map.splice(9, 0, "W    I  WLW".split(''));
+              else if (i % 144 === 0)
+                this.map.splice(9, 0, "W I     WLW".split(''));
+              else if (i % 217 === 0)
+                this.map.splice(9, 0, "W      IWLW".split(''));
+              else if (i % 69 === 0)
+                this.map.splice(9, 0, "W    I  WLW".split(''));
+              else
+                this.map.splice(9, 0, "W       WLW".split(''));
+            }
+            this.map.forEach(line => {
+              line.forEach(char => {
+                if (char === 'I')
+                  this.items++;
+              })
+            })
+            this.charX = 50;
+            this.charY = 300;
+            this.charH = 40;
+            this.charW = 40;
+            this.charVSpeed = 0;
+            this.charFrame = 1;
+            this.charLookingLeft = false;
+            this.gameCanvas = <HTMLCanvasElement>document.getElementById("game-canvas");
+            this.gameContext = <CanvasRenderingContext2D>this.gameCanvas.getContext("2d");
+            this.itemChar = ["                    ",
+              "                    ",
+              "                    ",
+              "                    ",
+              "                    ",
+              "          AA        ",
+              "       AAAFFA       ",
+              "      AFFAGGFA      ",
+              "     AFAEFFEAFA     ",
+              "      AECEECEA      ",
+              "     ABACCCCCBA     ",
+              "     ACCDCCCDCA     ",
+              "     ACCBCDCBCA     ",
+              "     ACBCCBCBCA     ",
+              "      ACBBBBCA      ",
+              "       ACBBCA       ",
+              "        ACCA        ",
+              "         AA         ",
+              "                    ",
+              "                    ",
+              "                    ",
+              "                    ",
+              "                    "];
+            // console.log(this.charX, this.charY);
+            this.itemImageData = this.gameContext.createImageData(50, 50);
+            this.wallImageData = this.gameContext.createImageData(50, 50);
+            this.ladderImageData = this.gameContext.createImageData(50, 50);
+            // console.log(this.map);
+            for(let i = 0; i < this.itemImageData.data.length; i += 4)
+            {
+              const x = Math.floor((i / 4)) % 50;
+              const y = Math.floor(i / 200);
+              this.setItemColor(i, Math.floor(x * 20 / 50), Math.floor(y * 23 / 50));
+              this.ladderImageData.data[i + 0] = 0;
+              this.ladderImageData.data[i + 1] = 68;
+              this.ladderImageData.data[i + 2] = 136;
+              this.ladderImageData.data[i + 3] = 255;
+              this.wallImageData.data[i + 0] = 200;
+              this.wallImageData.data[i + 1] = 0;
+              this.wallImageData.data[i + 2] = 0;
+              this.wallImageData.data[i + 3] = 255;
+              if (x < 7 || x > 42 ||
+                y < 6 || (y >= 17 && y < 23) || (y >= 35 && y < 41))
+              {
+                this.ladderImageData.data[i + 0] = 88;
+                this.ladderImageData.data[i + 1] = 41;
+                this.ladderImageData.data[i + 2] = 0;
+              }
+              if (y < 2 || y > 47 || y % 6 == 1 || (x + (Math.floor(y / 6) * 999)) % 17 == 0)
+              {
+                this.wallImageData.data[i + 0] = 100;
+                this.wallImageData.data[i + 1] = 100;
+                this.wallImageData.data[i + 2] = 100;
+              }
+            }
+          }
+
+          setItemColor(i: number, x: number, y: number) {
+            if (this.itemChar[y][x] == ' ')
+            {
+              this.itemImageData.data[i + 0] = 0;
+              this.itemImageData.data[i + 1] = 68;
+              this.itemImageData.data[i + 2] = 136;
+            }
+            else if (this.itemChar[y][x] == 'A')
+            {
+              this.itemImageData.data[i + 0] = 10;
+              this.itemImageData.data[i + 1] = 1;
+              this.itemImageData.data[i + 2] = 2;
+            }
+            else if (this.itemChar[y][x] == 'B')
+            {
+              this.itemImageData.data[i + 0] = 204;
+              this.itemImageData.data[i + 1] = 55;
+              this.itemImageData.data[i + 2] = 55;
+            }
+            else if (this.itemChar[y][x] == 'C')
+            {
+              this.itemImageData.data[i + 0] = 234;
+              this.itemImageData.data[i + 1] = 62;
+              this.itemImageData.data[i + 2] = 62;
+            }
+            else if (this.itemChar[y][x] == 'D')
+            {
+              this.itemImageData.data[i + 0] = 249;
+              this.itemImageData.data[i + 1] = 241;
+              this.itemImageData.data[i + 2] = 210;
+            }
+            else if (this.itemChar[y][x] == 'E')
+            {
+              this.itemImageData.data[i + 0] = 152;
+              this.itemImageData.data[i + 1] = 63;
+              this.itemImageData.data[i + 2] = 148;
+            }
+            else if (this.itemChar[y][x] == 'F')
+            {
+              this.itemImageData.data[i + 0] = 85;
+              this.itemImageData.data[i + 1] = 169;
+              this.itemImageData.data[i + 2] = 32;
+            }
+            else if (this.itemChar[y][x] == 'G')
+            {
+              this.itemImageData.data[i + 0] = 66;
+              this.itemImageData.data[i + 1] = 131;
+              this.itemImageData.data[i + 2] = 25;
+            }
+            this.itemImageData.data[i + 3] = 255;
+          }
+          
+          drawSpikes(i: number, j: number) {
+            this.gameContext.beginPath();
+            this.gameContext.moveTo(50 * i + 350 - this.charX - this.charW / 2, 50 * (j + 1) + 200 - this.charY - this.charH / 2);
+            this.gameContext.lineTo(5 + 50 * i + 350 - this.charX - this.charW / 2, 50 * j + 200 - this.charY - this.charH / 2);
+            this.gameContext.lineTo(10 + 50 * i + 350 - this.charX - this.charW / 2, 50 * (j + 1) + 200 - this.charY - this.charH / 2);
+            this.gameContext.lineTo(15 + 50 * i + 350 - this.charX - this.charW / 2, 50 * j + 200 - this.charY - this.charH / 2);
+            this.gameContext.lineTo(20 + 50 * i + 350 - this.charX - this.charW / 2, 50 * (j + 1) + 200 - this.charY - this.charH / 2);
+            this.gameContext.lineTo(25 + 50 * i + 350 - this.charX - this.charW / 2, 50 * j + 200 - this.charY - this.charH / 2);
+            this.gameContext.lineTo(30 + 50 * i + 350 - this.charX - this.charW / 2, 50 * (j + 1) + 200 - this.charY - this.charH / 2);
+            this.gameContext.lineTo(35 + 50 * i + 350 - this.charX - this.charW / 2, 50 * j + 200 - this.charY - this.charH / 2);
+            this.gameContext.lineTo(40 + 50 * i + 350 - this.charX - this.charW / 2, 50 * (j + 1) + 200 - this.charY - this.charH / 2);
+            this.gameContext.lineTo(45 + 50 * i + 350 - this.charX - this.charW / 2, 50 * j + 200 - this.charY - this.charH / 2);
+            this.gameContext.lineTo(50 + 50 * i + 350 - this.charX - this.charW / 2, 50 * (j + 1) + 200 - this.charY - this.charH / 2);
+            this.gameContext.lineTo(50 * i + 350 - this.charX - this.charW / 2, 50 * (j + 1) + 200 - this.charY - this.charH / 2);
+            this.gameContext.closePath();
+            this.gameContext.fillStyle = "#333333";
+            this.gameContext.fill();
+            this.gameContext.stroke();
+          }
+
+          drawRedSpikes(x: number, y: number) {
+            this.drawSpikes(x, y);
+            for(let i = 0; i < 5; i++)
+            {
+              this.gameContext.beginPath();
+              this.gameContext.moveTo(10 * i + 2 + 50 * x + 350 - this.charX - this.charW / 2, 50 * (y + 0.6) + 200 - this.charY - this.charH / 2);
+              this.gameContext.lineTo(10 * i + 5 + 50 * x + 350 - this.charX - this.charW / 2, 50 * y + 200 - this.charY - this.charH / 2);
+              this.gameContext.lineTo(10 * i + 8 + 50 * x + 350 - this.charX - this.charW / 2, 50 * (y + 0.6) + 200 - this.charY - this.charH / 2);
+              this.gameContext.closePath();
+              this.gameContext.fillStyle = "#AA0000";
+              this.gameContext.fill();
+              this.gameContext.stroke();
+            }
+          }
+
+          drawMap() {
+            this.gameContext.fillStyle = "#000000";
+            this.gameContext.fillRect(0, 0, 700, 400);
+            const min = Math.min(Math.floor((this.charY + 300) / 50), this.map.length);
+            for(let j = Math.max(Math.floor((this.charY - 300) / 50), 0); j < min; j++)
+            {
+              const min2 = Math.min(Math.floor((this.charX + 450) / 50), this.map[j].length);
+              for(let i = Math.max(Math.floor((this.charX - 450) / 50), 0); i < min2; i++)
+              {
+                if (this.map[j][i] == 'W')
+                  this.gameContext.putImageData(this.wallImageData, 50 * i + 350 - this.charX - this.charW / 2, 50 * j + 200 - this.charY - this.charH / 2);
+                else if (this.map[j][i] == ' ')
+                {
+                  this.gameContext.fillStyle = "#004488";
+                  this.gameContext.fillRect(50 * i + 350 - this.charX - this.charW / 2, 50 * j + 200 - this.charY - this.charH / 2, 50, 50);
+                }
+                else if (this.map[j][i] == 'd')
+                {
+                  this.gameContext.fillStyle = "#004488";
+                  this.gameContext.fillRect(50 * i + 350 - this.charX - this.charW / 2, 50 * j + 200 - this.charY - this.charH / 2, 50, 50);
+                  this.drawSpikes(i, j);
+                }
+                else if (this.map[j][i] == 'D')
+                {
+                  this.gameContext.fillStyle = "#004488";
+                  this.gameContext.fillRect(50 * i + 350 - this.charX - this.charW / 2, 50 * j + 200 - this.charY - this.charH / 2, 50, 50);
+                  this.drawRedSpikes(i, j);
+                  this.gameContext.beginPath();
+                  this.gameContext.ellipse(25 + 50 * i + 350 - this.charX - this.charW / 2, 20 + 50 * j + 200 - this.charY - this.charH / 2, 24, 10, 0, 0, 2 * Math.PI);
+                  this.gameContext.fillStyle = "#ffff00";
+                  this.gameContext.fill();
+                  this.gameContext.stroke();
+                }
+                else if (this.map[j][i] == 'L')
+                  this.gameContext.putImageData(this.ladderImageData, 50 * i + 350 - this.charX - this.charW / 2, 50 * j + 200 - this.charY - this.charH / 2);
+                else if (this.map[j][i] == 'I')
+                {
+                  this.gameContext.fillStyle = "#004488";
+                  this.gameContext.fillRect(50 * i + 350 - this.charX - this.charW / 2, 50 * j + 200 - this.charY - this.charH / 2, 50, 50);
+                  this.gameContext.putImageData(this.itemImageData, 50 * i + 350 - this.charX - this.charW / 2, 50 * j + 200 - this.charY - this.charH / 2);
+                }
+              }
+            }
+          }
+
+          drawChar() {
+            this.gameContext.beginPath();
+            if (!this.charLookingLeft)
+            {
+              if (this.charFrame > 10)
+                this.gameContext.arc(350, 200, this.charW / 2, (this.charFrame - 10) / 20, 2 * Math.PI - (this.charFrame - 10) / 20, false);
+              else
+                this.gameContext.arc(350, 200, this.charW / 2, (this.charFrame - 10) / 20, 2 * Math.PI - (this.charFrame - 10) / 20, true);
+            }
+            else
+            {
+              if (this.charFrame > 10)
+                this.gameContext.arc(350, 200, this.charW / 2, Math.PI + (this.charFrame - 10) / 20, 3 * Math.PI - (this.charFrame - 10) / 20, false);
+              else
+                this.gameContext.arc(350, 200, this.charW / 2, Math.PI + (this.charFrame - 10) / 20, 3 * Math.PI - (this.charFrame - 10) / 20 + 0.0001, true);
+            }
+            this.gameContext.lineTo(350, 200);
+            this.gameContext.closePath();
+            this.gameContext.lineWidth = 0;
+            this.gameContext.fillStyle = "#ffff00";
+            this.gameContext.fill();
+            this.gameContext.stroke();
+            this.charFrame = (this.charFrame + 1) % 20;
+          }
+
+          charcheck(i: number, j: number, c: string) : boolean {
+            return (this.map[Math.floor(j / 50)][Math.floor(i / 50)] == c ||
+              this.map[Math.floor((j + this.charH)/ 50)][Math.floor(i / 50)] == c ||
+              this.map[Math.floor((j + this.charH)/ 50)][Math.floor((i + this.charW)/ 50)] == c ||
+              this.map[Math.floor(j / 50)][Math.floor((i + this.charW)/ 50)] == c)
+          }
+
+          move() {
+            if (up && !down &&
+              this.charcheck(this.charX, this.charY, 'L') &&
+              !this.charcheck(this.charX, this.charY - 5, 'W'))
+              this.charY -= 5;
+            else if (!up && down &&
+              (this.charcheck(this.charX, this.charY + 5, 'L') ||
+              this.charcheck(this.charX, this.charY, 'L')) &&
+              !this.charcheck(this.charX, this.charY + 5, 'W'))
+              this.charY += 5;
+            if (left && !right && (!this.charcheck(this.charX - 5, this.charY, 'W')))
+            {
+              this.charLookingLeft = true;
+              this.charX -= 5;
+            }
+            else if (!left && right && (!this.charcheck(this.charX + 5, this.charY, 'W')))
+            {
+              this.charLookingLeft = false;
+              this.charX += 5;
+            }
+            else if (!left && right)
+            {
+              while (!this.charcheck(this.charX + 1, this.charY, 'W')) {
+                this.charX++;
+              }
+            }
+            else if (left && !right)
+            {
+              while (!this.charcheck(this.charX - 1, this.charY, 'W')) {
+                this.charX--;
+              }
+            }
+            if (space &&
+              (this.charcheck(this.charX, this.charY + 1, 'W') ||
+              this.charcheck(this.charX, this.charY + 1, 'L')))
+              {
+                if (this.charVSpeed >= 0)
+                  this.charVSpeed = -20;
+                else
+                  this.charVSpeed -= 3;
+                if (this.charVSpeed < -2000)
+                  this.charVSpeed = -2000;
+              }
+              
+          }
+
+          dead(x: number, y: number) {
+            if (this.charcheck(x, y, 'd') ||
+              this.charcheck(x, y, 'D'))
+            {
+              this.charX = 50;
+              this.charY = 100;
+              this.charVSpeed = 0;
+              for(let j = 0; j < this.map.length; j++)
+                for(let i = 0; i < this.map[j].length; i++)
+                  if (this.map[j][i] == 'D')
+                    this.map[j][i] = 'd';
+              if (this.map[Math.floor(y / 50)][Math.floor(x / 50)] == 'd')
+                this.map[Math.floor(y / 50)][Math.floor(x / 50)] = 'D';
+              else if (this.map[Math.floor((y + this.charH) / 50)][Math.floor(x / 50)] == 'd')
+                this.map[Math.floor((y + this.charH) / 50)][Math.floor(x / 50)] = 'D';
+              else if (this.map[Math.floor((y + this.charH) / 50)][Math.floor((x + this.charW) / 50)] == 'd')
+                this.map[Math.floor((y + this.charH) / 50)][Math.floor((x + this.charW) / 50)] = 'D';
+              else if (this.map[Math.floor(y / 50)][Math.floor((x + this.charW) / 50)] == 'd')
+                this.map[Math.floor(y / 50)][Math.floor((x + this.charW) / 50)] = 'D';
+              return true;
+            }
+            else
+              return false;
+          }
+
+          noWall() : boolean {
+            if (this.charVSpeed < 0)
+            {
+              for (let i = 0; i > this.charVSpeed; i -= this.charH)
+              {
+                if (this.charcheck(this.charX, this.charY + i, 'I'))
+                  this.takeItem(this.charX, this.charY + i);
+                if (this.dead(this.charX, this.charY + i))
+                  return false;
+                if (this.charcheck(this.charX, this.charY + i, 'W')/* || 
+                  (!space && this.charcheck(this.charX, this.charY + i, 'L'))*/)
+                return false;
+              }
+              return (!(this.charcheck(this.charX, this.charY + this.charVSpeed, 'W')/* ||
+                (!space && this.charcheck(this.charX, this.charY + this.charVSpeed, 'L'))*/));
+            }
+            else
+            {
+              for (let i = 0; i < this.charVSpeed; i += this.charH)
+              {
+                if (this.charcheck(this.charX, this.charY + i, 'I'))
+                  this.takeItem(this.charX, this.charY + i);
+                if (this.dead(this.charX, this.charY + i))
+                  return false;
+                if (this.charcheck(this.charX, this.charY + i, 'W') || 
+                  this.charcheck(this.charX, this.charY + i, 'L'))
+                  return false;
+              }
+              return (!(this.charcheck(this.charX, this.charY + this.charVSpeed, 'W') || 
+                this.charcheck(this.charX, this.charY + this.charVSpeed, 'L')));
+            }
+          }
+
+          gravity() {
+            this.charVSpeed += 1;
+            if (!this.noWall())
+            {
+              if (this.charVSpeed < 0)
+              {
+                // if (!this.charcheck(this.charX, this.charY - 1, 'W') &&
+                // (!space && !this.charcheck(this.charX, this.charY, 'L')))
+                if (!this.charcheck(this.charX, this.charY - 1, 'W'))
+                // if (!(this.charcheck(this.charX, this.charY - 1, 'W') ||
+                //     (!space && this.charcheck(this.charX, this.charY, 'L'))))
+                {
+                  while (!this.charcheck(this.charX, this.charY - this.charH, 'W')/* || 
+                    (!space && !this.charcheck(this.charX, this.charY - this.charH, 'L'))*/)
+                    this.charY -= this.charH;
+                  while (!this.charcheck(this.charX, this.charY - 1, 'W')/* || 
+                    (!space && !this.charcheck(this.charX, this.charY, 'L'))*/)
+                    this.charY--;
+                }
+                this.charVSpeed = 0;
+              }
+              else if (this.charVSpeed > 0)
+              {
+                if (!this.charcheck(this.charX, this.charY + 1, 'W') &&
+                    !this.charcheck(this.charX, this.charY + 1, 'L') &&
+                    !this.charcheck(this.charX, this.charY, 'L'))
+                {
+                  while(!this.charcheck(this.charX, this.charY + this.charH, 'W') &&
+                        !this.charcheck(this.charX, this.charY + this.charH, 'L'))
+                    this.charY += this.charH;
+                  while(!this.charcheck(this.charX, this.charY + 2, 'W') &&
+                        !this.charcheck(this.charX, this.charY + 2, 'L'))
+                    this.charY += 1;
+                }
+                this.charVSpeed = 0;
+              }
+            }
+            this.charY += this.charVSpeed;
+            // if (this.charVSpeed < 0)
+            // {
+            //   if (this.charcheck(this.charX, this.charY + this.charVSpeed, 'W'))
+            //   {
+            //     while (!this.charcheck(this.charX, this.charY - 1, 'W'))
+            //       this.charY--;
+            //     this.charVSpeed = 0;
+            //   }
+            //   else if (this.dead(this.charX, this.charY + this.charVSpeed))
+            //     this.charVSpeed = 0;
+            // }
+            // else if (!this.noWall())
+            // {
+            //   while(!this.charcheck(this.charX, this.charY + 1, 'W') &&
+            //         !this.charcheck(this.charX, this.charY + 1, 'L'))
+            //     this.charY++;
+            //   this.charVSpeed = 0;
+            // }
+            // this.charY += this.charVSpeed;
+          }
+
+          takeItem(x: number, y: number) {
+            if (this.map[Math.floor(y / 50)][Math.floor(x / 50)] == 'I')
+            {
+              this.map[Math.floor(y / 50)][Math.floor(x / 50)] = ' ';
+              this.charItems++;
+            }
+            if (this.map[Math.floor((y + this.charH) / 50)][Math.floor(x / 50)] == 'I')
+            {
+              this.map[Math.floor((y + this.charH) / 50)][Math.floor(x / 50)] = ' ';
+              this.charItems++;
+            }
+            if (this.map[Math.floor((y + this.charH) / 50)][Math.floor((x + this.charW) / 50)] == 'I')
+            {
+              this.map[Math.floor((y + this.charH) / 50)][Math.floor((x + this.charW) / 50)] = ' ';
+              this.charItems++;
+            }
+            if (this.map[Math.floor(y / 50)][Math.floor((x + this.charW) / 50)] == 'I')
+            {
+              this.map[Math.floor(y / 50)][Math.floor((x + this.charW) / 50)] = ' ';
+              this.charItems++;
+            }
+          }
+
+          drawScore() {
+            // this.gameContext.putImageData(this.itemImageData, 10, 10);
+            for (let j = 0; j < 50; j++)
+              for (let i = 0; i < 50; i++)
+              {
+                if (this.itemImageData.data[4 * (j * 50 + i)] != 0)
+                {
+                  this.gameContext.fillStyle = `rgb(${this.itemImageData.data[4 * (j * 50 + i)]}, ${this.itemImageData.data[4 * (j * 50 + i) + 1]}, ${this.itemImageData.data[4 * (j * 50 + i) + 2]})`;
+                  this.gameContext.fillRect(5 + i, 5 + j, 1, 1);
+                }
+              }
+            this.gameContext.font = "30px Comfortaa";
+            this.gameContext.fillStyle = "#ffffff";
+            this.gameContext.fillText(this.charItems.toString() + "/" + this.items.toString(), 60, 42, 600);
+          }
+    
+          drawLoop(game: Game) {
+            game.move();
+            // console.log(game.charX, game.charY);
+            game.takeItem(game.charX, game.charY);
+            game.gravity();
+            game.drawMap();
+            game.drawChar();
+            game.drawScore();
+            if (game.charItems === game.items)
+            {
+              game.gameContext.font = "150px Comfortaa";
+              game.gameContext.fillStyle = "#ffffff";
+              game.gameContext.fillText("VICTORY", 50, 250, 600);
+              cancelAnimationFrame(frameId);
+              frameId = -1;
+              loop = 0;
+            }
+          }
+
+          callDrawLoop(test : Game) {
+            test.drawLoop(test);
+            console.log(test, frameId);
+            if (frameId != -1 && loop == 2)
+              frameId = requestAnimationFrame(test.callback);
+          }
+    
+          callback() {
+            setTimeout(test.callDrawLoop, 1000/60, test);
+          }
+        }
+
+        const test = new Game();
+        this.game = test;
+        loop = 2;
+        frameId = requestAnimationFrame(test.callback);
+      }
+  }
+
+  startListen2() {/** */
+    window.addEventListener("click", this.listenClick);
+
+    window.addEventListener("keydown", this.listenKeyPress);
+
+    window.addEventListener("keyup", this.listenKeyRelease);
+  }
+
+  stopListen2() {/** */
+    window.removeEventListener("click", this.listenClick);
+
+    window.removeEventListener("keydown", this.listenKeyPress);
+
+    window.removeEventListener("keyup", this.listenKeyRelease);
+
+    loaded = false;
+  }
+
+  stopDrawing2() {/** */
+    frameId = -1;
+    loop = 0;
+    cancelAnimationFrame(frameId);
+    if(this.game)
+      delete this.game;
   }
 }
-
-let frameId: number;
-let globalSocket: Socket;
-let up: boolean = false;
-let down: boolean = false;
