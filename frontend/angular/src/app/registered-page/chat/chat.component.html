@@ -14,30 +14,27 @@
     </div>
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-		  <!-- NEW TEST DROPDOWN -->
-		<div class="dropdown">
+        <!-- NEW TEST DROPDOWN -->
+        <div class="dropdown">
+          <button
+            class="btn btn-light btn-sm"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
 
-			<button
-			  class="btn btn-light btn-sm"
-			  type="button"
-			  id="dropdownMenuButton"
-			  data-toggle="dropdown"
-			  aria-haspopup="true"
-			  aria-expanded="false">
-			<i class="bi bi-three-dots-vertical"></i>
-			</button>
-		  
-			<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-			  
-			  <!--join a room-->
-			  <li>
-				<a class="dropdown-item">
-				  Join a room &raquo;
-				</a>
-				<ul class="dropdown-menu dropdown-submenu">
-				  <li>
-					  <!-- SOIT DANS UN A-DROPDOWN, le +: centré mais texte depasse  -->
-					<!-- <a class="dropdown-item">
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <!--join a room-->
+            <li>
+              <a class="dropdown-item"> Join a room &raquo; </a>
+              <ul class="dropdown-menu dropdown-submenu">
+                <li>
+                  <!-- SOIT DANS UN A-DROPDOWN, le +: centré mais texte depasse  -->
+                  <!-- <a class="dropdown-item">
 					  <input class="form-control" 
 					  placeholder="Room name"
 					  type="room-btn">
@@ -45,65 +42,68 @@
 					  placeholder="Password (if needed)"
 					  type="room-btn">
 					<button type="submit" class="btn btn-dark">Submit</button></a> -->
-					<!-- SOIT 3 INPUTS, le +: texte ne depasse plus du placeholder  -->
-					
-					<input class="form-control" 
-					  placeholder="Room name"
-					  id="room-name-join"
-					  type="room-btn"
-					  >
-					  <input class="form-control"
-					  id="room-password-join"
-					  placeholder="Password (if needed)"
-					  type="room-btn"
-					  >
-					  <button type="submit"
-					  class="btn btn-secondary btn-sm btn-block"
-					  (click)="onJoinRoom()"
-					  >
-					  Submit</button>
-					
-				  </li>
-				  
-				</ul>
-			  </li>
-		  
-			  <!--create a room-->
-			  <li>
-				  <a class="dropdown-item">
-					Create a room &raquo;
-				  </a>
-				  <ul class="dropdown-menu dropdown-submenu">
-					<li>
-						<input class="form-control"
-						id="room-name"
-						placeholder="Room name"
-						type="room-btn"
-						>
-						<input class="form-control"
-						id="members"
-						placeholder="Members"
-						type="room-btn"
-						>
-						<input class="form-control"
-						id="password"
-						placeholder="Password (optional)"
-						type="room-btn"
-						>
-						<button type="submit"
-						class="btn btn-secondary btn-sm btn-block"
-						(click)="onCreateRoom()"
-						>
-						Submit</button>
+                  <!-- SOIT 3 INPUTS, le +: texte ne depasse plus du placeholder  -->
 
-					</li>
-				  </ul>
-			  </li>
-		  
-			</ul>
-		  </div>
+                  <input
+                    class="form-control"
+                    placeholder="Room name"
+                    id="room-name-join"
+                    type="room-btn"
+                  />
+                  <input
+                    class="form-control"
+                    id="room-password-join"
+                    placeholder="Password (if needed)"
+                    type="room-btn"
+                  />
+                  <button
+                    type="submit"
+                    class="btn btn-secondary btn-sm btn-block"
+                    (click)="onJoinRoom()"
+                  >
+                    Submit
+                  </button>
+                </li>
+              </ul>
+            </li>
 
-		  <!-- ORIGINAL DROPDOWN -->
+            <!--create a room-->
+            <li>
+              <a class="dropdown-item"> Create a room &raquo; </a>
+              <ul class="dropdown-menu dropdown-submenu">
+                <li>
+                  <input
+                    class="form-control"
+                    id="room-name"
+                    placeholder="Room name"
+                    type="room-btn"
+                  />
+                  <input
+                    class="form-control"
+                    id="members"
+                    placeholder="Members"
+                    type="room-btn"
+                  />
+                  <input
+                    class="form-control"
+                    id="password"
+                    placeholder="Password (optional)"
+                    type="room-btn"
+                  />
+                  <button
+                    type="submit"
+                    class="btn btn-secondary btn-sm btn-block"
+                    (click)="onCreateRoom()"
+                  >
+                    Submit
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <!-- ORIGINAL DROPDOWN -->
         <!-- <div class="dropdown">
           <button
             class="btn btn-light btn-sm"
@@ -134,18 +134,22 @@
 
         <form class="form-inline">
           <input
-          class="form-control mr-sm-2"
-          type="text"
-          placeholder="Search"
-          aria-label="Search"
-          id="search-user"
-          list="user-list"
-        />
-          <datalist id="user-list" >
+            class="form-control mr-sm-2"
+            type="text"
+            placeholder="Search"
+            aria-label="Search"
+            id="search-user"
+            list="user-list"
+          />
+          <datalist id="user-list">
             <option *ngFor="let user of users">{{ user }}</option>
           </datalist>
 
-          <button class="btn btn-outline-light my-2 my-sm-0" type="button" (click)="onSelectOneToOneUserConv()">
+          <button
+            class="btn btn-outline-light my-2 my-sm-0"
+            type="button"
+            (click)="onSelectOneToOneUserConv()"
+          >
             <i class="bi bi-search"></i>
           </button>
         </form>
@@ -156,18 +160,24 @@
         <ul class="list-unstyled chat-list mt-2 mb-0">
           <div class="conversations" *ngFor="let conversation of listConv">
             <li class="clearfix">
+              <img src="{{ conversation.avatar }}" alt="avatar" />
               <img
-                src="{{ conversation.avatar }}"
+                src="../../../assets/profile-pictures/ageraud.jpeg"
                 alt="avatar"
               />
               <div class="about">
-                <button class="name" (click)="onSelectConv(conversation.conv_id)">{{ conversation.name }}></button>
+                <button
+                  class="name"
+                  (click)="onSelectConv(conversation.conv_id)"
+                >
+                  {{ conversation.name }}
+                </button>
                 <div class="status">
                   <i class="fa fa-circle online"></i> online
                 </div>
               </div>
             </li>
-            <li class="clearfix">
+            <li class="clearfix"></li>
           </div>
         </ul>
       </div>
@@ -194,15 +204,43 @@
                 <i class="bi bi-three-dots-vertical"></i>
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Add a friend</a>
+                <!-- <a class="dropdown-item" href="#">Add a friend</a>
                 <a class="dropdown-item" href="#">Invite to play</a>
                 <a class="dropdown-item" href="#">Mute</a>
                 <a class="dropdown-item" href="#">Ban</a>
-                <a class="dropdown-item" href="#">Leave</a>
+                <a class="dropdown-item" href="#">Leave</a> -->
+                <!-- pgoudet -->
+                <a class="dropdown-item" (click)="onActivateAddfriend()"
+                  >Add a friend pgoudet</a
+                >
+                <a class="dropdown-item" href="#">Invite to play</a>
+                <a class="dropdown-item" (click)="onActivateMute()">Mute</a>
+                <a class="dropdown-item" (click)="onActivateBan()">Ban</a>
+                <a class="dropdown-item" (click)="onLeave()">Leave</a>
+                <!-- pgoudet -->
               </div>
             </div>
-            <div class="chat-header clearfix">
+            <!-- pgoudet -->
+            <div class="hidden add-user-form" id="add-user-form">
+              <form class="form-inline">
+                <input
+                  class="form-control mr-sm-2"
+                  type="text"
+                  placeholder="Search"
+                  aria-label="Search"
+                  id="search-friend"
+                  list="user-list"
+                />
+                <datalist id="user-list">
+                  <option *ngFor="let user of users">{{ user }}</option>
+                </datalist>
+                <button class="" type="button" (click)="onAddFriend()">
+                  add friend
+                </button>
+              </form>
             </div>
+            <!-- pgoudet -->
+            <div class="chat-header clearfix"></div>
             <div class="chat-about">
               <h6 class="m-b-0">{{ currentConv.name }}</h6>
             </div>
@@ -219,10 +257,7 @@
               <li class="clearfix">
                 <div class="message-data text-right">
                   <span class="message-data-time">{{ message.date }}</span>
-                  <img
-                    src="{{ message.avatar }}"
-                    alt="avatar"
-                  />
+                  <img src="{{ message.avatar }}" alt="avatar" />
                 </div>
                 <div class="message other-message float-right">
                   {{ message.content }}
@@ -239,11 +274,15 @@
           type="text"
           class="form-control"
           placeholder="Enter text here..."
-					id="input-message"
-			(keyup)="keyUpEnter($event)"
+          id="input-message"
+          (keyup)="keyUpEnter($event)"
         />
         <div class="input-group-prepend">
-          <button type="button" class="btn btn-outline-primary" (click)="onSendMessage()">
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            (click)="onSendMessage()"
+          >
             <i class="fa fa-send"></i>
           </button>
         </div>
