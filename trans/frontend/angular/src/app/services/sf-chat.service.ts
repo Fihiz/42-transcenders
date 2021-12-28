@@ -50,7 +50,7 @@ export class ChatService {
       conv_id: conv_id,
       login: this.global.login as string,
       date: new Date(),
-      content: currentConv.toString(),
+      content: currentConv.name,
       },
       login: this.global.login as string,
       socketId : this.global.socketId as string,
@@ -72,25 +72,26 @@ export class ChatService {
     return (emission);
   }
 
-  async takeAndCheck() {
-    const roomName = (<HTMLInputElement>document.getElementById("room-name")).value;
-    const members = (<HTMLInputElement>document.getElementById("members")).value.split(', ');
-    const password = (<HTMLInputElement>document.getElementById("password")).value;
-    document.getElementById('creationRoomForm')?.classList.add('hidden');
-    const response = (await axios.post("http://127.0.0.1:3000/cb-chat/check", {data: roomName,})).data;
-    if (response === 'ok') {
-      return ({
-        status:'ok',
-        data: {
-          roomName: roomName,
-          members: members,
-          password: password
-        }
-      });
+  checkFormat(str: string, users: Array<string>) {
+    if (!/^[a-zA-Z,]+$/.test(str)) {
+      alert('error in format for members');
+      return (false);
     }
-    else
+    else {
+      const members = str.split(',');
+      for (const member of members) {
+        if (!users.find(user => user === member)) {
+          alert('member does not exist');
+          return (false);
+        }
+      }
+    }
+    return (true);
+  }
+
+  setResponse(status: string, roomName: string, members: Array<string>, password: string) {
     return ({
-      status:'ko',
+      status: status,
       data: {
         roomName: roomName,
         members: members,
@@ -99,9 +100,25 @@ export class ChatService {
     });
   }
 
+  async takeAndCheck(users: Array<string>) {
+    const roomName = (<HTMLInputElement>document.getElementById("room-name")).value;
+    const members = (<HTMLInputElement>document.getElementById("members")).value.split(',');
+    const password = (<HTMLInputElement>document.getElementById("password")).value;
+    if (!this.checkFormat((<HTMLInputElement>document.getElementById("members")).value, users))
+      return (this.setResponse('ko', roomName, members, password))
+    document.getElementById('creationRoomForm')?.classList.add('hidden');
+    const response = (await axios.post("http://127.0.0.1:3000/cb-chat/check", {data: roomName,})).data;
+    if (response === 'ok')
+      return (this.setResponse('ok', roomName, members, password))
+    else {
+      alert('error room Name already use');
+      return (this.setResponse('ko', roomName, members, password))
+    }
+  }
+
   loginEqSelectedUsrANDmembersEqLogin(listConv: Array<if_conversation>, selectedUser: string) {
     const tmp: if_conversation | undefined = listConv.find((conv: if_conversation) => 
-      conv.members[0] === conv.members[1] && conv.members[0] === selectedUser);
+      conv.members[0] === conv.members[1] && conv.members[0] === selectedUser && conv.type === 'private');
 
     if (selectedUser === this.global.login && tmp)
       return (tmp);
@@ -111,7 +128,7 @@ export class ChatService {
 
   loginDifSelectedUsrANDuserFound(listConv: Array<if_conversation>, selectedUser: string) {
     const tmp: if_conversation | undefined = listConv.find(
-      conv => conv.members.find( member => member === selectedUser));
+      conv => conv.members.find( member => member === selectedUser) && conv.type === 'private');
 
     if (selectedUser != this.global.login && tmp)
       return (tmp);

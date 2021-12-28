@@ -1,4 +1,5 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { getPackedSettings } from "http2";
 import { type } from "os";
 import { MessageDto } from "src/dtos/messages.dto";
 import { ChatterEntity } from "src/entities/eb-chatter.entity";
@@ -82,7 +83,7 @@ export class ChatGateway {
 	@SubscribeMessage('joinRoom')
 	async joinRoom(@MessageBody() emission) {
 		const response = this.server.to(GlobalDataService.loginIdMap.get(emission.login));
-		const conv = await this.ConvService.joinRoom(emission);
+		const conv = await this.ConvService.joinRoom(emission, emission.login, false);
 		typeof(conv) === 'undefined' ? response.emit('error', "room doesn't exist | an problem occured") : response.emit('newConversation', conv);
 	}
 
@@ -93,7 +94,22 @@ export class ChatGateway {
     console.log('emission = ', emission)
     console.log('conv_id = ', conv_id, 'friendName = ', friendName)
     if (conv_id != 0) {
-      // this.ConvService.joinRoom(emission)
+      const conv = await this.ConvService.joinRoom(emission, friendName, true);
+      if (conv) {
+        const receivers = this.chatService.getReceiver(new Set(conv.members), emission.login);
+        console.log('receivers = ', receivers);
+        this.server.to(receivers).emit('newMember', {conv_id: conv.conv_id, name: friendName});
+        this.server.to(GlobalDataService.loginIdMap.get(friendName)).emit('newConversation', conv);
+      }
+      else {
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "room doesn't exist | an problem occured")
+      }
     }
+  }
+
+  @SubscribeMessage('leaveRoom')
+  async leaveRoom(@MessageBody() emission) {
+    const user = await this.chatterService.findOneChatter(emission.data.conv_id, emission.data.login)
+    await this.ConvService.removeMemberOfConv(emission.data.content, emission.data.conv_id, emission.login, user);
   }
 }

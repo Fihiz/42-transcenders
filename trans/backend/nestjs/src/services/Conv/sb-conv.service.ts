@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ChatterEntity } from "src/entities/eb-chatter.entity";
 import { ConversationEntity } from "src/entities/eb-conversation.entity";
 import { Repository } from "typeorm";
+import { ChatterService } from "../chatter/sb-chatter.service";
 import { UserService } from "../sb-user.service";
 
 
@@ -74,29 +75,47 @@ export class ConvService {
     return(convArray);
   }
 
-  joinRoomCheckValue(emission, conv: ConversationEntity) {
-    if (!conv || conv?.members?.find(member => member === emission.login) || conv.type === 'private')
+  joinRoomCheckValue(emission, conv: ConversationEntity, isInvited: boolean, name:string) {
+    if (!conv || conv?.members?.find(member => member === name) || conv.type === 'private') {
+      console.log('1')
       return (false);
-    else if (conv.type === 'protected' && emission.data.roomPassword != conv.password)
+    }
+    else if (conv.type === 'protected' && emission.data.roomPassword != conv.password && isInvited === false) {
+      console.log('2')
       return (false);
-    else if (conv.members.find(member => member === emission.login))
-      return (false)
+    }
     return (true);
   }
 
-	async joinRoom(emission) {
+	async joinRoom(emission, name: string, isInvited: boolean) {
+    console.log('name = ', name);
+    console.log('roomName = ', emission.data.roomName)
 		let conv = await this.conversation.findOne({where: {name: emission.data.roomName}})
-    if (this.joinRoomCheckValue(emission, conv) === false)
+    console.log('coinv = ', conv)
+    if (this.joinRoomCheckValue(emission, conv, isInvited, name) === false)
       return (undefined)
-		await this.conversation.update({name: emission.data.roomName}, {members: [emission.login, ...conv.members]});
+    console.log('test');
+		await this.conversation.update({name: emission.data.roomName}, {members: [name, ...conv.members]});
 		conv = await this.conversation.findOne({where: {name: emission.data.roomName}})
+    console.log('conv2 = ', conv);
 		await this.chatter.insert({
 			chat_role: "player",
 			conv_id: conv.conv_id,
 			is_present: "yes",
-			login: emission.login,
+			login: name,
 			muted_until: new Date(),
 		});
 		return (conv);
 	}
+
+  async removeMemberOfConv(convName, id, login, user: ChatterEntity) {
+    let conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
+    const members = conv.members;
+    const index = members.findIndex(member => member === login);
+    members.splice(index, 1);
+    console.log(user);
+    await this.conversation.update({name: convName}, {members: [...members]});
+    await this.chatter.remove(user);
+    /* gerer si jamais il y a plusieurs fois le meme membre */
+  }
 }

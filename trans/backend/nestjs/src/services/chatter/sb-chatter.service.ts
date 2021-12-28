@@ -43,7 +43,19 @@ export class ChatterService {
     return ('ok');
 	}
 
-	async findOneChatter(id: number, name: string) {
-    return (await this.chatter.findOne({where: {conv_id: id, login: name}}));
+	async findOneChatter(conv_id: number, name: string) {
+    const chatter = await this.chatter.findOne({
+      where: {conv_id: conv_id, login: name}
+    });
+    if (!chatter)
+      return (undefined);
+    const final: ChatterEntity = {
+      chat_role: chatter.chat_role,
+      conv_id: conv_id,
+      is_present: chatter.is_present,
+      login: name,
+      muted_until: chatter.muted_until
+    }
+    return (final);
   }
 }

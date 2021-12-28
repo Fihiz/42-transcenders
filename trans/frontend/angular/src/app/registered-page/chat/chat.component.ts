@@ -78,9 +78,12 @@ export class ChatComponent implements OnInit {
 
   async onCreateRoom() {
     console.log("create room");
-    const res = await this.chatService.takeAndCheck()
-    if (res.status != 'ok')
-      alert('error in room parameters');
+    const res = await this.chatService.takeAndCheck(this.users);
+    if (res.status != 'ok') {
+      // alert('error in room parameters');
+      // console.log(document.getElementById('members'))
+      return;
+    }
     const newConv: if_conversation = {
       avatar: "",
       conv_id: 0,
@@ -119,7 +122,7 @@ export class ChatComponent implements OnInit {
     const name = (<HTMLInputElement>document.getElementById('search-friend')).value;
     if (name) {
       document.getElementById("add-user-form")?.classList.add("hidden")
-      this.emission = this.chatService.emission('addFriend', this.currentConv, this.currentConv.conv_id, {name: name, conv_id: this.currentConv.conv_id});
+      this.emission = this.chatService.emission('addFriend', this.currentConv, this.currentConv.conv_id, {name: name, conv_id: this.currentConv.conv_id, roomName: this.currentConv.name});
     }
   }
 
@@ -130,8 +133,21 @@ export class ChatComponent implements OnInit {
   onActivateBan() {
 
   }
-  onActivateLeave() {
-
+  onLeave() {
+    if (this.currentConv.name != '') {
+      this.emission = this.chatService.emission('leaveRoom', this.currentConv, this.currentConv.conv_id);
+      const index = this.listConv.indexOf(this.currentConv);
+      console.log('index = ', index);
+      this.listConv.splice(index, 1);
+      this.currentConv = {
+        avatar: '',
+        conv_id: 0,
+        members: new Array(),
+        name: '',
+        password: '',
+        type: 'public',
+      };
+    }
   }
 
   ngOnInit(): void {
