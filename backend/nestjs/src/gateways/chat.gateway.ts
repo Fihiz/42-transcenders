@@ -33,6 +33,7 @@ export class ChatGateway {
       date: new Date(),
       id: emission.id,
       login: emission.login,
+      avatar:'https://www.google.com/url?sa=i&url=https%3A%2F%2Ffr.techtribune.net%2Fanime%2Fshrek-occupe-la-premiere-place-pour-lanime-sur-amazon%2F102182%2F&psig=AOvVaw20kB0wPmvDnlD_FTcqSOBO&ust=1640873495902000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCJDgu66YifUCFQAAAAAdAAAAABAD'
     })
     this.server.to(emission.login).emit('allMessages', messArray);
   }

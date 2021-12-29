@@ -255,15 +255,28 @@
         <div class="chat-history">
           <ul class="m-b-0">
             <div class="messages" *ngFor="let message of convMessages">
-              <li class="clearfix">
-                <div class="message-data text-right">
-                  <span class="message-data-time">{{ message.date }}</span>
-                  <img src="{{ message.avatar }}" alt="avatar" />
-                </div>
-                <div class="message other-message float-right">
-                  {{ message.content }}
-                </div>
-              </li>
+              <span *ngIf="login === message.login else leftMessages">
+                <li class="clearfix">
+                  <div class="message-data text-right">
+                    <span class="message-data-time">{{ message.date | date: 'short' }}</span>
+                    <img src="https://cdn.vox-cdn.com/thumbor/CNLDJd5-M-WtOsYh_yugQ-S-FJs=/715x248:1689x721/1400x933/filters:focal(972x299:1278x605):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/69305239/shrek4_disneyscreencaps.com_675.0.jpg" alt="avatar" />
+                  </div>
+                  <div class="message other-message float-right">
+                    {{ message.content }}
+                  </div>
+                </li>
+              </span>
+              <ng-template #leftMessages>
+                <li class="clearfix">
+                  <div class="message-data text-left">
+                    <span class="message-data-time">{{ message.date | date: 'short' }}</span>
+                    <img src="https://cdn.vox-cdn.com/thumbor/CNLDJd5-M-WtOsYh_yugQ-S-FJs=/715x248:1689x721/1400x933/filters:focal(972x299:1278x605):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/69305239/shrek4_disneyscreencaps.com_675.0.jpg" alt="avatar" />
+                  </div>
+                  <div class="message other-message float-left">
+                    {{ message.content }}
+                  </div>
+                </li>
+              </ng-template>
             </div>
           </ul>
         </div>

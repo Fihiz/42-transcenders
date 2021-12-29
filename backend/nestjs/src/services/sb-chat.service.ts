@@ -53,7 +53,20 @@ export class ChatService {
 
 
 	async findAllMessages(id: number) {
-			return (this.messages.find({conv_id: id}));
+    const messages = await this.messages.find({
+        join: {
+          alias: "tmp",
+          leftJoinAndSelect: {
+            login: "tmp.login",
+          }},
+        where: {conv_id: id},
+      });
+
+      for (const message of messages) {
+        message.conv_id = id;
+        message.login = (message.login as any).login;
+      }
+			return (messages);
 	}
 
 
@@ -102,6 +115,7 @@ export class ChatService {
         date: message.date,
         id: ++this.messId,
         login: emission.login,
+        avatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Ffr.techtribune.net%2Fanime%2Fshrek-occupe-la-premiere-place-pour-lanime-sur-amazon%2F102182%2F&psig=AOvVaw20kB0wPmvDnlD_FTcqSOBO&ust=1640873495902000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCJDgu66YifUCFQAAAAAdAAAAABAD'
       }
       const messageCreated = await this.createMessage(messRegistered)
 			if (typeof(messageCreated) !== 'string' && typeof(messageCreated) !== 'number')

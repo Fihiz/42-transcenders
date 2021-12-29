@@ -10,7 +10,10 @@ body {
 }
 
 .top {
-  background-color: lavender;
+  /* Temporary */
+  background-color: #324448;
+  
+  /* background-color: lavender; */
   /* height: 35%; */
   height: 50%;
   /* overflow-y: auto; */
@@ -18,7 +21,10 @@ body {
 }
 
 .bottom {
-  background-color: rgb(86, 122, 201);
+  /* Temporary */
+  background-color: #324448;
+  
+  /* background-color: rgb(86, 122, 201); */
   /* height: 65%; */
   height: 50%;
 
@@ -39,18 +45,29 @@ body {
 } */
 
 .list-conv {
-  background-color: seashell;
+  /* Temporary */
+  background-color: rgb(255, 255, 255);
+
+  /* background-color: seashell; */
   overflow-y: auto;
   min-height: 60%;
   max-height: 70%;
 }
 .b-conv-name {
-  background-color: rgb(214, 76, 76);
+  /* Temporary */
+  background-color: #f4f7f6;;
+  /* padding: 0; */
+  /* margin: auto; */
+
+  /* background-color: rgb(214, 76, 76); */
   /* text-align: center; */
   /* max-height: 20%; */
 }
 .b-messages {
-  background-color: thistle;
+  /* background-color: thistle; */
+
+  /* Temporary */
+  background-color: rgb(255, 255, 255);
   overflow-y: auto;
   min-height: 60%;
   max-height: 70%;
@@ -136,6 +153,10 @@ body {
   float: right;
 }
 
+.float-left {
+  float: left;
+}
+
 .clearfix:after {
   visibility: hidden;
   display: block;
@@ -179,8 +200,13 @@ body {
 
 .chat .chat-header img {
   float: left;
-  border-radius: 40px;
+  /* border-radius: 40px;
+  width: 40px; */
+  /* For rounded image */
   width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .chat .chat-header .chat-about {
@@ -202,7 +228,7 @@ body {
 }
 
 .chat .chat-history ul li:last-child {
-  margin-bottom: 0px;
+  margin-bottom: 18px;
 }
 
 .chat .chat-history .message-data {
@@ -210,8 +236,13 @@ body {
 }
 
 .chat .chat-history .message-data img {
-  border-radius: 40px;
-  width: 40px;
+  /* border-radius: 40px;
+  width: 40px; */
+    /* For rounded image */
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .chat .chat-history .message-data-time {
@@ -263,8 +294,9 @@ body {
 
 .chat .chat-history .other-message {
   background: #e8f1f3;
-  text-align: right;
-  max-width: 10px;
+  text-align: justify;
+  max-width: 250px;
+  word-break: break-word;
 }
 
 .chat .chat-history .other-message:after {
@@ -278,6 +310,15 @@ body {
 
 .text-right {
   text-align: end;
+}
+
+.text-left {
+  text-align: start;
+}
+
+.message-data-time {
+  font-size: 10px;
+  padding-right: 10px;
 }
 
 /* Three points and search bar */

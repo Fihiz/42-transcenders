@@ -28,6 +28,7 @@ export class ChatComponent implements OnInit {
     socketId: this.global.socketId as string,
     data: {},
   };
+  login: string = '';
 
   constructor(
     private socket: Socket,
@@ -135,6 +136,7 @@ export class ChatComponent implements OnInit {
   }
 
   onSelectConv(value: any) {
+    this.convMessages = [];
     console.log('SelectRoom');
     this.currentConv = this.chatService.getConvFromId(
       value,
@@ -217,18 +219,23 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.login = this.global.login as string;
     this.socket.on('users', (data: any) => {
       this.users = data;
     });
     this.socket.on('allMessages', (data: if_message[]) => {
+      if (data.length > 0 && data[0].conv_id === this.currentConv.conv_id) {
       this.convMessages.splice(0, this.convMessages.length);
-      for (const mess of data) {
-        mess.date =
-          mess.date.toLocaleString().slice(0, 10) +
-          ' at ' +
-          mess.date.toLocaleString().slice(11, 16);
-        this.convMessages.push(mess);
-      }
+      this.convMessages = data
+      // for (const mess of data) {
+      //   mess.date =
+      //     mess.date.toLocaleString().slice(0, 10) +
+      //     ' at ' +
+      //     mess.date.toLocaleString().slice(11, 16);
+      //   this.convMessages.push(mess);
+      // }
+      // this.convMessages.reverse();
+    }
     });
     this.socket.on('allConversations', (data: any) => {
       console.log('datas = ', data);
