@@ -63,15 +63,15 @@
                   <img
                     id="avatar"
                     class="rounded-circle"
-                    alt="{{ avatarList[i].alt }}"
-                    src="{{ avatarList[i].url }}"
+                    alt="{{ userService.avatarList[i].alt }}"
+                    src="{{ userService.avatarList[i].url }}"
                   />
                   <input
                     class="d-none"
                     type="text"
                     id="avatarUrl"
                     formControlName="avatarUrl"
-                    value="{{ avatarList[i].url }}"
+                    value="{{ userService.avatarList[i].url }}"
                   />
                   <div class="btn btn-dark" (click)="increment()">&gt;</div>
                 </div>

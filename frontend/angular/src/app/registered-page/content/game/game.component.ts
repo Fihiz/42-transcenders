@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from 'src/app/services/sf-game.service';
 import { OnlineStatusService, OnlineStatusType } from 'ngx-online-status';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-game',
@@ -10,8 +11,13 @@ import { OnlineStatusService, OnlineStatusType } from 'ngx-online-status';
 })
 export class GameComponent implements OnInit, OnDestroy {
 
-  constructor(private onlineStatusService: OnlineStatusService, private gameService: GameService, private route: ActivatedRoute, private router: Router) {
-    this.onlineStatusService.status.subscribe((status: OnlineStatusType) => {
+  subscription: Subscription = new Subscription;
+
+  constructor(private onlineStatusService: OnlineStatusService, private gameService: GameService, private route: ActivatedRoute, private router: Router) {}
+
+  ngOnInit() {
+    this.subscription.unsubscribe();
+    this.subscription = this.onlineStatusService.status.subscribe(async (status: OnlineStatusType) => {
       if (status === 0)
       {
         this.gameService.stopListen();
@@ -28,7 +34,9 @@ export class GameComponent implements OnInit, OnDestroy {
         
         this.gameService.stopDrawing2();
 
-        this.gameService.emitLogin(Number(this.route.snapshot.paramMap.get('id')));
+        await setTimeout(() => {
+          this.gameService.emitLogin(Number(this.route.snapshot.paramMap.get('id')));
+        }, 4000);
         
         console.log("Online");
         
@@ -37,9 +45,6 @@ export class GameComponent implements OnInit, OnDestroy {
         this.gameService.startDrawing();
       }
     });
-  }
-
-  ngOnInit() {
     const gameId: string | null = this.route.snapshot.paramMap.get('id');
     if (!gameId || (gameId.search(/\D+/) != -1))
     {
@@ -55,6 +60,8 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.subscription.unsubscribe();
+
     this.gameService.emitLogout();
 
     this.gameService.stopListen();

@@ -1,5 +1,19 @@
-<canvas width=700 height=400 id="game-canvas"></canvas>
-<a class="link-dark rounded" routerLink="/pong/game/1" href="">1</a>
-<a class="link-dark rounded" routerLink="/pong/game/2" href="">2</a>
-<a class="link-dark rounded" routerLink="/pong/game/3" href="">3</a>
-<a class="link-dark rounded" routerLink="/pong/game/coucou">coucou</a>
+<!-- <canvas width=700 height=400 id="game-canvas"></canvas> -->
+<div>
+    <label for="gameId">
+    Select the id of the room game to join
+    </label>
+    <input
+    id="gameId"
+    type="text"
+    maxlength="6"
+    />
+    <button
+    id="submitId"
+    type="button"
+    class="btn btn-primary"
+    (click)="submit()"
+    >
+    Submit
+    </button>
+</div>

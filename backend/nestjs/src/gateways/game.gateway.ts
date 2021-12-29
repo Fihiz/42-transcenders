@@ -4,59 +4,81 @@ import { GameService } from '../services/sb-game.service'
 @WebSocketGateway({cors:{origin: '*'}})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	index: number = 0;
-	users: {id: string, login: string}[] = [];
+	users: {id: string, login: string, gameId: number}[] = [];
 
 	@WebSocketServer()
 	server;
 
 	constructor(private gameService:GameService) {
+		// this.gameService.addGame(0);
+		// this.gameService.addGame(1);
+		// this.gameService.addGame(2);
+		// this.gameService.addGame(3);
+		// this.gameService.addGame(4);
+		this.emitUpdate(this);
 	}
 
 	handleConnection() {
+		// console.log(this.server);
 		console.log('game connected')
 	}
 
-	handleDisconnect() {
+	handleDisconnect(@MessageBody() body: any) {
+		const id = this.users.findIndex((v) => v.id == body.id);
+		if (id == -1)
+			return ;
+		this.users.splice(id, 1);
 		console.log('game disconnection');
+		// console.log(this.users);
 	}
 
 	emitAll(message : string) {
-		this.server.to(this.users).emit('message', message);
+		this.server.emit('message', message);
+		// this.server.to(this.users).emit('message', message);
 	}
 
 	emitUpdate(test:GameGateway) {
 		// console.log('updating game', test.gameService.game);
 		// boucler sur chaque game en cours pour transmettre aux clients concernés avec filter
 		test.gameService.updateAll();
-		if (test.gameService.games[0])
-		{
-			test.server.emit('update', test.gameService.games[0].changing);
-			setTimeout(test.emitUpdate, 1000/60, test);
-		}
-		else
-			test.index = 0;
+		test.gameService.games.forEach((game) => {
+			const dest: string[] = test.users.filter((user) => user.gameId === game.id).map((user) => {return user.id;});
+			// console.log(game);
+			if (dest.length)
+				test.server.to(dest).emit('update', game.changing);
+		});
+		setTimeout(test.emitUpdate, 1000/60, test);
 	}
 
 	@SubscribeMessage('hello')
 	setConnected(@MessageBody() body: any) {
 		// associer l'id de l'user avec l'id de la partie qu'il a rejoint. et lui transmettre ce qu'il faut à l'init
 		console.log(body.login, 'successfully joined the game ', body.gameId);
-		this.users.push({id: body.id, login: body.login});
+		this.users.push({id: body.id, login: body.login, gameId: body.gameId});
+		const user = this.users.find((user) => user.id === body.id);
 		if (this.gameService.games.length === 0)
-			this.gameService.addGame();
-		if (this.index === 0)
 		{
-			this.gameService.games[0].changing.leftPaddle.login = body.login;
-			this.index++;
+			console.log(this.gameService.games.length);
+			this.gameService.addGame(0);
 		}
-		else if (this.index === 1 && this.gameService.games[0].changing.leftPaddle.login != body.login)
+		let game = this.gameService.games.find((game) => game.id === user.gameId);
+		// console.log(this.gameService.games);
+		if (!game)
 		{
-			this.gameService.games[0].changing.rightPaddle.login = body.login;
-			this.index++;
+			this.gameService.addGame(user.gameId);
+			game = this.gameService.games.find((game) => game.id === user.gameId);
 		}
-		console.log(`Map is ${this.users[0].id} ${this.users[0].login} ${this.users[0]} ${body} ${body.login} ${body.id} `);
-		this.emitAll(`${body.login} joined the game`);
-		this.server.to(body.id).emit('welcome', this.gameService.games[0]);
+		if (game.changing.leftPaddle.login === '')
+		{
+			game.changing.leftPaddle.login = user.login;
+		}
+		else if (game.changing.leftPaddle.login != user.login)
+		{
+			game.changing.rightPaddle.login = user.login;
+		}
+		// console.log(`Map is ${this.users[0].id} ${this.users[0].login} ${this.users[0]} ${user} ${user.login} ${user.id} `);
+		// this.emitAll(`${user.login} joined the game`);
+		this.server.to(user.id).emit('welcome', game);
 	}
 
 	@SubscribeMessage('bye')
@@ -74,32 +96,32 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('ready')
 	setReady(@MessageBody() body: any) {
 		// // Vérifier que l'id du client + de la game correspond à un des users pour savoir quelle game et quel paddle modifier.
-		console.log("someone pressed ready", body, this.users.find((user) => user.id === body.id)?.login);
-		if (this.users.find((user) => user.id === body.id))
-			if (this.users.find((user) => user.id === body.id).login === this.gameService.games[0].changing.leftPaddle.login &&
-				this.gameService.games[0].changing.leftPaddle.ready === false)
+		// console.log("someone pressed ready", body, this.users.find((user) => user.id === body.id)?.login);
+		const user = this.users.find((user) => user.id === body.id);
+		const game = this.gameService.games.find((game) => game.id === user.gameId);
+		if (user && game)
+			if (user.login === game.changing.leftPaddle.login &&
+				game.changing.leftPaddle.ready === false)
 			{
-				console.log(this.users.find((user) => user.id === body.id).login, 'is ready');
-				this.gameService.games[0].changing.leftPaddle.ready = true;
-				if (this.gameService.games[0].changing.rightPaddle.ready === true)
-					this.gameService.games[0].changing.countdown = Math.min(this.gameService.games[0].changing.countdown, 180);
+				console.log(user.login, 'is ready');
+				game.changing.leftPaddle.ready = true;
+				if (game.changing.rightPaddle.ready === true)
+					game.changing.countdown = Math.min(game.changing.countdown, 180);
 				else
 				{
-					this.gameService.games[0].changing.countdown = 1800;
-					this.emitUpdate(this);
+					game.changing.countdown = 1800;
 				}
 			}
-			else if (this.users.find((user) => user.id === body.id).login === this.gameService.games[0].changing.rightPaddle.login &&
-				this.gameService.games[0].changing.rightPaddle.ready === false)
+			else if (user.login === game.changing.rightPaddle.login &&
+				game.changing.rightPaddle.ready === false)
 			{
-				console.log(this.users.find((user) => user.id === body.id).login, 'is ready');
-				this.gameService.games[0].changing.rightPaddle.ready = true;
-				if (this.gameService.games[0].changing.leftPaddle.ready === true)
-					this.gameService.games[0].changing.countdown = Math.min(this.gameService.games[0].changing.countdown, 180);
+				console.log(user.login, 'is ready');
+				game.changing.rightPaddle.ready = true;
+				if (game.changing.leftPaddle.ready === true)
+					game.changing.countdown = Math.min(game.changing.countdown, 180);
 				else
 				{
-					this.gameService.games[0].changing.countdown = 1800;
-					this.emitUpdate(this);
+					game.changing.countdown = 1800;
 				}
 			}
 	}
@@ -107,42 +129,46 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('pressed')
 	getPressed(@MessageBody() body: any) {
 		// // Vérifier que l'id du client + de la game correspond à un des users pour savoir quelle game et quel paddle modifier.
-		if (this.users.find((user) => user.id === body.id) &&
-			this.users.find((user) => user.id === body.id).login === this.gameService.games[0].changing.leftPaddle.login)
+		const user = this.users.find((user) => user.id === body.id);
+		const game = this.gameService.games.find((game) => game.id === user.gameId);
+		if (user && game &&
+			user.login === game.changing.leftPaddle.login)
 		{
 			if (body.key == 'ArrowUp')
-				this.gameService.games[0].changing.leftPaddle.up = true;
+				game.changing.leftPaddle.up = true;
 			else if (body.key == 'ArrowDown')
-				this.gameService.games[0].changing.leftPaddle.down = true;
+				game.changing.leftPaddle.down = true;
 		}
-		else if (this.users.find((user) => user.id === body.id) &&
-			this.users.find((user) => user.id === body.id).login === this.gameService.games[0].changing.rightPaddle.login)
+		else if (user && game &&
+			user.login === game.changing.rightPaddle.login)
 		{
 			if (body.key == 'ArrowUp')
-				this.gameService.games[0].changing.rightPaddle.up = true;
+				game.changing.rightPaddle.up = true;
 			else if (body.key == 'ArrowDown')
-				this.gameService.games[0].changing.rightPaddle.down = true;
+				game.changing.rightPaddle.down = true;
 		}
 	}
 
 	@SubscribeMessage('released')
 	getReleased(@MessageBody() body: any) {
 		// // Vérifier que l'id du client + de la game correspond à un des users pour savoir quelle game et quel paddle modifier.
-		if (this.users.find((user) => user.id === body.id) &&
-			this.users.find((user) => user.id === body.id).login === this.gameService.games[0].changing.leftPaddle.login)
+		const user = this.users.find((user) => user.id === body.id);
+		const game = this.gameService.games.find((game) => game.id === user.gameId);
+		if (user && game &&
+			user.login === game.changing.leftPaddle.login)
 		{
 			if (body.key == 'ArrowUp')
-				this.gameService.games[0].changing.leftPaddle.up = false;
+				game.changing.leftPaddle.up = false;
 			else if (body.key == 'ArrowDown')
-				this.gameService.games[0].changing.leftPaddle.down = false;
+				game.changing.leftPaddle.down = false;
 		}
-		else if (this.users.find((user) => user.id === body.id) &&
-			this.users.find((user) => user.id === body.id).login === this.gameService.games[0].changing.rightPaddle.login)
+		else if (user && game &&
+			user.login === game.changing.rightPaddle.login)
 		{
 			if (body.key == 'ArrowUp')
-				this.gameService.games[0].changing.rightPaddle.up = false;
+				game.changing.rightPaddle.up = false;
 			else if (body.key == 'ArrowDown')
-				this.gameService.games[0].changing.rightPaddle.down = false;
+				game.changing.rightPaddle.down = false;
 		}
 	}
 }

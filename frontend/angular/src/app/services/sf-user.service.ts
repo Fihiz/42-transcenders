@@ -28,6 +28,40 @@ export class UserService implements OnInit {
     updated: new Date(),
   };
 
+  avatarList: {
+    alt: string;
+    url: string;
+  }[] = [
+    {
+      alt: 'My Intra Pic',
+      url: '../../../assets/myIntraPictureBlack.png',
+    },
+    {
+      alt: 'ageraud',
+      url: 'https://cdn.intra.42.fr/users/large_ageraud.jpg',
+    },
+    {
+      alt: 'sad-aude',
+      url: 'https://cdn.intra.42.fr/users/large_sad-aude.jpg',
+    },
+    {
+      alt: 'jobenass',
+      url: 'https://cdn.intra.42.fr/users/large_jobenass.jpg',
+    },
+    {
+      alt: 'lpieri',
+      url: 'https://cdn.intra.42.fr/users/large_lpieri.jpg',
+    },
+    {
+      alt: 'pgoudet',
+      url: 'https://cdn.intra.42.fr/users/large_pgoudet.jpg',
+    },
+    {
+      alt: 'rlepart',
+      url: 'https://cdn.intra.42.fr/users/large_rlepart.jpg',
+    },
+  ];
+
   readyToDisplayForm: boolean = false;
 
   constructor(public global: GlobalService,
@@ -41,12 +75,14 @@ export class UserService implements OnInit {
       this.router.navigate(['/welcome']);
       this.user = response.data;
       this.global.login = response.data.login;
+      // console.log(this.socket);
       this.socket.on('connect', () => {
         this.introduce(this.socket);
       });
       this.socket.connect();
     } else {
-      console.log('response is :', response);
+      // console.log('response is :', response);
+      this.avatarList[0].url = response.data.image_url;
       document.getElementById('toOpenModal')?.click();
       await this.handleSubmitClick();
 
@@ -69,7 +105,7 @@ export class UserService implements OnInit {
   }
 
   async registerBackInRequest(response: any) {
-    console.log("registerBackInRequest");
+    // console.log("registerBackInRequest");
     try {
       const registerData = await axios.post(
         `http://${window.location.host}:3000/cb-auth/registerData`,
@@ -80,10 +116,10 @@ export class UserService implements OnInit {
       if (registerData.data !== 'Successfully created')
         this.router.navigate(['/auth']);
       else {
-        console.log(
-          'the result of the registerData request is = ',
-          registerData
-        );
+        // console.log(
+        //   'the result of the registerData request is = ',
+        //   registerData
+        // );
         this.global.login = response.data.login;
         this.socket.on('connect', () => {
           this.introduce( this.socket);
@@ -98,7 +134,7 @@ export class UserService implements OnInit {
   }
 
   fillUserInfos(response: any): void {
-    console.log((<HTMLInputElement>document.getElementById('avatarUrl')).value);
+    // console.log((<HTMLInputElement>document.getElementById('avatarUrl')).value);
     this.user.login = response.data.login;
     if (
       (<HTMLInputElement>document.getElementById('avatarUrl')).value ===
@@ -124,7 +160,7 @@ export class UserService implements OnInit {
       document
         .getElementById('submitId')
         ?.addEventListener('click', function () {
-          console.log('2- User clicked on submit !!!');
+          // console.log('2- User clicked on submit !!!');
           resolve('OK');
         });
     });

@@ -9,9 +9,10 @@ export class GameService {
     this.games = [];
   }
 
-  addGame(/*login1, login2, type de game*/) {
+  addGame(id: number, /*player1, player2, type de game*/) {
     // TO DO create into DB
-    this.games.push(new Game());
+    this.games.push(new Game(id));
+    // this.games.push(new Game(id, player1, player2, game params));
   }
 
   updateAll() {
@@ -26,7 +27,6 @@ export class GameService {
       game.update();
     });
   }
-
 }
 
 
@@ -53,7 +53,7 @@ class Game {
     rightPaddle : Paddle,
   };
 
-  constructor() {
+  constructor(id: number) {
     let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
     this.board = {
       color: "#08638C",
@@ -67,15 +67,17 @@ class Game {
       width: 5,
       length: 15,
     };
-    this.id = 0;
+    // this.id = 0;
+    this.id = id;
     this.fontColor = "#528FAC",
     this.changing = {
       status: "Starting",
       countdown : -1,
       ball : new Ball("#43B6B2", 345, 195, 10, 10, 6),
       leftPaddle : new Paddle('', "#F9C53F", 25, 175, 7, 50, 8),
-      rightPaddle : new Paddle('', "#F97D64", 675 - 7, 175, 7, 50, 8)
-      // x: this.game.board.width - this.game.border.marginLeftRight - this.game.border.width - this.game.changing.rightPaddle.width - 5,
+      // leftPaddle : new Paddle(player1, "#F9C53F", 25, 175, 7, 50, 8),
+      rightPaddle : new Paddle('', "#F97D64", 675 - 7, 175, 7, 50, 8),
+      // rightPaddle : new Paddle(player2, "#F97D64", 675 - 7, 175, 7, 50, 8),
     };
   }
 

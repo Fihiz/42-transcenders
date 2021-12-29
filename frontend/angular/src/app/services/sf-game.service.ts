@@ -29,32 +29,6 @@ export class GameService {
     globalSocket = this.socket;
   }
 
-  listenKeyPress(e:KeyboardEvent) {
-    if (e.key === "ArrowUp" && up === false)
-      up = true;
-    else if (e.key === "ArrowDown" && down === false)
-      down = true;
-    else if (e.key === "ArrowLeft" && left === false)
-      left = true;
-    else if (e.key === "ArrowRight" && right === false)
-      right = true;
-    else if (e.key === " " && space === false)
-      space = true;
-  }
-
-  listenKeyRelease(e:KeyboardEvent) {
-    if (e.key === "ArrowUp")
-      up = false;
-    else if (e.key === "ArrowDown")
-      down = false;
-    else if (e.key === "ArrowLeft")
-      left = false;
-    else if (e.key === "ArrowRight")
-      right = false;
-    else if (e.key === " ")
-      space = false;
-  }
-
   emitLogin(gameId: number) {
     this.socket.emit('hello', {id: this.socket.ioSocket.id, login: this.global.login, gameId: gameId});
   }
@@ -151,7 +125,6 @@ export class GameService {
         };
         this.gameContext.font = "30px Comfortaa";
         globalSocket.on('update', (game : any) => {
-          // console.log(game);
           this.game.status = game.status;
           this.game.countdown = game.countdown;
           this.game.leftPaddle.update(game.leftPaddle);
@@ -159,7 +132,6 @@ export class GameService {
           this.game.ball.update(game.ball);
         });
         globalSocket.on('welcome', (fullGame : any) => {
-          console.log(fullGame);
           if (fullGame.notFound === true)
           {
             this.router.navigate(['/pong/live']);
@@ -177,13 +149,12 @@ export class GameService {
       }
 
       stopListen() {
-        // globalSocket.off('update');
-        // console.log(globalSocket);
         if (globalSocket?.ioSocket?._callbacks?.$welcome)
-          delete globalSocket.ioSocket._callbacks.$welcome;
+          globalSocket.removeListener('welcome');
+          // delete globalSocket.ioSocket._callbacks.$welcome;
         if (globalSocket?.ioSocket?._callbacks?.$update)
-          delete globalSocket.ioSocket._callbacks.$update;
-        // console.log('after', globalSocket);
+          globalSocket.removeListener('update');
+          // delete globalSocket.ioSocket._callbacks.$update;
       }
 
       listenClick(e: MouseEvent) {
@@ -1563,6 +1534,32 @@ export class GameService {
         loop = 2;
         frameId = requestAnimationFrame(test.callback);
       }
+  }
+
+  listenKeyPress(e:KeyboardEvent) {
+    if (e.key === "ArrowUp" && up === false)
+      up = true;
+    else if (e.key === "ArrowDown" && down === false)
+      down = true;
+    else if (e.key === "ArrowLeft" && left === false)
+      left = true;
+    else if (e.key === "ArrowRight" && right === false)
+      right = true;
+    else if (e.key === " " && space === false)
+      space = true;
+  }
+
+  listenKeyRelease(e:KeyboardEvent) {
+    if (e.key === "ArrowUp")
+      up = false;
+    else if (e.key === "ArrowDown")
+      down = false;
+    else if (e.key === "ArrowLeft")
+      left = false;
+    else if (e.key === "ArrowRight")
+      right = false;
+    else if (e.key === " ")
+      space = false;
   }
 
   startListen2() {/** */
