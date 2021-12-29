@@ -124,7 +124,7 @@ export class ChatService {
       return (convMessages);
     }
     else
-      return ('Error: Conv not exists')
+      return ('Error: Conv does not exist')
   }
 
 }

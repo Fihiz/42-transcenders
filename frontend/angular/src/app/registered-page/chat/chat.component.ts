@@ -55,7 +55,7 @@ export class ChatComponent implements OnInit {
       };
       this.emission.socketId = this.global.socketId as string;
       if (this.currentConv.name) this.socket.emit('message', this.emission);
-      else alert('no conv selcted');
+      else alert('Error: No conv selected');
     } else console.log('Warning : cannot send an empty message');
   }
 
