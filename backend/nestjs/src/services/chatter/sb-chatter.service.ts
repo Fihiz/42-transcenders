@@ -27,7 +27,6 @@ export class ChatterService {
 	}
 
 	async creationChattersForNewConv(emission, newConvDatas, convId) {
-    newConvDatas.members.push(emission.login);
 		for (const name of newConvDatas.members) {
 			const chatter: ChatterEntity = {
 				chat_role: (name === emission.login) ? "admin" : "chatter",

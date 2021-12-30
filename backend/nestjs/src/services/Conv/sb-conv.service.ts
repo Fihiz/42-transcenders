@@ -77,27 +77,20 @@ export class ConvService {
 
   joinRoomCheckValue(emission, conv: ConversationEntity, isInvited: boolean, name:string) {
     if (!conv || conv?.members?.find(member => member === name) || conv.type === 'private') {
-      console.log('1')
       return (false);
     }
     else if (conv.type === 'protected' && emission.data.roomPassword != conv.password && isInvited === false) {
-      console.log('2')
       return (false);
     }
     return (true);
   }
 
 	async joinRoom(emission, name: string, isInvited: boolean) {
-    console.log('name = ', name);
-    console.log('roomName = ', emission.data.roomName)
 		let conv = await this.conversation.findOne({where: {name: emission.data.roomName}})
-    console.log('coinv = ', conv)
     if (this.joinRoomCheckValue(emission, conv, isInvited, name) === false)
       return (undefined)
-    console.log('test');
 		await this.conversation.update({name: emission.data.roomName}, {members: [name, ...conv.members]});
 		conv = await this.conversation.findOne({where: {name: emission.data.roomName}})
-    console.log('conv2 = ', conv);
 		await this.chatter.insert({
 			chat_role: "player",
 			conv_id: conv.conv_id,
@@ -109,13 +102,26 @@ export class ConvService {
 	}
 
   async removeMemberOfConv(convName, id, login, user: ChatterEntity) {
-    let conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
-    const members = conv.members;
-    const index = members.findIndex(member => member === login);
-    members.splice(index, 1);
-    console.log(user);
-    await this.conversation.update({name: convName}, {members: [...members]});
-    await this.chatter.remove(user);
+    try {
+      let conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
+      const members = conv.members;
+      let index = members.findIndex(member => member === login);
+      members.splice(index, 1);
+      while ((index = members.findIndex(member => member === login)) >= 0) {
+        members.splice(index, 1);
+      }
+      await this.conversation.update({name: convName}, {members: [...members]});
+      await this.chatter.remove(user);
+      conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
+      if (conv.members.length === 0)
+        this.conversation.remove(conv);
+      return ('ok')
+    }
+    catch (error) {
+      console.log('error = ', error)
+      return ('ko')
+    }
     /* gerer si jamais il y a plusieurs fois le meme membre */
   }
+
 }

@@ -188,6 +188,7 @@
             class="navbar navbar-expand-lg navbar-light bg-light"
             id="header-conv-nav"
           >
+            <!-- TEST -->
             <div class="dropdown">
               <button
                 class="btn btn-light btn-sm"
@@ -199,23 +200,133 @@
               >
                 <i class="bi bi-three-dots-vertical"></i>
               </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <!-- <a class="dropdown-item" href="#">Add a friend</a>
-                <a class="dropdown-item" href="#">Invite to play</a>
-                <a class="dropdown-item" href="#">Mute</a>
-                <a class="dropdown-item" href="#">Ban</a>
-                <a class="dropdown-item" href="#">Leave</a> -->
-                <!-- pgoudet -->
-                <a class="dropdown-item" (click)="onActivateAddfriend()"
-                  >Add a friend pgoudet</a
-                >
-                <a class="dropdown-item" href="#">Invite to play</a>
-                <a class="dropdown-item" (click)="onActivateMute()">Mute</a>
-                <a class="dropdown-item" (click)="onBan()">Ban</a>
-                <a class="dropdown-item" (click)="onLeave()">Leave</a>
-                <!-- pgoudet -->
-              </div>
+    
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <!--Add Admin-->
+                <li>
+                  <a class="dropdown-item"> Add new admin&raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        placeholder="Name"
+                        id="add-new-admin"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onNewAdmin()"
+                      >
+                        Add new admin
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Add friend-->
+                <li>
+                  <a class="dropdown-item"> Add a friend &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        placeholder="Name"
+                        id="add-friend"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onAddFriend()"
+                      >
+                        Add
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!-- Invite to play -->
+                <li>
+                  <a class="dropdown-item"> Invite to play &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        placeholder="Name"
+                        id="invite-to-play"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onAddFriend()"
+                      >
+                        Invite
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Mute-->
+                <li>
+                  <a class="dropdown-item"> Mute &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        id="mute-room"
+                        placeholder="Name"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onActivateMute()"
+                      >
+                        Mute
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Ban-->
+                <li>
+                  <a class="dropdown-item"> Ban &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        id="ban-room"
+                        placeholder="Name"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onBan()"
+                      >
+                        Ban
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Leave-->
+                <li>
+                  <a class="dropdown-item"> Leave &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onLeave()"
+                      >
+                        Leave the room
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
             </div>
+            <!-- ORIGINAL -->
+
+
             <!-- pgoudet -->
             <div class="hidden add-user-form" id="add-user-form">
               <form class="form-inline">
@@ -269,9 +380,9 @@
               <ng-template #leftMessages>
                 <li class="clearfix">
                   <div class="message-data text-left">
-                    <span class="message-data-time">{{ message.date | date: 'short' }}</span>
                     <img src="https://cdn.vox-cdn.com/thumbor/CNLDJd5-M-WtOsYh_yugQ-S-FJs=/715x248:1689x721/1400x933/filters:focal(972x299:1278x605):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/69305239/shrek4_disneyscreencaps.com_675.0.jpg" alt="avatar" />
-                  </div>
+                    <span class="message-data-time">{{ message.date | date: 'short' }}</span>
+                </div>
                   <div class="message other-message float-left">
                     {{ message.content }}
                   </div>
@@ -294,7 +405,7 @@
         <div class="input-group-prepend">
           <button
             type="button"
-            class="btn btn-outline-primary"
+            class="btn btn-outline-light my-2 my-sm-0"
             (click)="onSendMessage()"
           >
             <i class="fa fa-send"></i>

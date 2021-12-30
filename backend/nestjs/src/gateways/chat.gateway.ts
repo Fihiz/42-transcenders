@@ -62,7 +62,6 @@ export class ChatGateway {
 
 	@SubscribeMessage('newConversation')
 	async newConversation(@MessageBody() emission, @MessageBody('data') newConvDatas: ConversationEntity) {
-    console.log('newConvDatas = ', newConvDatas);
     if (await this.ConvService.newConvcheckValue(newConvDatas) === false)
       return (this.emitFail(emission.login, 'error in input'));
 		const tmp = await this.ConvService.createConv(newConvDatas) as any;
@@ -113,6 +112,7 @@ export class ChatGateway {
   @SubscribeMessage('leaveRoom')
   async leaveRoom(@MessageBody() emission) {
     const user = await this.chatterService.findOneChatter(emission.data.conv_id, emission.data.login)
-    await this.ConvService.removeMemberOfConv(emission.data.content, emission.data.conv_id, emission.login, user);
+    if ((await this.ConvService.removeMemberOfConv(emission.data.content, emission.data.conv_id, emission.login, user)) !== 'ok')
+      this.emitFail(emission.socketId, 'error happend in removing the user');
   }
 }

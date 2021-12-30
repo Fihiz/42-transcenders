@@ -104,20 +104,44 @@ export class ChatComponent implements OnInit {
   }
 
 
+  // async onCreateRoom() {
+  //   console.log('create room');
+  //   const res = await this.chatService.takeAndCheck(this.users);
+  //   if (res.status != 'ok') {
+  //     return;
+  //   }
+  //   const newConv: if_conversation = {
+  //     avatar: '',
+  //     conv_id: 0,
+  //     name: res.data.roomName,
+  //     password: res.data.password,
+  //     type: res.data.password.length === 0 ? 'public' : 'protected',
+  //     members: res.data.members,
+  //   };
+  //   this.emission = this.chatService.emission(
+  //     'newConversation',
+  //     this.currentConv,
+  //     0,
+  //     newConv
+  //   );
+  // }
+
   async onCreateRoom() {
-    console.log('create room');
+    console.log('on create room');
     const res = await this.chatService.takeAndCheck(this.users);
     if (res.status != 'ok') {
       return;
     }
+    const roomAvatarsArray : string[] = ['../../../assets/room-pictures/1.png', '../../../assets/room-pictures/2.png', '../../../assets/room-pictures/3.png', '../../../assets/room-pictures/4.png', '../../../assets/room-pictures/5.png', '../../../assets/room-pictures/6.png', '../../../assets/room-pictures/7.png', '../../../assets/room-pictures/8.png', '../../../assets/room-pictures/9.png'];
     const newConv: if_conversation = {
-      avatar: '',
+      avatar: roomAvatarsArray[Math.floor(Math.random() * roomAvatarsArray.length)],
       conv_id: 0,
       name: res.data.roomName,
       password: res.data.password,
       type: res.data.password.length === 0 ? 'public' : 'protected',
       members: res.data.members,
     };
+    newConv.members.push(this.global.login as string);
     this.emission = this.chatService.emission(
       'newConversation',
       this.currentConv,
@@ -180,12 +204,24 @@ export class ChatComponent implements OnInit {
 
   onActivateMute() {}
 
+  async onNewAdmin() {
+    const value = (<HTMLInputElement>document.getElementById('add-new-admin'))?.value
+    if (value) {
+      console.log('value = ', value)
+      const isBan = await axios.get("http://127.0.0.1:3000/cb-chat/newAdmin", {params: {newAdmin: value, requester: this.login, conv_id: this.currentConv.conv_id}});
+      if (isBan.data !== 'ok')
+        alert(isBan.data);
+    }
+  }
+
   async onBan() {
     console.log('onBan');
-    const value = (<HTMLInputElement>document.getElementById(''))?.value
-    const isBan = await axios.get("http://127.0.0.1:3000/cb-chat/ban", {params: {banned: 'mapontil', requester: this.login}});
-    // if (isBan !== 'ok')
-    //   alert(isBan);
+    const value = (<HTMLInputElement>document.getElementById('ban-room'))?.value
+    if (value) {
+      const isBan = await axios.get("http://127.0.0.1:3000/cb-chat/ban", {params: {banned: value, requester: this.login,  conv_id: this.currentConv.conv_id}});
+      if (isBan.data !== 'ok')
+        alert(isBan.data);
+    }
   }
 
 
