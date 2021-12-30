@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { if_game, if_game_object, if_game_type } from '../interfaces/if-game';
+import { if_game_object } from '../interfaces/if-game';
 import axios from 'axios';
 import { GlobalService } from './sf-global.service';
 
@@ -7,83 +7,89 @@ import { GlobalService } from './sf-global.service';
   providedIn: 'root',
 })
 export class GameService {
-  game?: if_game;
 
   constructor(private globalService: GlobalService) {}
 
   // PLAY PARTS
   async getTypesOfParty() {
-    const response = await axios.get(`http://127.0.0.1:3000/cb-game/types`)
-    const types = response.data;
-    return types;
-  }
-  
-  // LIVE PARTS
-  async getParties(): Promise<if_game_object[]> {
-    const response = await axios.get(`http://127.0.0.1:3000/cb-game/parties`)
-    const parties = response.data;
-    return parties;
+    const url = `http://127.0.0.1:3000/cb-game/types`;
+    return axios.get(url)
+    .then((response: any) => {
+      const types = response.data;
+      return types;
+    })
+    .catch((error: any) => {
+      // console.error(error.response.data);
+      return undefined;
+    })
   }
 
-  // async setParty(type: string) {
-  //   const response = await axios.post(`http://127.0.0.1:3000/cb-game/party/${type}`)
-  //   const party = response;
-  //   return party;
-  // }
+  // LIVE PARTS
+  async getPartiesInProgress() {
+    const url = `http://127.0.0.1:3000/cb-game/parties`;
+    return axios.get(url)
+    .then((response: any) => {
+      const parties = response.data;
+      return parties;
+    })
+    .catch((error: any) => {
+      // console.log(error.response.data);
+      return undefined;
+    })
+  }
 
   async setParty(type: string) {
-    // const login = this.globalService.login;
-    // let login = this.globalService.login;
-    let login = "";
-    if (type === "Classic") {
-      login = "jobenass";
-      type = "Classic";
-    }
-    else if (type === "School") {
-      login = "Moldu_01";
-      type = "School";
-    }
-    else if (type === "Moldu_02") {
-      login = "Moldu_02";
-      type = "Classic";
-    }
-    else if (type === "Moldu_03") {
-      login = "Moldu_03";
-      type = "Classic";
-    }
-    else if (type === "Moldu_04") {
-      login = "Moldu_04";
-      type = "Classic";
-    }
-    else if (type === "Moldu_05") {
-      login = "Moldu_05";
-      type = "Classic";
-    }
+    const login = this.globalService.login;
+    const url = `http://127.0.0.1:3000/cb-game/party/play`;
     const data = {
       login: login,
       map_type: type
     }
-    return axios.post('http://127.0.0.1:3000/cb-game/party', data)
-    .then((response) => {
-      console.log(response);
+    return axios.post(url, data)
+    .then((response: any) => {
+      const party = response.data;
+      return party;
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((error: any) => {
+      return undefined;
     });
   }
 
-  async getPartyById(id: number): Promise<if_game_object> {
-    const response = await axios.get(`http://127.0.0.1:3000/cb-game/party/${id}`);
-    console.log(response);
-    const party = response.data;
-    return party;
+  async getPartyById(id: number) {
+    const url = `http://127.0.0.1:3000/cb-game/party/id/${id}`;
+    return axios.get(url)
+    .then((response: any) => {
+      const party = response.data;
+      return party;
+    })
+    .catch((error: any) => {
+      return undefined;
+    })
   }
 
-  async getPartyByLogin(): Promise<if_game_object> {
+  async deletePartyById(id: number) {
+    const url = `http://127.0.0.1:3000/cb-game/party/id/${id}`;
+    return axios.delete(url)
+    .then((response: any) => {
+      return true;
+    })
+    .catch((error: any) => {
+      return false;
+    })
+  }
+
+  async getPartyByLogin() {
     const login = this.globalService.login;
-    const response = await axios.get(`http://127.0.0.1:3000/cb-game/party/${login}`);
-    const party = response.data;
-    return party;
+    const url = `http://127.0.0.1:3000/cb-game/party/login/${login}`;
+    return axios.get(url)
+    .then((response: any) => {
+      const party = response.data;
+      return party;
+    })
+    .catch((error: any) => {
+      console.log("pass");
+      return undefined;
+    })
   }
 
 }

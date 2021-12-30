@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { if_stats, if_stats_object  } from '../interfaces/if-stats';
+import { if_stats_object } from '../interfaces/if-stats';
 import axios from 'axios';
 
 @Injectable({
@@ -12,12 +12,16 @@ export class StatsService {
 	constructor() {}
 
 	async getScores() {
-		const url = 'http://127.0.0.1:3000/cb-stats/ranking';
-		// try {
-			const response = await axios.get(url);
-			return response.data;
-		// } catch(error) {
-			// console.error("FRONT: ", error.response);
-		// }
+		const url = `http://127.0.0.1:3000/cb-stats/ranking`;
+		return axios.get(url)
+		.then((response: any) => {
+			this.Scores = response.data;
+			return this.Scores;
+		})
+		.catch((error: any) => {
+			// console.error(error.response.data);
+			return undefined;
+		})
 	}
+
 }

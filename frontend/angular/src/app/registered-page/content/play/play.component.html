@@ -1,6 +1,9 @@
-<h1>Pong's game</h1>
-<p class="state">Start a new game !</p>
-<div class="list">
+<div *ngIf="sets.length > 0">
+    <h1>Pong's game</h1>
+    <p class="state">Start a new game !</p>
+</div>
+<!-- <div class="list" *ngIf="intervalId == -1 && time == -1"> -->
+<div class="list" *ngIf="waiting === false">
     <li class="item" *ngFor="let set of sets">
         <div class="container">
             <img class="set" src="{{ set.game_aspect }}">
@@ -12,14 +15,7 @@
         </div>
     </li>
 </div>
-
-<!-- <html>
-    <head>
-        <title>Typescript Pong</title>
-        <link href='https://fonts.googleapis.com/css?family=Comfortaa:900' rel='stylesheet' type='text/css'>
-    </head>
-    <body>
-        <canvas width=700 height=400 id="game-canvas"></canvas> 
-        <h4>Move left paddle up and down with the arrow keys</h4>
-    </body>
-</html> -->
+<div class="card-wait" *ngIf="waiting === true">
+    <p class="wait">Waiting Line</p>
+    <p class="timer">{{ time }}</p>
+</div>

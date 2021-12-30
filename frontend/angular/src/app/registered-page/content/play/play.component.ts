@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { GameService } from 'src/app/services/sf-game.service';
 import { if_game_object, if_game_type } from 'src/app/interfaces/if-game';
@@ -10,245 +10,29 @@ import { Router } from '@angular/router';
   templateUrl: './play.component.html',
   styleUrls: ['./play.component.css']
 })
-export class PlayComponent implements OnInit {
-
-//   constructor() { }
-
-//   ngOnInit(): void {
-//     enum KeyBindings{
-//       UP = 38,
-//       DOWN = 40
-//     }
-    
-//     class Game{
-//       private gameCanvas;
-//       private gameContext;
-//       public static keysPressed: boolean[] = [];
-//       public static playerScore: number = 0;
-//       public static computerScore: number = 0;
-//       private player1: Paddle;
-//       private computerPlayer: ComputerPaddle;
-//       private ball: Ball;
-//       constructor(){
-//           this.gameCanvas = <HTMLCanvasElement>document.getElementById("game-canvas");
-//           this.gameContext = <CanvasRenderingContext2D>this.gameCanvas.getContext("2d");
-//           this.gameContext.font = "30px Orbitron";
-          
-//           window.addEventListener("keydown",function(e){
-//              Game.keysPressed[e.which] = true;
-//           });
-          
-//           window.addEventListener("keyup",function(e){
-//               Game.keysPressed[e.which] = false;
-//           });
-          
-//           var paddleWidth:number = 20, paddleHeight:number = 60, ballSize:number = 10, wallOffset:number = 20;
-          
-//           this.player1 = new Paddle(paddleWidth,paddleHeight,wallOffset,this.gameCanvas.height / 2 - paddleHeight / 2); 
-//           this.computerPlayer = new ComputerPaddle(paddleWidth,paddleHeight,this.gameCanvas.width - (wallOffset + paddleWidth) ,this.gameCanvas.height / 2 - paddleHeight / 2);
-//           this.ball = new Ball(ballSize,ballSize,this.gameCanvas.width / 2 - ballSize / 2, this.gameCanvas.height / 2 - ballSize / 2);    
-          
-//       }
-//       drawBoardDetails(){
-          
-//           //draw court outline
-//           this.gameContext.strokeStyle = "#fff";
-//           this.gameContext.lineWidth = 5;
-//           this.gameContext.strokeRect(10,10,this.gameCanvas.width - 20 ,this.gameCanvas.height - 20);
-          
-//           //draw center lines
-//           for (var i = 0; i + 30 < this.gameCanvas.height; i += 30) {
-//               this.gameContext.fillStyle = "#fff";
-//               this.gameContext.fillRect(this.gameCanvas.width / 2 - 10, i + 10, 15, 20);
-//           }
-          
-//           //draw scores
-//           this.gameContext.fillText(Game.playerScore as unknown as string, 280, 50);
-//           this.gameContext.fillText(Game.computerScore as unknown as string, 390, 50);
-          
-//       }
-//       update(){
-//           this.player1.update(this.gameCanvas);
-//           this.computerPlayer.update(this.ball,this.gameCanvas);
-//           this.ball.update(this.player1,this.computerPlayer,this.gameCanvas);
-//       }
-//       draw(){
-//         // this.gameContext.fillStyle = `#${Math.floor(Math.random() * 256)}${Math.floor(Math.random() * 256)}${Math.floor(Math.random() * 256)}`;
-//           this.gameContext.fillStyle = "#000";
-//           this.gameContext.fillRect(0,0,this.gameCanvas.width,this.gameCanvas.height);
-                
-//           this.drawBoardDetails();
-//           this.player1.draw(this.gameContext);
-//           this.computerPlayer.draw(this.gameContext);
-//           this.ball.draw(this.gameContext);
-//       }
-//       gameLoop(){
-//           game.update();
-//           game.draw();
-//           requestAnimationFrame(game.gameLoop);
-//       }
-//     }
-    
-//     class Entity{
-//       width:number;
-//       height:number;
-//       x:number;
-//       y:number;
-//       xVel:number = 0;
-//       yVel:number = 0;
-//       constructor(w:number,h:number,x:number,y:number){       
-//           this.width = w;
-//           this.height = h;
-//           this.x = x;
-//           this.y = y;
-//       }
-//       draw(context: any){
-//           context.fillStyle = "#fff";
-//           context.fillRect(this.x,this.y,this.width,this.height);
-//       }
-//     }
-    
-//     class Paddle extends Entity{
-      
-//       private speed:number = 10;
-      
-//       constructor(w:number,h:number,x:number,y:number){
-//           super(w,h,x,y);
-//       }
-      
-//       update(canvas: any){
-//        if( Game.keysPressed[KeyBindings.UP] ){
-//           this.yVel = -1;
-//           if(this.y <= 20){
-//               this.yVel = 0
-//           }
-//        }else if(Game.keysPressed[KeyBindings.DOWN]){
-//            this.yVel = 1;
-//            if(this.y + this.height >= canvas.height - 20){
-//                this.yVel = 0;
-//            }
-//        }else{
-//            this.yVel = 0;
-//        }
-       
-//        this.y += this.yVel * this.speed;
-       
-//       }
-//     }
-    
-//     class ComputerPaddle extends Entity{
-      
-//       private speed:number = 10;
-      
-//       constructor(w:number,h:number,x:number,y:number) {
-//           super(w,h,x,y);
-//       }
-      
-//       update(ball:Ball, canvas: any){ 
-         
-//          //chase ball
-//          if(ball.y < this.y && ball.xVel == 1){
-//               this.yVel = -1; 
-              
-//               if(this.y <= 20){
-//                   this.yVel = 0;
-//               }
-//          }
-//          else if(ball.y > this.y + this.height && ball.xVel == 1){
-//              this.yVel = 1;
-             
-//              if(this.y + this.height >= canvas.height - 20){
-//                  this.yVel = 0;
-//              }
-//          }
-//          else{
-//              this.yVel = 0;
-//          }
-         
-//           this.y += this.yVel * this.speed;
-    
-//       }
-      
-//     }
-    
-//     class Ball extends Entity{
-      
-//       private speed:number = 5;
-      
-//       constructor(w:number,h:number,x:number,y:number){
-//           super(w,h,x,y);
-//           var randomDirection = Math.floor(Math.random() * 2) + 1; 
-//           if(randomDirection % 2){
-//               this.xVel = 1;
-//           }else{
-//               this.xVel = -1;
-//           }
-//           this.yVel = 1;
-//       }
-      
-//       update(player:Paddle,computer:ComputerPaddle,canvas: any){
-         
-//           //check top canvas bounds
-//           if(this.y <= 10){
-//               this.yVel = 1;
-//           }
-          
-//           //check bottom canvas bounds
-//           if(this.y + this.height >= canvas.height - 10){
-//               this.yVel = -1;
-//           }
-          
-//           //check left canvas bounds
-//           if(this.x <= 0){  
-//               this.x = canvas.width / 2 - this.width / 2;
-//               Game.computerScore += 1;
-//           }
-          
-//           //check right canvas bounds
-//           if(this.x + this.width >= canvas.width){
-//               this.x = canvas.width / 2 - this.width / 2;
-//               Game.playerScore += 1;
-//           }
-          
-          
-//           //check player collision
-//           if(this.x <= player.x + player.width){
-//               if(this.y >= player.y && this.y + this.height <= player.y + player.height){
-//                   this.xVel = 1;
-//               }
-//           }
-          
-//           //check computer collision
-//           if(this.x + this.width >= computer.x){
-//               if(this.y >= computer.y && this.y + this.height <= computer.y + computer.height){
-//                   this.xVel = -1;
-//               }
-//           }
-         
-//           this.x += this.xVel * this.speed;
-//           this.y += this.yVel * this.speed;
-//       }
-//     }
-    
-//     var game = new Game();
-//     requestAnimationFrame(game.gameLoop);
-//   }
+export class PlayComponent implements OnInit, OnDestroy {
 
   play?: if_game_object;
-  sets: if_game_type[] = []; 
+  sets: if_game_type[] = [];
+  time: number = -1;
+  intervalId?: number;
+  waiting: boolean = false;
 
   constructor(private gameService: GameService, private router: Router) { }
 
   ngOnInit() {
-    this.getPlayParty();
-    if (this.play)
-      this.getSetsParty();
+    this.getDisplay();
+  }
+
+  async getDisplay() {
+    await this.getPlayParty();
+    await this.getSetsParty();
   }
 
   async getPlayParty() {
     this.play = await this.gameService.getPartyByLogin();
     if (this.play)
-      this.router.navigate([`./pong/game/${this.play.game_id}`]);
+      this.CountDown();
   }
 
   async getSetsParty() {
@@ -256,7 +40,51 @@ export class PlayComponent implements OnInit {
   }
 
   async setParty(type: string) {
-    await this.gameService.setParty(type);
+    this.play = await this.gameService.setParty(type)
+    if (this.play)
+      this.CountDown();
+  }
+
+  CountDown() {
+    if (this.play)
+      this.time = Math.round((((new Date(this.play.updated).getTime() - Date.now()) + 10000) / 1000));
+    this.waiting = true;
+
+    // Compte-à-rebourd
+    this.intervalId = setInterval(() => {
+      this.time--;
+      if (this.time <= 0) {
+        this.deleteCountDown();
+        if (this.play) {
+          this.gameService.getPartyById(this.play.game_id)
+          .then((response) => {
+            if (this.play && response.player2 !== null)
+              this.router.navigate([`./pong/game/${this.play.game_id}`]);
+            else if (this.play && response.player2 === null)
+              this.gameService.deletePartyById(this.play.game_id);
+          })
+        }
+      }
+    }, 1000);
+
+    // 
+    // this.intervalId = setTimeout(() => {
+    //   console.log("OK");
+    //   console.log(this.time);
+    //   this.time--;
+    //   this.deleteCountDown();
+    // }, this.time);
+    // this.deleteCountDown();
+  }
+
+  deleteCountDown() {
+    clearInterval(this.intervalId);
+    this.time = -1;
+    this.waiting = false;
+  }
+
+  ngOnDestroy() {
+    this.deleteCountDown();
   }
 
 }

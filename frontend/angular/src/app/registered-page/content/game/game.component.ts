@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { if_game_object } from 'src/app/interfaces/if-game';
 import { GameService } from 'src/app/services/sf-game.service';
 
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-game',
@@ -11,17 +11,16 @@ import { Router } from '@angular/router';
 })
 export class GameComponent implements OnInit {
 
-  @Input() party?: if_game_object; 
+  party?: if_game_object; 
 
-  constructor(private gameService: GameService, private router: Router) { }
+  constructor(private gameService: GameService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.getParty();
   }
 
   async getParty() {
-    // const id: number = Number(this.router.snapshot.paramMap.get('id'));
-    const id: number = 3;
+    const id: number = Number(this.route.snapshot.paramMap.get('id'));
     const response = await this.gameService.getPartyById(id);
     this.party = response;
   }

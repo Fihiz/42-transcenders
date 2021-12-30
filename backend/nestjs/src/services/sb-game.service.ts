@@ -76,24 +76,6 @@ export class GameService {
 	// }
 	/**/
 
-	async getAllPartiesInProgress(): Promise<PongGameEntity[]> | undefined {
-		const partyRepository = await getRepository(PongGameEntity);
-		return partyRepository.find({
-			where: { game_status: status.Playing },
-			relations: ["player1", "player2", "game_type_id"]
-		})
-		.then((response) => {
-			const parties: PongGameEntity[] = response;
-			console.log(`Get all parties in progress has succeeded.`);
-			return parties;
-		})
-		.catch((error) => {
-			console.log(`Get all parties in progress has failed...`);
-			console.log(`details: ${error}`);
-			return undefined;
-		});
-	}
-
 	// NEW
 	async getAllTypesOfGame(): Promise<GameTypeEntity[]> | undefined {
 		const typeRepository = await getRepository(GameTypeEntity);
@@ -105,6 +87,24 @@ export class GameService {
 		})
 		.catch((error) => {
 			console.log(`Get all types of game has failed...`);
+			console.log(`details: ${error}`);
+			return undefined;
+		});
+	}
+
+	async getAllPartiesInProgress(): Promise<PongGameEntity[]> | undefined {
+		const partyRepository = await getRepository(PongGameEntity);
+		return partyRepository.find({
+			relations: ["player1", "player2", "game_type_id"],
+			where: { game_status: status.Playing }
+		})
+		.then((response) => {
+			const parties: PongGameEntity[] = response;
+			console.log(`Get all parties in progress has succeeded.`);
+			return parties;
+		})
+		.catch((error) => {
+			console.log(`Get all parties in progress has failed...`);
 			console.log(`details: ${error}`);
 			return undefined;
 		});
@@ -130,6 +130,7 @@ export class GameService {
 	async searchOnePartyInProgress(createPartyDto: CreatePartyDto): Promise<PongGameEntity> | undefined {
 		const pongRepository = getRepository(PongGameEntity);
 		return pongRepository.findOne({
+			relations: ["player1", "player2", "game_type_id"],
 			where: [
 				{ player1: createPartyDto.login, game_status: Not(status.Finished) },
 				{ player2: createPartyDto.login, game_status: Not(status.Finished) }
@@ -230,43 +231,59 @@ export class GameService {
 		})
 	}
 
-
-//
-
 	async getPartyById(id: number): Promise<PongGameEntity> | undefined {
 		const pongRepository = getRepository(PongGameEntity);
 		return pongRepository.findOne({
+			relations: ["player1", "player2", "game_type_id"],
 			where: { game_id: id }
 		})
 		.then((response) => {
-			console.log(`SUCCESS`);
+			console.log(`Search party by id has succeeded.`);
 			return response;
 		})
 		.catch((error) => {
-			console.log(`ERROR`, error);
+			console.log(`Search party by id has failed...`);
+			console.log(`details: ${error}`);
 			return undefined;
 		})
 	}
-
-
+	
 	async getPartyByLogin(login: string): Promise<PongGameEntity> | undefined {
 		const pongRepository = getRepository(PongGameEntity);
 		return pongRepository.findOne({
+			relations: ["player1", "player2", "game_type_id"],
 			where: [
 				{ player1: login, game_status: status.Playing },
-				{ player2: login, game_status: status.Playing }
+				{ player2: login, game_status: status.Playing },
+				{ player1: login, game_status: status.Creation },
+				{ player2: login, game_status: status.Creation }
 			]
 		})
 		.then((response) => {
-			console.log(`SUCCESS`);
+			console.log(`Search party by login has succeeded.`);
 			return response;
 		})
 		.catch((error) => {
-			console.log(`ERROR`, error);
+			console.log(`Search party by login has failed...`);
+			console.log(`details: ${error}`);
 			return undefined;
 		})
 	}
 
 //
+
+	async deletePartyById(id: number): Promise<any> | undefined {
+		const pongRepository = getRepository(PongGameEntity);
+		return pongRepository.delete(id)
+		.then((response) => {
+			console.log(`Delete party by id has succeeded.`);
+			return true;
+		})
+		.catch((error) => {
+			console.log(`Delete party by id has failed...`);
+			console.log(`details: ${error}`);
+			return false;
+		})
+	}
 
 }

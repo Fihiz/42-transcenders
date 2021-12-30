@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { if_stats, if_stats_object } from 'src/app/interfaces/if-stats';
+import { if_stats_object } from 'src/app/interfaces/if-stats';
 import { StatsService } from 'src/app/services/sf-stats.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { StatsService } from 'src/app/services/sf-stats.service';
 })
 export class RankingComponent implements OnInit {
 
-  scores: if_stats_object[] = [];
+  scores: if_stats_object[] | undefined = [];
   size: number = 0;
 
   constructor(private statsService: StatsService) { }
@@ -21,7 +21,10 @@ export class RankingComponent implements OnInit {
 
   async getRanking() {
     this.scores = await this.statsService.getScores();
-    this.size = this.scores.length;
+    if (this.scores !== undefined)
+      this.size = this.scores.length;
+    // else
+      //  redirect to Component error ?
   }
 
 }

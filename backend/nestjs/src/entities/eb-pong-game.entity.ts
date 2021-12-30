@@ -5,6 +5,7 @@ import { WebAppUserEntity } from "./eb-web-app-user.entity";
 
 export enum status {
   Creation = "creation",
+  // Waiting = "waiting",
   Playing = "playing",
   Finished = "finished"
 };

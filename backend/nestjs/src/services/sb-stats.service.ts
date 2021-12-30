@@ -35,7 +35,6 @@ export class StatsService {
         .catch((error) => {
             console.log(`Get scores players has failed...`);
             console.log(`details:`, error);
-            // throw new InternalServerErrorException( { error: "whaaat !!?" } );
             return undefined;
         })
     }

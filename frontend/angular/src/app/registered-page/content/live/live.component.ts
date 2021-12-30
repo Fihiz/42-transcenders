@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { if_game, if_game_object } from 'src/app/interfaces/if-game';
+import { if_game_object } from 'src/app/interfaces/if-game';
 import { GameService } from 'src/app/services/sf-game.service'
 
 @Component({
@@ -10,7 +10,7 @@ import { GameService } from 'src/app/services/sf-game.service'
 })
 export class LiveComponent implements OnInit {
 
-  parties: if_game_object[] = [];
+  parties: if_game_object[] | undefined = [];
   size: number = 0;
 
   constructor(private gameService: GameService ) { }
@@ -20,8 +20,11 @@ export class LiveComponent implements OnInit {
   }
 
   async getLives() {
-      this.parties = await this.gameService.getParties();
-      this.size = this.parties.length;
+      this.parties = await this.gameService.getPartiesInProgress();
+      if (this.parties !== undefined)
+        this.size = this.parties.length;
+      // else
+      //  redirect to Component error ?
   }
 
 }

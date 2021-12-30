@@ -10,6 +10,7 @@ h1, .state {
 .item {
   list-style: none;
 	margin: 5px;
+  margin-bottom: 10px;
 	padding: 5px;
 	background-color: #D2E3E6;
   width: 160px;
@@ -37,13 +38,38 @@ h1, .state {
 }
 
 .details {
-  margin-left: 10px; 
+  margin-left: 10px;
 }
 
 .buttonplay {
   border-style: none;
   border-radius: 20px;
   padding: 10px;
+}
+
+.card-wait {
+  background-color: #D2E3E6;
+	border-style: none;
+	border-radius: 15px;
+  text-align: center;
+  padding: 10px;
+}
+
+.card-match {
+  background-color: #43B6B2;
+	border-style: none;
+	border-radius: 15px;
+  text-align: center;
+  padding: 10px;
+}
+
+.wait {
+  text-align: center;
+}
+
+.timer {
+  text-align: center;
+  font-size: 28px;
 }
 
 /* body{
