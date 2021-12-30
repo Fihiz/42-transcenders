@@ -16,12 +16,17 @@ export class PlayComponent implements OnInit, OnDestroy {
   sets: if_game_type[] = [];
   time: number = -1;
   intervalId?: number;
+  test?: number;
   waiting: boolean = false;
 
   constructor(private gameService: GameService, private router: Router) { }
 
   ngOnInit() {
     this.getDisplay();
+  }
+
+  ngOnDestroy() {
+    this.deleteCountDown();
   }
 
   async getDisplay() {
@@ -31,60 +36,64 @@ export class PlayComponent implements OnInit, OnDestroy {
 
   async getPlayParty() {
     this.play = await this.gameService.getPartyByLogin();
-    if (this.play)
-      this.CountDown();
+    if (this.play) {
+      this.countDown();
+      this.timer();
+    }
   }
 
   async getSetsParty() {
-    this.sets = await this.gameService.getTypesOfParty();
+    if (!this.play)
+      this.sets = await this.gameService.getTypesOfParty();
   }
 
   async setParty(type: string) {
     this.play = await this.gameService.setParty(type)
-    if (this.play)
-      this.CountDown();
+    if (this.play) {
+      this.countDown();
+      this.timer();
+    }
   }
 
-  CountDown() {
+  countDown() {
     if (this.play)
       this.time = Math.round((((new Date(this.play.updated).getTime() - Date.now()) + 10000) / 1000));
-    this.waiting = true;
-
-    // Compte-à-rebourd
-    this.intervalId = setInterval(() => {
-      this.time--;
-      if (this.time <= 0) {
-        this.deleteCountDown();
-        if (this.play) {
-          this.gameService.getPartyById(this.play.game_id)
-          .then((response) => {
-            if (this.play && response.player2 !== null)
-              this.router.navigate([`./pong/game/${this.play.game_id}`]);
-            else if (this.play && response.player2 === null)
-              this.gameService.deletePartyById(this.play.game_id);
-          })
+    if(this.time <= 0)
+      this.time = 0;
+    if (this.time > 0) {
+      this.waiting = true;
+      this.intervalId = setInterval(() => {
+        this.time--;
+        console.log("countdown", this.time);
+        if (this.time <= 0) {
+          this.deleteCountDown();
+          this.waiting = false;
         }
-      }
-    }, 1000);
+      }, 1000);
+    }
+  }
 
-    // 
-    // this.intervalId = setTimeout(() => {
-    //   console.log("OK");
-    //   console.log(this.time);
-    //   this.time--;
-    //   this.deleteCountDown();
-    // }, this.time);
-    // this.deleteCountDown();
+  timer() {
+    console.log("timer", this.time);
+    this.test = setTimeout(() => {
+      if (this.play) {
+        this.gameService.getPartyById(this.play.game_id)
+        .then((response) => {
+          if (this.play && response.player2 !== null)
+            this.router.navigate([`./pong/game/${this.play.game_id}`]);
+          else if (this.play && response.player2 === null)
+            this.gameService.deletePartyById(this.play.game_id);
+        })
+        clearTimeout(this.test);
+        console.log("fin de timer", this.time);
+        this.time = -1;
+      }
+    }, this.time * 1000);
   }
 
   deleteCountDown() {
     clearInterval(this.intervalId);
     this.time = -1;
-    this.waiting = false;
-  }
-
-  ngOnDestroy() {
-    this.deleteCountDown();
   }
 
 }

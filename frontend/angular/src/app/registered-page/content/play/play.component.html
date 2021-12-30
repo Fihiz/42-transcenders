@@ -1,8 +1,7 @@
-<div *ngIf="sets.length > 0">
+<div *ngIf="waiting === true || sets.length > 0">
     <h1>Pong's game</h1>
     <p class="state">Start a new game !</p>
 </div>
-<!-- <div class="list" *ngIf="intervalId == -1 && time == -1"> -->
 <div class="list" *ngIf="waiting === false">
     <li class="item" *ngFor="let set of sets">
         <div class="container">
