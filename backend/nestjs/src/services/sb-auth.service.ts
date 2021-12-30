@@ -1,4 +1,4 @@
-import { Injectable, Res } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import axios from "axios";
 const querystring = require('querystring');
 
@@ -6,13 +6,10 @@ const querystring = require('querystring');
 export class AuthService {
 
   async getAccessToken(query) {
-    // console.log(query.host);
     const token_access = await axios.post(
       'https://api.intra.42.fr/oauth/token',
       querystring.stringify({
         grant_type: 'authorization_code',
-        // client_id:
-        //   '433f62b085e15cdb9994c692a7fc5af7e43eb3ca173bae63a421b26fa176c29a',
         client_id:
           'd13f8d3b287c4cb4ffa5e23f265383e2e33b4e0b0370efa35d0c36e3da0cb988',
         client_secret:
@@ -27,7 +24,6 @@ export class AuthService {
   async getInfosFromApi(query) {
     try {
     const accessToken = await this.getAccessToken(query);
-    // console.log(accessToken);
       const theRes = await axios.get('https://api.intra.42.fr/v2/me', {
         headers: { Authorization: `Bearer ${accessToken.data.access_token}` },
       });

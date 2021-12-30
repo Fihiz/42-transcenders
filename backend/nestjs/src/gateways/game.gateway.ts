@@ -10,16 +10,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	server;
 
 	constructor(private gameService:GameService) {
-		// this.gameService.addGame(0);
-		// this.gameService.addGame(1);
-		// this.gameService.addGame(2);
-		// this.gameService.addGame(3);
-		// this.gameService.addGame(4);
 		this.emitUpdate(this);
 	}
 
 	handleConnection() {
-		// console.log(this.server);
 		console.log('game connected')
 	}
 
@@ -29,7 +23,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			return ;
 		this.users.splice(id, 1);
 		console.log('game disconnection');
-		// console.log(this.users);
 	}
 
 	emitAll(message : string) {
@@ -38,12 +31,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	emitUpdate(test:GameGateway) {
-		// console.log('updating game', test.gameService.game);
 		// boucler sur chaque game en cours pour transmettre aux clients concernés avec filter
 		test.gameService.updateAll();
 		test.gameService.games.forEach((game) => {
 			const dest: string[] = test.users.filter((user) => user.gameId === game.id).map((user) => {return user.id;});
-			// console.log(game);
 			if (dest.length)
 				test.server.to(dest).emit('update', game.changing);
 		});
@@ -56,28 +47,22 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		console.log(body.login, 'successfully joined the game ', body.gameId);
 		this.users.push({id: body.id, login: body.login, gameId: body.gameId});
 		const user = this.users.find((user) => user.id === body.id);
-		if (this.gameService.games.length === 0)
-		{
-			console.log(this.gameService.games.length);
-			this.gameService.addGame(0);
-		}
 		let game = this.gameService.games.find((game) => game.id === user.gameId);
-		// console.log(this.gameService.games);
 		if (!game)
 		{
 			this.gameService.addGame(user.gameId);
 			game = this.gameService.games.find((game) => game.id === user.gameId);
+			if (!game)
+				return ; // ERROR
 		}
 		if (game.changing.leftPaddle.login === '')
 		{
 			game.changing.leftPaddle.login = user.login;
 		}
-		else if (game.changing.leftPaddle.login != user.login)
+		else if (game.changing.rightPaddle.login === '' && game.changing.leftPaddle.login != user.login)
 		{
 			game.changing.rightPaddle.login = user.login;
 		}
-		// console.log(`Map is ${this.users[0].id} ${this.users[0].login} ${this.users[0]} ${user} ${user.login} ${user.id} `);
-		// this.emitAll(`${user.login} joined the game`);
 		this.server.to(user.id).emit('welcome', game);
 	}
 
@@ -89,14 +74,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		if (id == -1)
 			return ;
 		this.users.splice(id, 1);
-		// console.log('users', this.users);
 		// this.emitAll(`${body.login} left the game`);
 	}
 
 	@SubscribeMessage('ready')
 	setReady(@MessageBody() body: any) {
 		// // Vérifier que l'id du client + de la game correspond à un des users pour savoir quelle game et quel paddle modifier.
-		// console.log("someone pressed ready", body, this.users.find((user) => user.id === body.id)?.login);
 		const user = this.users.find((user) => user.id === body.id);
 		const game = this.gameService.games.find((game) => game.id === user.gameId);
 		if (user && game)

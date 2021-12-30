@@ -149,17 +149,29 @@ export class GameService {
       }
 
       stopListen() {
-        if (globalSocket?.ioSocket?._callbacks?.$welcome)
-          globalSocket.removeListener('welcome');
-          // delete globalSocket.ioSocket._callbacks.$welcome;
-        if (globalSocket?.ioSocket?._callbacks?.$update)
-          globalSocket.removeListener('update');
-          // delete globalSocket.ioSocket._callbacks.$update;
+        globalSocket.removeListener('welcome');
+        globalSocket.removeListener('update');
       }
 
       listenClick(e: MouseEvent) {
-        globalSocket.emit('ready', {id: globalSocket.ioSocket.id});
-        test.gameCanvas.removeEventListener("click", test.listenClick);
+        if (test.game.status === "Starting" && 
+        ((test.game.leftPaddle.login === test.global.login && test.game.leftPaddle.ready === false ||
+          test.game.rightPaddle.login === test.global.login && test.game.rightPaddle.ready === false) &&
+          (test.game.countdown > 180 || test.game.countdown === -1)))
+        {
+          globalSocket.emit('ready', {id: globalSocket.ioSocket.id});
+        }
+        else if (test.game.status === "Finished" ||
+          (test.game.leftPaddle.login !== test.global.login &&
+          test.game.rightPaddle.login !== test.global.login))
+        {
+          const x = Math.floor(e.offsetX * test.gameCanvas.width / test.gameCanvas.clientWidth);
+          const y = Math.floor(e.offsetY * test.gameCanvas.height / test.gameCanvas.clientHeight);
+          if (x >= 40 && x <= (40 + 250) && y < 70 && y > 30)
+            console.log('player1');
+          else if (x >= test.game.board.width - 40 - Math.min(20 * test.game.rightPaddle.login.length, 250) && x <= test.game.board.width - 40 && y < 70 && y > 30)
+            console.log('player2');
+        }
       }
 
       drawBoard() {
@@ -177,7 +189,7 @@ export class GameService {
 
         // logins -----> to be pseudo
         this.gameContext.fillText(this.game.leftPaddle.login, 40, 50, 250);
-        this.gameContext.fillText(this.game.rightPaddle.login, this.game.board.width - 40 - (20 * this.game.rightPaddle.login.length), 50, 250);
+        this.gameContext.fillText(this.game.rightPaddle.login, this.game.board.width - 40 - Math.min(20 * this.game.rightPaddle.login.length, 250), 50, Math.min(this.game.rightPaddle.login.length * 20, 250));
 
         // borders and middle line
         for(let i = this.game.border.marginLeftRight; i < this.game.board.width - this.game.border.marginLeftRight; i+=this.game.border.length * 2)
@@ -213,15 +225,15 @@ export class GameService {
 
       drawReady() {
         // ready check
+        if (this.listenForReadyClick === false)
+        {
+          this.gameCanvas.addEventListener("click", test.listenClick);
+          this.listenForReadyClick = true;
+        }
         if ((this.game.leftPaddle.login === this.global.login && this.game.leftPaddle.ready === false ||
           this.game.rightPaddle.login === this.global.login && this.game.rightPaddle.ready === false) &&
           (this.game.countdown > 180 || this.game.countdown === -1))
         {
-          if (this.listenForReadyClick === false)
-          {
-            this.gameCanvas.addEventListener("click", test.listenClick);
-            this.listenForReadyClick = true;
-          }
           this.gameContext.fillStyle = 'rgba(50, 68, 72, 0.5)';
           this.gameContext.fillRect(0, 0, this.game.board.width, this.game.board.height);
           this.gameContext.fillStyle = this.game.fontColor;
@@ -240,30 +252,25 @@ export class GameService {
             this.game.rightPaddle.login === this.global.login && this.game.rightPaddle.score === 10)
           {
             this.gameContext.fillText("YOU WON THE GAME", 200, this.game.board.height / 2 + 15, 300);
-            // console.log(`you won the game`);
           }
           else if (this.game.leftPaddle.login === this.global.login ||
             this.game.rightPaddle.login === this.global.login)
           {
             this.gameContext.fillText("YOU LOST THE GAME", 200, this.game.board.height / 2 + 15, 300);
-            // console.log(`you lost the game`);
           }
           else
           {
             if (this.game.leftPaddle.score === 10)
             {
               this.gameContext.fillText(`${this.game.leftPaddle.login} won the game !`.toUpperCase(), 200, this.game.board.height / 2 + 15, 300);
-              // console.log(`${this.game.leftPaddle.login} won the game`);
             }
             else if (this.game.rightPaddle.score === 10)
             {
               this.gameContext.fillText(`${this.game.rightPaddle.login} won the game`.toUpperCase(), 200, this.game.board.height / 2 + 15, 300);
-              // console.log(`${this.game.rightPaddle.login} won the game`);
             }
             else
             {
               this.gameContext.fillText(`Something went wrong, no one won the game....`.toUpperCase(), 200, this.game.board.height / 2 + 15, 300);
-              // console.log(`Something went wrong, no one won the game....`);
             }
           }
           frameId = -1;
@@ -389,11 +396,7 @@ export class GameService {
     frameId = -1;
     loop = 0;
     if (this.game)
-    {
       this.game.stopListen();
-      // delete this.game;
-      // console.log(this.game);
-    }
   }
 
 
@@ -1376,12 +1379,10 @@ export class GameService {
                   this.takeItem(this.charX, this.charY + i);
                 if (this.dead(this.charX, this.charY + i))
                   return false;
-                if (this.charcheck(this.charX, this.charY + i, 'W')/* || 
-                  (!space && this.charcheck(this.charX, this.charY + i, 'L'))*/)
-                return false;
+                if (this.charcheck(this.charX, this.charY + i, 'W'))
+                  return false;
               }
-              return (!(this.charcheck(this.charX, this.charY + this.charVSpeed, 'W')/* ||
-                (!space && this.charcheck(this.charX, this.charY + this.charVSpeed, 'L'))*/));
+              return (!(this.charcheck(this.charX, this.charY + this.charVSpeed, 'W')));
             }
             else
             {
@@ -1406,17 +1407,11 @@ export class GameService {
             {
               if (this.charVSpeed < 0)
               {
-                // if (!this.charcheck(this.charX, this.charY - 1, 'W') &&
-                // (!space && !this.charcheck(this.charX, this.charY, 'L')))
                 if (!this.charcheck(this.charX, this.charY - 1, 'W'))
-                // if (!(this.charcheck(this.charX, this.charY - 1, 'W') ||
-                //     (!space && this.charcheck(this.charX, this.charY, 'L'))))
                 {
-                  while (!this.charcheck(this.charX, this.charY - this.charH, 'W')/* || 
-                    (!space && !this.charcheck(this.charX, this.charY - this.charH, 'L'))*/)
+                  while (!this.charcheck(this.charX, this.charY - this.charH, 'W'))
                     this.charY -= this.charH;
-                  while (!this.charcheck(this.charX, this.charY - 1, 'W')/* || 
-                    (!space && !this.charcheck(this.charX, this.charY, 'L'))*/)
+                  while (!this.charcheck(this.charX, this.charY - 1, 'W'))
                     this.charY--;
                 }
                 this.charVSpeed = 0;
@@ -1438,25 +1433,6 @@ export class GameService {
               }
             }
             this.charY += this.charVSpeed;
-            // if (this.charVSpeed < 0)
-            // {
-            //   if (this.charcheck(this.charX, this.charY + this.charVSpeed, 'W'))
-            //   {
-            //     while (!this.charcheck(this.charX, this.charY - 1, 'W'))
-            //       this.charY--;
-            //     this.charVSpeed = 0;
-            //   }
-            //   else if (this.dead(this.charX, this.charY + this.charVSpeed))
-            //     this.charVSpeed = 0;
-            // }
-            // else if (!this.noWall())
-            // {
-            //   while(!this.charcheck(this.charX, this.charY + 1, 'W') &&
-            //         !this.charcheck(this.charX, this.charY + 1, 'L'))
-            //     this.charY++;
-            //   this.charVSpeed = 0;
-            // }
-            // this.charY += this.charVSpeed;
           }
 
           takeItem(x: number, y: number) {
@@ -1483,7 +1459,6 @@ export class GameService {
           }
 
           drawScore() {
-            // this.gameContext.putImageData(this.itemImageData, 10, 10);
             for (let j = 0; j < 50; j++)
               for (let i = 0; i < 50; i++)
               {
@@ -1500,7 +1475,6 @@ export class GameService {
     
           drawLoop(game: Game) {
             game.move();
-            // console.log(game.charX, game.charY);
             game.takeItem(game.charX, game.charY);
             game.gravity();
             game.drawMap();

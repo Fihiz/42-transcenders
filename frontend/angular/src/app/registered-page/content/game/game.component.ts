@@ -15,6 +15,10 @@ export class GameComponent implements OnInit, OnDestroy {
 
   constructor(private onlineStatusService: OnlineStatusService, private gameService: GameService, private route: ActivatedRoute, private router: Router) {}
 
+  navigate(str: string) {
+    console.log(str);
+  }
+
   ngOnInit() {
     this.subscription.unsubscribe();
     this.subscription = this.onlineStatusService.status.subscribe(async (status: OnlineStatusType) => {

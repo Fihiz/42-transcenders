@@ -13,10 +13,8 @@ export class InputPromptComponent implements OnInit {
   ngOnInit(): void {}
 
   i: number = 0;
-  // pseudo_test = new FormControl('');
 
   increment(): void {
-    // console.log('avatar', this.userService.user.avatar);
     this.i = (this.i + 1) % this.userService.avatarList.length;
   }
 
@@ -28,6 +26,5 @@ export class InputPromptComponent implements OnInit {
     pseudo: new FormControl('', Validators.required),
     bio: new FormControl('', Validators.required),
     avatarUrl: new FormControl(this.userService.avatarList[0].url),
-    // avatarUrl: new FormControl('../../../assets/myIntraPictureBlack.png'),
   });
 }

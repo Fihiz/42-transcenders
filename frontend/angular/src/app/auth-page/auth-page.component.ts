@@ -31,7 +31,6 @@ export class AuthPageComponent {
       redirectUri = `http://${window.location.host}:80/auth/`;
     else
       redirectUri = 'http://127.0.0.1:80/auth/';
-    // const clientId = '433f62b085e15cdb9994c692a7fc5af7e43eb3ca173bae63a421b26fa176c29a';
     const clientId = 'd13f8d3b287c4cb4ffa5e23f265383e2e33b4e0b0370efa35d0c36e3da0cb988';
     const responseType = 'code';
     const state = 'enrfckqgilRbvr!XCWegret1@g30rt3h5/46+=40ethjr4j';

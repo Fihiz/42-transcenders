@@ -67,7 +67,6 @@ class Game {
       width: 5,
       length: 15,
     };
-    // this.id = 0;
     this.id = id;
     this.fontColor = "#528FAC",
     this.changing = {

@@ -15,14 +15,8 @@ export class WelcomeComponent implements OnInit, OnDestroy {
   constructor(private onlineStatusService: OnlineStatusService) {}
 
   ngOnInit(): void {
-    try {
-      this.subscription.unsubscribe();
-    }
-    catch(error: any) {
-      console.log(error);
-    }
+    this.subscription.unsubscribe();
     this.subscription = this.onlineStatusService.status.subscribe((status: OnlineStatusType) => {
-      console.log('ici status = ', status);
       this.status = status;
     });
   }
