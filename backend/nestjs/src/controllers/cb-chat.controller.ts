@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Res } from '@nestjs/common';
+import { Controller, Post, Req, Res, Get } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConversationEntity } from 'src/entities/eb-conversation.entity';
 import { Repository } from 'typeorm';
@@ -16,5 +16,11 @@ export class ChatController {
         res.send('ok');
       else
         res.send('ko');
+    }
+
+    @Get('ban')
+    async banUser(@Req() req, @Res() res) {
+      console.log(req);
+      // const userToBan
     }
 }

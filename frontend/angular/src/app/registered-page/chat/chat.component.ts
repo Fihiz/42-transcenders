@@ -5,6 +5,7 @@ import { if_conversation } from 'src/app/interfaces/if_conversation';
 import { if_emission } from 'src/app/interfaces/if_emmission';
 import { ChatService } from 'src/app/services/sf-chat.service';
 import { GlobalService } from 'src/app/services/sf-global.service';
+import axios from "axios";
 
 @Component({
   selector: 'app-chat',
@@ -36,10 +37,6 @@ export class ChatComponent implements OnInit {
     private chatService: ChatService
   ) {}
 
-  /* Normally not needed twice, can use the chat-service one */
-  // clearInputValues (str: string) {
-  // 	(<HTMLInputElement>document.getElementById(str)).value = "";
-  // }
 
   onSendMessage() {
     const content = (<HTMLInputElement>document.getElementById('input-message'))
@@ -106,17 +103,11 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  // onActivateRoomForm() {
-  //   document.getElementById('creationRoomForm')?.classList.remove('hidden');
-  //   document.getElementById('joinRoomForm')?.classList.add('hidden');
-  // }
 
   async onCreateRoom() {
     console.log('create room');
     const res = await this.chatService.takeAndCheck(this.users);
     if (res.status != 'ok') {
-      // alert('error in room parameters');
-      // console.log(document.getElementById('members'))
       return;
     }
     const newConv: if_conversation = {
@@ -150,13 +141,7 @@ export class ChatComponent implements OnInit {
     );
   }
 
-  // onActivateJoinRoomForm() {
-  //   document.getElementById('joinRoomForm')?.classList.remove('hidden');
-  //   document.getElementById('creationRoomForm')?.classList.add('hidden');
-  // }
-
   onJoinRoom() {
-    // document.getElementById('joinRoomForm')?.classList.add('hidden');
     const roomName = (<HTMLInputElement>(
       document.getElementById('room-name-join')
     ))?.value;
@@ -195,7 +180,15 @@ export class ChatComponent implements OnInit {
 
   onActivateMute() {}
 
-  onActivateBan() {}
+  async onBan() {
+    console.log('onBan');
+    const value = (<HTMLInputElement>document.getElementById(''))?.value
+    const isBan = await axios.get("http://127.0.0.1:3000/cb-chat/ban", {params: {banned: 'mapontil', requester: this.login}});
+    // if (isBan !== 'ok')
+    //   alert(isBan);
+  }
+
+
   onLeave() {
     if (this.currentConv.name != '') {
       this.emission = this.chatService.emission(
@@ -227,14 +220,6 @@ export class ChatComponent implements OnInit {
       if (data.length > 0 && data[0].conv_id === this.currentConv.conv_id) {
       this.convMessages.splice(0, this.convMessages.length);
       this.convMessages = data
-      // for (const mess of data) {
-      //   mess.date =
-      //     mess.date.toLocaleString().slice(0, 10) +
-      //     ' at ' +
-      //     mess.date.toLocaleString().slice(11, 16);
-      //   this.convMessages.push(mess);
-      // }
-      // this.convMessages.reverse();
     }
     });
     this.socket.on('allConversations', (data: any) => {

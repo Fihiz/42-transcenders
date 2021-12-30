@@ -53,15 +53,15 @@ export class ChatService {
 
 
 	async findAllMessages(id: number) {
-    const messages = await this.messages.find({
+    const messages: Array<MessageEntity> = await this.messages.find({
+      where: {conv_id: id},
         join: {
           alias: "tmp",
           leftJoinAndSelect: {
             login: "tmp.login",
           }},
-        where: {conv_id: id},
       });
-
+      messages.sort((a,b) => a.id < b.id ? -1 : 1)
       for (const message of messages) {
         message.conv_id = id;
         message.login = (message.login as any).login;
