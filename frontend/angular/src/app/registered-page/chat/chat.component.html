@@ -7,13 +7,13 @@
   <div class="row top">
     <div class="chat-pong">
       <h4>
-        <span class="badge badge-dark"
+        <span class="badge"
           >Pong chat <i class="bi bi-chat"></i
         ></span>
       </h4>
     </div>
     <div class="container">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <nav class="navbar navbar-expand-lg">
         <!-- NEW TEST DROPDOWN -->
         <div class="dropdown">
           <button
@@ -159,11 +159,11 @@
       <div id="plist" class="people-list">
         <ul class="list-unstyled chat-list mt-2 mb-0">
           <div class="conversations" *ngFor="let conversation of listConv">
-            <li class="clearfix">
+            <li class="clearfix clearfix-over-yellow">
               <img src="{{ conversation.avatar }}" alt="avatar" />
               <div class="about">
                 <button
-                  class="name"
+                  class="name color-conv-name"
                   (click)="onSelectConv(conversation.conv_id)"
                 >
                   {{ conversation.name }}
@@ -173,7 +173,8 @@
                 </div>
               </div>
             </li>
-            <li class="clearfix"></li>
+            <!-- A JETER -->
+            <!-- <li class="clearfix"></li> -->
           </div>
         </ul>
       </div>
@@ -185,7 +186,7 @@
       <div class="chat">
         <div class="container">
           <nav
-            class="navbar navbar-expand-lg navbar-light bg-light"
+            class="navbar navbar-expand-lg"
             id="header-conv-nav"
           >
             <!-- TEST -->
@@ -405,7 +406,7 @@
         <div class="input-group-prepend">
           <button
             type="button"
-            class="btn btn-outline-light my-2 my-sm-0"
+            class="btn btn-outline-light rounded"
             (click)="onSendMessage()"
           >
             <i class="fa fa-send"></i>
