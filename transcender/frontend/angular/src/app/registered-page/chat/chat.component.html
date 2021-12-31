@@ -1,0 +1,437 @@
+<link
+  href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+  rel="stylesheet"
+/>
+
+<body>
+  <div class="row top">
+    <div class="chat-pong">
+      <h4>
+        <span class="badge badge-dark"
+          >Pong chat <i class="bi bi-chat"></i
+        ></span>
+      </h4>
+    </div>
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <!-- NEW TEST DROPDOWN -->
+        <div class="dropdown">
+          <button
+            class="btn btn-light btn-sm"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <!--join a room-->
+            <li>
+              <a class="dropdown-item"> Join a room &raquo; </a>
+              <ul class="dropdown-menu dropdown-submenu">
+                <li>
+                  <!-- SOIT DANS UN A-DROPDOWN, le +: centré mais texte depasse  -->
+                  <!-- <a class="dropdown-item">
+					  <input class="form-control" 
+					  placeholder="Room name"
+					  type="room-btn">
+					  <input class="form-control"
+					  placeholder="Password (if needed)"
+					  type="room-btn">
+					<button type="submit" class="btn btn-dark">Submit</button></a> -->
+                  <!-- SOIT 3 INPUTS, le +: texte ne depasse plus du placeholder  -->
+
+                  <input
+                    class="form-control"
+                    placeholder="Room name"
+                    id="room-name-join"
+                    type="room-btn"
+                  />
+                  <input
+                    class="form-control"
+                    id="room-password-join"
+                    placeholder="Password (if needed)"
+                    type="room-btn"
+                  />
+                  <button
+                    type="submit"
+                    class="btn btn-secondary btn-sm btn-block"
+                    (click)="onJoinRoom()"
+                  >
+                    Submit
+                  </button>
+                </li>
+              </ul>
+            </li>
+
+            <!--create a room-->
+            <li>
+              <a class="dropdown-item"> Create a room &raquo; </a>
+              <ul class="dropdown-menu dropdown-submenu">
+                <li>
+                  <input
+                    class="form-control"
+                    id="room-name"
+                    placeholder="Room name"
+                    type="room-btn"
+                  />
+                  <input
+                    class="form-control"
+                    id="members"
+                    placeholder="Members"
+                    type="room-btn"
+                  />
+                  <input
+                    class="form-control"
+                    id="password"
+                    placeholder="Password (optional)"
+                    type="room-btn"
+                  />
+                  <button
+                    type="submit"
+                    class="btn btn-secondary btn-sm btn-block"
+                    (click)="onCreateRoom()"
+                  >
+                    Submit
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <!-- ORIGINAL DROPDOWN -->
+        <!-- <div class="dropdown">
+          <button
+            class="btn btn-light btn-sm"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" (click)="onActivateJoinRoomForm()">Join a room</a>
+            <a class="dropdown-item" (click)="onActivateRoomForm()">Create a room</a>
+          </div>
+					<div class="hidden creationRoomForm" id="creationRoomForm">
+						<input class="inputs" placeholder="room-name" id="room-name">
+						<input class="inputs" placeholder="members" id="members">
+						<input class="inputs" placeholder="psswd (optionnal)" id="password">
+						<button value="submit" (click)="onCreateRoom()" class='button-interactRoom'>submit</button>
+					</div>
+					<div class="hidden joinRoomForm" id="joinRoomForm">
+						<input class="inputs" placeholder="room-name" id="room-name-join">
+            <input class="inputs" placeholder="room-password" id="room-password-join">
+						<button value="submit" (click)="onJoinRoom()" class='button-interactRoom'>submit</button>
+					</div>
+        </div> -->
+
+        <form class="form-inline">
+          <input
+            class="form-control mr-sm-2"
+            type="text"
+            placeholder="Search"
+            aria-label="Search"
+            id="search-user"
+            list="user-list"
+          />
+          <datalist id="user-list">
+            <option *ngFor="let user of users">{{ user }}</option>
+          </datalist>
+
+          <button
+            class="btn btn-outline-light my-2 my-sm-0"
+            type="button"
+            (click)="onSelectOneToOneUserConv()"
+          >
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+      </nav>
+    </div>
+    <div class="list-conv">
+      <div id="plist" class="people-list">
+        <ul class="list-unstyled chat-list mt-2 mb-0">
+          <div class="conversations" *ngFor="let conversation of listConv">
+            <li class="clearfix">
+              <img src="{{ conversation.avatar }}" alt="avatar" />
+              <div class="about">
+                <button
+                  class="name"
+                  (click)="onSelectConv(conversation.conv_id)"
+                >
+                  {{ conversation.name }}
+                </button>
+                <div class="status">
+                  <i class="fa fa-circle online"></i> online
+                </div>
+              </div>
+            </li>
+            <li class="clearfix"></li>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row bottom">
+    <div class="b-conv-name">
+      <div class="chat">
+        <div class="container">
+          <nav
+            class="navbar navbar-expand-lg navbar-light bg-light"
+            id="header-conv-nav"
+          >
+            <!-- TEST -->
+            <div class="dropdown">
+              <button
+                class="btn btn-light btn-sm"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i class="bi bi-three-dots-vertical"></i>
+              </button>
+    
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <!--Add Admin-->
+                <li>
+                  <a class="dropdown-item"> Add new admin&raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        placeholder="Name"
+                        id="add-new-admin"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onNewAdmin()"
+                      >
+                        Add new admin
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Add friend-->
+                <li>
+                  <a class="dropdown-item"> Add a friend &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        placeholder="Name"
+                        id="add-friend"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onAddFriend()"
+                      >
+                        Add
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!-- Invite to play -->
+                <li>
+                  <a class="dropdown-item"> Invite to play &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        placeholder="Name"
+                        id="invite-to-play"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onAddFriend()"
+                      >
+                        Invite
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Mute-->
+                <li>
+                  <a class="dropdown-item"> Mute &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        id="mute-room"
+                        placeholder="Name"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onMute()"
+                      >
+                        Mute
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="dropdown-item"> DeMute &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        id="de-mute-room"
+                        placeholder="Name"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onDeMute()"
+                      >
+                        DeMute
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Ban-->
+                <li>
+                  <a class="dropdown-item"> Ban &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        id="ban-room"
+                        placeholder="Name"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onBan()"
+                      >
+                        Ban
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Leave-->
+                <li>
+                  <a class="dropdown-item"> Leave &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onLeave()"
+                      >
+                        Leave the room
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <!-- ORIGINAL -->
+
+
+            <!-- pgoudet -->
+            <div class="hidden add-user-form" id="add-user-form">
+              <form class="form-inline">
+                <input
+                  class="form-control mr-sm-2"
+                  type="text"
+                  placeholder="Search"
+                  aria-label="Search"
+                  id="search-friend"
+                  list="user-list"
+                />
+                <datalist id="user-list">
+                  <option *ngFor="let user of users">{{ user }}</option>
+                </datalist>
+                <button class="" type="button" (click)="onAddFriend()">
+                  add friend
+                </button>
+              </form>
+            </div>
+            <!-- pgoudet -->
+            <div class="chat-header clearfix">
+              <span *ngIf="currentConv.avatar">
+                <img src="{{ currentConv.avatar }}" alt="avatar" />
+              </span>
+            </div>
+
+            <div class="chat-about">
+              <h6 class="m-b-0">{{ currentConv.name }}</h6>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="b-messages">
+      <div class="chat">
+        <div class="chat-history">
+          <ul class="m-b-0">
+            <div class="messages" *ngFor="let message of convMessages">
+              <span *ngIf="login === message.login else leftMessages">
+                <li class="clearfix">
+                  <div class="message-data text-right">
+                    <span class="message-data-time">{{ message.date | date: 'short' }}</span>
+                    <img src="https://cdn.vox-cdn.com/thumbor/CNLDJd5-M-WtOsYh_yugQ-S-FJs=/715x248:1689x721/1400x933/filters:focal(972x299:1278x605):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/69305239/shrek4_disneyscreencaps.com_675.0.jpg" alt="avatar" />
+                  </div>
+                  <div class="message other-message float-right">
+                    {{ message.content }}
+                  </div>
+                </li>
+              </span>
+              <ng-template #leftMessages>
+                <li class="clearfix">
+                  <div class="message-data text-left">
+                    <img src="https://cdn.vox-cdn.com/thumbor/CNLDJd5-M-WtOsYh_yugQ-S-FJs=/715x248:1689x721/1400x933/filters:focal(972x299:1278x605):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/69305239/shrek4_disneyscreencaps.com_675.0.jpg" alt="avatar" />
+                    <span class="message-data-time">{{ message.date | date: 'short' }}</span>
+                </div>
+                  <div class="message other-message float-left">
+                    {{ message.content }}
+                  </div>
+                </li>
+              </ng-template>
+            </div>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="b-typing">
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter text here..."
+          id="input-message"
+          (keyup)="keyUpEnter($event)"
+        />
+        <div class="input-group-prepend">
+          <button
+            type="button"
+            class="btn btn-outline-light my-2 my-sm-0"
+            (click)="onSendMessage()"
+          >
+            <i class="fa fa-send"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
