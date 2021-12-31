@@ -1,18 +1,20 @@
-<div>
-    <label for="gameId">
-    Select the id of the room game to join
-    </label>
-    <input
-    id="gameId"
-    type="text"
-    maxlength="6"
-    />
-    <button
-    id="submitId"
-    type="button"
-    class="btn btn-primary"
-    (click)="submit()"
-    >
-    Submit
-    </button>
+<div *ngIf="waiting === true || sets.length > 0">
+    <h1>Pong's game</h1>
+    <p class="state">Start a new game !</p>
+</div>
+<div class="list" *ngIf="waiting === false">
+    <li class="item" *ngFor="let set of sets">
+        <div class="container">
+            <img class="set" src="{{ set.game_aspect }}">
+            <h3 class="type">{{ set.map_type }}</h3>
+            <p class="details">Ball size: {{ set.ball_size }}</p>
+            <p class="details">Speed ball: {{ set.initial_speed }}</p>
+            <p class="details">Racket size: {{ set.racket_size }}</p>
+            <button class="btn btn-dark" type="submit" (click)="setParty(set.map_type)">PLAY</button>
+        </div>
+    </li>
+</div>
+<div class="card-wait" *ngIf="waiting === true">
+    <p class="wait">Waiting Line</p>
+    <p class="timer">{{ time }}</p>
 </div>

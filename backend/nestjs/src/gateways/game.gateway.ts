@@ -48,22 +48,23 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.users.push({id: body.id, login: body.login, gameId: body.gameId});
 		const user = this.users.find((user) => user.id === body.id);
 		let game = this.gameService.games.find((game) => game.id === user.gameId);
-		if (!game)
-		{
-			this.gameService.addGame(user.gameId);
-			game = this.gameService.games.find((game) => game.id === user.gameId);
-			if (!game)
-				return ; // ERROR
-		}
-		if (game.changing.leftPaddle.login === '')
-		{
-			game.changing.leftPaddle.login = user.login;
-		}
-		else if (game.changing.rightPaddle.login === '' && game.changing.leftPaddle.login != user.login)
-		{
-			game.changing.rightPaddle.login = user.login;
-		}
-		this.server.to(user.id).emit('welcome', game);
+		// if (!game)
+		// {
+		// 	this.gameService.addGame(user.gameId);
+		// 	game = this.gameService.games.find((game) => game.id === user.gameId);
+		// 	if (!game)
+		// 		return ; // ERROR
+		// }
+		// if (game.changing.leftPaddle.login === '')
+		// {
+		// 	game.changing.leftPaddle.login = user.login;
+		// }
+		// else if (game.changing.rightPaddle.login === '' && game.changing.leftPaddle.login != user.login)
+		// {
+		// 	game.changing.rightPaddle.login = user.login;
+		// }
+		if (game)
+			this.server.to(user.id).emit('welcome', game);
 	}
 
 	@SubscribeMessage('bye')

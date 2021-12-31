@@ -20,10 +20,10 @@ const routes: Routes = [
   { path: 'profile/my-stats', component: StatsComponent, canActivate: [AuthGuard]},
   { path: 'pong/play', component: PlayComponent, canActivate: [AuthGuard]},
   { path: 'pong/live', component: LiveComponent, canActivate: [AuthGuard]},
+  { path: 'pong/game/:id', component: GameComponent, canActivate: [AuthGuard]},
   { path: 'pong/ranking', component: RankingComponent, canActivate: [AuthGuard]},
   { path: 'pong/rules', component: RulesComponent, canActivate: [AuthGuard]},
-  { path: 'pong/game/:id', component: GameComponent, canActivate: [AuthGuard]},
-  { path: '**', redirectTo: '/' } /* Case of a wrong url when user is not connected (console error) */
+  { path: '**', redirectTo: '/' }
 ];
 
 @NgModule({
