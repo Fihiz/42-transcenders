@@ -64,7 +64,6 @@ export class PlayComponent implements OnInit, OnDestroy {
       this.waiting = true;
       this.intervalId = setInterval(() => {
         this.time--;
-        console.log("countdown", this.time);
         if (this.time <= 0) {
           this.deleteCountDown();
           this.waiting = false;
@@ -74,7 +73,6 @@ export class PlayComponent implements OnInit, OnDestroy {
   }
 
   timer() {
-    console.log("timer", this.time);
     this.test = setTimeout(() => {
       if (this.play) {
         this.gameService.getPartyById(this.play.game_id)
@@ -85,7 +83,6 @@ export class PlayComponent implements OnInit, OnDestroy {
             this.gameService.deletePartyById(this.play.game_id);
         })
         clearTimeout(this.test);
-        console.log("fin de timer", this.time);
         this.time = -1;
       }
     }, this.time * 1000);

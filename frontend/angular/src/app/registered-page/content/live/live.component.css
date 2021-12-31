@@ -60,6 +60,10 @@ h1 {
 	left: 10px;
 	color: #43B6B2;
 	text-shadow: 0px 0px 5px #C0C0C0;
+	max-width: calc(100% - 10px);
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .right {
@@ -69,4 +73,8 @@ h1 {
 	right: 10px;
 	color: #F97D64;
 	text-shadow: 0px 0px 5px #F9C53F;
+	max-width: calc(100% - 10px);
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
