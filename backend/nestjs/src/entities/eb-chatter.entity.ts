@@ -6,7 +6,8 @@ import { WebAppUserEntity } from "./eb-web-app-user.entity";
 export class ChatterEntity {
 
   @ManyToOne(() => ConversationEntity, {primary: true})
-  @JoinColumn({name: 'conv_id'})
+  @JoinColumn({
+    name: 'conv_id'})
   conv_id: ConversationEntity['conv_id'];
 
   @ManyToOne(() => WebAppUserEntity, {primary: true})
@@ -27,17 +28,5 @@ export class ChatterEntity {
     type: "timestamp"
   })
   muted_until: Date;
-
-  @Column({
-    type: "timestamp",
-    default: new Date()
-  })
-  created: Date;
-
-  @Column({
-    type: "timestamp",
-    default: new Date()
-  })
-  updated: Date;
   
 }

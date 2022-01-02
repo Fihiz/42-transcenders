@@ -13,4 +13,5 @@ export interface if_social {
   invitation_type: string;
   room_id: number;
   created_invitation: Date;
+  //add if online or not
 }

@@ -5,7 +5,12 @@ app-header {
 
 .right-col {
   flex: 40%;
-  background-color: rgb(249, 125, 100);
+  /* background-color: rgb(249, 125, 100); */
+  
+  /* Temporary */
+  background-color: #F9C53F;
+  border: 4px solid #F9C53F;
+  border-radius: 5px;
 }
 
 .left-col {

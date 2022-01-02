@@ -5,7 +5,6 @@ import { if_message } from '../interfaces/if-message';
 import { Socket } from "ngx-socket-io";
 import { if_user } from '../interfaces/if-user';
 import { GlobalService } from './sf-global.service';
-import { ThrowStmt } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root',
@@ -46,30 +45,29 @@ export class UserService implements OnInit {
       });
       this.socket.connect();
     } else {
-      console.log('response is :', response);
       document.getElementById('toOpenModal')?.click();
       await this.handleSubmitClick();
-
+      
       this.fillUserInfos(response);
       this.registerBackInRequest(response);
     }
   }
-
+  
   introduce(socket: Socket) {
     this.global.socketId = socket.ioSocket.id;
     const message: if_message = {
         id: socket.ioSocket.id,
         login: this.global.login as string,
-        body: 'connection',
+        content: 'connection',
         to: ['nobody'],
         conv_id:0,
-        date: new Date()
+        date: new Date(),
+        avatar: ''
       }
       socket.emit('introduction', message);
   }
 
   async registerBackInRequest(response: any) {
-    console.log("registerBackInRequest");
     try {
       const registerData = await axios.post(
         'http://127.0.0.1:3000/cb-auth/registerData',
@@ -80,10 +78,6 @@ export class UserService implements OnInit {
       if (registerData.data !== 'Successfully created')
         this.router.navigate(['/auth']);
       else {
-        console.log(
-          'the result of the registerData request is = ',
-          registerData
-        );
         this.global.login = response.data.login;
         this.socket.on('connect', () => {
           this.introduce( this.socket);

@@ -5,18 +5,16 @@
 
 <body>
   <div class="row top">
-    <!-- <div class="chat-pong">PONG CHAT</div> -->
     <div class="chat-pong">
       <h4>
-        <span class="badge badge-dark"
+        <span class="badge"
           >Pong chat <i class="bi bi-chat"></i
         ></span>
       </h4>
     </div>
-    <!--OK-->
     <div class="container">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <!--<a class="navbar-brand" href="#">Navbar</a>-->
+      <nav class="navbar navbar-expand-lg">
+        <!-- NEW TEST DROPDOWN -->
         <div class="dropdown">
           <button
             class="btn btn-light btn-sm"
@@ -28,125 +26,156 @@
           >
             <i class="bi bi-three-dots-vertical"></i>
           </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">Join a room</a>
-            <a class="dropdown-item" href="#">Create a room</a>
-          </div>
+
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <!--join a room-->
+            <li>
+              <a class="dropdown-item"> Join a room &raquo; </a>
+              <ul class="dropdown-menu dropdown-submenu">
+                <li>
+                  <!-- SOIT DANS UN A-DROPDOWN, le +: centré mais texte depasse  -->
+                  <!-- <a class="dropdown-item">
+					  <input class="form-control" 
+					  placeholder="Room name"
+					  type="room-btn">
+					  <input class="form-control"
+					  placeholder="Password (if needed)"
+					  type="room-btn">
+					<button type="submit" class="btn btn-dark">Submit</button></a> -->
+                  <!-- SOIT 3 INPUTS, le +: texte ne depasse plus du placeholder  -->
+
+                  <input
+                    class="form-control"
+                    placeholder="Room name"
+                    id="room-name-join"
+                    type="room-btn"
+                  />
+                  <input
+                    class="form-control"
+                    id="room-password-join"
+                    placeholder="Password (if needed)"
+                    type="room-btn"
+                  />
+                  <button
+                    type="submit"
+                    class="btn btn-secondary btn-sm btn-block"
+                    (click)="onJoinRoom()"
+                  >
+                    Submit
+                  </button>
+                </li>
+              </ul>
+            </li>
+
+            <!--create a room-->
+            <li>
+              <a class="dropdown-item"> Create a room &raquo; </a>
+              <ul class="dropdown-menu dropdown-submenu">
+                <li>
+                  <input
+                    class="form-control"
+                    id="room-name"
+                    placeholder="Room name"
+                    type="room-btn"
+                  />
+                  <input
+                    class="form-control"
+                    id="members"
+                    placeholder="Members"
+                    type="room-btn"
+                  />
+                  <input
+                    class="form-control"
+                    id="password"
+                    placeholder="Password (optional)"
+                    type="room-btn"
+                  />
+                  <button
+                    type="submit"
+                    class="btn btn-secondary btn-sm btn-block"
+                    (click)="onCreateRoom()"
+                  >
+                    Submit
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </ul>
         </div>
+
+        <!-- ORIGINAL DROPDOWN -->
+        <!-- <div class="dropdown">
+          <button
+            class="btn btn-light btn-sm"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" (click)="onActivateJoinRoomForm()">Join a room</a>
+            <a class="dropdown-item" (click)="onActivateRoomForm()">Create a room</a>
+          </div>
+					<div class="hidden creationRoomForm" id="creationRoomForm">
+						<input class="inputs" placeholder="room-name" id="room-name">
+						<input class="inputs" placeholder="members" id="members">
+						<input class="inputs" placeholder="psswd (optionnal)" id="password">
+						<button value="submit" (click)="onCreateRoom()" class='button-interactRoom'>submit</button>
+					</div>
+					<div class="hidden joinRoomForm" id="joinRoomForm">
+						<input class="inputs" placeholder="room-name" id="room-name-join">
+            <input class="inputs" placeholder="room-password" id="room-password-join">
+						<button value="submit" (click)="onJoinRoom()" class='button-interactRoom'>submit</button>
+					</div>
+        </div> -->
 
         <form class="form-inline">
           <input
             class="form-control mr-sm-2"
-            type="search"
+            type="text"
             placeholder="Search"
             aria-label="Search"
+            id="search-user"
+            list="user-list"
           />
-          <button class="btn btn-outline-light my-2 my-sm-0" type="submit">
+          <datalist id="user-list">
+            <option *ngFor="let user of users">{{ user }}</option>
+          </datalist>
+
+          <button
+            class="btn btn-outline-light my-2 my-sm-0"
+            type="button"
+            (click)="onSelectOneToOneUserConv()"
+          >
             <i class="bi bi-search"></i>
           </button>
         </form>
       </nav>
     </div>
-    <!--OK-->
     <div class="list-conv">
       <div id="plist" class="people-list">
         <ul class="list-unstyled chat-list mt-2 mb-0">
-          <li class="clearfix">
-            <img
-              src="../../../assets/profile-pictures/ageraud.jpeg"
-              alt="avatar"
-            />
-            <div class="about">
-              <div class="name">Vincent Porter</div>
-              <div class="status">
-                <i class="fa fa-circle offline"></i> left 7 mins ago
+          <div class="conversations" *ngFor="let conversation of listConv">
+            <li class="clearfix clearfix-over-yellow">
+              <img src="{{ conversation.avatar }}" alt="avatar" />
+              <div class="about">
+                <button
+                  class="name color-conv-name"
+                  (click)="onSelectConv(conversation.conv_id)"
+                >
+                  {{ conversation.name }}
+                </button>
+                <div class="status">
+                  <i class="fa fa-circle online"></i> online
+                </div>
               </div>
-            </div>
-          </li>
-          <li class="clearfix">
-            <img
-              src="../../../assets/profile-pictures/pgoudet.jpeg"
-              alt="avatar"
-            />
-            <div class="about">
-              <div class="name">Mike Thomas</div>
-              <div class="status">
-                <i class="fa fa-circle online"></i> online
-              </div>
-            </div>
-          </li>
-          <li class="clearfix">
-            <img
-              src="https://bootdey.com/img/Content/avatar/avatar3.png"
-              alt="avatar"
-            />
-            <div class="about">
-              <div class="name">Mike Thomas</div>
-              <div class="status">
-                <i class="fa fa-circle online"></i> online
-              </div>
-            </div>
-          </li>
-          <li class="clearfix">
-            <img
-              src="https://bootdey.com/img/Content/avatar/avatar3.png"
-              alt="avatar"
-            />
-            <div class="about">
-              <div class="name">Mike Thomas</div>
-              <div class="status">
-                <i class="fa fa-circle online"></i> online
-              </div>
-            </div>
-          </li>
-          <li class="clearfix">
-            <img
-              src="https://bootdey.com/img/Content/avatar/avatar3.png"
-              alt="avatar"
-            />
-            <div class="about">
-              <div class="name">Mike Thomas</div>
-              <div class="status">
-                <i class="fa fa-circle online"></i> online
-              </div>
-            </div>
-          </li>
-          <li class="clearfix">
-            <img
-              src="https://bootdey.com/img/Content/avatar/avatar7.png"
-              alt="avatar"
-            />
-            <div class="about">
-              <div class="name">Christian Kelly</div>
-              <div class="status">
-                <i class="fa fa-circle offline"></i> left 10 hours ago
-              </div>
-            </div>
-          </li>
-          <li class="clearfix">
-            <img
-              src="https://bootdey.com/img/Content/avatar/avatar8.png"
-              alt="avatar"
-            />
-            <div class="about">
-              <div class="name">Monica Ward</div>
-              <div class="status">
-                <i class="fa fa-circle online"></i> online
-              </div>
-            </div>
-          </li>
-          <li class="clearfix">
-            <img
-              src="https://bootdey.com/img/Content/avatar/avatar3.png"
-              alt="avatar"
-            />
-            <div class="about">
-              <div class="name">Dean Henry</div>
-              <div class="status">
-                <i class="fa fa-circle offline"></i> offline since Oct 28
-              </div>
-            </div>
-          </li>
+            </li>
+            <!-- A JETER -->
+            <!-- <li class="clearfix"></li> -->
+          </div>
         </ul>
       </div>
     </div>
@@ -155,12 +184,12 @@
   <div class="row bottom">
     <div class="b-conv-name">
       <div class="chat">
-        <!-- test -->
         <div class="container">
           <nav
-            class="navbar navbar-expand-lg navbar-light bg-light"
+            class="navbar navbar-expand-lg"
             id="header-conv-nav"
           >
+            <!-- TEST -->
             <div class="dropdown">
               <button
                 class="btn btn-light btn-sm"
@@ -172,120 +201,214 @@
               >
                 <i class="bi bi-three-dots-vertical"></i>
               </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Add a friend</a>
-                <a class="dropdown-item" href="#">Invite to play</a>
-                <a class="dropdown-item" href="#">Mute</a>
-                <a class="dropdown-item" href="#">Ban</a>
-                <a class="dropdown-item" href="#">Leave</a>
-              </div>
+    
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <!--Add Admin-->
+                <li>
+                  <a class="dropdown-item"> Add new admin&raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        placeholder="Name"
+                        id="add-new-admin"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onNewAdmin()"
+                      >
+                        Add new admin
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Add friend-->
+                <li>
+                  <a class="dropdown-item"> Add a friend &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        placeholder="Name"
+                        id="add-friend"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onAddFriend()"
+                      >
+                        Add
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!-- Invite to play -->
+                <li>
+                  <a class="dropdown-item"> Invite to play &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        placeholder="Name"
+                        id="invite-to-play"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onAddFriend()"
+                      >
+                        Invite
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Mute-->
+                <li>
+                  <a class="dropdown-item"> Mute &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        id="mute-room"
+                        placeholder="Name"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onActivateMute()"
+                      >
+                        Mute
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Ban-->
+                <li>
+                  <a class="dropdown-item"> Ban &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        id="ban-room"
+                        placeholder="Name"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onBan()"
+                      >
+                        Ban
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Leave-->
+                <li>
+                  <a class="dropdown-item"> Leave &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onLeave()"
+                      >
+                        Leave the room
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
             </div>
+            <!-- ORIGINAL -->
+
+
+            <!-- pgoudet -->
+            <div class="hidden add-user-form" id="add-user-form">
+              <form class="form-inline">
+                <input
+                  class="form-control mr-sm-2"
+                  type="text"
+                  placeholder="Search"
+                  aria-label="Search"
+                  id="search-friend"
+                  list="user-list"
+                />
+                <datalist id="user-list">
+                  <option *ngFor="let user of users">{{ user }}</option>
+                </datalist>
+                <button class="" type="button" (click)="onAddFriend()">
+                  add friend
+                </button>
+              </form>
+            </div>
+            <!-- pgoudet -->
             <div class="chat-header clearfix">
-              <img
-                src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                alt="avatar"
-              />
-            </div>
-            <div class="chat-about">
-              <h6 class="m-b-0">Aiden Chavez</h6>
+              <span *ngIf="currentConv.avatar">
+                <img src="{{ currentConv.avatar }}" alt="avatar" />
+              </span>
             </div>
 
-            <!-- <form class="form-inline">
-              <input
-                class="form-control mr-sm-2"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-              />
-              <button class="btn btn-outline-light my-2 my-sm-0" type="submit">
-                <i class="bi bi-search"></i>
-              </button>
-            </form> -->
+            <div class="chat-about">
+              <h6 class="m-b-0">{{ currentConv.name }}</h6>
+            </div>
           </nav>
         </div>
-        <!-- <div class="chat-header clearfix">
-          <div class="row">
-            <div class="col-lg-6">
-              <a
-                href="javascript:void(0);"
-                data-toggle="modal"
-                data-target="#view_info"
-              >
-                <img
-                  src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                  alt="avatar"
-                />
-              </a>
-              <div class="chat-about">
-                <h6 class="m-b-0">Aiden Chavez</h6>
-              </div>
-            </div>
-      
-          </div>
-        </div> -->
       </div>
     </div>
 
     <div class="b-messages">
-      <!-- <div class="card chat-app"> -->
       <div class="chat">
         <div class="chat-history">
           <ul class="m-b-0">
-            <li class="clearfix">
-              <div class="message-data text-right">
-                <span class="message-data-time">10:10 AM, Today</span>
-                <img
-                  src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                  alt="avatar"
-                />
-              </div>
-              <div class="message other-message float-right">
-                Hi Aiden, how are you? How is the project coming along?
-              </div>
-            </li>
-            <li class="clearfix">
-              <div class="message-data">
-                <span class="message-data-time">10:12 AM, Today</span>
-              </div>
-              <div class="message my-message">Are we meeting today?</div>
-            </li>
-            <li class="clearfix">
-              <div class="message-data">
-                <span class="message-data-time">10:15 AM, Today</span>
-              </div>
-              <div class="message my-message">
-                Project has been already finished and I have results to show
-                you.
-              </div>
-            </li>
+            <div class="messages" *ngFor="let message of convMessages">
+              <span *ngIf="login === message.login else leftMessages">
+                <li class="clearfix">
+                  <div class="message-data text-right">
+                    <span class="message-data-time">{{ message.date | date: 'short' }}</span>
+                    <img src="https://cdn.vox-cdn.com/thumbor/CNLDJd5-M-WtOsYh_yugQ-S-FJs=/715x248:1689x721/1400x933/filters:focal(972x299:1278x605):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/69305239/shrek4_disneyscreencaps.com_675.0.jpg" alt="avatar" />
+                  </div>
+                  <div class="message other-message float-right">
+                    {{ message.content }}
+                  </div>
+                </li>
+              </span>
+              <ng-template #leftMessages>
+                <li class="clearfix">
+                  <div class="message-data text-left">
+                    <img src="https://cdn.vox-cdn.com/thumbor/CNLDJd5-M-WtOsYh_yugQ-S-FJs=/715x248:1689x721/1400x933/filters:focal(972x299:1278x605):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/69305239/shrek4_disneyscreencaps.com_675.0.jpg" alt="avatar" />
+                    <span class="message-data-time">{{ message.date | date: 'short' }}</span>
+                </div>
+                  <div class="message other-message float-left">
+                    {{ message.content }}
+                  </div>
+                </li>
+              </ng-template>
+            </div>
           </ul>
         </div>
       </div>
-      <!-- </div> -->
     </div>
     <div class="b-typing">
-      <!-- <div class="chat-message clearfix">
-        <div class="input-group mb-0">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fa fa-send"></i></span>
-          </div>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Enter text here..."
-          />
-        </div>
-      </div> -->
-
       <div class="input-group">
         <input
           type="text"
           class="form-control"
           placeholder="Enter text here..."
+          id="input-message"
+          (keyup)="keyUpEnter($event)"
         />
         <div class="input-group-prepend">
-          <!-- <span class="input-group-text"><i class="fa fa-search"></i></span> -->
-          <button type="button" class="btn btn-outline-primary">
+          <button
+            type="button"
+            class="btn btn-outline-light rounded"
+            (click)="onSendMessage()"
+          >
             <i class="fa fa-send"></i>
           </button>
         </div>

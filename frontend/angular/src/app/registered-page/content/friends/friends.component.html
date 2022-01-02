@@ -1,1 +1,17 @@
 <p>friends works!</p>
+<ul class="list-my-friends">
+	<div class="all-friends" *ngFor="let xxx of myFriends"> {{xxx}}</div>
+</ul>
+
+<!-- On Joel Test -->
+<h1>My friends</h1>
+<!-- <p class="count"> Current players ranked:  +size+ </p> -->
+<div class="list">
+	<li class="item" *ngFor="let xxx of myFriends">
+		<img class="avatar" src="../../../../assets/room-pictures/2.png" >
+		<div class="detail">
+			<div class="left"> {{xxx}}</div>
+			<div class="right">online</div>
+		</div>
+	</li>
+</div>

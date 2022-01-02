@@ -24,6 +24,7 @@
     "jquery": "^3.6.0",
     "ng-chat": "^3.1.0",
     "ngx-socket-io": "^4.1.0",
+    "ngx-typed-js": "^2.1.1",
     "ngx-online-status": "^1.0.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",

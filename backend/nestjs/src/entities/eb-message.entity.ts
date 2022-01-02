@@ -26,4 +26,9 @@ export class MessageEntity {
   })
   content: string;
   
+  @Column({
+		type: "varchar"
+  })
+  avatar: string;
+
 }
