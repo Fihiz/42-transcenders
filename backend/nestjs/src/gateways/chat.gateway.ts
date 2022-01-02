@@ -40,14 +40,16 @@ export class ChatGateway {
 
 	@SubscribeMessage('message')
 	async messageFunc(@MessageBody() emission) {
-		const messages = await this.chatService.handleMessage(emission);
-    // console.log('mess = ', messages);
-    if (typeof(messages) !== 'string') {
-      const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
-      this.server.to(this.chatService.getReceiver(receivers, emission.login)).emit('allMessages', messages);
+    const sender = await this.chatterService.findOneChatter(emission.data.conv_id, emission.login);
+      if (sender && sender.muted !== true) {
+		  const messages = await this.chatService.handleMessage(emission);
+      if (typeof(messages) !== 'string') {
+        const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
+        this.server.to(this.chatService.getReceiver(receivers, emission.login)).emit('allMessages', messages);
+      }
+      else
+        this.errorResponse(emission);
     }
-    else
-      this.errorResponse(emission);
 	}
 
 	@SubscribeMessage('getMessages')

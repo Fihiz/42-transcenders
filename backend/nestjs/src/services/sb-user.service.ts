@@ -14,6 +14,24 @@ export class UserService {
     private apiUsers: Repository<ApiUserDataEntity>
   ) {}
 
+  async getMail(login: string) {
+    return ((await this.apiUsers.findOne({
+      where: {login: login}
+    })).mail)
+  }
+
+  async activateDoubleAuth(login: string, activate: string) {
+    const doubleAuthStatus: boolean = activate === 'activate' ? true : false;
+    try {
+      this.webUsers.update({login: login}, {doubleAuth: doubleAuthStatus})
+      return ('ok')
+    }
+    catch (error) {
+      console.log(error)
+      return ('ko');
+    }
+  }
+
   async createAppUser(user: WebAppUserEntity): Promise<any> {
     console.log('WepAppUser creation');
     try {

@@ -5,6 +5,9 @@ import { if_message } from '../interfaces/if-message';
 import { Socket } from "ngx-socket-io";
 import { if_user } from '../interfaces/if-user';
 import { GlobalService } from './sf-global.service';
+import { BrowserModule } from '@angular/platform-browser';
+import * as Cookies from 'js-cookie';
+
 
 @Injectable({
   providedIn: 'root',
@@ -31,11 +34,32 @@ export class UserService implements OnInit {
 
   constructor(public global: GlobalService,
               private router: Router,
-              private socket: Socket) {}
+              private socket: Socket,
+              private test: BrowserModule) {}
 
   ngOnInit() {}
 
-  async apiStatus(response: any): Promise<void> {
+  async doubleAUth(login: string) {
+    if (this.global.doubleAuth === true) {
+      const code = (await axios.get("http://127.0.0.1:3000/double-auth", { params: login })).data;
+      console.log('code = ', code);
+      if (code === 'ko') {
+        alert('an error as occured when sending the mail');
+        return ('ko');
+      }
+      else {
+        const checkCode = (<HTMLInputElement>document.getElementById(''))?.value
+        return (code !== checkCode ? 'ko' : 'ok');
+      }
+    }
+    else
+      return ('ok');
+  }
+
+  async apiStatus(response: any): Promise<string> {
+    const doubleAuthStatus = await this.doubleAUth(response.data.login);
+    if (doubleAuthStatus === 'ko')
+      return ('ko');
     if (response.isFound == 'found') {
       this.router.navigate(['/welcome']);
       this.user = response.data;
@@ -47,10 +71,10 @@ export class UserService implements OnInit {
     } else {
       document.getElementById('toOpenModal')?.click();
       await this.handleSubmitClick();
-      
       this.fillUserInfos(response);
       this.registerBackInRequest(response);
     }
+    return ('ok')
   }
   
   introduce(socket: Socket) {

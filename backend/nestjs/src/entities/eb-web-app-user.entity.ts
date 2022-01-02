@@ -76,5 +76,11 @@ export class WebAppUserEntity {
     default: new Date()
   })
   updated: Date;
+
+  @Column({
+    type: "boolean",
+    default: false,
+  })
+  doubleAuth: boolean;
   
 }

@@ -103,29 +103,6 @@ export class ChatComponent implements OnInit {
     }
   }
 
-
-  // async onCreateRoom() {
-  //   console.log('create room');
-  //   const res = await this.chatService.takeAndCheck(this.users);
-  //   if (res.status != 'ok') {
-  //     return;
-  //   }
-  //   const newConv: if_conversation = {
-  //     avatar: '',
-  //     conv_id: 0,
-  //     name: res.data.roomName,
-  //     password: res.data.password,
-  //     type: res.data.password.length === 0 ? 'public' : 'protected',
-  //     members: res.data.members,
-  //   };
-  //   this.emission = this.chatService.emission(
-  //     'newConversation',
-  //     this.currentConv,
-  //     0,
-  //     newConv
-  //   );
-  // }
-
   async onCreateRoom() {
     console.log('on create room');
     const res = await this.chatService.takeAndCheck(this.users);
@@ -202,7 +179,25 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  onActivateMute() {}
+  async onMute() {
+    const value = (<HTMLInputElement>document.getElementById('mute-room'))?.value
+    if (value) {
+      console.log('value = ', value)
+      const isMute = await axios.get("http://127.0.0.1:3000/cb-chat/Mute", {params: {mutedOne: value, requester: this.login, conv_id: this.currentConv.conv_id}});
+      if (isMute.data !== 'ok')
+        alert(isMute.data);
+    }
+  }
+
+  async onDeMute() {
+    const value = (<HTMLInputElement>document.getElementById('de-mute-room'))?.value
+    if (value) {
+      console.log('value = ', value)
+      const isDeMute = await axios.get("http://127.0.0.1:3000/cb-chat/DeMute", {params: {mutedOne: value, requester: this.login, conv_id: this.currentConv.conv_id}});
+      if (isDeMute.data !== 'ok')
+        alert(isDeMute.data);
+    }
+  }
 
   async onNewAdmin() {
     const value = (<HTMLInputElement>document.getElementById('add-new-admin'))?.value

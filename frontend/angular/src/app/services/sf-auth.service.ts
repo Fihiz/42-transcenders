@@ -2,20 +2,21 @@ import { Injectable, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
 
+
 import { GlobalService } from './sf-global.service';
 import { UserService } from './sf-user.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService implements OnInit {
+export class AuthService{
   constructor(
     public global: GlobalService,
     private userService: UserService,
     private router: Router
   ) {}
 
-  ngOnInit() {}
+
 
   async getLoggedIn(): Promise<void> {
     const code: string = this.router.url.split('?')[1]?.substr(5, 64);
@@ -27,9 +28,9 @@ export class AuthService implements OnInit {
         console.log('error in getLoggedIn');
         this.router.navigate(['/']);
       }
-      else {
-        this.userService.apiStatus(res.data);
-      }
+      else 
+        if (await this.userService.apiStatus(res.data) !== 'ok')
+          this.router.navigate(['/']);
     } 
     catch (error) {
       console.log('ngInit Auth error = ', error);
@@ -37,3 +38,4 @@ export class AuthService implements OnInit {
     }
   }
 }
+

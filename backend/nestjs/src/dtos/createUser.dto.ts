@@ -15,5 +15,6 @@ export class CreateUserDto {
     last_name: string;
     first_name: string;
     mail: string;
+    doubleAuth: boolean;
 }
 

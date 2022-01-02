@@ -25,8 +25,8 @@ export class ChatterEntity {
   is_present: string;
 
   @Column({
-    type: "timestamp"
+    type: "boolean"
   })
-  muted_until: Date;
+  muted: boolean;
   
 }

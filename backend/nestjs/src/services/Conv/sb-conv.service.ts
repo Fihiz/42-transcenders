@@ -96,7 +96,7 @@ export class ConvService {
 			conv_id: conv.conv_id,
 			is_present: "yes",
 			login: name,
-			muted_until: new Date(),
+			muted: false,
 		});
 		return (conv);
 	}
@@ -121,7 +121,6 @@ export class ConvService {
       console.log('error = ', error)
       return ('ko')
     }
-    /* gerer si jamais il y a plusieurs fois le meme membre */
   }
 
 }

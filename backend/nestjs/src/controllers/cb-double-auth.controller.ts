@@ -1,12 +1,25 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
+import { UserService } from 'src/services/sb-user.service';
 const nodemailer = require('nodemailer');
 
 @Controller('double-auth')
 export class DoubleAuthController {
+
+    constructor(private userService: UserService){}
+
+    @Get('activate')
+    async activeOrDeactiveDoubleAuth(@Req() req, @Res() res) {
+      if (req.body.status != 'activate' && req.body.status != 'deactivate')
+        res.send('ko');
+      res.send((await this.userService.activateDoubleAuth(req.body.login, req.body.status)));
+    }
+
+
+
     @Get()
-    sendMail(@Req() req, @Res() res) {
-      const email = req.body.email;
-      const code = Math.random() * 10000;
+    async sendMail(@Req() req, @Res() res) {
+      const email = await this.userService.getMail(req.query[0])
+      const code = (Math.round(Math.random() * 10000)).toString();
         const transporter = nodemailer.createTransport({
           service: 'Yahoo',
           auth: {
@@ -20,15 +33,14 @@ export class DoubleAuthController {
           subject: 'i find you',
           text: code,
         };
-        // await this.sleep(10000); // si delai trop court il plante
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
             console.log(error);
-            //si plante, faire un go to un egestion d erreur mettre un gros delai et ensuite se reco
+            res.send('ko');
           } else {
             console.log('Email sent: ' + info.response);
           }
         });
-        res.send(code);
+        res.send(code.toString());
       }
 }

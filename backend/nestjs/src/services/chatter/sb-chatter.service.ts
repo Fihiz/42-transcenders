@@ -33,7 +33,7 @@ export class ChatterService {
 				conv_id: convId,
 				is_present: "yes",
 				login: name,
-				muted_until: new Date(),
+				muted: false,
 			};
 			const res = await this.createChatter(chatter);
       if (typeof(res) === 'string' && res != 'ac')
@@ -53,8 +53,30 @@ export class ChatterService {
       conv_id: conv_id,
       is_present: chatter.is_present,
       login: name,
-      muted_until: chatter.muted_until
+      muted: chatter.muted
     }
     return (final);
+  }
+
+  async muteSomeone(chatter: ChatterEntity) {
+    try {
+      await this.chatter.update({login: chatter.login, conv_id: chatter.conv_id}, {muted: true})
+      return ('ok');
+    }
+    catch (error) {
+      console.log('error in muting');
+      return ('ko');
+    }
+  }
+
+  async deMuteSomeone(chatter: ChatterEntity) {
+    try {
+      await this.chatter.update({login: chatter.login, conv_id: chatter.conv_id}, {muted: false})
+      return ('ok');
+    }
+    catch (error) {
+      console.log('error in muting');
+      return ('ko');
+    }
   }
 }

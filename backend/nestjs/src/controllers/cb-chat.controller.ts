@@ -1,6 +1,7 @@
 import { Controller, Post, Req, Res, Get } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConversationEntity } from 'src/entities/eb-conversation.entity';
+import { ChatterService } from 'src/services/chatter/sb-chatter.service';
 import { ConvService } from 'src/services/Conv/sb-conv.service';
 import { ChatService } from 'src/services/sb-chat.service';
 import { Repository } from 'typeorm';
@@ -11,7 +12,8 @@ export class ChatController {
     constructor(@InjectRepository(ConversationEntity)
                 private conversation: Repository<ConversationEntity>,
                 private chatService: ChatService,
-                private convService: ConvService) {}
+                private convService: ConvService,
+                private chatterService: ChatterService) {}
 
     @Post('check')
     async checkRoomDatas (@Req() req, @Res() res) {
@@ -45,6 +47,41 @@ export class ChatController {
       else {
         (await this.chatService.addAdminInConv(target, conv_id)) !== 'ko' ? res.send('ok') : res.send('ko');
       }
+    }
 
+    @Get('Mute')
+    async Mute(@Req() req, @Res() res) {
+      console.log('req.query = ', req.query);
+      const conv_id = req.query.conv_id;
+      const userAsking = await this.chatService.findOneChatter(req.query.requester, conv_id);
+      const target = await this.chatService.findOneChatter(req.query.mutedOne, conv_id);
+      const conv: ConversationEntity = await this.convService.findOneConversation(conv_id);
+      if (conv.type === 'private')
+        res.send((await this.chatterService.muteSomeone(target)) === 'ok' ?  'ok' : 'ko');
+      else {
+        if (userAsking.chat_role !== 'admin')
+          res.send('Error: not good role');
+        else {
+          res.send((await this.chatterService.muteSomeone(target)) === 'ok' ?  'ok' : 'ko');
+        }
+      }
+    }
+
+    @Get('DeMute')
+    async DeMute(@Req() req, @Res() res) {
+      console.log('req.query = ', req.query);
+      const conv_id = req.query.conv_id;
+      const userAsking = await this.chatService.findOneChatter(req.query.requester, conv_id);
+      const target = await this.chatService.findOneChatter(req.query.mutedOne, conv_id);
+      const conv: ConversationEntity = await this.convService.findOneConversation(conv_id);
+      if (conv.type === 'private')
+        res.send((await this.chatterService.deMuteSomeone(target)) === 'ok' ?  'ok' : 'ko');
+      else {
+        if (userAsking.chat_role !== 'admin')
+          res.send('Error: not good role');
+        else {
+          res.send((await this.chatterService.deMuteSomeone(target)) === 'ok' ?  'ok' : 'ko');
+        }
+      }
     }
 }

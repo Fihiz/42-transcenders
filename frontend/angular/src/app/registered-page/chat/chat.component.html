@@ -280,9 +280,29 @@
                       <button
                         type="submit"
                         class="btn btn-secondary btn-sm btn-block"
-                        (click)="onActivateMute()"
+                        (click)="onMute()"
                       >
                         Mute
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+								<li>
+                  <a class="dropdown-item"> deMute &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        id="mute-room"
+                        placeholder="Name"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onDeMute()"
+                      >
+                        deMute
                       </button>
                     </li>
                   </ul>

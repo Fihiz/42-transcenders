@@ -120,7 +120,7 @@ export class ChatService {
       conv_id: conv_id,
       is_present: user.is_present,
       login: (user.login as any).login,
-      muted_until: user.muted_until
+      muted: user.muted
     }
     return (finalUser)
   }

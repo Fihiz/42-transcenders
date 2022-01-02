@@ -1,4 +1,4 @@
-import { Injectable, Res } from '@nestjs/common';
+import { Injectable, Res, Session } from '@nestjs/common';
 import axios from "axios";
 const querystring = require('querystring');
 
@@ -25,7 +25,8 @@ export class AuthService {
     try {
     const accessToken = await this.getAccessToken(codeUrl);
       const theRes = await axios.get('https://api.intra.42.fr/v2/me', {
-        headers: { Authorization: `Bearer ${accessToken.data.access_token}` },
+        headers: { Authorization: `Bearer ${accessToken.data.access_token}`,
+       },
       });
     return (theRes);
     }
