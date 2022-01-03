@@ -253,9 +253,9 @@ export class ChatComponent implements OnInit {
     });
     this.socket.on('allMessages', (data: if_message[]) => {
       if (data.length > 0 && data[0].conv_id === this.currentConv.conv_id) {
-      this.convMessages.splice(0, this.convMessages.length);
-      this.convMessages = data
-    }
+        this.convMessages.splice(0, this.convMessages.length);
+        this.convMessages = data;
+      }
     });
     this.socket.on('allConversations', (data: any) => {
       console.log('datas = ', data);
