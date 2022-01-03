@@ -84,6 +84,8 @@ body {
 }
 .b-typing {
   background-color: #F9C53F;
+  /* padding-top: 12px; */
+   /* Warning, need to see if responsiveness is ok */
   /* text-align: center; */
 }
 

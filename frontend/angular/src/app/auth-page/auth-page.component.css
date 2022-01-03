@@ -12,13 +12,8 @@ padding: 20px;
 footer {
 	min-height: 5vh; /* For reponsiveness */
 	max-height: 5vh;
-    text-align: -webkit-center; /* For github centered */
+    text-align: center; /* For github centered */
 }
-
-/* .github-icon {
-  float: right;
-  padding-right: 20px;
-} */
 
 /* Hero style */
 section {
@@ -344,15 +339,3 @@ button {
   }
 } */
 
-
-/* OLD */
-/* .jumbotron {
-  background-image: url("../../assets/42logos/canvalogotransparent.png");
-  background-size: 12%;
-  min-height: 600px;
-}
-
-body {
-  margin-top: 2%;
-  text-align: center;
-} */
