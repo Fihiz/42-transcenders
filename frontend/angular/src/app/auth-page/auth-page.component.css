@@ -12,12 +12,13 @@ padding: 20px;
 footer {
 	min-height: 5vh; /* For reponsiveness */
 	max-height: 5vh;
+    text-align: -webkit-center; /* For github centered */
 }
 
-.github-icon {
+/* .github-icon {
   float: right;
   padding-right: 20px;
-}
+} */
 
 /* Hero style */
 section {
