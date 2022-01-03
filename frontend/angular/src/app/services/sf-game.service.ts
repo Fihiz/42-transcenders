@@ -29,6 +29,19 @@ export class GameService {
     globalSocket = this.socket;
   }
 
+  async image(filename: string) {
+    const url = `http://${window.location.host}:3000/cb-game/pong/${filename}`;
+    return axios.get(url)
+    .then((response: any) => {
+      const image = response.data;
+      return image;
+    })
+    .catch((error: any) => {
+      // console.error(error.response.data);
+      return undefined;
+    })
+  }
+
   async getTypesOfParty() {
     const url = `http://${window.location.host}:3000/cb-game/types`;
     return axios.get(url)

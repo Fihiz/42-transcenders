@@ -43,7 +43,7 @@ export class PlayComponent implements OnInit, OnDestroy {
   }
 
   async getSetsParty() {
-    if (!this.play)
+    // if (!this.play)
       this.sets = await this.gameService.getTypesOfParty();
   }
 

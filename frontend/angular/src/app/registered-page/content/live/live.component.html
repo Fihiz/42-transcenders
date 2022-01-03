@@ -3,7 +3,7 @@
 <div class="list">
 	<li class="item" *ngFor="let party of parties">
 		<a routerLink="../game/{{ party.game_id }}">
-			<img class="party" src="https://dummyimage.com/200x130/08638C/aaa">
+			<img class="party" src="http://localhost:3000/cb-game/pong/{{ party.game_type_id.game_aspect }}">
 			<p class="left">{{ party.player1.pseudo }}</p>
 			<p class="versus">VS</p>
 			<p class="right">{{ party.player2.pseudo }}</p>

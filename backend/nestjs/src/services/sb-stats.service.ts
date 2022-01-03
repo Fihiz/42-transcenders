@@ -39,4 +39,22 @@ export class StatsService {
         })
     }
 
+    async getStatsByLogin(login: string): Promise<StatEntity> | undefined {
+        const statsRepository = getRepository(StatEntity);
+        return statsRepository.findOne({
+            relations: ["login"],
+            where: { login: login }
+        })
+        .then((response) => {
+            const statistic = response;
+            console.log(`Get statistic players has succeeded.`);
+            return statistic;
+        })
+        .catch((error) => {
+            console.log(`Get statistic players has failed...`);
+            console.log(`details:`, error);
+            return undefined;
+        })
+    }
+
 }

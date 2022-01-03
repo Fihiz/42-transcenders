@@ -73,6 +73,27 @@ export class GameService {
 		});
 	}
 
+	async getAllPartiesFinishedByLogin(login: string): Promise<PongGameEntity[]> {
+		const partyRepository = getRepository(PongGameEntity);
+		return partyRepository.find({
+			relations: ["player1", "player2"],
+			where: [
+				{ player1: login, game_status: status.Finished },
+				{ player2: login, game_status: status.Finished }
+			],
+		})
+		.then((response) => {
+			const parties: PongGameEntity[] = response;
+			console.log(`Get parties finished by login has succeeded.`);
+			return parties;
+		})
+		.catch((error) => {
+			console.log(`Get parties finished by login has failed...`);
+			console.log(`details: ${error}`);
+			return undefined;
+		})
+	}
+
 	async searchOneTypeOfGame(createPartyDto: CreatePartyDto): Promise<GameTypeEntity> | undefined {
 		const typeRepository = getRepository(GameTypeEntity);
 		return typeRepository.findOne({

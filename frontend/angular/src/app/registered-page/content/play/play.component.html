@@ -5,7 +5,7 @@
 <div class="list" *ngIf="waiting === false">
     <li class="item" *ngFor="let set of sets">
         <div class="container">
-            <img class="set" src="{{ set.game_aspect }}">
+            <img class="set" src="http://localhost:3000/cb-game/pong/{{ set.game_aspect }}">
             <h3 class="type">{{ set.map_type }}</h3>
             <p class="details">Ball size: {{ set.ball_size }}</p>
             <p class="details">Speed ball: {{ set.initial_speed }}</p>

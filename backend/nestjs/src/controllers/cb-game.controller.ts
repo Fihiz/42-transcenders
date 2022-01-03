@@ -35,6 +35,15 @@ export class GameController {
 
 	}
 
+	@Get('history/:login')
+    async getPartiesFinishedByLogin(@Param('login') login: string, @Response() res): Promise<PongGameEntity[]> {
+        const task: PongGameEntity[] = await this.gameService.getAllPartiesFinishedByLogin(login);
+        if (task === undefined)
+            throw new InternalServerErrorException(`Query on table Stats has failed !`);
+        res.send(task);
+        return task;
+    }
+
 	@Get('party/login/:login')
 	async getPartyWithLogin(@Param('login') login: string, @Response() res): Promise<PongGameEntity> | undefined {
 		const task: PongGameEntity = await this.gameService.getPartyByLogin(login);
@@ -76,5 +85,11 @@ export class GameController {
 		res.send(true);
 		return true;
 	}
+
+	@Get('pong/:filename')
+    getFilePongType(@Param('filename') filename, @Response() res) {
+		console.log("PASS IMAGE:", "./src/assets/pong" + filename + "svg");
+		return res.sendFile(filename + ".svg", { root: './src/assets/pong' });
+    }
 
 }
