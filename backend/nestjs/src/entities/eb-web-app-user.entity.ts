@@ -1,15 +1,15 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 export enum role {
-  "Owner",
-  "Admin",
-  "User"
+  Ownder = "Owner",
+  Admin = "Admin",
+  User = "User"
 };
 
 export enum status {
-  "connected",
-  "disconnected",
-  "inGame"
+  Connected = "connected",
+  Disconnected = "disconnected",
+  InGame = "inGame"
 };
 
 @Entity('t_webapp_user_data')

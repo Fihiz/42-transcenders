@@ -1,11 +1,10 @@
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { ConversationEntity } from "src/entities/eb-conversation.entity";
-import { ConvService } from "src/services/Conv/sb-conv.service";
+import { ConvService } from "src/services/sb-conv.service";
 import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService, Message } from 'src/services/sb-global-data.service';
-import { json } from "stream/consumers";
 
-@WebSocketGateway({cors:{origin: 'http://127.0.0.1'}})
+@WebSocketGateway({cors:{origin: 'http://*'}})
 export class ConnectedGateway {
   constructor(private chatService: ChatService,
               private convService: ConvService){}

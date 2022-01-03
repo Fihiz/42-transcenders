@@ -4,7 +4,7 @@ import { WebAppUserEntity } from "./eb-web-app-user.entity";
 
 @Entity('t_participant')
 export class ParticipantEntity {
-  
+
 	@ManyToOne(()=> PongGameEntity, {primary: true})
   @JoinColumn({name: 'game_id'})
   game_id: PongGameEntity['game_id'];

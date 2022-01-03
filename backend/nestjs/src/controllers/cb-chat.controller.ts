@@ -1,8 +1,8 @@
 import { Controller, Post, Req, Res, Get } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConversationEntity } from 'src/entities/eb-conversation.entity';
-import { ChatterService } from 'src/services/chatter/sb-chatter.service';
-import { ConvService } from 'src/services/Conv/sb-conv.service';
+import { ChatterService } from 'src/services/sb-chatter.service';
+import { ConvService } from 'src/services/sb-conv.service';
 import { ChatService } from 'src/services/sb-chat.service';
 import { Repository } from 'typeorm';
 

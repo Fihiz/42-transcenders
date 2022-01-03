@@ -21,8 +21,8 @@ export class AuthService{
   async getLoggedIn(): Promise<void> {
     const code: string = this.router.url.split('?')[1]?.substr(5, 64);
     try {
-      const res = await axios.get('http://127.0.0.1:3000/cb-auth', {
-        params: { code: code },
+      const res = await axios.get(`http://${window.location.host}:3000/cb-auth`, {
+        params: { code: code, host: window.location.host },
       });
       if (res.data.data === 'error') {
         console.log('error in getLoggedIn');

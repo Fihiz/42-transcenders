@@ -1,1 +1,17 @@
-<p>ranking works!</p>
+<h1>Pong's ranking</h1>
+<p class="count"> Current players ranked: {{ size }}</p>
+<div class="list">
+	<li class="item" *ngFor="let score of scores;let i=index">
+		<p [ngClass]="{'other': i > 2,
+			'third': i == 2,
+			'second': i == 1,
+			'first': i == 0}">{{ i + 1 }}</p>
+		<img class="avatar" src="{{ score.login.avatar }}">
+		<div class="detail">
+			<div class="left">{{ score.login.pseudo }}</div>
+			<div class="right">{{ score.points_for_ladder }} pts</div>
+		</div>
+	</li>
+</div>
+<body>
+</body>

@@ -3,6 +3,13 @@ import { ConversationEntity } from "./eb-conversation.entity";
 import { GameTypeEntity } from "./eb-game-type.entity";
 import { WebAppUserEntity } from "./eb-web-app-user.entity";
 
+export enum status {
+  Creation = "creation",
+  // Waiting = "waiting",
+  Playing = "playing",
+  Finished = "finished"
+};
+
 @Entity('t_pong_game')
 export class PongGameEntity {
 
@@ -32,7 +39,7 @@ export class PongGameEntity {
   @Column({
     type: "varchar"
   })
-  game_status: string;
+  game_status: status;
 
   @Column({
     type: "varchar",
@@ -50,9 +57,9 @@ export class PongGameEntity {
   @JoinColumn({name: 'game_type_id'})
   game_type_id: GameTypeEntity['game_type_id'];
 
-  @OneToOne(() => ConversationEntity)
-  @JoinColumn({name: 'room_id'})
-  room_id: ConversationEntity['conv_id'];
+  // @OneToOne(() => ConversationEntity)
+  // @JoinColumn({name: 'room_id'})
+  // room_id: ConversationEntity['conv_id'];
 
   @Column({
 		type: "timestamp",

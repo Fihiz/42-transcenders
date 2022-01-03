@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { OnlineStatusModule } from 'ngx-online-status';
-import { ReactiveFormsModule} from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgxTypedJsModule } from 'ngx-typed-js';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -24,12 +24,16 @@ import { PlayComponent } from './registered-page/content/play/play.component';
 import { AuthComponent } from './auth-page/auth/auth.component';
 import { InputPromptComponent } from './auth-page/input-prompt/input-prompt.component';
 import { NotFoundComponent } from './registered-page/content/not-found/not-found.component';
+import { GameComponent } from './registered-page/content/game/game.component';
 
 import { GlobalService } from './services/sf-global.service';
 
-
-
-const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoConnect: false} };
+// MERGE
+// const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoConnect: false} };
+const config: SocketIoConfig = {
+  url: `http://${window.location.host}:3000`,
+  options: { autoConnect: false },
+};
 
 @NgModule({
   declarations: [
@@ -51,6 +55,7 @@ const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoCo
     AuthComponent,
     InputPromptComponent,
     NotFoundComponent,
+    GameComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,7 +63,7 @@ const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoCo
     OnlineStatusModule,
     ReactiveFormsModule,
     SocketIoModule.forRoot(config),
-    NgxTypedJsModule
+    NgxTypedJsModule,
   ],
   providers: [GlobalService],
   bootstrap: [AppComponent],

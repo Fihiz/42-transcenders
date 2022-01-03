@@ -1,10 +1,20 @@
-<html>
-    <head>
-        <title>Typescript Pong</title>
-        <link href='https://fonts.googleapis.com/css?family=Comfortaa:900' rel='stylesheet' type='text/css'>
-    </head>
-    <body>
-        <canvas width=700 height=400 id="game-canvas"></canvas> 
-        <h4>Move left paddle up and down with the arrow keys</h4>
-    </body>
-</html>
+<div *ngIf="waiting === true || sets.length > 0">
+    <h1>Pong's game</h1>
+    <p class="state">Start a new game !</p>
+</div>
+<div class="list" *ngIf="waiting === false">
+    <li class="item" *ngFor="let set of sets">
+        <div class="container">
+            <img class="set" src="{{ set.game_aspect }}">
+            <h3 class="type">{{ set.map_type }}</h3>
+            <p class="details">Ball size: {{ set.ball_size }}</p>
+            <p class="details">Speed ball: {{ set.initial_speed }}</p>
+            <p class="details">Racket size: {{ set.racket_size }}</p>
+            <button class="btn btn-dark" type="submit" (click)="setParty(set.map_type)">PLAY</button>
+        </div>
+    </li>
+</div>
+<div class="card-wait" *ngIf="waiting === true">
+    <p class="wait">Waiting Line</p>
+    <p class="timer">{{ time }}</p>
+</div>

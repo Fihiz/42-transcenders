@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
 import { if_message } from '../interfaces/if-message';
@@ -6,13 +6,14 @@ import { Socket } from "ngx-socket-io";
 import { if_user } from '../interfaces/if-user';
 import { GlobalService } from './sf-global.service';
 import { BrowserModule } from '@angular/platform-browser';
-import * as Cookies from 'js-cookie';
+// MERGE
+// import * as Cookies from 'js-cookie';
 
 
 @Injectable({
   providedIn: 'root',
 })
-export class UserService implements OnInit {
+export class UserService {
   user: if_user = {
     login: '',
     pseudo: '',
@@ -30,7 +31,39 @@ export class UserService implements OnInit {
     updated: new Date(),
   };
 
-  readyToDisplayForm: boolean = false;
+  avatarList: {
+    alt: string;
+    url: string;
+  }[] = [
+    {
+      alt: 'My Intra Pic',
+      url: '../../../assets/myIntraPictureBlack.png',
+    },
+    {
+      alt: 'ageraud',
+      url: 'https://cdn.intra.42.fr/users/large_ageraud.jpg',
+    },
+    {
+      alt: 'sad-aude',
+      url: 'https://cdn.intra.42.fr/users/large_sad-aude.jpg',
+    },
+    {
+      alt: 'jobenass',
+      url: 'https://cdn.intra.42.fr/users/large_jobenass.jpg',
+    },
+    {
+      alt: 'lpieri',
+      url: 'https://cdn.intra.42.fr/users/large_lpieri.jpg',
+    },
+    {
+      alt: 'pgoudet',
+      url: 'https://cdn.intra.42.fr/users/large_pgoudet.jpg',
+    },
+    {
+      alt: 'rlepart',
+      url: 'https://cdn.intra.42.fr/users/large_rlepart.jpg',
+    },
+  ];
 
   constructor(public global: GlobalService,
               private router: Router,
@@ -69,6 +102,7 @@ export class UserService implements OnInit {
       });
       this.socket.connect();
     } else {
+      this.avatarList[0].url = response.data.image_url;
       document.getElementById('toOpenModal')?.click();
       await this.handleSubmitClick();
       this.fillUserInfos(response);
@@ -94,7 +128,7 @@ export class UserService implements OnInit {
   async registerBackInRequest(response: any) {
     try {
       const registerData = await axios.post(
-        'http://127.0.0.1:3000/cb-auth/registerData',
+        `http://${window.location.host}:3000/cb-auth/registerData`,
         {
           data: this.user,
         }
@@ -116,24 +150,12 @@ export class UserService implements OnInit {
   }
 
   fillUserInfos(response: any): void {
-    console.log((<HTMLInputElement>document.getElementById('avatarUrl')).value);
     this.user.login = response.data.login;
-    if (
-      (<HTMLInputElement>document.getElementById('avatarUrl')).value ===
-      '../../../assets/myIntraPictureBlack.png'
-    ) {
-      this.user.avatar = response.data.image_url;
-    } else {
-      this.user.avatar = (<HTMLInputElement>(
-        document.getElementById('avatarUrl')
-      )).value;
-    }
+    this.user.avatar = (<HTMLInputElement>(document.getElementById('avatarUrl'))).value;
     this.user.first_name = response.data.first_name;
     this.user.last_name = response.data.last_name;
     this.user.mail = response.data.email;
-    this.user.pseudo = (<HTMLInputElement>(
-      document.getElementById('pseudo')
-    )).value;
+    this.user.pseudo = (<HTMLInputElement>(document.getElementById('pseudo'))).value;
     this.user.bio = (<HTMLInputElement>document.getElementById('bio')).value;
   }
 
@@ -142,7 +164,6 @@ export class UserService implements OnInit {
       document
         .getElementById('submitId')
         ?.addEventListener('click', function () {
-          console.log('2- User clicked on submit !!!');
           resolve('OK');
         });
     });

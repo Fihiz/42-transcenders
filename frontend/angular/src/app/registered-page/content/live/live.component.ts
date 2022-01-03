@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { if_game_object } from 'src/app/interfaces/if-game';
+import { GameService } from 'src/app/services/sf-game.service'
+
 @Component({
   selector: 'app-live',
   templateUrl: './live.component.html',
@@ -7,9 +10,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LiveComponent implements OnInit {
 
-  constructor() { }
+  parties: if_game_object[] | undefined = [];
+  size: number = 0;
+
+  constructor(private gameService: GameService ) { }
 
   ngOnInit(): void {
+    this.getLives();
+  }
+
+  async getLives() {
+      this.parties = await this.gameService.getPartiesInProgress();
+      if (this.parties !== undefined)
+        this.size = this.parties.length;
+      // else
+      //  redirect to Component error ?
   }
 
 }

@@ -2,11 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { MessageDto } from "src/dtos/messages.dto";
 import { ChatterEntity } from "src/entities/eb-chatter.entity";
-import { ConversationEntity } from "src/entities/eb-conversation.entity";
 import { MessageEntity } from "src/entities/eb-message.entity";
 import { WebAppUserEntity } from "src/entities/eb-web-app-user.entity";
 import { Repository } from "typeorm";
-import { ConvService } from "./Conv/sb-conv.service";
+import { ConvService } from "./sb-conv.service";
 import { GlobalDataService } from "./sb-global-data.service";
 import { UserService } from "./sb-user.service";
 

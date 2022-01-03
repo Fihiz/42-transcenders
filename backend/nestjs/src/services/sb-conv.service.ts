@@ -3,8 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ChatterEntity } from "src/entities/eb-chatter.entity";
 import { ConversationEntity } from "src/entities/eb-conversation.entity";
 import { Repository } from "typeorm";
-import { ChatterService } from "../chatter/sb-chatter.service";
-import { UserService } from "../sb-user.service";
+import { UserService } from "./sb-user.service";
 
 
 @Injectable()
