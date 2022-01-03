@@ -456,3 +456,22 @@ h6 {
   font-size: 16px;
   color: white;
 }
+
+
+/* NEW FOR WRAP CHATTER INFOS */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.right-chatter-wrap {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.left-chatter-wrap {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}

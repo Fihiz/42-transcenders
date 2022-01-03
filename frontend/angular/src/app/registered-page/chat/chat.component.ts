@@ -162,8 +162,8 @@ export class ChatComponent implements OnInit {
   }
 
   onAddFriend() {
-    const name = (<HTMLInputElement>document.getElementById('search-friend'))
-      .value;
+    const name = (<HTMLInputElement>document.getElementById('add-friend')).value;
+    this.chatService.clearInputValues('add-friend');
     if (name) {
       document.getElementById('add-user-form')?.classList.add('hidden');
       this.emission = this.chatService.emission(
@@ -180,7 +180,8 @@ export class ChatComponent implements OnInit {
   }
 
   async onMute() {
-    const value = (<HTMLInputElement>document.getElementById('mute-room'))?.value
+    const value = (<HTMLInputElement>document.getElementById('mute-room'))?.value;
+    this.chatService.clearInputValues('mute-room');
     if (value) {
       console.log('value = ', value)
       const isMute = await axios.get("http://127.0.0.1:3000/cb-chat/Mute", {params: {mutedOne: value, requester: this.login, conv_id: this.currentConv.conv_id}});
@@ -190,7 +191,8 @@ export class ChatComponent implements OnInit {
   }
 
   async onDeMute() {
-    const value = (<HTMLInputElement>document.getElementById('de-mute-room'))?.value
+    const value = (<HTMLInputElement>document.getElementById('de-mute-room'))?.value;
+    this.chatService.clearInputValues('de-mute-room');
     if (value) {
       console.log('value = ', value)
       const isDeMute = await axios.get("http://127.0.0.1:3000/cb-chat/DeMute", {params: {mutedOne: value, requester: this.login, conv_id: this.currentConv.conv_id}});
@@ -200,7 +202,8 @@ export class ChatComponent implements OnInit {
   }
 
   async onNewAdmin() {
-    const value = (<HTMLInputElement>document.getElementById('add-new-admin'))?.value
+    const value = (<HTMLInputElement>document.getElementById('add-new-admin'))?.value;
+    this.chatService.clearInputValues('add-new-admin');
     if (value) {
       console.log('value = ', value)
       const isBan = await axios.get("http://127.0.0.1:3000/cb-chat/newAdmin", {params: {newAdmin: value, requester: this.login, conv_id: this.currentConv.conv_id}});
@@ -211,7 +214,8 @@ export class ChatComponent implements OnInit {
 
   async onBan() {
     console.log('onBan');
-    const value = (<HTMLInputElement>document.getElementById('ban-room'))?.value
+    const value = (<HTMLInputElement>document.getElementById('ban-room'))?.value;
+    this.chatService.clearInputValues('ban-room');
     if (value) {
       const isBan = await axios.get("http://127.0.0.1:3000/cb-chat/ban", {params: {banned: value, requester: this.login,  conv_id: this.currentConv.conv_id}});
       if (isBan.data !== 'ok')
