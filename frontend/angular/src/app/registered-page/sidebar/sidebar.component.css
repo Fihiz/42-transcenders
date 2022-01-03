@@ -4,7 +4,7 @@
   min-height: 100vh;
   /* min-height: auto; */
   /* background-image: url("../../../assets/bannerfigma.png"); */
-  background-color: rgb(8,99,140);
+  background-color: rgb(8, 99, 140);
   /* background-color: rgb(179, 199, 212); */
   background-size: cover;
   padding: 1rem;
@@ -59,6 +59,7 @@
   margin-left: 1.25rem;
   text-decoration: none;
 }
+
 .btn-toggle-nav a:hover,
 .btn-toggle-nav a:focus {
   background-color: #ffffff;
@@ -94,9 +95,10 @@ a {
   }
 }
 
-@media (max-height: 500px) {
+@media (max-height: 691px) {
   .sidebar {
     width: 140px;
+    min-height: 700px;
   }
 
   .fit-picture {

@@ -3,6 +3,6 @@ export class MessageDto {
     conv_id: number;
     login: string;
     date: Date;
-    body:string;
+    body: any;
     to: Array<string>;
 }

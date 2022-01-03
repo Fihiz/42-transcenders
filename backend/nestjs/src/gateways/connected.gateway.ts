@@ -1,11 +1,13 @@
-import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { ChatServiceBis } from "src/services/sb-chat-bis.service";
+import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { ConversationEntity } from "src/entities/eb-conversation.entity";
+import { ConvService } from "src/services/sb-conv.service";
+import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService, Message } from 'src/services/sb-global-data.service';
-import { json } from "stream/consumers";
 
-@WebSocketGateway({cors:{origin: 'http://127.0.0.1'}})
+@WebSocketGateway({cors:{origin: 'http://*'}})
 export class ConnectedGateway {
-  constructor(private chatServiceBis: ChatServiceBis){}
+  constructor(private chatService: ChatService,
+              private convService: ConvService){}
 	@WebSocketServer()
 	server;
 
@@ -22,24 +24,27 @@ export class ConnectedGateway {
 					keyIndex = key;
 			})
 		})
-		const index = GlobalDataService.loginIdMap.get(keyIndex).indexOf(theWantedId);
-		GlobalDataService.loginIdMap.get(keyIndex).splice(index, 1);
-		if (GlobalDataService.loginIdMap.get(keyIndex).length === 0)
-			GlobalDataService.loginIdMap.delete(keyIndex); // -> signaler a tt le monde
-		console.log('map after disconnect', GlobalDataService.loginIdMap);
+		if (keyIndex) {
+			const index = GlobalDataService.loginIdMap.get(keyIndex).indexOf(theWantedId);
+			GlobalDataService.loginIdMap.get(keyIndex).splice(index, 1);
+			if (GlobalDataService.loginIdMap.get(keyIndex).length === 0)
+				GlobalDataService.loginIdMap.delete(keyIndex)
+		}
 	}
 
 	@SubscribeMessage('introduction')
-	handleIntroduce(@MessageBody() message: Message): void {
+	async handleIntroduce(@MessageBody() message: Message): Promise<void> {
+    let conversations: Array<ConversationEntity>;
 		if (message.id) {
 			if (GlobalDataService.loginIdMap.has(message.login))
 			GlobalDataService.loginIdMap.get(message.login).push(message.id);
 			else {
 				GlobalDataService.loginIdMap.set(message.login, [message.id]);
 			}
-			console.log('new connection', GlobalDataService.loginIdMap)
+      conversations = await this.convService.findAllConv(message.login);
 		}
-		this.server.emit('usersOnLine', this.chatServiceBis.getUsersConnected(GlobalDataService.loginIdMap));
+		this.server.emit('users', await this.chatService.getUsers());
+    this.server.to(GlobalDataService.loginIdMap.get(message.login)).emit('allConversations', conversations);
 	}
 
 	@SubscribeMessage('log-out')

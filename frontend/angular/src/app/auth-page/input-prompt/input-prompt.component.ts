@@ -8,57 +8,25 @@ import { UserService } from 'src/app/services/sf-user.service';
   styleUrls: ['./input-prompt.component.css'],
 })
 export class InputPromptComponent implements OnInit {
-  constructor(private userService: UserService) {}
+  constructor(public userService: UserService) {}
 
   ngOnInit(): void {}
 
   i: number = 0;
-  // pseudo_test = new FormControl('');
-  avatarList: {
-    alt: string;
-    url: string;
-  }[] = [
-    {
-      alt: 'My Intra Pic',
-      url: '../../../assets/myIntraPictureBlack.png',
-    },
-    {
-      alt: 'ageraud',
-      url: 'https://cdn.intra.42.fr/users/large_ageraud.jpg',
-    },
-    {
-      alt: 'sad-aude',
-      url: 'https://cdn.intra.42.fr/users/large_sad-aude.jpg',
-    },
-    {
-      alt: 'jobenass',
-      url: 'https://cdn.intra.42.fr/users/large_jobenass.jpg',
-    },
-    {
-      alt: 'lpieri',
-      url: 'https://cdn.intra.42.fr/users/large_lpieri.jpg',
-    },
-    {
-      alt: 'pgoudet',
-      url: 'https://cdn.intra.42.fr/users/large_pgoudet.jpg',
-    },
-    {
-      alt: 'rlepart',
-      url: 'https://cdn.intra.42.fr/users/large_rlepart.jpg',
-    },
-  ];
 
   increment(): void {
-    this.i = (this.i + 1) % this.avatarList.length;
+    this.i = (this.i + 1) % this.userService.avatarList.length;
   }
 
   decrement(): void {
-    this.i = (this.i + this.avatarList.length - 1) % this.avatarList.length;
+    this.i =
+      (this.i + this.userService.avatarList.length - 1) %
+      this.userService.avatarList.length;
   }
 
   profileForm = new FormGroup({
     pseudo: new FormControl('', Validators.required),
     bio: new FormControl('', Validators.required),
-    avatarUrl: new FormControl('../../../assets/myIntraPictureBlack.png'),
+    avatarUrl: new FormControl(this.userService.avatarList[0].url),
   });
 }

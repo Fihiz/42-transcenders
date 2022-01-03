@@ -3,24 +3,23 @@ app-header {
   padding: 0px;
 }
 
-/* @media (max-width: 600px) {
-  .column {
-    width: 100%;
-  }
-} */
-
 .right-col {
-  flex: 25%;
+  flex: 40%;
+  /* background-color: rgb(249, 125, 100); */
+  
+  /* Temporary */
+  background-color: #F9C53F;
+  border: 4px solid #F9C53F;
+  border-radius: 5px;
 }
 
 .left-col {
-  flex: 75%;
+  flex: 60%;
 }
 
 .col {
   padding-left: 0%;
   padding-right: 0%;
-  background-color: rgb(245, 201, 89);
 }
 
 .right {
@@ -30,8 +29,6 @@ app-header {
 
 .middle {
   height: 100%;
-  /* Seems to work in the same way */
-  /* flex-grow: 1; */
 }
 
 .row {

@@ -1,9 +1,61 @@
-<!-- Banner -->
-<div class="jumbotron text-center"></div>
-<body>
-  <button type="button" class="btn btn-dark" (click)="onRegister()">
-    Register
-  </button>
-  <router-outlet id="auth"></router-outlet>
-  <!-- <router-outlet></router-outlet> -->
-</body>
+<!-- Simple header -->
+<header>
+	<div class="container">
+		<h6>UNMISSABLE ONLINE PONG GAMES WITH YOUR FRIENDS</h6>
+	</div>
+</header>
+
+<!-- Main body -->
+  <section class="hero">
+    <!--<div class="background-image"></div>-->
+	<div class="background">
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+	 </div>
+	
+    <div class="hero-content-area">
+		<img
+        class="fit-picture"
+        src="../../../assets/42logos/canvalogotransparent.png"
+        alt="Pong"
+      />
+	  <ngx-typed-js [strings]="['play', 'chat', 'compete', 'watch']" [loop]="true" [typeSpeed]="120">
+		<h4>>  <span class="typing"></span></h4>
+	  </ngx-typed-js>
+    </div>
+	<button type="button" class="btn btn-dark btn-lg" (click)="onRegister()">
+		Register
+	  </button>
+	  <router-outlet id="auth"></router-outlet>
+  </section>
+
+  <footer>
+	<!-- <div class="container"> -->
+    <div class="github-icon">
+	    <a href="https://github.com/Fihiz/transcenders"><i class="bi bi-github"></i></a>
+    </div>
+      <!-- </div> -->
+  </footer>

@@ -1,5 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { OnlineStatusModule } from 'ngx-online-status';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgxTypedJsModule } from 'ngx-typed-js';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,15 +21,19 @@ import { StatsComponent } from './registered-page/content/stats/stats.component'
 import { LiveComponent } from './registered-page/content/live/live.component';
 import { FriendsComponent } from './registered-page/content/friends/friends.component';
 import { PlayComponent } from './registered-page/content/play/play.component';
-import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
-import { OnlineStatusModule } from 'ngx-online-status';
-import { GlobalService } from './services/sf-global.service';
 import { AuthComponent } from './auth-page/auth/auth.component';
 import { InputPromptComponent } from './auth-page/input-prompt/input-prompt.component';
-import { ReactiveFormsModule } from '@angular/forms';
 import { NotFoundComponent } from './registered-page/content/not-found/not-found.component';
+import { GameComponent } from './registered-page/content/game/game.component';
 
-const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoConnect: false} };
+import { GlobalService } from './services/sf-global.service';
+
+// MERGE
+// const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoConnect: false} };
+const config: SocketIoConfig = {
+  url: `http://${window.location.host}:3000`,
+  options: { autoConnect: false },
+};
 
 @NgModule({
   declarations: [
@@ -47,6 +55,7 @@ const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoCo
     AuthComponent,
     InputPromptComponent,
     NotFoundComponent,
+    GameComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,6 +63,7 @@ const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoCo
     OnlineStatusModule,
     ReactiveFormsModule,
     SocketIoModule.forRoot(config),
+    NgxTypedJsModule,
   ],
   providers: [GlobalService],
   bootstrap: [AppComponent],

@@ -10,6 +10,7 @@ import { SocialModule } from './modules/mb-social.module';
 import { StatsModule } from './modules/mb-stats.module';
 import { UserModule } from './modules/mb-user.module';
 
+
 @Module({
   imports: [AppDatabaseModule, ChatModule, GameModule, SocialModule, StatsModule, UserModule, AuthModule, ConnectionModule],
   controllers: [AppController],

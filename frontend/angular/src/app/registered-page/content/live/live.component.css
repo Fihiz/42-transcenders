@@ -1,0 +1,80 @@
+h1 {
+	text-align: center;
+}
+
+.count {
+	text-align: center;
+}
+
+.error {
+	text-align: center;
+	color: #F97D64;
+}
+
+.list {
+	padding: 2px;
+	text-align: center;
+}
+
+.item {
+	list-style: none;
+	margin: 5px;
+	margin-bottom: 10px;
+	background-color: #D2E3E6;
+	height: 130px;
+	width: 200px;
+	border-style: none;
+	border-radius: 13px;
+	display: inline-flex;
+	position: relative;
+}
+
+.position {
+	margin: 6px;
+	background-color: #528FAC;
+	min-height: 26px;
+	min-width: 26px;
+	border-style: none;
+	text-align: center;
+	vertical-align: middle;
+	padding-top: 3px;
+	color: #D2E3E6;
+}
+
+.party {
+	border-radius: 15px;
+}
+
+.versus {
+	position: absolute;
+	top: 43%;
+	left: 43%;
+	color: #F9C53F;
+	text-shadow: 0px 0px 5px #08638C;
+}
+
+.left {
+	font-style: italic;
+	position: absolute;
+	top: 8px;
+	left: 10px;
+	color: #43B6B2;
+	text-shadow: 0px 0px 5px #C0C0C0;
+	max-width: calc(100% - 10px);
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.right {
+	font-style: italic;
+	position: absolute;
+	bottom: -10px;
+	right: 10px;
+	color: #F97D64;
+	text-shadow: 0px 0px 5px #F9C53F;
+	max-width: calc(100% - 10px);
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
