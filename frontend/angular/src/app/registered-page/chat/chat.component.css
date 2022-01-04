@@ -438,6 +438,32 @@ input[type="room-btn"]::placeholder {
   font-size: 12px;
 }
 
+/* new  */
+#room-name-join, #room-password-join, #room-name, #members, #password, #add-new-admin, #add-friend, #invite-to-play, #mute-room, #unmute-room,
+#ban-room, #change-password{
+  font-size: 12px;
+}
+
+#view-member {
+  font-size: 12px;
+  background-color: #43B6B2;
+  border: #43B6B2;
+  color: white;
+}
+.viewMembersRoom {
+ max-height: 150px;
+ overflow-y: auto;
+}
+
+.style-txt {
+  font-size: 12px;
+  padding: 8px;
+}
+
+/* #roomViewMembers {
+  overflow-y: auto;
+} */
+
 
 .color-conv-name {
   background-color: white;
