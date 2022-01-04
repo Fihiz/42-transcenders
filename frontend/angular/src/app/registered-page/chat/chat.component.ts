@@ -190,9 +190,9 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  async onDeMute() {
-    const value = (<HTMLInputElement>document.getElementById('de-mute-room'))?.value;
-    this.chatService.clearInputValues('de-mute-room');
+  async onUnmute() {
+    const value = (<HTMLInputElement>document.getElementById('unmute-room'))?.value;
+    this.chatService.clearInputValues('unmute-room');
     if (value) {
       console.log('value = ', value)
       const isDeMute = await axios.get("http://127.0.0.1:3000/cb-chat/DeMute", {params: {mutedOne: value, requester: this.login, conv_id: this.currentConv.conv_id}});
@@ -244,6 +244,23 @@ export class ChatComponent implements OnInit {
       };
       this.convMessages = [];
     }
+  }
+
+  /* FOR HIDING PASSWORDS */
+  hideCreateRoomPassword() {
+    const pass = (<HTMLInputElement>document.getElementById("password"));
+    if (pass.type === "password")
+        pass.type = "text";
+    else
+      pass.type = "password";
+  }
+
+  hideJoinRoomPassword() {
+    const pass = (<HTMLInputElement>document.getElementById("room-password-join"));
+    if (pass.type === "password")
+        pass.type = "text";
+    else
+      pass.type = "password";
   }
 
   ngOnInit(): void {
