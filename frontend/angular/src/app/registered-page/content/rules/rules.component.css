@@ -1,20 +1,17 @@
-.col {
+/*.col {
   margin: 5%;
   background-color: rgb(248, 248, 248);
-  /* min-width: 250px; */
 }
 
 .middle {
   height: 100%;
-  max-height: 75vh; /*to scroll*/
-  /* Seems to work in the same way */
-  /* flex-grow: 1; */
+  max-height: 75vh;
 }
 
 .row {
   margin-left: 0%;
   margin-right: 0%;
-  overflow-y: auto; /*to scroll*/
+  overflow-y: auto;
 }
 .block {
   background-color: rgb(245, 237, 237);
@@ -27,4 +24,61 @@ img {
 
 p {
 	font-size: 12px;
-}
+}*/
+
+
+@import url('https://fonts.googleapis.com/css2?family=Londrina+Solid&display=swap');
+.col {
+	margin: 5%;
+	/*background-color: rgb(248, 248, 248);*/
+	/* min-width: 250px; */
+  }
+  
+  .middle {
+	height: 100%;
+	max-height: 75vh; /*to scroll*/
+	/* Seems to work in the same way */
+	/* flex-grow: 1; */
+  }
+  
+  .row {
+	margin-left: 0%;
+	margin-right: 0%;
+	overflow-y: auto; /*to scroll*/
+  }
+  .block {
+	background-color: rgb(245, 237, 237);
+  }
+  
+  img {
+	width: 230px;
+	height: 150px;
+  }
+  
+  p {
+	  font-size: 12px;
+	  color: #324448;
+  }
+  
+  h1
+  {
+	color: #43B6B2;
+	text-align: center;
+	font-family: 'Londrina Solid';
+  }
+  
+  h3, h5 {
+	  text-align: center;
+	  font-family: 'Londrina Solid';
+	  /*color: #528FAC;*/
+	  color: #43B6B2;
+  }
+
+  .card-header {
+	  background-color: white;
+	  border-bottom: 10px solid #43B6B2;
+  }
+
+  .card {
+	  border: none;
+  }
