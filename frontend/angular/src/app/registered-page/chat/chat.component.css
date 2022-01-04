@@ -440,7 +440,7 @@ input[type="room-btn"]::placeholder {
 
 /* new  */
 #room-name-join, #room-password-join, #room-name, #members, #password, #add-new-admin, #add-friend, #invite-to-play, #mute-room, #unmute-room,
-#ban-room {
+#ban-room, #change-password{
   font-size: 12px;
 }
 

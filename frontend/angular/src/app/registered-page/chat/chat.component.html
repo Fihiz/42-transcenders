@@ -219,7 +219,7 @@
                 </li>
                 <!--Add friend-->
                 <li>
-                  <a class="dropdown-item"> Add a friend &raquo; </a>
+                  <a class="dropdown-item"> Add new friend &raquo; </a>
                   <ul class="dropdown-menu dropdown-submenu">
                     <li>
                       <input
@@ -238,6 +238,44 @@
                     </li>
                   </ul>
                 </li>
+                  <!--Change password-->
+                  <li>
+                    <a class="dropdown-item"> Change password &raquo; </a>
+                    <ul class="dropdown-menu dropdown-submenu">
+                      <li>
+                        <input
+                          class="form-control"
+                          placeholder="New password"
+                          id="change-password"
+                          type="password"
+                        />
+                        <div class="style-txt"> <input type="checkbox" (click)="hideRoomNewPassword()"> Show password</div>
+                        <button
+                          type="submit"
+                          class="btn btn-secondary btn-sm btn-block"
+                          (click)="onChangePassword()"
+                        >
+                          Change
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+
+                <!-- <input
+                    class="form-control"
+                    id="room-password-join"
+                    placeholder="Password (if needed)"
+                    type="password"
+                  />
+                  <div class="style-txt"> <input type="checkbox" (click)="hideJoinRoomPassword()"> Show password</div>
+                  <button
+                    type="submit"
+                    class="btn btn-secondary btn-sm btn-block"
+                    (click)="onJoinRoom()"
+                  >
+                    Submit
+                  </button> -->
+
                 <!-- Invite to play -->
                 <li>
                   <a class="dropdown-item"> Invite to play &raquo; </a>
@@ -296,6 +334,27 @@
                         (click)="onUnmute()"
                       >
                         Unmute
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+                <!--Kick-->
+                <li>
+                  <a class="dropdown-item"> Kick &raquo; </a>
+                  <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                      <input
+                        class="form-control"
+                        id="kick-room"
+                        placeholder="Name"
+                        type="room-btn"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-secondary btn-sm btn-block"
+                        (click)="onKick()"
+                      >
+                        Kick
                       </button>
                     </li>
                   </ul>

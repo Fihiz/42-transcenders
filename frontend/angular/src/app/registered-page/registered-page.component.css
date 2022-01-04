@@ -14,7 +14,7 @@ app-header {
 
   /* To not have the cut sidebar anymore */
   /* Maybe have to play on it on the @media */
-  overflow-y: auto;
+  /* overflow-y: auto; */
   /* overflow-x: unset; */
 }
 

@@ -212,6 +212,22 @@ export class ChatComponent implements OnInit {
     }
   }
 
+  onKick() {
+    console.log("onKick Function is called");
+
+    // alert pgoudet: to keep for cleaning !
+    const value = (<HTMLInputElement>document.getElementById('kick-room'))?.value;
+    this.chatService.clearInputValues('kick-room');
+  }
+
+  onChangePassword() {
+    console.log("onChangePassword Function is called");
+
+    // alert pgoudet: to keep for cleaning !
+    const value = (<HTMLInputElement>document.getElementById('change-password'))?.value;
+    this.chatService.clearInputValues('change-password');
+  }
+
   async onBan() {
     console.log('onBan');
     const value = (<HTMLInputElement>document.getElementById('ban-room'))?.value;
@@ -257,6 +273,14 @@ export class ChatComponent implements OnInit {
 
   hideJoinRoomPassword() {
     const pass = (<HTMLInputElement>document.getElementById("room-password-join"));
+    if (pass.type === "password")
+        pass.type = "text";
+    else
+      pass.type = "password";
+  }
+
+  hideRoomNewPassword() {
+    const pass = (<HTMLInputElement>document.getElementById("change-password"));
     if (pass.type === "password")
         pass.type = "text";
     else
