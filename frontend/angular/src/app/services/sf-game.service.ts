@@ -241,7 +241,7 @@ export class GameService {
         {
           globalSocket.emit('ready', {id: globalSocket.ioSocket.id});
         }
-        else if (test.game.status === "Finished" ||
+        else if (test.game.status === "Finished" || test.game.status === "Updating" ||
           (test.game.leftPaddle.login !== test.global.login &&
           test.game.rightPaddle.login !== test.global.login))
         {

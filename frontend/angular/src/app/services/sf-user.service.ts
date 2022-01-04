@@ -37,7 +37,7 @@ export class UserService {
   }[] = [
     {
       alt: 'My Intra Pic',
-      url: '../../../assets/myIntraPictureBlack.png',
+      url: '../../assets/profile-pictures/myIntraPictureBlack.png',
     },
     {
       alt: 'ageraud',
@@ -74,7 +74,7 @@ export class UserService {
 
   async doubleAUth(login: string) {
     if (this.global.doubleAuth === true) {
-      const code = (await axios.get("http://127.0.0.1:3000/double-auth", { params: login })).data;
+      const code = (await axios.get(`http://${window.location.host}:3000/double-auth`, { params: login })).data;
       console.log('code = ', code);
       if (code === 'ko') {
         alert('an error as occured when sending the mail');

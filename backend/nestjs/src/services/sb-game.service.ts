@@ -8,29 +8,222 @@ import { CreatePartyDto } from 'src/dtos/CreateParty.dto';
 
 import { status } from 'src/entities/eb-pong-game.entity';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
+import { StatsService } from './sb-stats.service';
 
 @Injectable()
 export class GameService {
 
   	games: Game[];
 
-	constructor(@InjectRepository(GameTypeEntity) private gameTypes: Repository<GameTypeEntity>, @InjectRepository(PongGameEntity) private pongGames: Repository<PongGameEntity>) {
+	constructor(@InjectRepository(GameTypeEntity) private gameTypes: Repository<GameTypeEntity>, @InjectRepository(PongGameEntity) private pongGames: Repository<PongGameEntity>, private statsService : StatsService) {
 		this.games = [];
+		this.OnInit();
+	}
+
+	async OnInit() {
+		const parties: PongGameEntity[] = await this.getAllPartiesInProgress();
+		parties.forEach((game) => {
+			this.addGame(game.game_id, (game.player1 as unknown as WebAppUserEntity).login, (game.player2 as unknown as WebAppUserEntity).login);
+		})
+		// [
+		//   PongGameEntity {
+		//     game_id: 2,
+		//     player1_score: 0,
+		//     player2_score: 0,
+		//     game_status: 'playing',
+		//     winner: null,
+		//     looser: null,
+		//     created: 2022-01-04T10:56:29.605Z,
+		//     updated: 2022-01-04T10:56:29.605Z,
+		//     player1: WebAppUserEntity {
+		//       login: 'rlepart',
+		//       pseudo: 'test',
+		//       avatar: 'https://cdn.intra.42.fr/users/rlepart.jpg',
+		//       status: 'online',
+		//       bio: 'test\n',
+		//       pending_queue: false,
+		//       banned: false,
+		//       admonishement: 0,
+		//       app_role: 'user',
+		//       created: 2022-01-04T10:48:23.715Z,
+		//       updated: 2022-01-04T10:48:23.715Z,
+		//       doubleAuth: false
+		//     },
+		//     player2: WebAppUserEntity {
+		//       login: 'ttest',
+		//       pseudo: 'ok',
+		//       avatar: 'gfd',
+		//       status: 'offline',
+		//       bio: 'dfg',
+		//       pending_queue: false,
+		//       banned: false,
+		//       admonishement: 0,
+		//       app_role: 'User',
+		//       created: 2022-01-04T10:56:29.580Z,
+		//       updated: 2022-01-04T10:56:29.580Z,
+		//       doubleAuth: false
+		//     },
+		//     game_type_id: GameTypeEntity {
+		//       game_type_id: 1,
+		//       game_aspect: 'default',
+		//       ball_size: 1,
+		//       map_type: 'default',
+		//       initial_speed: 1,
+		//       racket_size: 1
+		//     }
+		//   }
+		// ]
 	}
 
 	addGame(id: number, player1: string, player2: string/*, type de game*/) {
-		// TO DO create into DB
-		console.log(id, player1, player2);
 		this.games.push(new Game(id, player1, player2));
 		// this.games.push(new Game(id, player1, player2, game params));
 	}
 
+	setReady(gameId: number, login: string) {
+		const game = this.games.find(game => game.id === gameId);
+		if (game && login)
+		{
+			if (login === game.changing.leftPaddle.login &&
+				game.changing.leftPaddle.ready === false)
+			{
+				game.changing.leftPaddle.ready = true;
+				if (game.changing.rightPaddle.ready === true)
+					game.changing.countdown = Math.min(game.changing.countdown, 180);
+				else
+				{
+					game.changing.countdown = 1800;
+				}
+			}
+			else if (login === game.changing.rightPaddle.login &&
+				game.changing.rightPaddle.ready === false)
+			{
+				game.changing.rightPaddle.ready = true;
+				if (game.changing.leftPaddle.ready === true)
+					game.changing.countdown = Math.min(game.changing.countdown, 180);
+				else
+				{
+					game.changing.countdown = 1800;
+				}
+			}
+		}
+	}
+
+	keyboard(gameId: number, login: string, key: string, state: boolean)
+	{
+		const game = this.games.find(game => game.id === gameId);
+		if (game)
+		{
+			if (login === game.changing.leftPaddle.login)
+			{
+				if (key == 'ArrowUp')
+					game.changing.leftPaddle.up = state;
+				else if (key == 'ArrowDown')
+					game.changing.leftPaddle.down = state;
+			}
+			else if (login === game.changing.rightPaddle.login)
+			{
+				if (key == 'ArrowUp')
+					game.changing.rightPaddle.up = state;
+				else if (key == 'ArrowDown')
+					game.changing.rightPaddle.down = state;
+			}
+		}
+	}
+
 	updateAll() {
-		this.games.forEach((game, index) => {
+		this.games.forEach(async (game, index) => {
 		if (game.changing.status === 'Finished')
 		{
-			// this.updatePartyStatus("Finished");
-			// // TO DO push sur la DB
+			game.changing.status = 'Updating';
+			console.log(game.id);
+			if (game.changing.leftPaddle.score === 10)
+			{
+				await this.updateParty(game.id, {
+					player1_score: game.changing.leftPaddle.score,
+					player2_score: game.changing.rightPaddle.score,		
+					game_status: status.Finished,
+					winner: game.changing.leftPaddle.login,					
+					looser: game.changing.rightPaddle.login,
+					updated: new Date(),
+				});
+				// WINNER
+				await this.statsService.updateAfterGame(game.changing.leftPaddle.login, {
+					match_number: () => `match_number + 1`,
+					victory: () => `victory + 1`,
+					points_for_ladder: () => `points_for_ladder + 2 + ${game.changing.leftPaddle.score}`,
+					scored_points: () => `scored_points + ${game.changing.leftPaddle.score}`,
+					adversary_points: () => `adversary_points + ${game.changing.rightPaddle.score}`,
+					ball_hit: () => `ball_hit + ${game.changing.leftPaddle.hit}`,
+					updated: new Date,
+				});
+				// LOSER
+				await this.statsService.updateAfterGame(game.changing.rightPaddle.login, {
+					match_number: () => `match_number + 1`,
+					loss: () => `loss + 1`,
+					points_for_ladder: () => `points_for_ladder + ${game.changing.rightPaddle.score}`,
+					scored_points: () => `scored_points + ${game.changing.rightPaddle.score}`,
+					adversary_points: () => `adversary_points + ${game.changing.leftPaddle.score}`,
+					ball_hit: () => `ball_hit + ${game.changing.rightPaddle.hit}`,
+					updated: new Date,
+				});
+			}
+			else if (game.changing.rightPaddle.score === 10)
+			{
+				await this.updateParty(game.id, {
+					player1_score: game.changing.leftPaddle.score,
+					player2_score: game.changing.rightPaddle.score,
+					game_status: status.Finished,
+					winner: game.changing.rightPaddle.login,					
+					looser: game.changing.leftPaddle.login,
+					updated: new Date(),
+				});
+				// WINNER
+				await this.statsService.updateAfterGame(game.changing.rightPaddle.login, {
+					match_number: () => `match_number + 1`,
+					victory: () => `victory + 1`,
+					points_for_ladder: () => `points_for_ladder + 2 + ${game.changing.rightPaddle.score}`,
+					scored_points: () => `scored_points + ${game.changing.rightPaddle.score}`,
+					adversary_points: () => `adversary_points + ${game.changing.leftPaddle.score}`,
+					ball_hit: () => `ball_hit + ${game.changing.rightPaddle.hit}`,
+					updated: new Date,
+				});
+				// LOSER
+				await this.statsService.updateAfterGame(game.changing.leftPaddle.login, {
+					match_number: () => `match_number + 1`,
+					loss: () => `loss + 1`,
+					points_for_ladder: () => `points_for_ladder + ${game.changing.leftPaddle.score}`,
+					scored_points: () => `scored_points + ${game.changing.leftPaddle.score}`,
+					adversary_points: () => `adversary_points + ${game.changing.rightPaddle.score}`,
+					ball_hit: () => `ball_hit + ${game.changing.leftPaddle.hit}`,
+					updated: new Date,
+				});
+			}
+			else
+			{
+				await this.updateParty(game.id, {
+					player1_score: game.changing.leftPaddle.score,
+					player2_score: game.changing.rightPaddle.score,
+					game_status: status.Finished,
+					updated: new Date(),
+				});
+				await this.statsService.updateAfterGame(game.changing.leftPaddle.login, {
+					match_number: () => `match_number + 1`,
+					points_for_ladder: () => `points_for_ladder + ${game.changing.leftPaddle.score}`,
+					scored_points: () => `scored_points + ${game.changing.leftPaddle.score}`,
+					adversary_points: () => `adversary_points + ${game.changing.rightPaddle.score}`,
+					ball_hit: () => `ball_hit + ${game.changing.leftPaddle.hit}`,
+					updated: new Date,
+				});
+				await this.statsService.updateAfterGame(game.changing.rightPaddle.login, {
+					match_number: () => `match_number + 1`,
+					points_for_ladder: () => `points_for_ladder + ${game.changing.rightPaddle.score}`,
+					scored_points: () => `scored_points + ${game.changing.rightPaddle.score}`,
+					adversary_points: () => `adversary_points + ${game.changing.leftPaddle.score}`,
+					ball_hit: () => `ball_hit + ${game.changing.rightPaddle.hit}`,
+					updated: new Date,
+				});
+			}
 			// TO DO changer les status des joueurs
 			this.games.splice(index, 1);
 		}
@@ -248,6 +441,19 @@ export class GameService {
 		})
 	}
 
+	async updateParty(id: number, update: object) {
+        const pongRepository = getRepository(PongGameEntity);
+        return pongRepository.update( id, update )
+        .then((response) => {
+            console.log(`Update party has succeeded.`);
+            return response;
+        })
+        .catch((error) => {
+            console.log(`Update party has failed...`);
+            console.log(`details: ${error}`);
+            return undefined;
+        })
+    }
 }
 
 
@@ -301,7 +507,7 @@ class Game {
 	}
   
 	update() {
-		if (this.changing.status === 'Finished')
+		if (this.changing.status === 'Finished' || this.changing.status === 'Updating')
 			return;
 
 
@@ -320,7 +526,7 @@ class Game {
 				this.changing.status = "Ongoing";
 			return ;
 		}
-  
+
 		this.changing.ball.update(this);
 	}
 }
@@ -358,17 +564,23 @@ class Ball {
 		if(this.dx < 0 &&
 		this.x < game.changing.leftPaddle.x + game.changing.leftPaddle.width &&
 		this.x + this.width > game.changing.leftPaddle.x)
-		if (this.y < game.changing.leftPaddle.y + game.changing.leftPaddle.length &&
-			this.y + this.height > game.changing.leftPaddle.y)
-			this.dx *= -1;
+			if (this.y < game.changing.leftPaddle.y + game.changing.leftPaddle.length &&
+				this.y + this.height > game.changing.leftPaddle.y)
+				{
+					game.changing.leftPaddle.hit++;
+					this.dx *= -1;
+				}
 
 
 		if(this.dx > 0 &&
 		this.x < game.changing.rightPaddle.x + game.changing.rightPaddle.width &&
 		this.x + this.width > game.changing.rightPaddle.x)
-		if (this.y < game.changing.rightPaddle.y + game.changing.rightPaddle.length &&
-			this.y + this.height > game.changing.rightPaddle.y)
-			this.dx *= -1;
+			if (this.y < game.changing.rightPaddle.y + game.changing.rightPaddle.length &&
+				this.y + this.height > game.changing.rightPaddle.y)
+				{
+					game.changing.rightPaddle.hit++;
+					this.dx *= -1;
+				}
 
 
 		if (this.x + this.width < game.changing.leftPaddle.x)
@@ -424,6 +636,7 @@ class Paddle {
 	down: boolean;
 	ready: boolean;
 	score: number;
+	hit: number;
 
 	constructor(login: string, color: string, x: number, y: number, width: number, length: number, speed: number) {
 		this.login = login;
@@ -437,6 +650,7 @@ class Paddle {
 		this.down = false;
 		this.score = 0;
 		this.ready = false;
+		this.hit = 0;
 	}
 
 	update(game: Game) {

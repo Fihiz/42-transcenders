@@ -7,11 +7,7 @@ import { ConvService } from "src/services/sb-conv.service";
 import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService } from "src/services/sb-global-data.service";
 
-// MERGE
-@WebSocketGateway({cors:{origin: 'http://127.0.0.1'}})
-// export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-
-// @WebSocketGateway({cors:{origin: '*'}})
+@WebSocketGateway({cors:{origin: '*'}})
 
 export class ChatGateway {
 	conv_id: number = 0;
@@ -58,7 +54,7 @@ export class ChatGateway {
 	async getMessages(@MessageBody() emission, @MessageBody('data') message: MessageDto) {
 		const messages = await this.chatService.getMessage(message);
 		if (typeof(messages) !== 'string') {
-			this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('allMessages', messages);
+			this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;})).emit('allMessages', messages);
     }
     else
       this.errorResponse(emission);
@@ -88,7 +84,7 @@ export class ChatGateway {
 
 	@SubscribeMessage('joinRoom')
 	async joinRoom(@MessageBody() emission) {
-		const response = this.server.to(GlobalDataService.loginIdMap.get(emission.login));
+		const response = this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;}));
 		const conv = await this.ConvService.joinRoom(emission, emission.login, false);
 		typeof(conv) === 'undefined' ? response.emit('error', "room doesn't exist | a problem occured") : response.emit('newConversation', conv);
 	}
@@ -105,10 +101,10 @@ export class ChatGateway {
         const receivers = this.chatService.getReceiver(new Set(conv.members), emission.login);
         console.log('receivers = ', receivers);
         this.server.to(receivers).emit('newMember', {conv_id: conv.conv_id, name: friendName});
-        this.server.to(GlobalDataService.loginIdMap.get(friendName)).emit('newConversation', conv);
+        this.server.to(GlobalDataService.loginIdMap.get(friendName).sockets.map((socket) => {return socket.id;})).emit('newConversation', conv);
       }
       else {
-      this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "room doesn't exist | a problem occured")
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;})).emit('error', "room doesn't exist | a problem occured")
       }
     }
   }

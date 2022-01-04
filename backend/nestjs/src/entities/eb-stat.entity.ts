@@ -1,8 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { WebAppUserEntity } from "./eb-web-app-user.entity";
 
-// RELATION DOES NOT EXIST
-
 @Entity('t_stat')
 export class StatEntity {
 
@@ -34,20 +32,6 @@ export class StatEntity {
   })
   points_for_ladder: number;
 
-  @Column({
-		type: "int",
-    nullable: true,
-    default: null
-  })
-  highest_score: number;
-
-  @Column({
-		type: "int",
-    nullable: true,
-    default: null
-  })
-  worst_score: number;
-
 	@Column({
     type: "int",
 		default: 0
@@ -61,14 +45,10 @@ export class StatEntity {
   adversary_points: number;
 
   @Column({
-		type: "int"
+		type: "int",
+		default: 0
   })
-  longest_match: number;
-
-  @Column({
-		type: "int"
-  })
-  shortest_match: number;
+  ball_hit: number;
 
   @Column({
     type: "timestamp",

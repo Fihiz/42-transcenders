@@ -1,10 +1,9 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { GlobalDataService } from "src/services/sb-global-data.service";
 import { GameService } from '../services/sb-game.service'
 
 @WebSocketGateway({cors:{origin: '*'}})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
-	index: number = 0;
-	users: {id: string, login: string, gameId: number}[] = [];
 
 	@WebSocketServer()
 	server;
@@ -14,14 +13,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	handleConnection() {
-		console.log('game connected')
+		console.log('game connected');
 	}
 
 	handleDisconnect(@MessageBody() body: any) {
-		const id = this.users.findIndex((v) => v.id == body.id);
-		if (id == -1)
-			return ;
-		this.users.splice(id, 1);
 		console.log('game disconnection');
 	}
 
@@ -31,10 +26,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	emitUpdate(test:GameGateway) {
-		// boucler sur chaque game en cours pour transmettre aux clients concernés avec filter
 		test.gameService.updateAll();
+		let dest: string[] = [];
 		test.gameService.games.forEach((game) => {
-			const dest: string[] = test.users.filter((user) => user.gameId === game.id).map((user) => {return user.id;});
+			GlobalDataService.loginIdMap.forEach(user => {
+				user.sockets.filter(socket => socket.gameId === game.id).map((socket) => {return socket.id;}).forEach((socketId) => dest.push(socketId));
+			})
 			if (dest.length)
 				test.server.to(dest).emit('update', game.changing);
 		});
@@ -43,116 +40,69 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('hello')
 	setConnected(@MessageBody() body: any) {
-		// associer l'id de l'user avec l'id de la partie qu'il a rejoint. et lui transmettre ce qu'il faut à l'init
 		console.log(body.login, 'successfully joined the game ', body.gameId);
-		this.users.push({id: body.id, login: body.login, gameId: body.gameId});
-		const user = this.users.find((user) => user.id === body.id);
-		let game = this.gameService.games.find((game) => game.id === user.gameId);
-		// if (!game)
-		// {
-		// 	this.gameService.addGame(user.gameId);
-		// 	game = this.gameService.games.find((game) => game.id === user.gameId);
-		// 	if (!game)
-		// 		return ; // ERROR
-		// }
-		// if (game.changing.leftPaddle.login === '')
-		// {
-		// 	game.changing.leftPaddle.login = user.login;
-		// }
-		// else if (game.changing.rightPaddle.login === '' && game.changing.leftPaddle.login != user.login)
-		// {
-		// 	game.changing.rightPaddle.login = user.login;
-		// }
-		if (game)
-			this.server.to(user.id).emit('welcome', game);
+		GlobalDataService.loginIdMap.forEach(user => {
+			const foundUser = user.sockets.find((socket) => socket.id === body.id);
+			if (foundUser)
+			{
+				foundUser.gameId = body.gameId;
+				let game = this.gameService.games.find((game) => game.id === foundUser.gameId);
+				if (game)
+					this.server.to(foundUser.id).emit('welcome', game);
+				else
+					console.log(`can't find user in gameGateway:setConnected`);
+				return ;
+			}
+		});
 	}
 
 	@SubscribeMessage('bye')
 	setDisconnected(@MessageBody() body: any) {
-		// virer l'id de la liste
-		console.log(body.login, 'successfully left the game');
-		const id = this.users.findIndex((v) => v.id == body.id);
-		if (id == -1)
-			return ;
-		this.users.splice(id, 1);
-		// this.emitAll(`${body.login} left the game`);
+		GlobalDataService.loginIdMap.forEach((user, login) => {
+			const foundUser = user.sockets.find((socket) => socket.id === body.id);
+			if (foundUser)
+			{
+				foundUser.gameId = 0;
+				console.log(login, 'successfully left the game');
+				return ;
+			}
+		});
 	}
 
 	@SubscribeMessage('ready')
 	setReady(@MessageBody() body: any) {
-		// // Vérifier que l'id du client + de la game correspond à un des users pour savoir quelle game et quel paddle modifier.
-		const user = this.users.find((user) => user.id === body.id);
-		const game = this.gameService.games.find((game) => game.id === user.gameId);
-		if (user && game)
-			if (user.login === game.changing.leftPaddle.login &&
-				game.changing.leftPaddle.ready === false)
+		GlobalDataService.loginIdMap.forEach((user, login) => {
+			const foundUser = user.sockets.find((socket) => socket.id === body.id);
+			if (foundUser)
 			{
-				console.log(user.login, 'is ready');
-				game.changing.leftPaddle.ready = true;
-				if (game.changing.rightPaddle.ready === true)
-					game.changing.countdown = Math.min(game.changing.countdown, 180);
-				else
-				{
-					game.changing.countdown = 1800;
-				}
+				this.gameService.setReady(foundUser.gameId, login);
+				console.log(login, 'successfully set ready in game', foundUser.gameId);
+				return ;
 			}
-			else if (user.login === game.changing.rightPaddle.login &&
-				game.changing.rightPaddle.ready === false)
-			{
-				console.log(user.login, 'is ready');
-				game.changing.rightPaddle.ready = true;
-				if (game.changing.leftPaddle.ready === true)
-					game.changing.countdown = Math.min(game.changing.countdown, 180);
-				else
-				{
-					game.changing.countdown = 1800;
-				}
-			}
+		});
 	}
 
 	@SubscribeMessage('pressed')
 	getPressed(@MessageBody() body: any) {
-		// // Vérifier que l'id du client + de la game correspond à un des users pour savoir quelle game et quel paddle modifier.
-		const user = this.users.find((user) => user.id === body.id);
-		const game = this.gameService.games.find((game) => game.id === user.gameId);
-		if (user && game &&
-			user.login === game.changing.leftPaddle.login)
-		{
-			if (body.key == 'ArrowUp')
-				game.changing.leftPaddle.up = true;
-			else if (body.key == 'ArrowDown')
-				game.changing.leftPaddle.down = true;
-		}
-		else if (user && game &&
-			user.login === game.changing.rightPaddle.login)
-		{
-			if (body.key == 'ArrowUp')
-				game.changing.rightPaddle.up = true;
-			else if (body.key == 'ArrowDown')
-				game.changing.rightPaddle.down = true;
-		}
+		GlobalDataService.loginIdMap.forEach((user, login) => {
+			const foundUser = user.sockets.find((socket) => socket.id === body.id);
+			if (foundUser)
+			{
+				this.gameService.keyboard(foundUser.gameId, login, body.key, true);
+				return ;
+			}
+		});
 	}
 
 	@SubscribeMessage('released')
 	getReleased(@MessageBody() body: any) {
-		// // Vérifier que l'id du client + de la game correspond à un des users pour savoir quelle game et quel paddle modifier.
-		const user = this.users.find((user) => user.id === body.id);
-		const game = this.gameService.games.find((game) => game.id === user.gameId);
-		if (user && game &&
-			user.login === game.changing.leftPaddle.login)
-		{
-			if (body.key == 'ArrowUp')
-				game.changing.leftPaddle.up = false;
-			else if (body.key == 'ArrowDown')
-				game.changing.leftPaddle.down = false;
-		}
-		else if (user && game &&
-			user.login === game.changing.rightPaddle.login)
-		{
-			if (body.key == 'ArrowUp')
-				game.changing.rightPaddle.up = false;
-			else if (body.key == 'ArrowDown')
-				game.changing.rightPaddle.down = false;
-		}
+		GlobalDataService.loginIdMap.forEach((user, login) => {
+			const foundUser = user.sockets.find((socket) => socket.id === body.id);
+			if (foundUser)
+			{
+				this.gameService.keyboard(foundUser.gameId, login, body.key, false);
+				return ;
+			}
+		});
 	}
 }

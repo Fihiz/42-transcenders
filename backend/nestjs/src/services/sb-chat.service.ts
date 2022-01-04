@@ -73,13 +73,13 @@ export class ChatService {
 	getReceiver(tabLogin: Set<string>, emitter: string): Array<string> {
 		const tabReceiver: Array<string> = [];
 		tabLogin.forEach(login => {
-				GlobalDataService.loginIdMap.get(login)?.forEach(id => {
-				tabReceiver.push(id);
-			})
-		})
-			GlobalDataService.loginIdMap.get(emitter).forEach(id => {
-			tabReceiver.push(id);
-		})
+      GlobalDataService.loginIdMap.get(login)?.sockets.forEach(socket => {
+        tabReceiver.push(socket.id);
+      })
+    })
+		GlobalDataService.loginIdMap.get(emitter).sockets.forEach(socket => {
+      tabReceiver.push(socket.id);
+    })
 		return (tabReceiver);
 	}
 

@@ -4,7 +4,7 @@ import { ConvService } from "src/services/sb-conv.service";
 import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService, Message } from 'src/services/sb-global-data.service';
 
-@WebSocketGateway({cors:{origin: 'http://*'}})
+@WebSocketGateway({cors:{origin: '*'}})
 export class ConnectedGateway {
   constructor(private chatService: ChatService,
               private convService: ConvService){}
@@ -19,37 +19,37 @@ export class ConnectedGateway {
 		let keyIndex: string;
 		const theWantedId: string = message.id;
 		GlobalDataService.loginIdMap.forEach((arg, key) => {
-			arg.forEach((el) => {
+			arg.sockets.map((socket) => {return socket.id;}).forEach((el) => {
 				if (el === theWantedId)
 					keyIndex = key;
 			})
 		})
 		if (keyIndex) {
-			const index = GlobalDataService.loginIdMap.get(keyIndex).indexOf(theWantedId);
-			GlobalDataService.loginIdMap.get(keyIndex).splice(index, 1);
-			if (GlobalDataService.loginIdMap.get(keyIndex).length === 0)
-				GlobalDataService.loginIdMap.delete(keyIndex)
+			const index = GlobalDataService.loginIdMap.get(keyIndex).sockets.findIndex((socket) => socket.id === theWantedId);
+			GlobalDataService.loginIdMap.get(keyIndex).sockets.splice(index, 1);
+			if (GlobalDataService.loginIdMap.get(keyIndex).sockets.length === 0)
+				GlobalDataService.loginIdMap.delete(keyIndex);
 		}
 	}
 
 	@SubscribeMessage('introduction')
 	async handleIntroduce(@MessageBody() message: Message): Promise<void> {
     let conversations: Array<ConversationEntity>;
-		if (message.id) {
-			if (GlobalDataService.loginIdMap.has(message.login))
-			GlobalDataService.loginIdMap.get(message.login).push(message.id);
-			else {
-				GlobalDataService.loginIdMap.set(message.login, [message.id]);
-			}
-      conversations = await this.convService.findAllConv(message.login);
+	if (message.id) {
+		if (GlobalDataService.loginIdMap.has(message.login))
+			GlobalDataService.loginIdMap.get(message.login).sockets.push({id: message.id, gameId: 0});
+		else {
+			GlobalDataService.loginIdMap.set(message.login, {status: 'Online', sockets: [{id: message.id, gameId: 0}]});
 		}
-		this.server.emit('users', await this.chatService.getUsers());
-    this.server.to(GlobalDataService.loginIdMap.get(message.login)).emit('allConversations', conversations);
+      	conversations = await this.convService.findAllConv(message.login);
 	}
+	this.server.emit('users', await this.chatService.getUsers());
+	this.server.to(GlobalDataService.loginIdMap.get(message.login).sockets.map((socket) => {return socket.id;})).emit('allConversations', conversations);
+}
 
 	@SubscribeMessage('log-out')
 	handleLeaving(@MessageBody() message: Message): void {
-		const dest = GlobalDataService.loginIdMap.get(message.login);
+		const dest = GlobalDataService.loginIdMap.get(message.login).sockets.map((socket) => {return socket.id;});
 		this.server.to(dest).emit('disconnection', 'disconnection');
 	}
 }

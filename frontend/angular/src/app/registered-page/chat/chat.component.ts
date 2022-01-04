@@ -183,7 +183,7 @@ export class ChatComponent implements OnInit {
     const value = (<HTMLInputElement>document.getElementById('mute-room'))?.value
     if (value) {
       console.log('value = ', value)
-      const isMute = await axios.get("http://127.0.0.1:3000/cb-chat/Mute", {params: {mutedOne: value, requester: this.login, conv_id: this.currentConv.conv_id}});
+      const isMute = await axios.get(`http://${window.location.host}:3000/cb-chat/Mute`, {params: {mutedOne: value, requester: this.login, conv_id: this.currentConv.conv_id}});
       if (isMute.data !== 'ok')
         alert(isMute.data);
     }
@@ -193,7 +193,7 @@ export class ChatComponent implements OnInit {
     const value = (<HTMLInputElement>document.getElementById('de-mute-room'))?.value
     if (value) {
       console.log('value = ', value)
-      const isDeMute = await axios.get("http://127.0.0.1:3000/cb-chat/DeMute", {params: {mutedOne: value, requester: this.login, conv_id: this.currentConv.conv_id}});
+      const isDeMute = await axios.get(`http://${window.location.host}:3000/cb-chat/DeMute`, {params: {mutedOne: value, requester: this.login, conv_id: this.currentConv.conv_id}});
       if (isDeMute.data !== 'ok')
         alert(isDeMute.data);
     }
@@ -203,7 +203,7 @@ export class ChatComponent implements OnInit {
     const value = (<HTMLInputElement>document.getElementById('add-new-admin'))?.value
     if (value) {
       console.log('value = ', value)
-      const isBan = await axios.get("http://127.0.0.1:3000/cb-chat/newAdmin", {params: {newAdmin: value, requester: this.login, conv_id: this.currentConv.conv_id}});
+      const isBan = await axios.get(`http://${window.location.host}:3000/cb-chat/newAdmin`, {params: {newAdmin: value, requester: this.login, conv_id: this.currentConv.conv_id}});
       if (isBan.data !== 'ok')
         alert(isBan.data);
     }
@@ -213,7 +213,7 @@ export class ChatComponent implements OnInit {
     console.log('onBan');
     const value = (<HTMLInputElement>document.getElementById('ban-room'))?.value
     if (value) {
-      const isBan = await axios.get("http://127.0.0.1:3000/cb-chat/ban", {params: {banned: value, requester: this.login,  conv_id: this.currentConv.conv_id}});
+      const isBan = await axios.get(`http://${window.location.host}:3000/cb-chat/ban`, {params: {banned: value, requester: this.login,  conv_id: this.currentConv.conv_id}});
       if (isBan.data !== 'ok')
         alert(isBan.data);
     }

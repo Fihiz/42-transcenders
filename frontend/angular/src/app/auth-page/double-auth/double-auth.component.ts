@@ -12,7 +12,7 @@ export class AuthComponent {
   private activate = 'activate';
 
   async onDoubleAuth() {
-    const doubleAuth = (await axios.get("http://127.0.0.1:3000/double-auth/activate/", { params: {login: this.global.login, status: this.activate}})).data;
+    const doubleAuth = (await axios.get(`http://${window.location.host}:3000/double-auth/activate/`, { params: {login: this.global.login, status: this.activate}})).data;
     if (doubleAuth === 'ok') {
       this.activate = this.activate === 'activate' ? 'deactivate' : 'activate';
       this.global.doubleAuth = this.global.doubleAuth === true ? false : true;

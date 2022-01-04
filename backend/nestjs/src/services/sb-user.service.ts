@@ -127,12 +127,12 @@ export class UserService {
     res.send('error');
   }
 
-  async registerInfosInDatabase(data: CreateUserDto, userData: UserService, res) {
+  async registerInfosInDatabase(data: CreateUserDto, res) {
     const webAppUserParam: WebAppUserEntity = data;
     const apiUserDataParam: ApiUserDataEntity = data;
     try {
-      const isWebAppUserFilled = await userData.createAppUser(webAppUserParam);
-      const isApiUserDataFilled = await userData.createApiUserData(apiUserDataParam);
+      const isWebAppUserFilled = await this.createAppUser(webAppUserParam);
+      const isApiUserDataFilled = await this.createApiUserData(apiUserDataParam);
       if ( isWebAppUserFilled === 'Successfully created' && isApiUserDataFilled === 'Successfully created')
         return('Successfully created');
       else if (isWebAppUserFilled === 'Already created' && isApiUserDataFilled === 'Already created')
