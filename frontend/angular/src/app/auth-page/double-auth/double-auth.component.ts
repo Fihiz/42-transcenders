@@ -3,11 +3,11 @@ import axios from "axios"
 import { GlobalService } from 'src/app/services/sf-global.service';
 
 @Component({
-  selector: 'app-auth',
-  templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.css'],
+  selector: 'app-double-auth',
+  templateUrl: './double-auth.component.html',
+  styleUrls: ['./double-auth.component.css'],
 })
-export class AuthComponent {
+export class DoubleAuthComponent {
   constructor(private global: GlobalService) {}
   private activate = 'activate';
 

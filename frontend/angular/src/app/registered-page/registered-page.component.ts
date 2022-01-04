@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { GlobalService } from '../services/sf-global.service';
 
 @Component({
   selector: 'app-registered-page',
@@ -8,9 +9,14 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class RegisteredPageComponent {
   @Output() notifyAppComponent = new EventEmitter();
 
-  constructor() {}
+  constructor(private global: GlobalService ) {}
 
   sidebarLogOutEvent(event: Event) {
     this.notifyAppComponent.emit('event');
   }
+
+  onSubmitCode() {
+    this.global.doubleAuth === false;
+  }
+
 }
