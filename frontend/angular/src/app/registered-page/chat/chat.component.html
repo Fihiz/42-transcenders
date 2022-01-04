@@ -194,7 +194,7 @@
 					Chatter = enlever add admin, change password, kick, ban-->
 
                 <!--Add Admin-->
-				<div class="messages" *ngFor="let message of convMessages">
+				<div *ngFor="let message of convMessages">
 					<span *ngIf="login === message.login && message.role ==='admin'">
 						<li>
 						<a class="dropdown-item"> Add new admin {{message.role }} &raquo; </a>
