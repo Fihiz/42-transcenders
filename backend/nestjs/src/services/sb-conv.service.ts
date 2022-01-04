@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ChatterEntity } from "src/entities/eb-chatter.entity";
 import { ConversationEntity } from "src/entities/eb-conversation.entity";
 import { Repository } from "typeorm";
+import { ChatterService } from "./sb-chatter.service";
 import { UserService } from "./sb-user.service";
 
 
@@ -15,7 +16,8 @@ export class ConvService {
                 private conversation: Repository<ConversationEntity>,
                 @InjectRepository(ChatterEntity)
                 private chatter: Repository<ChatterEntity>,
-                private user: UserService){}
+                private user: UserService,
+                ){}
 
 
   async newConvcheckValue (conv: ConversationEntity) {
@@ -27,6 +29,7 @@ export class ConvService {
       if (!(await this.user.findOneApiUser(mem)))
         return (false)
     }
+    conv.password = atob(conv.password)
     return (true);
   }
 
@@ -74,7 +77,8 @@ export class ConvService {
     return(convArray);
   }
 
-  joinRoomCheckValue(emission, conv: ConversationEntity, isInvited: boolean, name:string) {
+  async joinRoomCheckValue(emission, conv: ConversationEntity, isInvited: boolean, name:string) {
+    emission.data.roomPassword = atob(emission.data.roomPassword);
     if (!conv || conv?.members?.find(member => member === name) || conv.type === 'private') {
       return (false);
     }
@@ -86,17 +90,25 @@ export class ConvService {
 
 	async joinRoom(emission, name: string, isInvited: boolean) {
 		let conv = await this.conversation.findOne({where: {name: emission.data.roomName}})
-    if (this.joinRoomCheckValue(emission, conv, isInvited, name) === false)
+
+    if (await this.joinRoomCheckValue(emission, conv, isInvited, name) === false)
       return (undefined)
 		await this.conversation.update({name: emission.data.roomName}, {members: [name, ...conv.members]});
 		conv = await this.conversation.findOne({where: {name: emission.data.roomName}})
-		await this.chatter.insert({
-			chat_role: "player",
-			conv_id: conv.conv_id,
-			is_present: "yes",
-			login: name,
-			muted: false,
-		});
+    const target = await this.chatter.findOne({conv_id: conv.conv_id, login: name});
+    if (target) {
+      await this.chatter.update({login:target.login, conv_id: target.conv_id}, {ban: true});
+    }
+    else {
+		  await this.chatter.insert({
+		  	chat_role: "chatter",
+		  	conv_id: conv.conv_id,
+		  	is_present: "yes",
+		  	login: name,
+		  	muted: false,
+        ban: false,
+		  });
+    }
 		return (conv);
 	}
 
@@ -121,5 +133,7 @@ export class ConvService {
       return ('ko')
     }
   }
+
+
 
 }

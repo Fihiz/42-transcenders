@@ -118,9 +118,10 @@ export class ChatService {
   async takeAndCheck(users: Array<string>) {
     const roomName = (<HTMLInputElement>document.getElementById('room-name'))
       .value;
-    const members = (<HTMLInputElement>(
+    const members = [...new Set((<HTMLInputElement>(
       document.getElementById('members')
-    )).value.split(',');
+    )).value.split(','))];
+    console.log('members = ', members)
     const password = (<HTMLInputElement>document.getElementById('password'))
       .value;
     const memberString = (<HTMLInputElement>document.getElementById('members'))

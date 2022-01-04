@@ -33,8 +33,22 @@ export class ChatController {
       const target = await this.chatService.checkConditionToModifie(userToBan, userAsking, conv_id)
       if (target === 'ko')
         res.send('not allowed to ban');
-      else
-        (await this.convService.removeMemberOfConv(room.name, conv_id, userToBan, target)) !== 'ko' ? res.send('ok') : res.send('ko');
+      else {
+        const resRemove = await this.convService.removeMemberOfConv(room.name, conv_id, userToBan, target);
+        const resCreate = await this.chatterService.createBanUser({
+          ban: true,
+          chat_role: 'chatter',
+          conv_id: conv_id,
+          is_present: 'yes',
+          login: userToBan,
+          muted: false
+        });
+        console.log('res == ', resRemove, resCreate)
+        if ( resRemove != 'ok' && resCreate === 'ko')
+          res.send('ko');
+        else
+          res.send('ok');;
+      }
     }
 
     @Get('newAdmin')

@@ -114,11 +114,12 @@ export class ChatComponent implements OnInit {
       avatar: roomAvatarsArray[Math.floor(Math.random() * roomAvatarsArray.length)],
       conv_id: 0,
       name: res.data.roomName,
-      password: res.data.password,
+      password: btoa(res.data.password),
       type: res.data.password.length === 0 ? 'public' : 'protected',
       members: res.data.members,
     };
-    newConv.members.push(this.global.login as string);
+    if (!newConv.members.find(tmp => tmp === this.global.login))
+      newConv.members.push(this.global.login as string);
     this.emission = this.chatService.emission(
       'newConversation',
       this.currentConv,
@@ -153,7 +154,7 @@ export class ChatComponent implements OnInit {
     this.chatService.clearInputValues('room-password-join');
     this.emission = this.chatService.emission('joinRoom', this.currentConv, 0, {
       roomName: roomName,
-      roomPassword: roomPassword,
+      roomPassword: btoa(roomPassword),
     });
   }
 
@@ -220,6 +221,13 @@ export class ChatComponent implements OnInit {
       const isBan = await axios.get("http://127.0.0.1:3000/cb-chat/ban", {params: {banned: value, requester: this.login,  conv_id: this.currentConv.conv_id}});
       if (isBan.data !== 'ok')
         alert(isBan.data);
+      else {
+        this.chatService.emission('aUserIsBan', this.currentConv, 0, {
+          conv_name: this.currentConv.name,
+          conv_id: this.currentConv.conv_id,
+          target: value
+        });
+      }
     }
   }
 
@@ -246,6 +254,16 @@ export class ChatComponent implements OnInit {
     }
   }
 
+  clearConv(){
+    this.currentConv.avatar = '';
+    this.currentConv.conv_id = 0;
+    this.currentConv.members = [];
+    this.currentConv.name = '';
+    this.currentConv.password = '';
+    this.currentConv.type = '';
+    this.convMessages = [];
+  }
+
   ngOnInit(): void {
     this.login = this.global.login as string;
     this.socket.on('users', (data: any) => {
@@ -263,6 +281,14 @@ export class ChatComponent implements OnInit {
     });
     this.socket.on('newConversation', (data: any) => {
       this.listConv.push(data);
+    });
+    this.socket.on('youAreBan', (data: any) => {
+      if (this.currentConv.conv_id === data.conv_id)
+        this.clearConv();
+      const index = this.listConv.findIndex(conv => conv.conv_id === data.conv_id && conv.name === data.conv_name);
+      if (index >= 0)
+        this.listConv.splice(index, 1);
+      //this.listConv(data);
     });
     this.socket.on('error', (data: any) => {
       alert(data);

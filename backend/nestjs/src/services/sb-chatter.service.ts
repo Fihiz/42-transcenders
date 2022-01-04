@@ -34,6 +34,7 @@ export class ChatterService {
 				is_present: "yes",
 				login: name,
 				muted: false,
+        ban: false
 			};
 			const res = await this.createChatter(chatter);
       if (typeof(res) === 'string' && res != 'ac')
@@ -53,7 +54,8 @@ export class ChatterService {
       conv_id: conv_id,
       is_present: chatter.is_present,
       login: name,
-      muted: chatter.muted
+      muted: chatter.muted,
+      ban: false
     }
     return (final);
   }
@@ -77,6 +79,22 @@ export class ChatterService {
     catch (error) {
       console.log('error in muting');
       return ('ko');
+    }
+  }
+
+    async createBanUser(user: ChatterEntity) {
+    try {
+      console.log('user = ', user)
+      user.ban = true;
+      const creationResult = await this.createChatter(user);
+      if (typeof(creationResult) === 'string')
+        return (creationResult);
+      else
+        return ('ok');
+    }
+    catch (error) {
+      console.log('error = ', error)
+      return ('ko')
     }
   }
 }

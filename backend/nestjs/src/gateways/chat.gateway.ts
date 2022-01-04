@@ -35,7 +35,8 @@ export class ChatGateway {
       date: new Date(),
       id: emission.id,
       login: emission.login,
-      avatar:'https://www.google.com/url?sa=i&url=https%3A%2F%2Ffr.techtribune.net%2Fanime%2Fshrek-occupe-la-premiere-place-pour-lanime-sur-amazon%2F102182%2F&psig=AOvVaw20kB0wPmvDnlD_FTcqSOBO&ust=1640873495902000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCJDgu66YifUCFQAAAAAdAAAAABAD'
+      avatar:'https://www.google.com/url?sa=i&url=https%3A%2F%2Ffr.techtribune.net%2Fanime%2Fshrek-occupe-la-premiere-place-pour-lanime-sur-amazon%2F102182%2F&psig=AOvVaw20kB0wPmvDnlD_FTcqSOBO&ust=1640873495902000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCJDgu66YifUCFQAAAAAdAAAAABAD',
+      role: 'chatter'
     })
     this.server.to(emission.login).emit('allMessages', messArray);
   }
@@ -88,8 +89,14 @@ export class ChatGateway {
 
 	@SubscribeMessage('joinRoom')
 	async joinRoom(@MessageBody() emission) {
-		const response = this.server.to(GlobalDataService.loginIdMap.get(emission.login));
-		const conv = await this.ConvService.joinRoom(emission, emission.login, false);
+    const response = this.server.to(GlobalDataService.loginIdMap.get(emission.login));
+    const user = await this.chatterService.findOneChatter(emission.data.convId, emission.data.login);
+    if (user) {
+      console.log('chatter found')
+      response.emit('error', "chatterBan");
+      return;
+    }
+    const conv = await this.ConvService.joinRoom(emission, emission.login, false);
 		typeof(conv) === 'undefined' ? response.emit('error', "room doesn't exist | a problem occured") : response.emit('newConversation', conv);
 	}
 
@@ -97,13 +104,10 @@ export class ChatGateway {
   async addFriend(@MessageBody() emission) {
     const conv_id = emission.data.conv_id;
     const friendName = emission.data.name;
-    console.log('emission = ', emission)
-    console.log('conv_id = ', conv_id, 'friendName = ', friendName)
     if (conv_id != 0) {
       const conv = await this.ConvService.joinRoom(emission, friendName, true);
       if (conv) {
         const receivers = this.chatService.getReceiver(new Set(conv.members), emission.login);
-        console.log('receivers = ', receivers);
         this.server.to(receivers).emit('newMember', {conv_id: conv.conv_id, name: friendName});
         this.server.to(GlobalDataService.loginIdMap.get(friendName)).emit('newConversation', conv);
       }
@@ -118,5 +122,14 @@ export class ChatGateway {
     const user = await this.chatterService.findOneChatter(emission.data.conv_id, emission.data.login)
     if ((await this.ConvService.removeMemberOfConv(emission.data.content, emission.data.conv_id, emission.login, user)) !== 'ok')
       this.emitFail(emission.socketId, 'error happend in removing the user');
+  }
+
+  @SubscribeMessage('aUserIsBan')
+  async aUserIsBan(@MessageBody() emission) {
+    const target = emission.data.target;
+    const conv_id = emission.data.conv_id;
+    const conv_name = emission.data.conv_name;
+
+    this.server.to(GlobalDataService.loginIdMap.get(target)).emit('youAreBan', {conv_id: conv_id, conv_name: conv_name});
   }
 }

@@ -120,7 +120,8 @@ export class UserService {
         to: ['nobody'],
         conv_id:0,
         date: new Date(),
-        avatar: ''
+        avatar: '',
+        role: ''
       }
       socket.emit('introduction', message);
   }
