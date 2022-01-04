@@ -88,7 +88,7 @@ export class GameController {
 
 	@Get('pong/:filename')
     getFilePongType(@Param('filename') filename, @Response() res) {
-		console.log("PASS IMAGE:", "./src/assets/pong" + filename + "svg");
+		console.log("get image -> ./src/assets/pong/" + filename + ".svg");
 		return res.sendFile(filename + ".svg", { root: './src/assets/pong' });
     }
 
