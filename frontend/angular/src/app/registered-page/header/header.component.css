@@ -54,6 +54,13 @@ header {
   /* border-bottom: 0.75px solid rgb(149, 191, 219); */
 }
 
+/*@import url('https://fonts.googleapis.com/css2?family=Londrina+Solid&display=swap');
+
+
+h3 {
+	font-family: 'Londrina Solid';
+}*/
+
 .flex-grid p {
   text-align: center;
   width: auto;
