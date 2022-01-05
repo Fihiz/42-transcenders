@@ -15,6 +15,16 @@ export class ConnectedGateway {
 			console.log('connection connected')
 	}
 
+	emitStatusToAll(login: string, status: string) {
+		this.server.emit('status', {login: login, status: status});
+	}
+
+	emitAllStatusToOne(id: string) {
+		GlobalDataService.loginIdMap.forEach((value, key) => {
+			this.server.to(id).emit('status', {login: key, status: value.status});
+		});
+	}
+
 	handleDisconnect(@MessageBody() message) {
 		let keyIndex: string;
 		const theWantedId: string = message.id;
@@ -28,7 +38,10 @@ export class ConnectedGateway {
 			const index = GlobalDataService.loginIdMap.get(keyIndex).sockets.findIndex((socket) => socket.id === theWantedId);
 			GlobalDataService.loginIdMap.get(keyIndex).sockets.splice(index, 1);
 			if (GlobalDataService.loginIdMap.get(keyIndex).sockets.length === 0)
+			{
+				this.emitStatusToAll(keyIndex, 'Offline');
 				GlobalDataService.loginIdMap.delete(keyIndex);
+			}
 		}
 	}
 
@@ -39,8 +52,10 @@ export class ConnectedGateway {
 		if (GlobalDataService.loginIdMap.has(message.login))
 			GlobalDataService.loginIdMap.get(message.login).sockets.push({id: message.id, gameId: 0});
 		else {
+			this.emitStatusToAll(message.login, 'Online');
 			GlobalDataService.loginIdMap.set(message.login, {status: 'Online', sockets: [{id: message.id, gameId: 0}]});
 		}
+		this.emitAllStatusToOne(message.id);
       	conversations = await this.convService.findAllConv(message.login);
 	}
 	this.server.emit('users', await this.chatService.getUsers());

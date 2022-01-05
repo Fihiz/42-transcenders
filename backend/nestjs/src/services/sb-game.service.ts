@@ -224,7 +224,6 @@ export class GameService {
 					updated: new Date,
 				});
 			}
-			// TO DO changer les status des joueurs
 			this.games.splice(index, 1);
 		}
 		else
@@ -481,7 +480,6 @@ class Game {
 	};
   
 	constructor(id: number, player1: string, player2: string) {
-		console.log(id, player1, player2)
 		let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
 		this.board = {
 			color: "#08638C",

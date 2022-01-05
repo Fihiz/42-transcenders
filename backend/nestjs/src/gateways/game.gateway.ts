@@ -20,11 +20,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		console.log('game disconnection');
 	}
 
-	emitAll(message : string) {
-		this.server.emit('message', message);
-		// this.server.to(this.users).emit('message', message);
-	}
-
 	emitUpdate(test:GameGateway) {
 		test.gameService.updateAll();
 		let dest: string[] = [];
@@ -38,19 +33,30 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		setTimeout(test.emitUpdate, 1000/60, test);
 	}
 
+	emitStatusToAll(login: string, status: string) {
+		this.server.emit('status', {login: login, status: status});
+	}
+
 	@SubscribeMessage('hello')
 	setConnected(@MessageBody() body: any) {
 		console.log(body.login, 'successfully joined the game ', body.gameId);
-		GlobalDataService.loginIdMap.forEach(user => {
+		GlobalDataService.loginIdMap.forEach((user, loginInMap) => {
 			const foundUser = user.sockets.find((socket) => socket.id === body.id);
 			if (foundUser)
 			{
 				foundUser.gameId = body.gameId;
 				let game = this.gameService.games.find((game) => game.id === foundUser.gameId);
 				if (game)
+				{
+					if (loginInMap === game.changing.leftPaddle.login || loginInMap === game.changing.rightPaddle.login)
+						user.status = "Playing";
+					else if (user.status === "Online")
+						user.status = "Spectating";
+					this.emitStatusToAll(loginInMap, user.status);
 					this.server.to(foundUser.id).emit('welcome', game);
+				}
 				else
-					console.log(`can't find user in gameGateway:setConnected`);
+					console.log(`can't find game in gameGateway:setConnected`);
 				return ;
 			}
 		});
@@ -58,12 +64,29 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('bye')
 	setDisconnected(@MessageBody() body: any) {
-		GlobalDataService.loginIdMap.forEach((user, login) => {
+		GlobalDataService.loginIdMap.forEach((user, loginInMap) => {
 			const foundUser = user.sockets.find((socket) => socket.id === body.id);
 			if (foundUser)
 			{
 				foundUser.gameId = 0;
-				console.log(login, 'successfully left the game');
+				let status = "Online";
+				user.sockets.forEach((socket) => {
+					if (status != "Playing" && socket.gameId != 0)
+					{
+						const game = this.gameService.games.find((game) => game.id === socket.gameId)
+						if (game)
+						{
+							if (loginInMap === game.changing.leftPaddle.login ||
+								loginInMap === game.changing.rightPaddle.login)
+								status = "Playing";
+							else if (status === "Online")
+								status = "Spectating";
+						}
+					}
+				})
+				user.status = status;
+				this.emitStatusToAll(loginInMap, user.status);
+				console.log(loginInMap, 'successfully left the game');
 				return ;
 			}
 		});

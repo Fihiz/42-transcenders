@@ -22,10 +22,6 @@ export class GameService {
   game?: any;
 
   constructor(private socket: Socket, private global: GlobalService, private router: Router) {
-    this.socket.on('message', (message : any) => {
-      console.log(this.socket.ioSocket.id, ' : ', message);
-    });
-
     globalSocket = this.socket;
   }
 

@@ -6,7 +6,19 @@
 			'third': i == 2,
 			'second': i == 1,
 			'first': i == 0}">{{ i + 1 }}</p>
-		<img class="avatar" src="{{ score.login.avatar }}">
+		<div [ngSwitch]="global.allUserStatus.get(score.login.login)">
+			<img class="avatar" src="{{ score.login.avatar }}">
+			<div *ngSwitchCase="'Offline'" class ="offline" onmouseenter="$(this).tooltip('show')" title="Offline">
+			</div>
+			<div *ngSwitchCase="'Playing'" class="playing" onmouseenter="$(this).tooltip('show')" title="Playing">
+			</div>
+			<div *ngSwitchCase="'Spectating'" class="spectating" onmouseenter="$(this).tooltip('show')" title="Spectating">
+			</div>
+			<div *ngSwitchCase="'Online'" class="online" onmouseenter="$(this).tooltip('show')" title="Online">
+			</div>
+			<div *ngSwitchCase="undefined" class ="offline" onmouseenter="$(this).tooltip('show')" title="Offline">
+			</div>
+		</div>
 		<div class="detail">
 			<div class="left">{{ score.login.pseudo }}</div>
 			<div class="right">{{ score.points_for_ladder }} pts</div>
