@@ -4,6 +4,7 @@
 />
 
 <body>
+  <!-- TOP -->
   <div class="row top">
     <div class="chat-pong">
       <h4>
@@ -100,8 +101,8 @@
         <form class="form-inline">
           <input
             class="form-control mr-sm-2"
-            type="text"
-            placeholder="Talk to someone..."
+            type="search-someone"
+            placeholder="Chat and play !"
             aria-label="Search"
             id="search-user"
             list="user-list"
@@ -120,6 +121,7 @@
         </form>
       </nav>
     </div>
+
     <div class="list-conv">
       <div id="plist" class="people-list">
         <ul class="list-unstyled chat-list mt-2 mb-0">
@@ -144,6 +146,7 @@
     </div>
   </div>
 
+  <!-- BOTTOM -->
   <div class="row bottom">
     <div class="b-conv-name">
       <div class="chat">
@@ -420,6 +423,9 @@
 
             <div class="chat-about">
               <h6 class="m-b-0">{{ currentConv.name }}</h6>
+              <span *ngIf="currentConv.members.length > 0">
+                <span class="badge badge-pill badge-warning">{{currentConv.members.length}}</span>
+              </span>
             </div>
           </nav>
         </div>
@@ -488,13 +494,23 @@
           (keyup)="keyUpEnter($event)"
         />
         <div class="input-group-prepend">
-          <button
-            type="button"
-            class="btn btn-outline-light rounded"
-            (click)="onSendMessage()"
-          >
-            <i class="fa fa-send"></i>
-          </button>
+          <span *ngIf="!currentConv.name else okToSendMessage">
+            <button
+                type="button"
+                class="btn btn-outline-light rounded"
+              >
+                <i class="fa fa-send"></i>
+              </button>
+          </span>
+            <ng-template #okToSendMessage>
+              <button
+                type="button"
+                class="btn btn-outline-light rounded"
+                (click)="onSendMessage()"
+              >
+                <i class="fa fa-send"></i>
+              </button>
+            </ng-template>
         </div>
       </div>
     </div>

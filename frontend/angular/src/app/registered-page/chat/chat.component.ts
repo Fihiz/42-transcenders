@@ -51,13 +51,15 @@ export class ChatComponent implements OnInit {
         content: content,
       };
       this.emission.socketId = this.global.socketId as string;
-      if (this.currentConv.name) this.socket.emit('message', this.emission);
-      else alert('Error: No conv selected');
+      console.log(this.currentConv);
+      if (this.currentConv.name)
+          this.socket.emit('message', this.emission);
+      // else alert('Error: No conv selected');
     } else console.log('Warning : cannot send an empty message');
   }
 
   keyUpEnter(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && this.currentConv.name) {
       this.onSendMessage();
     }
   }
@@ -333,5 +335,6 @@ export class ChatComponent implements OnInit {
     this.socket.on('error', (data: any) => {
       alert(data);
     });
+    
   }
 }

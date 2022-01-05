@@ -62,7 +62,8 @@ p {
   
   h1
   {
-	color: #43B6B2;
+    color: #528FAC;
+	/* color: #43B6B2; */
 	text-align: center;
 	font-family: 'Londrina Solid';
   }
@@ -70,13 +71,14 @@ p {
   h3, h5 {
 	  text-align: center;
 	  font-family: 'Londrina Solid';
-	  /*color: #528FAC;*/
-	  color: #43B6B2;
+	  color: #528FAC;
+	  /* color: #43B6B2; */
   }
 
   .card-header {
 	  background-color: white;
-	  border-bottom: 10px solid #43B6B2;
+	  border-bottom: 10px solid #528FAC;
+	  /* border-bottom: 10px solid #43B6B2; */
   }
 
   .card {

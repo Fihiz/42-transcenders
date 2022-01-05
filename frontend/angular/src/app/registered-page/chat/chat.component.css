@@ -438,6 +438,11 @@ input[type="room-btn"]::placeholder {
   font-size: 12px;
 }
 
+input[type="search-someone"]::placeholder {
+  font-size: 12px;
+}
+
+
 /* new  */
 #room-name-join, #room-password-join, #room-name, #members, #password, #add-new-admin, #add-friend, #invite-to-play, #mute-room, #unmute-room,
 #ban-room, #change-password{
