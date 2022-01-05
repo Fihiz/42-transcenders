@@ -86,7 +86,7 @@ export class UserService {
       else {
         let checkCode;
         do {
-          checkCode = prompt('input the code please (4 number)')
+          checkCode = prompt('Please enter the code (4 numbers) you received by mail for Double Authentification')
           // checkCode = (<HTMLInputElement>document.getElementById('code'))?.value
         }
         while ((checkCode as string).length != 4)

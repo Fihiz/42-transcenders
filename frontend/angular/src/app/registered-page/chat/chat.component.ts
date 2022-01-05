@@ -23,6 +23,7 @@ export class ChatComponent implements OnInit {
     password: '',
     type: 'public',
   };
+  currentRole: string = 'chatter';
   listConv: Array<if_conversation> = [];
   emission: if_emission = {
     login: this.global.login as string,
@@ -141,6 +142,9 @@ export class ChatComponent implements OnInit {
     for (let i = 0; i < response.login.length; i++) {
       this.convInfo.set(response.login[i], {role: response.roles[i], avatar: response.avatars[i]})
     }
+    console.log(this.convInfo);
+    this.currentRole = this.convInfo.get(this.global.login as string)?.role as string;
+    console.log('role', this.currentRole);
   }
 
   onJoinRoom() {

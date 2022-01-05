@@ -197,30 +197,32 @@
 					Chatter = enlever add admin, change password, kick, ban-->
 
                 <!--Add Admin-->
-				<div *ngFor="let message of convMessages">
-					<span *ngIf="login === message.login && message.role ==='admin'">
-						<li>
-						<a class="dropdown-item"> Add new admin {{message.role }} &raquo; </a>
-						<ul class="dropdown-menu dropdown-submenu">
-							<li>
-							<input
-								class="form-control"
-								placeholder="Name"
-								id="add-new-admin"
-								type="room-btn"
-							/>
-							<button
-								type="submit"
-								class="btn btn-secondary btn-sm btn-block"
-								(click)="onNewAdmin()"
-							>
-								Add new admin
-							</button>
-							</li>
-						</ul>
-						</li>
-					</span>
-				</div>
+				<!-- <div *ngFor="let message of convMessages">
+					<span *ngIf="login === message.login && message.role ==='admin'"> -->
+            <li *ngIf="currentRole === 'owner'">
+						<!-- <span *ngIf="currentRole === 'owner'"> -->
+              <a class="dropdown-item"> Add new admin &raquo; </a>
+              <ul class="dropdown-menu dropdown-submenu">
+                <li>
+                  <input
+                  class="form-control"
+                  placeholder="Name"
+                  id="add-new-admin"
+                  type="room-btn"
+                  />
+                <button
+                  type="submit"
+                  class="btn btn-secondary btn-sm btn-block"
+                  (click)="onNewAdmin()"
+                >
+                  Add new admin
+                </button>
+                </li>
+              </ul>
+            <!-- </span> -->
+          </li>
+					<!-- </span>
+				</div> -->
 
                 <!--Add friend-->
                 <li>
