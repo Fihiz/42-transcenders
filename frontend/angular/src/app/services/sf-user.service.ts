@@ -72,7 +72,10 @@ export class UserService {
 
   ngOnInit() {}
 
+
   async doubleAUth(login: string) {
+    this.global.doubleAuth = (await axios.get("http://127.0.0.1:3000/double-auth/isActivate", { params: login})).data
+    console.log('double Auth = ', this.global.doubleAuth);
     if (this.global.doubleAuth === true) {
       const code = (await axios.get("http://127.0.0.1:3000/double-auth", { params: login })).data;
       console.log('code = ', code);
@@ -81,7 +84,13 @@ export class UserService {
         return ('ko');
       }
       else {
-        const checkCode = (<HTMLInputElement>document.getElementById(''))?.value
+        let checkCode;
+        do {
+          checkCode = prompt('input the code please (4 number)')
+          // checkCode = (<HTMLInputElement>document.getElementById('code'))?.value
+        }
+        while ((checkCode as string).length != 4)
+        checkCode = Number(checkCode);
         return (code !== checkCode ? 'ko' : 'ok');
       }
     }
@@ -91,6 +100,7 @@ export class UserService {
 
   async apiStatus(response: any): Promise<string> {
     const doubleAuthStatus = await this.doubleAUth(response.data.login);
+    console.log('doubleAuth = ', doubleAuthStatus);
     if (doubleAuthStatus === 'ko')
       return ('ko');
     if (response.isFound == 'found') {

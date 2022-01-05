@@ -30,6 +30,7 @@ export class ChatComponent implements OnInit {
     data: {},
   };
   login: string = '';
+  convInfo: Map<string, {role: string, avatar: string}> = new Map();
 
   constructor(
     private socket: Socket,
@@ -130,19 +131,16 @@ export class ChatComponent implements OnInit {
     );
   }
 
-  onSelectConv(value: any) {
+  async onSelectConv(value: any) {
     this.convMessages = [];
     console.log('SelectRoom');
-    this.currentConv = this.chatService.getConvFromId(
-      value,
-      this.listConv,
-      this.currentConv
-    );
-    this.emission = this.chatService.emission(
-      'getMessages',
-      this.currentConv,
-      value
-    );
+    this.currentConv = this.chatService.getConvFromId( value, this.listConv, this.currentConv);
+    this.emission = this.chatService.emission( 'getMessages', this.currentConv, value);
+    const response = (await axios.get('http://127.0.0.1:3000/cb-chat/getRoomInfo', {params: {conv_id: this.currentConv.conv_id, name: this.global.login}})).data;
+    console.log('response = ', response);
+    for (let i = 0; i < response.login.length; i++) {
+      this.convInfo.set(response.login[i], {role: response.roles[i], avatar: response.avatars[i]})
+    }
   }
 
   onJoinRoom() {
@@ -211,12 +209,24 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  onKick() {
+  async onKick() {
     console.log("onKick Function is called");
 
     // alert pgoudet: to keep for cleaning !
     const value = (<HTMLInputElement>document.getElementById('kick-room'))?.value;
     this.chatService.clearInputValues('kick-room');
+    if (value) {
+      const isBan = await axios.get("http://127.0.0.1:3000/cb-chat/kick", {params: {banned: value, requester: this.login,  conv_id: this.currentConv.conv_id}});
+      if (isBan.data !== 'ok')
+        alert(isBan.data);
+      else {
+        this.chatService.emission('aUserIsBan', this.currentConv, 0, {
+          conv_name: this.currentConv.name,
+          conv_id: this.currentConv.conv_id,
+          target: value
+        });
+      }
+    }
   }
 
   onChangePassword() {
@@ -331,13 +341,9 @@ export class ChatComponent implements OnInit {
     this.socket.on('error', (data: any) => {
       alert(data);
     });
-    this.socket.on('updateChatMembers',(data: any) => {
-      console.log("DAAAATAAAA", data);
-      //recuperer le tableau/l objet des members en fonction du convID et actuliser la variable appelee dans le front
-    });
     this.socket.on('newMember', (data: any) => {
-        const conv = this.listConv.find(conv => conv.conv_id === data.conv_id);
-        conv?.members.push(data.name);
-      });
+      const conv = this.listConv.find(conv => conv.conv_id === data.conv_id);
+      conv?.members.push(data.name);
+    });
   }
 }

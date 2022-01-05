@@ -87,6 +87,11 @@ export class UserService {
     return (merge);
   }
 
+  async findOneAppUser(login: string): Promise<WebAppUserEntity> {
+    const user = await this.webUsers.findOne({login: login});
+    return (user);
+  }
+
   updateWebAppUser(id: number, newUser: WebAppUserEntity) {
     return this.webUsers.update("test", newUser);
   }
@@ -129,6 +134,7 @@ export class UserService {
 
   async registerInfosInDatabase(data: CreateUserDto, userData: UserService, res) {
     const webAppUserParam: WebAppUserEntity = data;
+    webAppUserParam.doubleAuth = false;
     const apiUserDataParam: ApiUserDataEntity = data;
     try {
       const isWebAppUserFilled = await userData.createAppUser(webAppUserParam);

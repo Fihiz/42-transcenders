@@ -5,6 +5,7 @@ import { ChatterService } from 'src/services/sb-chatter.service';
 import { ConvService } from 'src/services/sb-conv.service';
 import { ChatService } from 'src/services/sb-chat.service';
 import { Repository } from 'typeorm';
+import { UserService } from 'src/services/sb-user.service';
 
 @Controller('cb-chat')
 export class ChatController {
@@ -13,7 +14,8 @@ export class ChatController {
                 private conversation: Repository<ConversationEntity>,
                 private chatService: ChatService,
                 private convService: ConvService,
-                private chatterService: ChatterService) {}
+                private chatterService: ChatterService,
+                private userService: UserService) {}
 
     @Post('check')
     async checkRoomDatas (@Req() req, @Res() res) {
@@ -51,6 +53,21 @@ export class ChatController {
       }
     }
 
+    @Get('kick')
+    async KickUser(@Req() req, @Res() res) {
+      const userToBan = req.query.banned;
+      const userAsking = req.query.requester;
+      const conv_id = req.query.conv_id;
+      const room: ConversationEntity = await this.convService.findOneConversation(conv_id);
+      const target = await this.chatService.checkConditionToModifie(userToBan, userAsking, conv_id)
+      if (target === 'ko')
+        res.send('not allowed to ban');
+      else {
+        const resRemove = await this.convService.removeMemberOfConv(room.name, conv_id, userToBan, target);
+        res.send(resRemove != 'ok' ? 'ok' : 'ko');
+      }
+    }
+
     @Get('newAdmin')
     async addNewAdmin(@Req() req, @Res() res) {
       const target = req.query.newAdmin;
@@ -65,7 +82,6 @@ export class ChatController {
 
     @Get('Mute')
     async Mute(@Req() req, @Res() res) {
-      console.log('req.query = ', req.query);
       const conv_id = req.query.conv_id;
       const userAsking = await this.chatService.findOneChatter(req.query.requester, conv_id);
       const target = await this.chatService.findOneChatter(req.query.mutedOne, conv_id);
@@ -73,7 +89,7 @@ export class ChatController {
       if (conv.type === 'private')
         res.send((await this.chatterService.muteSomeone(target)) === 'ok' ?  'ok' : 'ko');
       else {
-        if (userAsking.chat_role !== 'admin')
+        if (userAsking.chat_role !== 'admin' && target.chat_role != 'owner')
           res.send('Error: not good role');
         else {
           res.send((await this.chatterService.muteSomeone(target)) === 'ok' ?  'ok' : 'ko');
@@ -83,7 +99,6 @@ export class ChatController {
 
     @Get('DeMute')
     async DeMute(@Req() req, @Res() res) {
-      console.log('req.query = ', req.query);
       const conv_id = req.query.conv_id;
       const userAsking = await this.chatService.findOneChatter(req.query.requester, conv_id);
       const target = await this.chatService.findOneChatter(req.query.mutedOne, conv_id);
@@ -97,5 +112,25 @@ export class ChatController {
           res.send((await this.chatterService.deMuteSomeone(target)) === 'ok' ?  'ok' : 'ko');
         }
       }
+    }
+
+    @Get('getRoomInfo')
+    async getRoomInfo(@Req() req, @Res() res) {
+      const conv_id = req.query.conv_id;
+      const name = req.query.name;
+
+      const role = await this.chatterService.findOneChatter(conv_id, name);
+      let chatters = await this.chatterService.findAllChatters(conv_id);
+      const avatars = new Array();
+      const login = new Array();
+      const roles = new Array();
+
+      for (const chatter of chatters) {
+        const avatar = (await this.userService.findOneApiUser(chatter.login)).avatar;
+        avatars.push(avatar);
+        login.push(chatter.login);
+        roles.push(chatter.chat_role);
+      }
+      res.send({avatars: avatars, login: login, roles: roles});
     }
 }
