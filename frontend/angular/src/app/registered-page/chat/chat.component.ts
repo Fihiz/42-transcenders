@@ -160,10 +160,6 @@ export class ChatComponent implements OnInit {
     });
   }
 
-  onActivateAddfriend() {
-    document.getElementById('add-user-form')?.classList.remove('hidden');
-  }
-
   onAddFriend() {
     const name = (<HTMLInputElement>document.getElementById('add-friend')).value;
     this.chatService.clearInputValues('add-friend');
@@ -335,6 +331,13 @@ export class ChatComponent implements OnInit {
     this.socket.on('error', (data: any) => {
       alert(data);
     });
-    
+    this.socket.on('updateChatMembers',(data: any) => {
+      console.log("DAAAATAAAA", data);
+      //recuperer le tableau/l objet des members en fonction du convID et actuliser la variable appelee dans le front
+    });
+    this.socket.on('newMember', (data: any) => {
+        const conv = this.listConv.find(conv => conv.conv_id === data.conv_id);
+        conv?.members.push(data.name);
+      });
   }
 }
