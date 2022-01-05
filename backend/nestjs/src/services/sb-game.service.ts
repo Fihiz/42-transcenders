@@ -269,6 +269,34 @@ export class GameService {
 		})
 	}
 
+	async createMatchParty(player1: string, player2: string, type: GameTypeEntity): Promise<number> | undefined {
+		const pongRepository = getRepository(PongGameEntity);
+		const party: PongGameEntity = {
+			game_id: 0,
+			player1: player1,
+			player2: player2,
+			player1_score: 0,
+			player2_score: 0,
+			game_status: status.Playing,
+			winner: null,
+			looser: null,
+			game_type_id: type.game_type_id,
+			created: new Date(),
+			updated: new Date(),
+		}
+		return pongRepository.insert(party)
+		.then((result) => {
+			const id: number = result.identifiers[0].game_id;
+			console.log(`New Party has created. (id: ${id})`);
+			return id;
+		})
+		.catch((error) => {
+			console.log(`New party has failed...`);
+			console.log(`details: ${error}`);
+			return undefined;
+		});
+	}
+
 }
 
 

@@ -122,6 +122,23 @@ export class GameService {
     })
   }
 
+  emitReadyForPlay(type: string) {
+    this.socket.emit('matchmaking', { id: this.socket.ioSocket.id, login: this.global.login, gameType: type });
+    globalSocket.on('launchgame', (gameId : number) => {
+      this.router.navigate([`/pong/game/${gameId}`]);
+    });
+  }
+
+  emitCancelForPlay() {
+    this.socket.emit('cancelmatch', { login: this.global.login });
+  }
+
+  // launchparty() {
+  //   globalSocket.on('launchgame', (gameId : number) => {
+  //     this.router.navigate([`/pong/game/${gameId}`]);
+  //   });
+  // }
+
   emitLogin(gameId: number) {
     this.socket.emit('hello', {id: this.socket.ioSocket.id, login: this.global.login, gameId: gameId});
   }

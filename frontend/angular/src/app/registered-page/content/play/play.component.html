@@ -1,8 +1,8 @@
-<div *ngIf="waiting === true || sets.length > 0">
+<div *ngIf="sets.length > 0">
     <h1>Pong's game</h1>
     <p class="state">Start a new game !</p>
 </div>
-<div class="list" *ngIf="waiting === false">
+<div class="list">
     <li class="item" *ngFor="let set of sets">
         <div class="container">
             <img class="set" src="http://localhost:3000/cb-game/pong/{{ set.game_aspect }}">
@@ -10,11 +10,13 @@
             <p class="details">Ball size: {{ set.ball_size }}</p>
             <p class="details">Speed ball: {{ set.initial_speed }}</p>
             <p class="details">Racket size: {{ set.racket_size }}</p>
-            <button class="btn btn-dark" type="submit" (click)="setParty(set.map_type)">PLAY</button>
+            <button *ngIf="selected === undefined" class="btn btn-dark" type="submit" (click)="setParty(set.map_type)">PLAY</button>
+            <button *ngIf="selected !== undefined && selected !== set.map_type" class="btn btn-dark" type="submit" [disabled]="true">PLAY</button>
+            <button *ngIf="selected !== undefined && selected === set.map_type" class="btn btn-dark" type="submit" (click)="unsetParty()">CANCEL</button>
         </div>
     </li>
 </div>
-<div class="card-wait" *ngIf="waiting === true">
-    <p class="wait">Waiting Line</p>
+<!-- <div class="card-wait" *ngIf="waitting === true && time >= 0">
+    <p class="wait">Elapsed time during matchmaking</p>
     <p class="timer">{{ time }}</p>
-</div>
+</div> -->

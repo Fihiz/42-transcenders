@@ -1,10 +1,13 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { WebAppUserEntity } from "src/entities/eb-web-app-user.entity";
 import { GameService } from '../services/sb-game.service'
 
 @WebSocketGateway({cors:{origin: '*'}})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	index: number = 0;
 	users: {id: string, login: string, gameId: number}[] = [];
+
+	players: {id: string, login: string, gameType: string}[] = [];
 
 	@WebSocketServer()
 	server;
@@ -154,5 +157,41 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			else if (body.key == 'ArrowDown')
 				game.changing.rightPaddle.down = false;
 		}
+	}
+
+	@SubscribeMessage('matchmaking')
+	setMatchmaking(@MessageBody() body: any) {
+		this.players.push( { id: "SALUTCOCO", login: "Moldu_01", gameType: 'classic' } );
+		// console.log("IN:", this.players);
+		const found = this.players.find((user) => user.gameType === body.gameType );
+		if (found !== undefined) {
+			this.gameService.searchOneTypeOfGame( { login: body.login, map_type: body.gameType } )
+			.then((response) => {
+				const player1 = found;
+				const player2 = body;
+				this.gameService.createMatchParty(player1.login, player2.login, response)
+				.then((response => {
+					this.gameService.getPartyById(response)
+					.then((response) => {
+						this.gameService.addGame(response.game_id, (response.player1 as unknown as WebAppUserEntity).login, (response.player2 as unknown as WebAppUserEntity).login);
+					})
+				}));
+				this.server.to([player1.id, player2.id]).emit('launchgame', response);
+			});
+		}
+		else {
+			this.players.push( { id: body.id, login: body.login, gameType: body.gameType } );
+		}
+	}
+	
+	@SubscribeMessage('cancelmatch')
+	unsetMatchmaking(@MessageBody() body: any) {
+		const id = this.players.findIndex((user) => user.login == body.login);
+		if (id == -1)
+			return ;
+		this.players.splice(id, 1);
+		console.log(`${body.login} left Matchmaking.`);
+		// console.log("OUT:", this.players);
+		// this.players = [];
 	}
 }
