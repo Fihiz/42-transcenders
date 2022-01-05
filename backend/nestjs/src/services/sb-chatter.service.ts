@@ -29,7 +29,7 @@ export class ChatterService {
 	async creationChattersForNewConv(emission, newConvDatas, convId) {
 		for (const name of newConvDatas.members) {
 			const chatter: ChatterEntity = {
-				chat_role: (name === emission.login) ? "admin" : "chatter",
+				chat_role: (name === emission.login) ? "owner" : "chatter",
 				conv_id: convId,
 				is_present: "yes",
 				login: name,
@@ -82,7 +82,23 @@ export class ChatterService {
     }
   }
 
-    async createBanUser(user: ChatterEntity) {
+  async findAllChatters( conv_id ) {
+    const chatters = (await this.chatter.find({
+      join: {
+       alias: "tmp",
+       leftJoinAndSelect: {
+         conv_id: "tmp.login",
+       }},
+      where: {conv_id: conv_id},
+   }));
+   for (const chatter of chatters) {
+     const tmp = (chatter.login as any).login
+     chatter.login = tmp;
+   }
+    return (chatters);
+  }
+
+  async createBanUser(user: ChatterEntity) {
     try {
       console.log('user = ', user)
       user.ban = true;

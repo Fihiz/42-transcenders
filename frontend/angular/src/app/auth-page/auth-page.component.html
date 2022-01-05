@@ -49,9 +49,20 @@
 	<button type="button" class="btn btn-dark btn-lg" (click)="onRegister()">
 		Register
 	  </button>
+
+    <!-- <div *ngIf="global.doubleAuth" class="code-input">
+      <input id="code">
+      <button
+      id="btn-double-auth"
+      class="btn btn-secondary btn-sm btn-block"
+      (click)="onDoubleAuth()"
+    >
+      Submit Code
+    </button> -->
+
+    <!-- </div> -->
 	  <router-outlet id="auth"></router-outlet>
   </section>
-
   <footer>
 	<!-- <div class="container"> -->
     <div class="github-icon">
