@@ -29,6 +29,22 @@
           </button>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <!--View rooms-->
+            <li>
+              <a class="dropdown-item">View Room &raquo; </a>
+                <ul class="dropdown-menu dropdown-submenu">
+                  <li>
+                    <div class="viewAllRooms">
+                        <span *ngFor="let room of listConv">
+                          <div class="style-txt">
+                            {{ room.name }}
+                            <br>
+                          </div>
+                        </span>
+                    </div>
+                  </li>
+                </ul>
+              </li>
             <!--Join a room-->
             <li>
               <a class="dropdown-item"> Join a room &raquo; </a>
@@ -110,16 +126,44 @@
             </option>
           </datalist>
 
-          <button
-            class="btn btn-outline-light my-2 my-sm-0"
-            type="button"
-            (click)="onSelectOneToOneUserConv()"
-          >
-            <i class="bi bi-search"></i>
-          </button>
+          <!-- <span *ngIf="!inputChatAndPlay else okToSelectUser">
+            <button type="button" class="btn btn-outline-light rounded"
+            disabled>
+                <i class="fa fa-send"></i>
+              </button>
+          </span>
+
+          <ng-template #okToSelectUser> -->
+            <button
+              class="btn btn-outline-light my-2 my-sm-0"
+              type="button"
+              (click)="onSelectOneToOneUserConv()"
+            >
+              <i class="bi bi-search"></i>
+            </button>
+          <!-- </ng-template> -->
         </div>
       </nav>
     </div>
+
+
+    <!-- <div class="input-group-prepend">
+      <span *ngIf="!currentConv.name else okToSendMessage">
+        <button type="button" class="btn btn-outline-light rounded"
+        disabled>
+            <i class="fa fa-send"></i>
+          </button>
+      </span>
+        <ng-template #okToSendMessage>
+          <button
+            type="button"
+            class="btn btn-outline-light rounded"
+            (click)="onSendMessage()"
+          >
+            <i class="fa fa-send"></i>
+          </button>
+        </ng-template>
+    </div> -->
 
     <div class="list-conv">
       <div id="plist" class="people-list">

@@ -32,6 +32,7 @@ export class ChatComponent implements OnInit {
   };
   login: string = '';
   convInfo: Map<string, {role: string, avatar: string}> = new Map();
+  inputChatAndPlay: string = '';
 
   constructor(
     private socket: Socket,
@@ -69,42 +70,45 @@ export class ChatComponent implements OnInit {
     const selectedUser: string = (<HTMLInputElement>(
       document.getElementById('search-user')
     ))?.value;
-    if (selectedUser === this.global.login)
+    if (selectedUser)
     {
-      alert("Can't create a room with yourself");
-      return ;
-    }
-    const LoginEqUsr = this.chatService.loginEqSelectedUsrANDmembersEqLogin(
-      this.listConv,
-      selectedUser
-    );
-    const LoginDifUsr = this.chatService.loginDifSelectedUsrANDuserFound(
-      this.listConv,
-      selectedUser
-    );
-    (<HTMLInputElement>document.getElementById('search-user')).value = '';
-    if (LoginEqUsr) {
-      this.currentConv = LoginEqUsr;
-      this.emission = this.chatService.emission(
-        'getMessages',
-        this.currentConv,
-        this.currentConv.conv_id
+        if (selectedUser === this.global.login)
+      {
+        alert("Can't create a room with yourself");
+        return ;
+      }
+      const LoginEqUsr = this.chatService.loginEqSelectedUsrANDmembersEqLogin(
+        this.listConv,
+        selectedUser
       );
-    } else if (LoginDifUsr) {
-      this.currentConv = LoginDifUsr;
-      this.emission = this.chatService.emission(
-        'getMessages',
-        this.currentConv,
-        this.currentConv.conv_id
+      const LoginDifUsr = this.chatService.loginDifSelectedUsrANDuserFound(
+        this.listConv,
+        selectedUser
       );
-    } else {
-      const data = this.chatService.createPrivateRoom(selectedUser);
-      this.emission = this.chatService.emission(
-        'newConversation',
-        this.currentConv,
-        0,
-        data
-      );
+      (<HTMLInputElement>document.getElementById('search-user')).value = '';
+      if (LoginEqUsr) {
+        this.currentConv = LoginEqUsr;
+        this.emission = this.chatService.emission(
+          'getMessages',
+          this.currentConv,
+          this.currentConv.conv_id
+        );
+      } else if (LoginDifUsr) {
+        this.currentConv = LoginDifUsr;
+        this.emission = this.chatService.emission(
+          'getMessages',
+          this.currentConv,
+          this.currentConv.conv_id
+        );
+      } else {
+        const data = this.chatService.createPrivateRoom(selectedUser);
+        this.emission = this.chatService.emission(
+          'newConversation',
+          this.currentConv,
+          0,
+          data
+        );
+      }
     }
   }
 
@@ -312,6 +316,9 @@ export class ChatComponent implements OnInit {
 
   ngOnInit(): void {
     this.login = this.global.login as string;
+    this.inputChatAndPlay = (<HTMLInputElement>(
+      document.getElementById('search-user')
+    ))?.value;
     this.socket.on('users', (data: any) => {
       this.users = data;
     });
