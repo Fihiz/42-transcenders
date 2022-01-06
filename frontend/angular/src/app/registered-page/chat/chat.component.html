@@ -96,7 +96,6 @@
           </ul>
         </div>
 
-       
 
         <form class="form-inline">
           <input
@@ -145,7 +144,6 @@
       </div>
     </div>
   </div>
-
   <!-- BOTTOM -->
   <div class="row bottom">
     <div class="b-conv-name">
@@ -155,268 +153,248 @@
             class="navbar navbar-expand-lg"
             id="header-conv-nav"
           >
-            <!-- TEST -->
-            <div class="dropdown">
-              <button
-                class="btn btn-light btn-sm"
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <i class="bi bi-three-dots-vertical"></i>
-              </button>
-    
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <!--View members-->
-                <li>
-                  <a class="dropdown-item">View members &raquo; </a>
-                    <ul class="dropdown-menu dropdown-submenu">
-                      <li>
-                        <div class="viewMembersRoom">
-                          <span *ngIf="currentConv.members.length > 0 else noConversationSelected">
-                            <span *ngFor="let member of currentConv.members">
-                              <div class="style-txt">
-                                <a class="btn btn-secondary btn-sm btn-block" id="view-member" href="#" role="button">{{ member }}</a>
-                                <br>
-                              </div>
-                            </span>
-                          </span>
-                        </div>
-                        <ng-template #noConversationSelected>
-                          <div class="style-txt"> Please select a room</div>
-                        </ng-template>
-                      </li>
-                    </ul>
-                </li>
-
-				<!--LISTE DEROULANTE = owner, admin, chatter 
-					Owner = tout
-					Admin = enlever add admin, change password
-					Chatter = enlever add admin, change password, kick, ban-->
-
-              <!--Add Admin-->
-              <li *ngIf="currentRole === 'owner'">
-                <a class="dropdown-item"> Add new admin &raquo; </a>
-                <ul class="dropdown-menu dropdown-submenu">
+            <span *ngIf="currentConv.members.length > 0 else noConvSelected">
+              <!-- Drodpdown menu for conv -->
+              <div class="dropdown">
+                <button
+                  class="btn btn-light btn-sm"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <!--View members-->
                   <li>
-                    <input
-                    class="form-control"
-                    placeholder="Name"
-                    id="add-new-admin"
-                    type="room-btn"
-                    />
-                  <button
-                    type="submit"
-                    class="btn btn-secondary btn-sm btn-block"
-                    (click)="onNewAdmin()"
-                  >
-                    Add new admin
-                  </button>
+                    <a class="dropdown-item">View members &raquo; </a>
+                      <ul class="dropdown-menu dropdown-submenu">
+                        <li>
+                          <div class="viewMembersRoom">
+                              <span *ngFor="let member of currentConv.members">
+                                <div class="style-txt">
+                                  <a class="btn btn-secondary btn-sm btn-block" id="view-member" href="#" role="button">{{ member }}</a>
+                                  <br>
+                                </div>
+                              </span>
+                          </div>
+                        </li>
+                      </ul>
                   </li>
-                </ul>
-              </li>
-
-                <!--Add friend-->
-                <li>
-                  <a class="dropdown-item"> Add new friend &raquo; </a>
+                <!--Add Admin-->
+                <li *ngIf="currentRole === 'owner'">
+                  <a class="dropdown-item"> Add new admin &raquo; </a>
                   <ul class="dropdown-menu dropdown-submenu">
                     <li>
                       <input
-                        class="form-control"
-                        placeholder="Name"
-                        id="add-friend"
-                        type="room-btn"
+                      class="form-control"
+                      placeholder="Name"
+                      id="add-new-admin"
+                      type="room-btn"
                       />
-                      <button
-                        type="submit"
-                        class="btn btn-secondary btn-sm btn-block"
-                        (click)="onAddFriend()"
-                      >
-                        Add
-                      </button>
+                    <button
+                      type="submit"
+                      class="btn btn-secondary btn-sm btn-block"
+                      (click)="onNewAdmin()"
+                    >
+                      Add new admin
+                    </button>
                     </li>
                   </ul>
                 </li>
-
-                  <!--Change password-->
-                  <li *ngIf="currentRole === 'owner'">
-                    <a class="dropdown-item"> Change password &raquo; </a>
+                  <!--Add friend-->
+                  <li>
+                    <a class="dropdown-item"> Add new friend &raquo; </a>
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
                         <input
                           class="form-control"
-                          placeholder="New password"
-                          id="change-password"
-                          type="password"
+                          placeholder="Name"
+                          id="add-friend"
+                          type="room-btn"
                         />
-                        <div class="style-txt"> <input type="checkbox" (click)="hideRoomNewPassword()"> Show password</div>
                         <button
                           type="submit"
                           class="btn btn-secondary btn-sm btn-block"
-                          (click)="onChangePassword()"
+                          (click)="onAddFriend()"
                         >
-                          Change
+                          Add
                         </button>
                       </li>
                     </ul>
                   </li>
-
-                <!-- Invite to play -->
-                <li>
-                  <a class="dropdown-item"> Invite to play &raquo; </a>
-                  <ul class="dropdown-menu dropdown-submenu">
-                    <li>
-                      <input
-                        class="form-control"
-                        placeholder="Name"
-                        id="invite-to-play"
-                        type="room-btn"
-                      />
-                      <button
-                        type="submit"
-                        class="btn btn-secondary btn-sm btn-block"
-                        (click)="onAddFriend()"
-                      >
-                        Invite
-                      </button>
+                    <!--Change password-->
+                    <li *ngIf="currentRole === 'owner'">
+                      <a class="dropdown-item"> Change password &raquo; </a>
+                      <ul class="dropdown-menu dropdown-submenu">
+                        <li>
+                          <input
+                            class="form-control"
+                            placeholder="New password"
+                            id="change-password"
+                            type="password"
+                          />
+                          <div class="style-txt"> <input type="checkbox" (click)="hideRoomNewPassword()"> Show password</div>
+                          <button
+                            type="submit"
+                            class="btn btn-secondary btn-sm btn-block"
+                            (click)="onChangePassword()"
+                          >
+                            Change
+                          </button>
+                        </li>
+                      </ul>
                     </li>
-                  </ul>
-                </li>
-
-                <!--Mute-->
-                <li>
-                  <a class="dropdown-item"> Mute &raquo; </a>
-                  <ul class="dropdown-menu dropdown-submenu">
-                    <li>
-                      <input
-                        class="form-control"
-                        id="mute-room"
-                        placeholder="Name"
-                        type="room-btn"
-                      />
-                      <button
-                        type="submit"
-                        class="btn btn-secondary btn-sm btn-block"
-                        (click)="onMute()"
-                      >
-                        Mute
-                      </button>
-                    </li>
-                  </ul>
-                </li>
-								<li>
-                  <a class="dropdown-item"> Unmute &raquo; </a>
-                  <ul class="dropdown-menu dropdown-submenu">
-                    <li>
-                      <input
-                        class="form-control"
-                        id="unmute-room"
-                        placeholder="Name"
-                        type="room-btn"
-                      />
-                      <button
-                        type="submit"
-                        class="btn btn-secondary btn-sm btn-block"
-                        (click)="onUnmute()"
-                      >
-                        Unmute
-                      </button>
-                    </li>
-                  </ul>
-                </li>
-
-                <!--Kick-->
-                <li *ngIf="currentRole !== 'chatter'">
-                  <a class="dropdown-item"> Kick &raquo; </a>
-                  <ul class="dropdown-menu dropdown-submenu">
-                    <li>
-                      <input
-                        class="form-control"
-                        id="kick-room"
-                        placeholder="Name"
-                        type="room-btn"
-                      />
-                      <button
-                        type="submit"
-                        class="btn btn-secondary btn-sm btn-block"
-                        (click)="onKick()"
-                      >
-                        Kick
-                      </button>
-                    </li>
-                  </ul>
-                </li>
-
-                <!--Ban-->
-                <li *ngIf="currentRole !== 'chatter'">
-                  <a class="dropdown-item"> Ban &raquo; </a>
-                  <ul class="dropdown-menu dropdown-submenu">
-                    <li>
-                      <input
-                        class="form-control"
-                        id="ban-room"
-                        placeholder="Name"
-                        type="room-btn"
-                      />
-                      <button
-                        type="submit"
-                        class="btn btn-secondary btn-sm btn-block"
-                        (click)="onBan()"
-                      >
-                        Ban
-                      </button>
-                    </li>
-                  </ul>
-                </li>
-
-                <!--Leave-->
-                <li>
-                  <a class="dropdown-item"> Leave &raquo; </a>
-                  <ul class="dropdown-menu dropdown-submenu">
-                    <li>
-                      <button
-                        type="submit"
-                        class="btn btn-secondary btn-sm btn-block"
-                        (click)="onLeave()"
-                      >
-                        Leave the room
-                      </button>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-            <!-- ORIGINAL -->
-
-
-            <!-- pgoudet -->
-            <div class="hidden add-user-form" id="add-user-form">
-              <form class="form-inline">
-                <input
-                  class="form-control mr-sm-2"
-                  type="text"
-                  placeholder="Search"
-                  aria-label="Search"
-                  id="search-friend"
-                  list="user-list"
-                />
-                <datalist id="user-list">
-                  <option *ngFor="let user of users">{{ user }}</option>
-                </datalist>
-                <button class="" type="button" (click)="onAddFriend()">
-                  add friend
+                  <!-- Invite to play -->
+                  <li>
+                    <a class="dropdown-item"> Invite to play &raquo; </a>
+                    <ul class="dropdown-menu dropdown-submenu">
+                      <li>
+                        <input
+                          class="form-control"
+                          placeholder="Name"
+                          id="invite-to-play"
+                          type="room-btn"
+                        />
+                        <button
+                          type="submit"
+                          class="btn btn-secondary btn-sm btn-block"
+                          (click)="onAddFriend()"
+                        >
+                          Invite
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+                  <!--Mute-->
+                  <li>
+                    <a class="dropdown-item"> Mute &raquo; </a>
+                    <ul class="dropdown-menu dropdown-submenu">
+                      <li>
+                        <input
+                          class="form-control"
+                          id="mute-room"
+                          placeholder="Name"
+                          type="room-btn"
+                        />
+                        <button
+                          type="submit"
+                          class="btn btn-secondary btn-sm btn-block"
+                          (click)="onMute()"
+                        >
+                          Mute
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a class="dropdown-item"> Unmute &raquo; </a>
+                    <ul class="dropdown-menu dropdown-submenu">
+                      <li>
+                        <input
+                          class="form-control"
+                          id="unmute-room"
+                          placeholder="Name"
+                          type="room-btn"
+                        />
+                        <button
+                          type="submit"
+                          class="btn btn-secondary btn-sm btn-block"
+                          (click)="onUnmute()"
+                        >
+                          Unmute
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+                  <!--Kick-->
+                  <li *ngIf="currentRole !== 'chatter'">
+                    <a class="dropdown-item"> Kick &raquo; </a>
+                    <ul class="dropdown-menu dropdown-submenu">
+                      <li>
+                        <input
+                          class="form-control"
+                          id="kick-room"
+                          placeholder="Name"
+                          type="room-btn"
+                        />
+                        <button
+                          type="submit"
+                          class="btn btn-secondary btn-sm btn-block"
+                          (click)="onKick()"
+                        >
+                          Kick
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+                  <!--Ban-->
+                  <li *ngIf="currentRole !== 'chatter'">
+                    <a class="dropdown-item"> Ban &raquo; </a>
+                    <ul class="dropdown-menu dropdown-submenu">
+                      <li>
+                        <input
+                          class="form-control"
+                          id="ban-room"
+                          placeholder="Name"
+                          type="room-btn"
+                        />
+                        <button
+                          type="submit"
+                          class="btn btn-secondary btn-sm btn-block"
+                          (click)="onBan()"
+                        >
+                          Ban
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+                  <!--Leave-->
+                  <li>
+                    <a class="dropdown-item"> Leave &raquo; </a>
+                    <ul class="dropdown-menu dropdown-submenu">
+                      <li>
+                        <button
+                          type="submit"
+                          class="btn btn-secondary btn-sm btn-block"
+                          (click)="onLeave()"
+                        >
+                          Leave the room
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </span>
+            <ng-template #noConvSelected>
+              <div class="dropdown">
+                <button
+                  class="btn btn-light btn-sm"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <i class="bi bi-three-dots-vertical"></i>
                 </button>
-              </form>
-            </div>
-            <!-- pgoudet -->
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <!--Please select a conversation-->
+                  <li>
+                    <a class="dropdown-item">Please select a conversation </a>
+                  </li>
+                </ul>
+              </div>
+            </ng-template>
+            <!-- Current Infos Conv -->
             <div class="chat-header clearfix">
               <span *ngIf="currentConv.avatar">
                 <img src="{{ currentConv.avatar }}" alt="avatar" />
               </span>
             </div>
-
             <div class="chat-about">
               <h6 class="m-b-0">{{ currentConv.name }}</h6>
               <span *ngIf="currentConv.members.length > 0">
@@ -427,7 +405,6 @@
         </div>
       </div>
     </div>
-
     <div class="b-messages">
       <div class="chat">
         <div class="chat-history">
@@ -444,13 +421,11 @@
                         <span class="message-data-time">{{ message.login }} <span class="badge badge-pill badge-info">{{ message.role }}</span> </span>
                         <span class="message-data-time">{{ message.date | date: 'short' }}</span>
                       </div>
-
                         <!-- <img src="https://cdn.vox-cdn.com/thumbor/CNLDJd5-M-WtOsYh_yugQ-S-FJs=/715x248:1689x721/1400x933/filters:focal(972x299:1278x605):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/69305239/shrek4_disneyscreencaps.com_675.0.jpg" alt="avatar" /> -->
                         <img src="{{ message.avatar }}" alt="avatarrr" />
                       </div>
                     </div>
                     <!-- end of new wrap for right-chatter infos -->
-
                   <div class="message other-message float-right">
                     {{ message.content }}
                   </div>
@@ -460,7 +435,6 @@
               <ng-template #leftMessages>
                 <li class="clearfix">
                   <div class="message-data text-left">
-
                     <!-- new wrap for left-chatter infos -->
                     <div class="left-chatter-wrap">
                       <img src="https://cdn.vox-cdn.com/thumbor/CNLDJd5-M-WtOsYh_yugQ-S-FJs=/715x248:1689x721/1400x933/filters:focal(972x299:1278x605):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/69305239/shrek4_disneyscreencaps.com_675.0.jpg" alt="avatar" />
