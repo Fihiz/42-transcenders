@@ -45,7 +45,6 @@ export class ChatController {
           login: userToBan,
           muted: false
         });
-        console.log('res == ', resRemove, resCreate)
         if ( resRemove != 'ok' && resCreate === 'ko')
           res.send('ko');
         else
@@ -64,7 +63,7 @@ export class ChatController {
         res.send('not allowed to ban');
       else {
         const resRemove = await this.convService.removeMemberOfConv(room.name, conv_id, userToBan, target);
-        res.send(resRemove != 'ok' ? 'ok' : 'ko');
+        res.send(resRemove === 'ok' ? 'ok' : 'ko');
       }
     }
 

@@ -77,9 +77,9 @@ export class UserService {
     this.global.doubleAuth = (await axios.get("http://127.0.0.1:3000/double-auth/isActivate", { params: login})).data
     console.log('double Auth = ', this.global.doubleAuth);
     if (this.global.doubleAuth === true) {
-      const code = (await axios.get("http://127.0.0.1:3000/double-auth", { params: login })).data;
-      console.log('code = ', code);
-      if (code === 'ko') {
+      const resp = (await axios.get("http://127.0.0.1:3000/double-auth", { params: login })).data;
+      console.log('code = ', resp);
+      if (resp === 'ko') {
         alert('an error as occured when sending the mail');
         return ('ko');
       }
@@ -87,11 +87,10 @@ export class UserService {
         let checkCode;
         do {
           checkCode = prompt('Please enter the code (4 numbers) you received by mail for Double Authentification')
-          // checkCode = (<HTMLInputElement>document.getElementById('code'))?.value
         }
         while ((checkCode as string).length != 4)
         checkCode = Number(checkCode);
-        return (code !== checkCode ? 'ko' : 'ok');
+        return (await axios.get('http://127.0.0.1:3000/double-auth/check', {params: checkCode}));
       }
     }
     else

@@ -17,6 +17,7 @@ export class ConvService {
                 @InjectRepository(ChatterEntity)
                 private chatter: Repository<ChatterEntity>,
                 private user: UserService,
+                private chatterService: ChatterService
                 ){}
 
 
@@ -58,6 +59,10 @@ export class ConvService {
 		return this.conversation.findOne(id);
 	}
 
+  async findOneConversationByName(name: string) : Promise<any> {
+		return this.conversation.findOne({where: {name: name}});
+	}
+
   async findAllConv(login: string): Promise<Array<ConversationEntity>> {
     const chatterArray = (await this.chatter.find({
        join: {
@@ -65,7 +70,7 @@ export class ConvService {
         leftJoinAndSelect: {
           conv_id: "conv.conv_id",
         }},
-       where: {login: login},
+       where: {login: login, ban: false},
     }));
     const convArray = new Array<ConversationEntity>();
     for (const chatter of chatterArray) {
@@ -134,6 +139,30 @@ export class ConvService {
     }
   }
 
+  async destroyRoom(conv: ConversationEntity) {
+    try {
+      const chatters = await this.chatterService.findAllChatters(conv.conv_id);
+      for (const chatter of chatters) {
+        await this.chatter.remove(chatter);
+      }
+      await this.conversation.remove(conv);
+      return ('ok');
+    }
+    catch (error) {
+      console.log('error = ', error)
+      return ('ko');
+    }
+  }
 
+  async changePassword(conv_id: number, password: string) {
+    try {
+      this.conversation.update({conv_id: conv_id}, {password: password, type: 'protected'});
+      return ('ok')
+    }
+    catch (error) {
+      console.log(error);
+      return ('ko');
+    }
+  }
 
 }

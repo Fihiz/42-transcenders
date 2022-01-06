@@ -44,16 +44,13 @@ export class ChatComponent implements OnInit {
     const content = (<HTMLInputElement>document.getElementById('input-message'))
       .value;
     this.chatService.clearInputValues('input-message');
-    console.log('sendMEssage');
     if (content.trim().length !== 0) {
-      console.log('Prepare emission for emit');
       this.emission.data = {
         conv_id: this.currentConv.conv_id,
         date: new Date(),
         content: content,
       };
       this.emission.socketId = this.global.socketId as string;
-      console.log(this.currentConv);
       if (this.currentConv.name)
           this.socket.emit('message', this.emission);
       // else alert('Error: No conv selected');
@@ -69,7 +66,6 @@ export class ChatComponent implements OnInit {
 
 
   onSelectOneToOneUserConv() {
-    console.log('selectOneToOneUser');
     const selectedUser: string = (<HTMLInputElement>(
       document.getElementById('search-user')
     ))?.value;
@@ -88,7 +84,6 @@ export class ChatComponent implements OnInit {
     );
     (<HTMLInputElement>document.getElementById('search-user')).value = '';
     if (LoginEqUsr) {
-      console.log('conv found 0');
       this.currentConv = LoginEqUsr;
       this.emission = this.chatService.emission(
         'getMessages',
@@ -96,7 +91,6 @@ export class ChatComponent implements OnInit {
         this.currentConv.conv_id
       );
     } else if (LoginDifUsr) {
-      console.log('conv found 1');
       this.currentConv = LoginDifUsr;
       this.emission = this.chatService.emission(
         'getMessages',
@@ -115,11 +109,10 @@ export class ChatComponent implements OnInit {
   }
 
   async onCreateRoom() {
-    console.log('on create room');
     const res = await this.chatService.takeAndCheck(this.users);
-    if (res.status != 'ok') {
+    if (res.status != 'ok')
       return;
-    }
+    console.log('res = ', res.status);
     const roomAvatarsArray : string[] = ['../../../assets/room-pictures/1.png', '../../../assets/room-pictures/2.png', '../../../assets/room-pictures/3.png', '../../../assets/room-pictures/4.png', '../../../assets/room-pictures/5.png', '../../../assets/room-pictures/6.png', '../../../assets/room-pictures/7.png', '../../../assets/room-pictures/8.png', '../../../assets/room-pictures/9.png'];
     const newConv: if_conversation = {
       avatar: roomAvatarsArray[Math.floor(Math.random() * roomAvatarsArray.length)],
@@ -141,18 +134,13 @@ export class ChatComponent implements OnInit {
 
   async onSelectConv(value: any) {
     this.convMessages = [];
-    console.log('SelectRoom');
     this.currentConv = this.chatService.getConvFromId( value, this.listConv, this.currentConv);
     this.emission = this.chatService.emission( 'getMessages', this.currentConv, value);
     const response = (await axios.get('http://127.0.0.1:3000/cb-chat/getRoomInfo', {params: {conv_id: this.currentConv.conv_id, name: this.global.login}})).data;
-    console.log('response = ', response);
     for (let i = 0; i < response.login.length; i++) {
       this.convInfo.set(response.login[i], {role: response.roles[i], avatar: response.avatars[i]})
     }
-    console.log(this.convInfo);
     this.currentRole = this.convInfo.get(this.global.login as string)?.role as string;
-    console.log('role', this.currentRole);
-
   }
 
   onJoinRoom() {
@@ -192,7 +180,6 @@ export class ChatComponent implements OnInit {
     const value = (<HTMLInputElement>document.getElementById('mute-room'))?.value;
     this.chatService.clearInputValues('mute-room');
     if (value) {
-      console.log('value = ', value)
       const isMute = await axios.get("http://127.0.0.1:3000/cb-chat/Mute", {params: {mutedOne: value, requester: this.login, conv_id: this.currentConv.conv_id}});
       if (isMute.data !== 'ok')
         alert(isMute.data);
@@ -203,7 +190,6 @@ export class ChatComponent implements OnInit {
     const value = (<HTMLInputElement>document.getElementById('unmute-room'))?.value;
     this.chatService.clearInputValues('unmute-room');
     if (value) {
-      console.log('value = ', value)
       const isDeMute = await axios.get("http://127.0.0.1:3000/cb-chat/DeMute", {params: {mutedOne: value, requester: this.login, conv_id: this.currentConv.conv_id}});
       if (isDeMute.data !== 'ok')
         alert(isDeMute.data);
@@ -214,7 +200,6 @@ export class ChatComponent implements OnInit {
     const value = (<HTMLInputElement>document.getElementById('add-new-admin'))?.value;
     this.chatService.clearInputValues('add-new-admin');
     if (value) {
-      console.log('value = ', value)
       const isBan = await axios.get("http://127.0.0.1:3000/cb-chat/newAdmin", {params: {newAdmin: value, requester: this.login, conv_id: this.currentConv.conv_id}});
       if (isBan.data !== 'ok')
         alert(isBan.data);
@@ -223,7 +208,6 @@ export class ChatComponent implements OnInit {
   }
 
   async onKick() {
-    console.log("onKick Function is called");
 
     // alert pgoudet: to keep for cleaning !
     const value = (<HTMLInputElement>document.getElementById('kick-room'))?.value;
@@ -243,15 +227,17 @@ export class ChatComponent implements OnInit {
   }
 
   onChangePassword() {
-    console.log("onChangePassword Function is called");
 
     // alert pgoudet: to keep for cleaning !
     const value = (<HTMLInputElement>document.getElementById('change-password'))?.value;
     this.chatService.clearInputValues('change-password');
+    this.chatService.emission('changePassword', this.currentConv, this.currentConv.conv_id, {
+      password: value,
+      conv_id: this.currentConv.conv_id,
+    });
   }
 
   async onBan() {
-    console.log('onBan');
     const value = (<HTMLInputElement>document.getElementById('ban-room'))?.value;
     this.chatService.clearInputValues('ban-room');
     if (value) {
@@ -277,7 +263,6 @@ export class ChatComponent implements OnInit {
         this.currentConv.conv_id
       );
       const index = this.listConv.indexOf(this.currentConv);
-      console.log('index = ', index);
       this.listConv.splice(index, 1);
       this.currentConv = {
         avatar: '',
@@ -337,7 +322,7 @@ export class ChatComponent implements OnInit {
       }
     });
     this.socket.on('allConversations', (data: any) => {
-      console.log('datas = ', data);
+      console.log('all conversations');
       this.listConv = data as Array<if_conversation>;
     });
     this.socket.on('newConversation', (data: any) => {
@@ -346,27 +331,34 @@ export class ChatComponent implements OnInit {
     this.socket.on('youAreBan', (data: any) => {
       if (this.currentConv.conv_id === data.conv_id)
         this.clearConv();
+      if (this.listConv.length === 0)
+        this.listConv = [];
       const index = this.listConv.findIndex(conv => conv.conv_id === data.conv_id && conv.name === data.conv_name);
       if (index >= 0)
         this.listConv.splice(index, 1);
-      //this.listConv(data);
     });
     this.socket.on('error', (data: any) => {
       alert(data);
     });
     this.socket.on('newMember', (data: any) => {
       const conv = this.listConv.find(conv => conv.conv_id === data.conv_id);
-      conv?.members.push(data.name);
+      if (!conv?.members.find(member => member === data.name))
+        conv?.members.push(data.name);
     });
     this.socket.on('updatedRoleInConv', (data: any) => {
-      // const conv = this.listConv.find(conv => conv.conv_id === data.conv_id);
-      // conv?.members.push(data.name);
-      console.log(`111 current role:`, this.currentRole)
-      console.log(`111 data:`, data)
       this.currentRole = data;
-      console.log(`222 current role:`, this.currentRole)
-      console.log(`222 data:`, data)
     });
-
+    this.socket.on('MemberLeaves', (data: any) => {
+      const conv = this.listConv.find(conv => conv.conv_id === data.conv_id);
+      const index = conv?.members.findIndex(member => member === data.login);
+      if (typeof(index) === 'number')
+        conv?.members.splice(index, 1);
+        console.log('conv = ', conv);
+    });
+    this.socket.on('newPassword', (data: any) => {
+      const conv: if_conversation = this.listConv.find(conv => conv.conv_id === data.conv_id) as if_conversation;
+      conv.password = data.password;
+      conv.type = 'protected';
+    })
   }
 }

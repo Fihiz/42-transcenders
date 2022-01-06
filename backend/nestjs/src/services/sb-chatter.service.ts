@@ -87,20 +87,22 @@ export class ChatterService {
       join: {
        alias: "tmp",
        leftJoinAndSelect: {
-         conv_id: "tmp.login",
+         login: "tmp.login",
+          conv_id: "tmp.conv_id",
        }},
       where: {conv_id: conv_id},
    }));
    for (const chatter of chatters) {
+     const tmp0 = chatter.conv_id;
      const tmp = (chatter.login as any).login
      chatter.login = tmp;
+     chatter.conv_id = tmp0;
    }
     return (chatters);
   }
 
   async createBanUser(user: ChatterEntity) {
     try {
-      console.log('user = ', user)
       user.ban = true;
       const creationResult = await this.createChatter(user);
       if (typeof(creationResult) === 'string')
@@ -111,6 +113,17 @@ export class ChatterService {
     catch (error) {
       console.log('error = ', error)
       return ('ko')
+    }
+  }
+
+  async unBan(name, conv_id) {
+    try {
+      await this.chatter.update({login: name, conv_id: conv_id}, {ban: true});
+      console.log('chatter = ', await this.chatter.findOne({where: {login:name, conv_id:conv_id}}))
+      return ('ok');
+    }
+    catch {
+      return ('ko');
     }
   }
 }

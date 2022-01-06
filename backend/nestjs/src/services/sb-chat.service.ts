@@ -158,7 +158,9 @@ export class ChatService {
   async checkConditionToModifie(userToBan, userAsking, conv_id) {
     
     const target = await this.findOneChatter(userToBan, conv_id);
-    const client = await this.findOneChatter(userAsking, conv_id); 
+    const client = await this.findOneChatter(userAsking, conv_id);
+    if (!client || !target)
+      return ('ko');
     if (target.chat_role === 'owner' || (target.chat_role === 'admin' && client.chat_role != 'owner') && client.chat_role === 'chatter') {
       console.log('fail not good role')
       return ('ko');

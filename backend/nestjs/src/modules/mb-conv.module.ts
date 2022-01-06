@@ -10,6 +10,6 @@ import { UserService } from "src/services/sb-user.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([ ConversationEntity, WebAppUserEntity, ApiUserDataEntity, ChatterEntity])],
-  providers: [ ConvService, UserService ],
+  providers: [ ConvService, UserService, ChatterService ],
 })
 export class ConvModule {}

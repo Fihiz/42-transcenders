@@ -6,6 +6,8 @@ import { ChatterService } from "src/services/sb-chatter.service";
 import { ConvService } from "src/services/sb-conv.service";
 import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService } from "src/services/sb-global-data.service";
+import { AppService } from "src/app.service";
+import { UserService } from "src/services/sb-user.service";
 
 // MERGE
 @WebSocketGateway({cors:{origin: 'http://127.0.0.1'}})
@@ -18,7 +20,8 @@ export class ChatGateway {
 
 	constructor(private chatService: ChatService,
               private ConvService: ConvService,
-							private chatterService: ChatterService){}
+							private chatterService: ChatterService,
+              private userService: UserService){}
 
 	@WebSocketServer()
 	server;
@@ -102,22 +105,31 @@ export class ChatGateway {
 	@SubscribeMessage('joinRoom')
 	async joinRoom(@MessageBody() emission) {
     const response = this.server.to(GlobalDataService.loginIdMap.get(emission.login));
-    const user = await this.chatterService.findOneChatter(emission.data.convId, emission.data.login);
+    const conv_id = (await this.ConvService.findOneConversationByName(emission.data.roomName))?.conv_id;
+    const user = await this.chatterService.findOneChatter(conv_id, emission.login);
     if (user) {
-      console.log('chatter found')
       response.emit('error', "chatterBan");
       return;
     }
     const conv = await this.ConvService.joinRoom(emission, emission.login, false);
-		typeof(conv) === 'undefined' ? response.emit('error', "room doesn't exist | a problem occured") : response.emit('newConversation', conv);
+    if (typeof(conv) === 'undefined')
+      response.emit('error', "room doesn't exist | a problem occured")
+    else {
+      this.server.to(this.chatService.getReceiver(new Set(conv.members), emission.login)).emit('newMember', {conv_id: conv.conv_id, name: emission.data.login});
+      response.emit('newConversation', conv);
+    }
+
 	}
 
   @SubscribeMessage('addFriend')
   async addFriend(@MessageBody() emission) {
     const conv_id = emission.data.conv_id;
     const friendName = emission.data.name;
-    if (conv_id != 0) {
+
+    if (conv_id != 0 && (await this.userService.findOneAppUser(friendName))) {
       const conv = await this.ConvService.joinRoom(emission, friendName, true);
+      if (await this.chatterService.unBan(friendName, conv_id) === 'ko')
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "room doesn't exist | a problem occured");
       if (conv) {
         const receivers = this.chatService.getReceiver(new Set(conv.members), emission.login);
         this.server.to(receivers).emit('newMember', {conv_id: conv.conv_id, name: friendName});
@@ -127,13 +139,30 @@ export class ChatGateway {
       this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "room doesn't exist | a problem occured")
       }
     }
+    else {
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "no conv selected or user doesn t exist")
+    }
   }
 
   @SubscribeMessage('leaveRoom')
   async leaveRoom(@MessageBody() emission) {
-    const user = await this.chatterService.findOneChatter(emission.data.conv_id, emission.data.login)
-    if ((await this.ConvService.removeMemberOfConv(emission.data.content, emission.data.conv_id, emission.login, user)) !== 'ok')
-      this.emitFail(emission.socketId, 'error happend in removing the user');
+    const conv = await this.ConvService.findOneConversation(emission.data.conv_id);
+    const conv_id = conv.conv_id;
+    const conv_name = conv.name;
+    const members = this.chatService.getReceiver(new Set(conv.members), emission.login);
+    if (conv.type === 'private') {
+      this.ConvService.destroyRoom(conv);
+      this.server.to(members).emit('youAreBan', {conv_id: conv_id, conv_name: conv_name});
+    }
+    else {
+      const user = await this.chatterService.findOneChatter(emission.data.conv_id, emission.data.login)
+      if ((await this.ConvService.removeMemberOfConv(emission.data.content, emission.data.conv_id, emission.login, user)) !== 'ok')
+        this.emitFail(emission.socketId, 'error happend in removing the user');
+      else {
+        const conv = await this.ConvService.findOneConversation(emission.data.conv_id)
+        this.server.to(this.chatService.getReceiver(new Set(conv.members), emission.login)).emit('MemberLeaves', {login: emission.login, conv_id: conv.conv_id});
+      }
+    }
   }
 
   @SubscribeMessage('aUserIsBan')
@@ -141,7 +170,21 @@ export class ChatGateway {
     const target = emission.data.target;
     const conv_id = emission.data.conv_id;
     const conv_name = emission.data.conv_name;
+    const conv = await this.ConvService.findOneConversation(conv_id);
+    if (conv) {
+      this.server.to(GlobalDataService.loginIdMap.get(target)).emit('youAreBan', {conv_id: conv_id, conv_name: conv_name});
+      this.server.to(this.chatService.getReceiver(conv.members, target)).emit('MemberLeaves', {login: target, conv_id: conv_id});
+    }
+  }
 
-    this.server.to(GlobalDataService.loginIdMap.get(target)).emit('youAreBan', {conv_id: conv_id, conv_name: conv_name});
+  @SubscribeMessage('changePassword')
+  async changePassword(@MessageBody() emission) {
+    const conv_id = emission.data.conv_id;
+    const password = emission.data.password;
+    const conv = await this.ConvService.findOneConversation(conv_id);
+    if (await this.ConvService.changePassword(conv_id, password) === 'ok')
+      this.server.to(this.chatService.getReceiver(new Set(conv.members), emission.login)).emit('newPassword', {conv_id: conv_id, password: password});
+    else
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "a problem has occured")
   }
 }
