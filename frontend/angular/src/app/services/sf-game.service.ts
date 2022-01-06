@@ -243,10 +243,12 @@ export class GameService {
         {
           const x = Math.floor(e.offsetX * test.gameCanvas.width / test.gameCanvas.clientWidth);
           const y = Math.floor(e.offsetY * test.gameCanvas.height / test.gameCanvas.clientHeight);
-          if (x >= 40 && x <= (40 + 250) && y < 70 && y > 30)
-            console.log('player1');
+          if (x >= 40 && x <= (40 +250) && y < 70 && y > 30)
+            test.router.navigate([`/profile/about-me/${test.game.leftPaddle.login}`]);
+            // console.log('player1');
           else if (x >= test.game.board.width - 40 - Math.min(20 * test.game.rightPaddle.login.length, 250) && x <= test.game.board.width - 40 && y < 70 && y > 30)
-            console.log('player2');
+            test.router.navigate([`/profile/about-me/${test.game.rightPaddle.login}`]);
+            // console.log('player2');
         }
       }
 
@@ -263,9 +265,9 @@ export class GameService {
           this.gameContext.fillText(this.game.leftPaddle.score.toString(), 322, 50);
         this.gameContext.fillText(this.game.rightPaddle.score.toString(), 360, 50, this.game.rightPaddle.score.toString().length * 16);
 
-        // logins -----> to be pseudo
-        this.gameContext.fillText(this.game.leftPaddle.login, 40, 50, 250);
-        this.gameContext.fillText(this.game.rightPaddle.login, this.game.board.width - 40 - Math.min(20 * this.game.rightPaddle.login.length, 250), 50, Math.min(this.game.rightPaddle.login.length * 20, 250));
+        // pseudo
+        this.gameContext.fillText(this.game.leftPaddle.pseudo, 40, 50, 250);
+        this.gameContext.fillText(this.game.rightPaddle.pseudo, this.game.board.width - 40 - Math.min(20 * this.game.rightPaddle.pseudo.length, 250), 50, Math.min(this.game.rightPaddle.pseudo.length * 20, 250));
 
         // borders and middle line
         for(let i = this.game.border.marginLeftRight; i < this.game.board.width - this.game.border.marginLeftRight; i+=this.game.border.length * 2)
@@ -386,6 +388,7 @@ export class GameService {
     class Paddle {
 
       login: string;
+      pseudo: string;
       speed: number;
       color: string;
       width: number;
@@ -399,6 +402,7 @@ export class GameService {
 
       constructor() {
         this.login = "";
+        this.pseudo = "";
         this.speed = 0;
         this.color = "#000000";
         this.width = 0;
@@ -418,6 +422,7 @@ export class GameService {
 
       update(next: any) {
         this.login = next.login;
+        this.pseudo = next.pseudo;
         this.speed = next.speed;
         this.color = next.color;
         this.width = next.width;

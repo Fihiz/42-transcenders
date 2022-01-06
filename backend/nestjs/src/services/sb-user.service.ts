@@ -87,6 +87,16 @@ export class UserService {
     return (merge);
   }
 
+  async findOneWebAppUser(login: string) : Promise<WebAppUserEntity> {
+    const user : WebAppUserEntity = await getRepository(WebAppUserEntity)
+      .createQueryBuilder("userAlias")
+      .where("userAlias.login = :login", { login: login })
+      .getOne();
+    if (user === undefined)
+      return undefined;
+    return (user);
+  }
+
   updateWebAppUser(id: number, newUser: WebAppUserEntity) {
     return this.webUsers.update("test", newUser);
   }

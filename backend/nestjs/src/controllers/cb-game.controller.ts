@@ -63,7 +63,7 @@ export class GameController {
 	            const partyMatch = await this.gameService.matchParty(found);
 				const partyJoin = await this.gameService.joinParty(partyMatch, createPartyDto);
 				const party = await this.gameService.getPartyById(partyJoin.game_id);
-				this.gameService.addGame(party.game_id, (party.player1 as unknown as WebAppUserEntity).login, (party.player2 as unknown as WebAppUserEntity).login);
+				this.gameService.addGame(party.game_id, (party.player1 as unknown as WebAppUserEntity), (party.player2 as unknown as WebAppUserEntity));
 				return party
 	        }
 	        return this.gameService.createParty(createPartyDto, type);

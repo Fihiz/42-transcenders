@@ -1,7 +1,7 @@
 <h1>Pong's ranking</h1>
 <p class="count"> Current players ranked: {{ size }}</p>
 <div class="list">
-	<li class="item" *ngFor="let score of scores;let i=index">
+	<li class="item" *ngFor="let score of scores;let i=index" routerLink="/profile/about-me/{{score.login.login}}">
 		<p [ngClass]="{'other': i > 2,
 			'third': i == 2,
 			'second': i == 1,
