@@ -60,7 +60,7 @@ export class ChatComponent implements OnInit {
     } else console.log('Warning : cannot send an empty message');
   }
 
-  keyUpEnter(event: KeyboardEvent) {
+  keyUpEnter(event: KeyboardEvent) : void {
     if (event.key === 'Enter' && this.currentConv.name) {
       this.onSendMessage();
     }
