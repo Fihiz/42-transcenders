@@ -29,4 +29,39 @@ export class InputPromptComponent implements OnInit {
     bio: new FormControl('', Validators.required),
     avatarUrl: new FormControl(this.userService.avatarList[0].url),
   });
+
+  file: File | null = null;
+  uploaded: boolean = false;
+
+  inputFile(event: any) {
+    this.file = event.target.files[0];
+    this.uploadFile();
+  }
+
+  async uploadFile() {
+    if (this.file !== null) {
+      try {
+        // // V1
+        // await this.userService.uploadAvatar(this.file).
+        // then((response: any) => {
+        //   if (this.uploaded === true)
+        //     this.userService.avatarList.pop();
+        //     this.userService.avatarList.push({
+        //     alt: "uploaded_file",
+        //     url: response + "?" + String(Math.random() * 100000)
+        //   });
+        //   this.uploaded = true;
+        // });
+        // // V1
+        const avatar: Promise<string> | null = await this.userService.uploadAvatar(this.file);
+        if (this.uploaded === true)
+          this.userService.avatarList.pop();
+        this.userService.avatarList.push( { alt: "uploaded_file", url: avatar + "?" + String(Math.random() * 100000) } );
+        this.uploaded = true;
+      }
+      catch(error) {
+        console.log(error);
+      }
+    }
+  }
 }

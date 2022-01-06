@@ -65,6 +65,8 @@ export class UserService {
     },
   ];
 
+  login: string | null = null; // may be not required if we have access to login when we select avatar for the first connection
+
   constructor(public global: GlobalService,
               private router: Router,
               private socket: Socket,
@@ -90,6 +92,7 @@ export class UserService {
   }
 
   async apiStatus(response: any): Promise<string> {
+    this.login = response.data.login;
     const doubleAuthStatus = await this.doubleAUth(response.data.login);
     if (doubleAuthStatus === 'ko')
       return ('ko');
@@ -169,27 +172,24 @@ export class UserService {
     });
   }
 
-// JOBENASS TODO
-  uploadAvatar(file: File) {
-    const login: string = String(this.global.login);
-		const url: string = `http://${window.location.host}:3000/cb-user/avatar/${login}`;
-    const formData: FormData = new FormData(); 
-    formData.append("filename", login);
+  async uploadAvatar(file: File) {
+		// const url: string = `http://${window.location.host}:3000/cb-user/avatar/`;
+		const url: string = `http://${window.location.host}:3000/cb-user/avatar/${this.login}`;
+    const formData: FormData = new FormData();
+    formData.append("filename", String(this.login));
     formData.append("avatar", file);
 		return axios.post(url, formData)
 		.then((response: any) => {
-      console.log("upload avatar: OK");
-      console.log(response.data);
       return response.data;
 		})
 		.catch((error: any) => {
       console.log("upload avatar: FAIL");
+      return null;
 		})
   }
 
-  checkAvatar(setAvatar: any[]) {
-    const login: string = String(this.global.login);
-
-  }
+  // checkAvatar(setAvatar: any[]) {
+  //   const login: string = String(this.global.login);
+  // }
 
 }

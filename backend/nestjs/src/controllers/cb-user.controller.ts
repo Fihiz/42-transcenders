@@ -37,14 +37,17 @@ export class UserController {
         fileFilter: checkFileExtension,
     }),
     )
-    async uploadFile(@Param('login') login: string, @UploadedFile() file, @Response() res) {
-        const url = await this.userService.updateAvatar(login, file.path); // TEMP
+    uploadAvatar(@Param('login') login: string, @UploadedFile() file, @Response() res) {
+        // TODO = IF user exist alors on appel updateAvatar
+        // const url = await this.userService.updateAvatar(login, file.path); // TEMP
+        const url = `http://localhost:3000/cb-user/avatar/${login}.jpg`;
         res.send(url);
+        return url;
     }
 
     @Get('avatar/:filename')
-    getFile(@Param('filename') filename, @Response() res) {
-        return res.sendFile(filename, { root: './src/assets/avatar' });
+    getUploadedAvatar(@Param('filename') filename, @Response() res) {
+        res.sendFile(filename, { root: './src/assets/avatar' });
     }
 
 }

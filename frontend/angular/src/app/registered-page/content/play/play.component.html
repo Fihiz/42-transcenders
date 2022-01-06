@@ -5,14 +5,37 @@
 <div class="list">
     <li class="item" *ngFor="let set of sets">
         <div class="container">
-            <img class="set" src="http://localhost:3000/cb-game/pong/{{ set.game_aspect }}">
-            <h3 class="type">{{ set.map_type }}</h3>
-            <p class="details">Ball size: {{ set.ball_size }}</p>
-            <p class="details">Speed ball: {{ set.initial_speed }}</p>
-            <p class="details">Racket size: {{ set.racket_size }}</p>
-            <button *ngIf="selected === undefined" class="btn btn-dark" type="submit" (click)="setParty(set.map_type)">PLAY</button>
-            <button *ngIf="selected !== undefined && selected !== set.map_type" class="btn btn-dark" type="submit" [disabled]="true">PLAY</button>
-            <button *ngIf="selected !== undefined && selected === set.map_type" class="btn btn-dark" type="submit" (click)="unsetParty()">CANCEL</button>
+            <svg version="1.1" id="{{ set.type }}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+            viewBox="0 0 700 400" style="border-radius: 6px 6px 6px 6px;" xml:space="preserve">
+                <g>
+                    <rect width="700" height="400" style="fill: {{ set.board_color }};"/>
+                </g>
+                <g *ngIf="set.type === 'classic'">
+                    <rect x="25" y="40" width="7" height="50" style="fill: {{ set.racket1_color }};"/>
+                    <rect x="668" y="260" width="7" height="50" style="fill: {{ set.racket2_color }};"/>
+                </g>
+                <g *ngIf="set.type === 'medium'">
+                    <rect x="25" y="40" width="7" height="50" style="fill: {{ set.racket1_color }};"/>
+                    <rect x="668" y="260" width="7" height="50" style="fill: {{ set.racket2_color }};"/>
+                </g>
+                <g *ngIf="set.type === 'hard'">
+                    <rect x="25" y="40" width="7" height="20" style="fill: {{ set.racket1_color }};"/>
+                    <rect x="660" y="260" width="15" height="100" style="fill: {{ set.racket2_color }};"/>
+                </g>
+                <rect x="460" y="260" width="10" height="10" style="fill: {{ set.ball_color }};"/>
+            </svg>
+            <h3 class="type">{{ set.type }}</h3>
+            <h4 class="type">Specs:</h4>
+            <p class="details">Ball size:</p>
+            <p class="details">{{ set.ball_desc }}</p>
+            <h6>size / speed</h6>
+            <p class="details">Racket left:</p>
+            <p class="details">{{ set.racket1_desc }}</p>
+            <p class="details">Racket right:</p>
+            <p class="details">{{ set.racket2_desc }}</p>
+            <button *ngIf="selected === undefined" class="btn btn-dark" type="submit" (click)="setParty(set.type)">PLAY</button>
+            <button *ngIf="selected !== undefined && selected !== set.type" class="btn btn-dark" type="submit" [disabled]="true">PLAY</button>
+            <button *ngIf="selected !== undefined && selected === set.type" class="btn btn-dark" type="submit" (click)="unsetParty()">CANCEL</button>
         </div>
     </li>
 </div>

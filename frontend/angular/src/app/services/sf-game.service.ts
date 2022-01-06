@@ -124,8 +124,8 @@ export class GameService {
 
   emitReadyForPlay(type: string) {
     this.socket.emit('matchmaking', { id: this.socket.ioSocket.id, login: this.global.login, gameType: type });
-    globalSocket.on('launchgame', (gameId : number) => {
-      this.router.navigate([`/pong/game/${gameId}`]);
+    globalSocket.on('launchgame', (game : any) => {
+      this.router.navigate([`/pong/game/${game}`]);
     });
   }
 

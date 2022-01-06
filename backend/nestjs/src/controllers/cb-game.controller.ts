@@ -60,24 +60,24 @@ export class GameController {
 		return task;
 	}
 	
-	@Post('party/play')
-	async playNewGame(@Body() createPartyDto: CreatePartyDto): Promise<PongGameEntity> | undefined {
-	    const type: GameTypeEntity = await this.gameService.searchOneTypeOfGame(createPartyDto);
-	    const current: PongGameEntity = await this.gameService.searchOnePartyInProgress(createPartyDto);
-	    if (current)
-	        return current;
-	    else {
-	        const found: PongGameEntity[] = await this.gameService.searchAllNewParties(createPartyDto, type);
-	        if (found.length !== 0) {
-	            const partyMatch = await this.gameService.matchParty(found);
-				const partyJoin = await this.gameService.joinParty(partyMatch, createPartyDto);
-				const party = await this.gameService.getPartyById(partyJoin.game_id);
-				this.gameService.addGame(party.game_id, (party.player1 as unknown as WebAppUserEntity).login, (party.player2 as unknown as WebAppUserEntity).login);
-				return party
-	        }
-	        return this.gameService.createParty(createPartyDto, type);
-	    }
-	}
+	// @Post('party/play')
+	// async playNewGame(@Body() createPartyDto: CreatePartyDto): Promise<PongGameEntity> | undefined {
+	//     const type: GameTypeEntity = await this.gameService.searchOneTypeOfGame(createPartyDto);
+	//     const current: PongGameEntity = await this.gameService.searchOnePartyInProgress(createPartyDto);
+	//     if (current)
+	//         return current;
+	//     else {
+	//         const found: PongGameEntity[] = await this.gameService.searchAllNewParties(createPartyDto, type);
+	//         if (found.length !== 0) {
+	//             const partyMatch = await this.gameService.matchParty(found);
+	// 			const partyJoin = await this.gameService.joinParty(partyMatch, createPartyDto);
+	// 			const party = await this.gameService.getPartyById(partyJoin.game_id);
+	// 			this.gameService.addGame(party.game_id, (party.player1 as unknown as WebAppUserEntity).login, (party.player2 as unknown as WebAppUserEntity).login);
+	// 			return party
+	//         }
+	//         return this.gameService.createParty(createPartyDto, type);
+	//     }
+	// }
 
 	@Delete('party/id/:id')
 	async deleteNewGame(@Param('id') id: number, @Response() res): Promise<any> {
@@ -88,8 +88,7 @@ export class GameController {
 
 	@Get('pong/:filename')
     getFilePongType(@Param('filename') filename, @Response() res) {
-		console.log("get image -> ./src/assets/pong/" + filename + ".svg");
-		return res.sendFile(filename + ".svg", { root: './src/assets/pong' });
+		return res.sendFile(filename, { root: './src/assets/pong' });
     }
 
 }

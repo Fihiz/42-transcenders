@@ -22,6 +22,7 @@ export class GameService {
 		// TO DO create into DB
 		console.log(id, player1, player2);
 		this.games.push(new Game(id, player1, player2));
+		console.log("PASS add game");
 		// this.games.push(new Game(id, player1, player2, game params));
 	}
 
@@ -42,7 +43,9 @@ export class GameService {
 	
 	async getAllTypesOfGame(): Promise<GameTypeEntity[]> | undefined {
 		const typeRepository = await getRepository(GameTypeEntity);
-		return typeRepository.find()
+		return typeRepository.find({
+			order: { game_type_id: "ASC" }
+		})
 		.then((response) => {
 			const types: GameTypeEntity[] = response;
 			console.log(`Get all types of game has succeeded.`);
@@ -59,7 +62,8 @@ export class GameService {
 		const partyRepository = await getRepository(PongGameEntity);
 		return partyRepository.find({
 			relations: ["player1", "player2", "game_type_id"],
-			where: { game_status: status.Playing }
+			where: { game_status: status.Playing },
+			order: { created: "ASC" }
 		})
 		.then((response) => {
 			const parties: PongGameEntity[] = response;
@@ -94,10 +98,10 @@ export class GameService {
 		})
 	}
 
-	async searchOneTypeOfGame(createPartyDto: CreatePartyDto): Promise<GameTypeEntity> | undefined {
+	async searchOneTypeOfGame(login: string, map_type: string): Promise<GameTypeEntity> {
 		const typeRepository = getRepository(GameTypeEntity);
 		return typeRepository.findOne({
-			where: { map_type: createPartyDto.map_type }
+			where: { type: map_type }
 		})
 		.then((response) => {
 			const type = response;
@@ -324,7 +328,7 @@ class Game {
 	};
   
 	constructor(id: number, player1: string, player2: string) {
-		console.log(id, player1, player2)
+		// console.log(id, player1, player2)
 		let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
 		this.board = {
 			color: "#08638C",
