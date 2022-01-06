@@ -15,7 +15,7 @@
     </div>
     <div class="container">
       <nav class="navbar navbar-expand-lg">
-        <!-- NEW TEST DROPDOWN -->
+        <!-- TOP DROPDOWN -->
         <div class="dropdown">
           <button
             class="btn btn-light btn-sm"
@@ -95,9 +95,7 @@
             </li>
           </ul>
         </div>
-
-
-        <form class="form-inline">
+        <div class="form-inline">
           <input
             class="form-control mr-sm-2"
             type="search-someone"
@@ -107,7 +105,9 @@
             list="user-list"
           />
           <datalist id="user-list">
-            <option *ngFor="let user of users">{{ user }}</option>
+            <option *ngFor="let user of users">{{ user }}
+              <span *ngIf="user !== login">{{ user }}</span>
+            </option>
           </datalist>
 
           <button
@@ -117,7 +117,7 @@
           >
             <i class="bi bi-search"></i>
           </button>
-        </form>
+        </div>
       </nav>
     </div>
 
@@ -154,7 +154,7 @@
             id="header-conv-nav"
           >
             <span *ngIf="currentConv.members.length > 0 else noConvSelected">
-              <!-- Drodpdown menu for conv -->
+              <!-- BOTTOM DROPDOWN -->
               <div class="dropdown">
                 <button
                   class="btn btn-light btn-sm"
@@ -184,7 +184,7 @@
                       </ul>
                   </li>
                 <!--Add Admin-->
-                <li *ngIf="currentRole === 'owner'">
+                <li *ngIf="currentRole === 'owner' && currentConv.type !== 'private'">
                   <a class="dropdown-item"> Add new admin &raquo; </a>
                   <ul class="dropdown-menu dropdown-submenu">
                     <li>
@@ -205,7 +205,7 @@
                   </ul>
                 </li>
                   <!--Add friend-->
-                  <li>
+                  <li *ngIf="currentConv.type !== 'private'">
                     <a class="dropdown-item"> Add new friend &raquo; </a>
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
@@ -226,7 +226,7 @@
                     </ul>
                   </li>
                     <!--Change password-->
-                    <li *ngIf="currentRole === 'owner'">
+                    <li *ngIf="currentRole === 'owner' && currentConv.type !== 'private'">
                       <a class="dropdown-item"> Change password &raquo; </a>
                       <ul class="dropdown-menu dropdown-submenu">
                         <li>
@@ -248,16 +248,16 @@
                       </ul>
                     </li>
                   <!-- Invite to play -->
-                  <li>
+                  <li *ngIf="currentConv.type === 'private'">
                     <a class="dropdown-item"> Invite to play &raquo; </a>
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
-                        <input
+                        <!-- <input
                           class="form-control"
                           placeholder="Name"
                           id="invite-to-play"
                           type="room-btn"
-                        />
+                        /> -->
                         <button
                           type="submit"
                           class="btn btn-secondary btn-sm btn-block"
@@ -310,7 +310,7 @@
                     </ul>
                   </li>
                   <!--Kick-->
-                  <li *ngIf="currentRole !== 'chatter'">
+                  <li *ngIf="currentRole !== 'chatter' && currentConv.type !== 'private'">
                     <a class="dropdown-item"> Kick &raquo; </a>
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
@@ -331,7 +331,7 @@
                     </ul>
                   </li>
                   <!--Ban-->
-                  <li *ngIf="currentRole !== 'chatter'">
+                  <li *ngIf="currentRole !== 'chatter' && currentConv.type !== 'private'">
                     <a class="dropdown-item"> Ban &raquo; </a>
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
@@ -397,6 +397,7 @@
             </div>
             <div class="chat-about">
               <h6 class="m-b-0">{{ currentConv.name }}</h6>
+              <!-- <span class="badge badge-pill badge-secondary">{{ currentConv.type }}</span> -->
               <span *ngIf="currentConv.members.length > 0">
                 <span class="badge badge-pill badge-warning">{{currentConv.members.length}}</span>
               </span>
@@ -437,7 +438,7 @@
                   <div class="message-data text-left">
                     <!-- new wrap for left-chatter infos -->
                     <div class="left-chatter-wrap">
-                      <img src="https://cdn.vox-cdn.com/thumbor/CNLDJd5-M-WtOsYh_yugQ-S-FJs=/715x248:1689x721/1400x933/filters:focal(972x299:1278x605):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/69305239/shrek4_disneyscreencaps.com_675.0.jpg" alt="avatar" />
+                      <img src="{{ message.avatar }}" alt="avatar" />
                       <div class="wrapper">
                         <span class="message-data-time">{{ message.login }} <span class="badge badge-pill badge-info">{{ message.role }}</span> </span>
                         <span class="message-data-time">{{ message.date | date: 'short' }}</span>

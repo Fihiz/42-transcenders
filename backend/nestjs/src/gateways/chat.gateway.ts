@@ -55,6 +55,18 @@ export class ChatGateway {
     }
 	}
 
+	@SubscribeMessage('changeRoleInConv')
+	async changeRoleInConv(@MessageBody() emission) {
+    console.log(`changeRoleInConv: ${emission}`);
+    const login = emission.data.name;
+    const role = emission.data.role;
+    this.server.to(GlobalDataService.loginIdMap.get(login)).emit('updatedRoleInConv', role);
+		// const messages = await this.chatService.getMessage(message);
+		// if (typeof(messages) !== 'string') {
+		// 	this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('allMessages', messages);
+
+	}
+
 	@SubscribeMessage('getMessages')
 	async getMessages(@MessageBody() emission, @MessageBody('data') message: MessageDto) {
 		const messages = await this.chatService.getMessage(message);

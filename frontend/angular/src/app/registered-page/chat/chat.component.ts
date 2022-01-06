@@ -66,11 +66,18 @@ export class ChatComponent implements OnInit {
     }
   }
 
+
+
   onSelectOneToOneUserConv() {
     console.log('selectOneToOneUser');
     const selectedUser: string = (<HTMLInputElement>(
       document.getElementById('search-user')
     ))?.value;
+    if (selectedUser === this.global.login)
+    {
+      alert("Can't create a room with yourself");
+      return ;
+    }
     const LoginEqUsr = this.chatService.loginEqSelectedUsrANDmembersEqLogin(
       this.listConv,
       selectedUser
@@ -145,6 +152,7 @@ export class ChatComponent implements OnInit {
     console.log(this.convInfo);
     this.currentRole = this.convInfo.get(this.global.login as string)?.role as string;
     console.log('role', this.currentRole);
+
   }
 
   onJoinRoom() {
@@ -210,6 +218,7 @@ export class ChatComponent implements OnInit {
       const isBan = await axios.get("http://127.0.0.1:3000/cb-chat/newAdmin", {params: {newAdmin: value, requester: this.login, conv_id: this.currentConv.conv_id}});
       if (isBan.data !== 'ok')
         alert(isBan.data);
+      this.chatService.emission('changeRoleInConv', this.currentConv, this.currentConv.conv_id, {role: 'admin', name:value});
     }
   }
 
@@ -349,5 +358,15 @@ export class ChatComponent implements OnInit {
       const conv = this.listConv.find(conv => conv.conv_id === data.conv_id);
       conv?.members.push(data.name);
     });
+    this.socket.on('updatedRoleInConv', (data: any) => {
+      // const conv = this.listConv.find(conv => conv.conv_id === data.conv_id);
+      // conv?.members.push(data.name);
+      console.log(`111 current role:`, this.currentRole)
+      console.log(`111 data:`, data)
+      this.currentRole = data;
+      console.log(`222 current role:`, this.currentRole)
+      console.log(`222 data:`, data)
+    });
+
   }
 }
