@@ -83,13 +83,15 @@ export class ChatGateway {
 	@SubscribeMessage('newConversation')
 	async newConversation(@MessageBody() emission, @MessageBody('data') newConvDatas: ConversationEntity) {
     if (await this.ConvService.newConvcheckValue(newConvDatas) === false)
-      return (this.emitFail(emission.login, 'error in input'));
+        return this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "The entered information cannot be processed");
+      // return (this.emitFail(emission.login, 'error in input')); /* Fail : emit an alert to all the users but only need on global login */
 		const tmp = await this.ConvService.createConv(newConvDatas) as any;
     if (tmp.success === true) {
       const convId  = tmp.data.identifiers[0].conv_id;
 			const checkCreationChatter = await this.chatterService.creationChattersForNewConv(emission, newConvDatas, convId);
 			if (checkCreationChatter === 'error')
-				return (this.emitFail(emission.login, 'error in registering chatter'));
+				// return (this.emitFail(emission.login, 'error in registering chatter'));
+        return this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "The entered information cannot be processed");
 			newConvDatas.conv_id = convId;
 			this.server.to(this.chatService.getReceiver(new Set(newConvDatas.members), emission.login)).emit('newConversation', newConvDatas);
 		}
@@ -108,12 +110,12 @@ export class ChatGateway {
     const conv_id = (await this.ConvService.findOneConversationByName(emission.data.roomName))?.conv_id;
     const user = await this.chatterService.findOneChatter(conv_id, emission.login);
     if (user) {
-      response.emit('error', "chatterBan");
+      response.emit('error', "You have been banned from this room");
       return;
     }
     const conv = await this.ConvService.joinRoom(emission, emission.login, false);
     if (typeof(conv) === 'undefined')
-      response.emit('error', "room doesn't exist | a problem occured")
+      response.emit('error', "The entered information cannot be processed")
     else {
       this.server.to(this.chatService.getReceiver(new Set(conv.members), emission.login)).emit('newMember', {conv_id: conv.conv_id, name: emission.data.login});
       response.emit('newConversation', conv);
@@ -129,18 +131,18 @@ export class ChatGateway {
     if (conv_id != 0 && (await this.userService.findOneAppUser(friendName))) {
       const conv = await this.ConvService.joinRoom(emission, friendName, true);
       if (await this.chatterService.unBan(friendName, conv_id) === 'ko')
-      this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "room doesn't exist | a problem occured");
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "The entered information cannot be processed");
       if (conv) {
         const receivers = this.chatService.getReceiver(new Set(conv.members), emission.login);
         this.server.to(receivers).emit('newMember', {conv_id: conv.conv_id, name: friendName});
         this.server.to(GlobalDataService.loginIdMap.get(friendName)).emit('newConversation', conv);
       }
       else {
-      this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "room doesn't exist | a problem occured")
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "The entered information cannot be processed")
       }
     }
     else {
-      this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "no conv selected or user doesn t exist")
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "The entered information cannot be processed")
     }
   }
 

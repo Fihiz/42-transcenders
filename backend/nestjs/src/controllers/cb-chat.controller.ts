@@ -34,7 +34,7 @@ export class ChatController {
       const room: ConversationEntity = await this.convService.findOneConversation(conv_id);
       const target = await this.chatService.checkConditionToModifie(userToBan, userAsking, conv_id)
       if (target === 'ko')
-        res.send('not allowed to ban');
+        res.send('Action not allowed');
       else {
         const resRemove = await this.convService.removeMemberOfConv(room.name, conv_id, userToBan, target);
         const resCreate = await this.chatterService.createBanUser({
@@ -60,7 +60,7 @@ export class ChatController {
       const room: ConversationEntity = await this.convService.findOneConversation(conv_id);
       const target = await this.chatService.checkConditionToModifie(userToBan, userAsking, conv_id)
       if (target === 'ko')
-        res.send('not allowed to ban');
+        res.send('Action not allowed');
       else {
         const resRemove = await this.convService.removeMemberOfConv(room.name, conv_id, userToBan, target);
         res.send(resRemove === 'ok' ? 'ok' : 'ko');
@@ -73,7 +73,7 @@ export class ChatController {
       const userAsking = req.query.requester;
       const conv_id = req.query.conv_id;
       if ((await this.chatService.checkConditionToModifie(target, userAsking, conv_id)) === 'ko')
-        res.send('not allowed to ban');
+        res.send('Action not allowed');
       else {
         (await this.chatService.addAdminInConv(target, conv_id)) !== 'ko' ? res.send('ok') : res.send('ko');
       }

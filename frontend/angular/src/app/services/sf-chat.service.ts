@@ -85,7 +85,7 @@ export class ChatService {
 
   checkFormat(str: string, users: Array<string>, roomName: string) {
     if (!/^[a-zA-Z,/-]+$/.test(str)) {
-      alert('error in format for members');
+      alert('The entered information cannot be processed');
       return false;
     } else if(roomName === '') 
       return (false);
@@ -93,7 +93,7 @@ export class ChatService {
       const members = str.split(',');
       for (const member of members) {
         if (!users.find((user) => user === member)) {
-          alert('member does not exist');
+          alert('The entered member cannot be found');
           return false;
         }
       }
@@ -141,7 +141,7 @@ export class ChatService {
     if (response === 'ok')
       return this.setResponse('ok', roomName, members, password);
     else {
-      alert('error room Name already use');
+      alert('This room name is already used');
       return this.setResponse('ko', roomName, members, password);
     }
   }
@@ -178,7 +178,7 @@ export class ChatService {
   createPrivateRoom(selectedUser: string) {
     const data = {
       id: 0,
-      avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4I2nS9uwtIar75SLZwu5VzThGj3poJcJDzg&usqp=CAU',
+      avatar: '../../../assets/room-pictures/private.png',
       type: 'private',
       name: this.createPrivateRoomName(
         this.global.login as string,
