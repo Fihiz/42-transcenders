@@ -83,11 +83,13 @@ export class ChatService {
     (<HTMLInputElement>document.getElementById(str)).value = '';
   }
 
-  checkFormat(str: string, users: Array<string>) {
+  checkFormat(str: string, users: Array<string>, roomName: string) {
     if (!/^[a-zA-Z,/-]+$/.test(str)) {
       alert('error in format for members');
       return false;
-    } else {
+    } else if(roomName === '') 
+      return (false);
+    else {
       const members = str.split(',');
       for (const member of members) {
         if (!users.find((user) => user === member)) {
@@ -121,7 +123,6 @@ export class ChatService {
     const members = [...new Set((<HTMLInputElement>(
       document.getElementById('members')
     )).value.split(','))];
-    console.log('members = ', members)
     const password = (<HTMLInputElement>document.getElementById('password'))
       .value;
     const memberString = (<HTMLInputElement>document.getElementById('members'))
@@ -129,7 +130,7 @@ export class ChatService {
     this.clearInputValues('room-name');
     this.clearInputValues('members');
     this.clearInputValues('password');
-    if (!this.checkFormat(memberString, users))
+    if (!this.checkFormat(memberString, users, roomName))
       return this.setResponse('ko', roomName, members, password);
     document.getElementById('creationRoomForm')?.classList.add('hidden');
     const response = (

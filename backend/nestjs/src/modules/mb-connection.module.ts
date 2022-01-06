@@ -9,9 +9,10 @@ import { ConvService } from 'src/services/sb-conv.service';
 import { ChatService } from 'src/services/sb-chat.service';
 import { UserService } from 'src/services/sb-user.service';
 import { ConnectedGateway } from '../gateways/connected.gateway'
+import { ChatterService } from 'src/services/sb-chatter.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MessageEntity, ConversationEntity, ChatterEntity, WebAppUserEntity, ApiUserDataEntity])],
-  providers: [ConnectedGateway, ChatService, UserService, ConvService]
+  providers: [ConnectedGateway, ChatService, UserService, ConvService, ChatterService]
 })
 export class ConnectionModule {}
