@@ -22,9 +22,9 @@ export class ChatGateway {
 	@WebSocketServer()
 	server;
 
-  emitFail(to:string | string[], error: string) {
-    this.server.emit('error', error);
-  }
+  // emitFail(to:string | string[], error: string) {
+  //   this.server.emit('error', error);
+  // }
 
   async errorResponse(emission) {
     const messArray: Array<MessageEntity> = await this.chatService.getMessage(emission.data);
@@ -143,9 +143,10 @@ export class ChatGateway {
       }
     }
     else {
-      this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed")
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
     }
   }
+
 
   // @SubscribeMessage('leaveRoom')
   // async leaveRoom(@MessageBody() emission) {
@@ -181,11 +182,13 @@ export class ChatGateway {
     else {
       const user = await this.chatterService.findOneChatter(emission.data.conv_id, emission.data.login)
       if ((await this.ConvService.removeMemberOfConv(emission.data.content, emission.data.conv_id, emission.login, user)) !== 'ok')
-        this.emitFail(emission.socketId, 'error happend in removing the user');
+        this.server.to(emission.socketId).emit('error happend in removing the user');
       else {
         const conv = await this.ConvService.findOneConversation(emission.data.conv_id);
+        console.log("test", conv);
         if (conv)
           this.server.to(this.chatService.getReceiver(new Set(conv.members), emission.login)).emit('MemberLeaves', {login: emission.login, conv_id: conv.conv_id});
+        console.log('okk');
       }
     }
   }

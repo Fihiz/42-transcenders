@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ChatterEntity } from "src/entities/eb-chatter.entity";
 import { ConversationEntity } from "src/entities/eb-conversation.entity";
+import { MessageEntity } from "src/entities/eb-message.entity";
 import { Repository } from "typeorm";
 import { ChatterService } from "./sb-chatter.service";
 import { UserService } from "./sb-user.service";
@@ -14,6 +15,8 @@ export class ConvService {
 
   constructor( @InjectRepository(ConversationEntity)
                 private conversation: Repository<ConversationEntity>,
+                @InjectRepository(MessageEntity)
+                private message: Repository<MessageEntity>,
                 @InjectRepository(ChatterEntity)
                 private chatter: Repository<ChatterEntity>,
                 private user: UserService,
@@ -153,6 +156,11 @@ export class ConvService {
       conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
       if (conv.members.length === 0)
       {
+        const chattersToRemove = await this.chatter.find({where: {conv_id: id}});
+        console.log(chattersToRemove);
+        chattersToRemove.forEach(chatter => this.chatter.remove(chatter));
+        const messagesToRemove = await this.message.find({where: {conv_id: id}});
+        messagesToRemove.forEach(message => this.message.remove(message));
         this.conversation.remove(conv);
         // return ('empty');
       }
@@ -172,6 +180,8 @@ export class ConvService {
       for (const chatter of chatters) {
         await this.chatter.remove(chatter);
       }
+      const messagesToRemove = await this.message.find({where: {conv_id: conv.conv_id}});
+      messagesToRemove.forEach(message => this.message.remove(message));
       await this.conversation.remove(conv);
       return ('ok');
     }
