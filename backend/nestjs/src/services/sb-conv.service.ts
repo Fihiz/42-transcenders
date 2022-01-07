@@ -117,6 +117,28 @@ export class ConvService {
 		return (conv);
 	}
 
+  // async removeMemberOfConv(convName, id, login, user: ChatterEntity) {
+  //   try {
+  //     let conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
+  //     const members = conv.members;
+  //     let index = members.findIndex(member => member === login);
+  //     members.splice(index, 1);
+  //     while ((index = members.findIndex(member => member === login)) >= 0) {
+  //       members.splice(index, 1);
+  //     }
+  //     await this.conversation.update({name: convName}, {members: [...members]});
+  //     await this.chatter.remove(user);
+  //     conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
+  //     if (conv.members.length === 0)
+  //       this.conversation.remove(conv);
+  //     return ('ok')
+  //   }
+  //   catch (error) {
+  //     console.log('error = ', error)
+  //     return ('ko')
+  //   }
+  // }
+
   async removeMemberOfConv(convName, id, login, user: ChatterEntity) {
     try {
       let conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
@@ -130,7 +152,10 @@ export class ConvService {
       await this.chatter.remove(user);
       conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
       if (conv.members.length === 0)
+      {
         this.conversation.remove(conv);
+        // return ('empty');
+      }
       return ('ok')
     }
     catch (error) {
@@ -138,6 +163,8 @@ export class ConvService {
       return ('ko')
     }
   }
+
+
 
   async destroyRoom(conv: ConversationEntity) {
     try {
