@@ -2,6 +2,19 @@ h1, .state {
 	text-align: center;
 }
 
+h5, h6 {
+  margin: 0px;
+  padding: 0px;
+}
+
+h3 {
+  margin: 5px;
+}
+
+hr {
+  margin: 5px;
+}
+
 .list {
 	padding: 2px;
 	text-align: center;
@@ -9,11 +22,11 @@ h1, .state {
 
 .item {
   list-style: none;
-	margin: 5px;
-  margin-bottom: 10px;
-	padding: 5px;
+	margin: 10px;
+  margin-bottom: 15px;
 	background-color: #D2E3E6;
-  width: 160px;
+  height: 100%;
+  width: 200px;
 	border-style: none;
 	border-radius: 10px;
 	display: inline-flex;
@@ -21,55 +34,40 @@ h1, .state {
 }
 
 .container {
+  width: 200px;
   padding: 0px;
-  margin-bottom: 5px;
-	border-radius: 15px;
 }
 
-.set {
-	border-radius: 15px;
-  width: 100%;
-}
-
-.type {
+.button {
   margin: 10px;
-	display: inline-flex;
-  margin-bottom: 10px;
 }
 
-.details {
+.title {
+  text-transform: uppercase;
+  color: #08638C;
+}
+
+.field {
+  margin: 0px;
+  padding: 0px;
   margin-left: 10px;
 }
 
-.buttonplay {
-  border-style: none;
-  border-radius: 20px;
-  padding: 10px;
-}
-
-.card-wait {
-  background-color: #D2E3E6;
-	border-style: none;
-	border-radius: 15px;
+.value {
+  margin: 0px;
+  padding: 0px;
   text-align: center;
-  padding: 10px;
+  font-style: italic;
+  margin-bottom: 10px;
 }
 
-.card-match {
-  background-color: #43B6B2;
-	border-style: none;
-	border-radius: 15px;
+.detail {
+  margin: 0px;
+  padding: 0px;
   text-align: center;
-  padding: 10px;
+  margin-bottom: 10px;
 }
 
-.wait {
-  text-align: center;
+.color {
+  color: #324448;
 }
-
-.timer {
-  text-align: center;
-  font-size: 28px;
-}
-
-

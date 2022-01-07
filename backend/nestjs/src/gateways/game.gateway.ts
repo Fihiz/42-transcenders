@@ -1,9 +1,13 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { GlobalDataService } from "src/services/sb-global-data.service";
+import { GameTypeEntity } from "src/entities/eb-game-type.entity";
+import { WebAppUserEntity } from "src/entities/eb-web-app-user.entity";
 import { GameService } from '../services/sb-game.service'
 
 @WebSocketGateway({cors:{origin: '*'}})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
+
+	players: {id: string, login: string, gameType: string}[] = [];
 
 	@WebSocketServer()
 	server;
@@ -127,5 +131,53 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				return ;
 			}
 		});
+	}
+
+	@SubscribeMessage('matchmaking')
+	async setMatchmaking(@MessageBody() body: any) {
+		console.log(`${body.login} join Matchmaking.`);
+		// console.log(`${body.login} - IN:`, this.players);
+		const found = this.players.find((user) => user.gameType === body.gameType );
+		if (found !== undefined) {
+			const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(body.login, body.gameType)
+			if (search) {
+				let player1 = found;
+				let player2 = body;
+				if (Math.floor(Math.random() * 2)) {
+					player1 = body;
+					player2 = found;
+				}
+				const id = await this.gameService.createMatchParty(player1.login, player2.login, search);
+				const party = await this.gameService.getPartyById(id);
+				console.log(`${body.login} match with ${player1.login}.`);
+				this.gameService.addGame(party.game_id, (party.player1 as unknown as WebAppUserEntity), (party.player2 as unknown as WebAppUserEntity));
+				const index = this.players.findIndex((user) => user.login === found.login)
+				if (index != -1)
+					this.players.splice(index, 1);
+				// console.log(`${body.login} - OUT:`, this.players);
+				this.server.to([player1.id, player2.id]).emit('launchgame', party.game_id);
+			}
+			else {
+				const index = this.players.findIndex((user) => user.login === body.login);
+				if (index == -1)
+					return ;
+				this.players.splice(index, 1);
+			}
+		}
+		else {
+			this.players.push( { id: body.id, login: body.login, gameType: body.gameType } );
+			// console.log(`${body.login} - OUT:`, this.players);
+		}
+	}
+	
+	@SubscribeMessage('cancelmatch')
+	unsetMatchmaking(@MessageBody() body: any) {
+		const index = this.players.findIndex((user) => user.login === body.login);
+		if (index == -1)
+			return ;
+		this.players.splice(index, 1);
+		console.log(`${body.login} left Matchmaking.`);
+		// this.players = [];
+		// console.log("OUT:", this.players);
 	}
 }

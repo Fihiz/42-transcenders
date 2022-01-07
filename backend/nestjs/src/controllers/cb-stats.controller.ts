@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 
 import { StatsService } from 'src/services/sb-stats.service';
 import { Response } from '@nestjs/common';
@@ -19,4 +19,13 @@ export class StatsController {
         return task;
     }
     
+    @Get('statistic/:login')
+    async getStatsByLogin(@Param('login') login: string, @Response() res): Promise<StatEntity> {
+        const task: StatEntity = await this.statsService.getStatsByLogin(login)
+        // if (task === undefined)
+            // throw new InternalServerErrorException(`Query on table Stats has failed !`);
+        res.send(task);
+        return task;
+    }
+
 }

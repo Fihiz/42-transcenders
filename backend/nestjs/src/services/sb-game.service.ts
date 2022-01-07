@@ -77,6 +77,7 @@ export class GameService {
 
 	addGame(id: number, player1: WebAppUserEntity, player2: WebAppUserEntity/*, type de game*/) {
 		this.games.push(new Game(id, player1, player2));
+		console.log("PASS add game");
 		// this.games.push(new Game(id, player1, player2, game params));
 	}
 
@@ -234,7 +235,9 @@ export class GameService {
 	
 	async getAllTypesOfGame(): Promise<GameTypeEntity[]> | undefined {
 		const typeRepository = await getRepository(GameTypeEntity);
-		return typeRepository.find()
+		return typeRepository.find({
+			order: { game_type_id: "ASC" }
+		})
 		.then((response) => {
 			const types: GameTypeEntity[] = response;
 			console.log(`Get all types of game has succeeded.`);
@@ -251,7 +254,8 @@ export class GameService {
 		const partyRepository = await getRepository(PongGameEntity);
 		return partyRepository.find({
 			relations: ["player1", "player2", "game_type_id"],
-			where: { game_status: status.Playing }
+			where: { game_status: status.Playing },
+			order: { created: "ASC" }
 		})
 		.then((response) => {
 			const parties: PongGameEntity[] = response;
@@ -265,10 +269,31 @@ export class GameService {
 		});
 	}
 
-	async searchOneTypeOfGame(createPartyDto: CreatePartyDto): Promise<GameTypeEntity> | undefined {
+	async getAllPartiesFinishedByLogin(login: string): Promise<PongGameEntity[]> {
+		const partyRepository = getRepository(PongGameEntity);
+		return partyRepository.find({
+			relations: ["player1", "player2"],
+			where: [
+				{ player1: login, game_status: status.Finished },
+				{ player2: login, game_status: status.Finished }
+			],
+		})
+		.then((response) => {
+			const parties: PongGameEntity[] = response;
+			console.log(`Get parties finished by login has succeeded.`);
+			return parties;
+		})
+		.catch((error) => {
+			console.log(`Get parties finished by login has failed...`);
+			console.log(`details: ${error}`);
+			return undefined;
+		})
+	}
+
+	async searchOneTypeOfGame(login: string, map_type: string): Promise<GameTypeEntity> {
 		const typeRepository = getRepository(GameTypeEntity);
 		return typeRepository.findOne({
-			where: { map_type: createPartyDto.map_type }
+			where: { type: map_type }
 		})
 		.then((response) => {
 			const type = response;
@@ -277,111 +302,6 @@ export class GameService {
 		})
 		.catch((error) => {
 			console.log(`Search new parties has failed...`);
-			console.log(`details: ${error}`);
-			return undefined;
-		})
-	}
-
-	async searchOnePartyInProgress(createPartyDto: CreatePartyDto): Promise<PongGameEntity> | undefined {
-		const pongRepository = getRepository(PongGameEntity);
-		return pongRepository.findOne({
-			relations: ["player1", "player2", "game_type_id"],
-			where: [
-				{ player1: createPartyDto.login, game_status: Not(status.Finished) },
-				{ player2: createPartyDto.login, game_status: Not(status.Finished) }
-			],
-		})
-		.then((response) => {
-			const party = response;
-			console.log(`Search one party in progress has succeeded.`);
-			return party;
-		})
-		.catch((error) => {
-			console.log(`Search one party in progress has failed...`);
-			console.log(`details: ${error}`);
-			return undefined;
-		})
-	}
-
-	async searchAllNewParties(createPartyDto: CreatePartyDto, type: GameTypeEntity): Promise<PongGameEntity[]> {
-		const pongRepository = getRepository(PongGameEntity);
-		return pongRepository.find({
-			where: { game_status: status.Creation, player1: Not(createPartyDto.login), player2: null, game_type_id: type.game_type_id }
-		})
-		.then((response) => {
-			const parties: PongGameEntity[] = response;
-			console.log(`Search new parties has succeeded.`);
-			return parties;
-		})
-		.catch((error) => {
-			console.log(`Search new parties has failed...`);
-			console.log(`details: ${error}`);
-			return undefined;
-		});
-	}
-
-	async createParty(createPartyDto: CreatePartyDto, type: GameTypeEntity): Promise<PongGameEntity> | undefined {
-		const pongRepository = getRepository(PongGameEntity);
-		const party: PongGameEntity = {
-			game_id: 0,
-			player1: createPartyDto.login,
-			player2: null,
-			player1_score: 0,
-			player2_score: 0,
-			game_status: status.Creation,
-			winner: null,
-			looser: null,
-			game_type_id: type.game_type_id,
-			// room_id: room.conv_id,
-			created: new Date(),
-			updated: new Date(),
-		}
-		return pongRepository.insert(party)
-		.then((result) => {
-			const id: number = result.identifiers[0].game_id;
-			console.log(`New Party has created. (id: ${id})`);
-			return pongRepository.findOne({
-				where: { game_id: id }
-			});
-		})
-		.catch((error) => {
-			console.log(`New party has failed...`);
-			console.log(`details: ${error}`);
-			return undefined;
-		});
-	}
-
-	async matchParty(parties: PongGameEntity[]): Promise<PongGameEntity> | undefined {
-		const pongRepository = getRepository(PongGameEntity);
-		const set: number [] = [];
-		parties.forEach(element => {
-			set.push(element.game_id);
-		});
-		const selected: number = set[Math.floor(Math.random() * set.length)];
-		return pongRepository.findOne({
-			relations: ["player1", "player2", "game_type_id"],
-			where: { game_id: selected }
-		})
-		.then((response) => {
-			console.log(`Match party has succeeded.`);
-			return response;
-		})
-		.catch((error) => {
-			console.log(`Match party has failed...`);
-			console.log(`details: ${error}`);
-			return undefined;
-		})
-	}
-	
-	async joinParty(party: PongGameEntity, createPartyDto: CreatePartyDto): Promise<PongGameEntity> | undefined {
-		const pongRepository = getRepository(PongGameEntity);
-		return pongRepository.update( party.game_id, { player2: createPartyDto.login, game_status: status.Playing, updated: new Date() } )
-		.then((response) => {
-			console.log(`Join party has succeeded.`);
-			return party;
-		})
-		.catch((error) => {
-			console.log(`Join party has failed...`);
 			console.log(`details: ${error}`);
 			return undefined;
 		})
@@ -426,18 +346,46 @@ export class GameService {
 		})
 	}
 
-	async deletePartyById(id: number): Promise<any> | undefined {
+	// async deletePartyById(id: number): Promise<any> | undefined {
+	// 	const pongRepository = getRepository(PongGameEntity);
+	// 	return pongRepository.delete(id)
+	// 	.then((response) => {
+	// 		console.log(`Delete party by id has succeeded.`);
+	// 		return true;
+	// 	})
+	// 	.catch((error) => {
+	// 		console.log(`Delete party by id has failed...`);
+	// 		console.log(`details: ${error}`);
+	// 		return false;
+	// 	})
+	// }
+
+	async createMatchParty(player1: string, player2: string, type: GameTypeEntity): Promise<number> | undefined {
 		const pongRepository = getRepository(PongGameEntity);
-		return pongRepository.delete(id)
-		.then((response) => {
-			console.log(`Delete party by id has succeeded.`);
-			return true;
+		const party: PongGameEntity = {
+			game_id: 0,
+			player1: player1,
+			player2: player2,
+			player1_score: 0,
+			player2_score: 0,
+			game_status: status.Playing,
+			winner: null,
+			looser: null,
+			game_type_id: type.game_type_id,
+			created: new Date(),
+			updated: new Date(),
+		}
+		return pongRepository.insert(party)
+		.then((result) => {
+			const id: number = result.identifiers[0].game_id;
+			console.log(`New Party has created. (id: ${id})`);
+			return id;
 		})
 		.catch((error) => {
-			console.log(`Delete party by id has failed...`);
+			console.log(`New party has failed...`);
 			console.log(`details: ${error}`);
-			return false;
-		})
+			return undefined;
+		});
 	}
 
 	async updateParty(id: number, update: object) {
@@ -480,6 +428,7 @@ class Game {
 	};
   
 	constructor(id: number, player1: WebAppUserEntity, player2: WebAppUserEntity) {
+		// console.log(id, player1, player2)
 		let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
 		this.board = {
 			color: "#08638C",

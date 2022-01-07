@@ -15,8 +15,12 @@ export class DoubleAuthComponent {
 
   async onDoubleAuth() {
     // CHAT
-    // console.log(this.global.doubleAuth)
-    // const doubleAuth = (await axios.get("http://127.0.0.1:3000/double-auth/activate/", { params: {login: this.global.login, status: this.activate}})).data;
+    // console.log(this.global.doubleAuth);
+    // const doubleAuth = (
+    //   await axios.get('http://127.0.0.1:3000/double-auth/activate/', {
+    //     params: { login: this.global.login, status: this.activate },
+    //   })
+    // ).data;
     // PONG
     const doubleAuth = (
       await axios.get(

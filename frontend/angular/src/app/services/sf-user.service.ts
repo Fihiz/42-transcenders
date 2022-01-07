@@ -64,6 +64,8 @@ export class UserService {
     },
   ];
 
+  login: string | null = null; // may be not required if we have access to login when we select avatar for the first connection
+
   constructor(
     public global: GlobalService,
     private router: Router,
@@ -83,7 +85,7 @@ export class UserService {
     console.log('double Auth = ', this.global.doubleAuth);
     if (this.global.doubleAuth === true) {
       const resp = (
-        await axios.get(`http:/${window.location.host}:3000/double-auth`, {
+        await axios.get(`http://${window.location.host}:3000/double-auth`, {
           params: login,
         })
       ).data;
@@ -108,6 +110,7 @@ export class UserService {
   }
 
   async apiStatus(response: any): Promise<string> {
+    this.login = response.data.login;
     const doubleAuthStatus = await this.doubleAUth(response.data.login);
     console.log('doubleAuth = ', doubleAuthStatus);
     if (doubleAuthStatus === 'ko') return 'ko';
@@ -190,5 +193,20 @@ export class UserService {
           resolve('OK');
         });
     });
+  }
+
+  async uploadAvatar(file: File) {
+    const formData: FormData = new FormData();
+    formData.append('filename', String(this.login));
+    formData.append('avatar', file);
+    const url: string = `http://${window.location.host}:3000/cb-user/avatar/${file.name}`;
+    return axios
+      .post(url, formData)
+      .then((response: any) => {
+        return response.data;
+      })
+      .catch((error: any) => {
+        return null;
+      });
   }
 }

@@ -160,4 +160,19 @@ export class UserService {
       this.failLog(res);
     }
   }
+
+// JOBENASS TODO
+  async updateAvatar(profile: string, newAvatar: string) {
+    return `http://localhost:3000/cb-user/avatar/${profile}.jpg`;
+    // const userRepository = await getRepository(WebAppUserEntity)
+    // return userRepository.update( profile, { avatar: url, updated: new Date() } )
+    // .then((response) => {
+    //   return url;
+    // })
+    // .catch((error) => {
+    //   return null;
+    // })
+    // return url;
+  }
+
 }
