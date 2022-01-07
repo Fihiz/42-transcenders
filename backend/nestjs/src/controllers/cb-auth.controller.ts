@@ -1,13 +1,15 @@
 import { Body, Controller, Get, Req, Res, Post } from '@nestjs/common';
 import { CreateUserDto } from 'src/dtos/createUser.dto';
 import { AuthService } from 'src/services/sb-auth.service';
+import { StatsService } from 'src/services/sb-stats.service';
 import { UserService } from 'src/services/sb-user.service';
 
 @Controller('cb-auth')
 export class AuthController {
 
     constructor(private authService: AuthService,
-                private userService: UserService) {}
+                private userService: UserService,
+                private statsService: StatsService) {}
 
     @Get()
     async redirection(@Req() req, @Res() resp) {
@@ -37,7 +39,13 @@ export class AuthController {
 
     @Post('registerData')
     async registerdata(@Req() req, @Res() res, @Body('data') createUserDto: CreateUserDto) {
-        const areDataRegistered = await this.userService.registerInfosInDatabase(createUserDto, this.userService, res);
-        res.send(areDataRegistered);
+        const areDataRegistered = await this.userService.registerInfosInDatabase(createUserDto, res);
+        const areStatsRegistered = await this.statsService.registerStatsInDatabase(createUserDto, res);
+        if (areDataRegistered === areStatsRegistered &&
+            (areStatsRegistered === "Already created" ||
+            areStatsRegistered === "Successfully created"))
+            res.send(areDataRegistered);
+        else
+            res.send('error');
     }
 }

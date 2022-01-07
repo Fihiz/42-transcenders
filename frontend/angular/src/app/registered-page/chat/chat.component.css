@@ -2,7 +2,6 @@ body {
   max-height: 80vh;
   height: 100%;
   margin: 0px;
-  /* min-height: 200px; */
 }
 
 .col {
@@ -10,45 +9,26 @@ body {
 }
 
 .top {
-  /* Temporary */
   background-color: #F9C53F;
-  
-  /* background-color: lavender; */
-  /* height: 35%; */
   height: 50%;
-  /* overflow-y: auto; */
   min-height: 250px;
 }
 
 .bottom {
-  /* Temporary */
   background-color: #F9C53F;
-  
-  /* background-color: rgb(86, 122, 201); */
-  /* height: 65%; */
   height: 50%;
 
   overflow-y: auto;
   min-height: 250px;
-  /* position: relative; */
 }
 
 .chat-pong {
   text-align: center;
   margin-top: 15px;
 }
-/* 
-.search {
-  background-color: lightcyan; */
-/* overflow-y: auto; */
-/* height: 40px;
-} */
 
 .list-conv {
-  /* Temporary */
   background-color: rgb(255, 255, 255);
-
-  /* background-color: seashell; */
   overflow-y: auto;
   min-height: 60%;
   max-height: 60%; /*test*/
@@ -57,26 +37,16 @@ body {
   
 }
 .b-conv-name {
-  /* Temporary */
   background-color: #43B6B2;
   border: 2px solid #43B6B2;
   border-radius: 5px;
-  /* padding: 0; */
-  /* margin: auto; */
-
-  /* background-color: rgb(214, 76, 76); */
-  /* text-align: center; */
-  /* max-height: 20%; */
 }
 .b-messages {
-  /* background-color: thistle; */
-
-  /* Temporary */
   background-color: rgb(255, 255, 255);
   overflow-y: auto;
   min-height: 60%;
   max-height: 70%;
-  /* scroll direct en bas */
+  /* To scroll from last message */
   display: flex;
   flex-direction: column-reverse;
   border: 2px solid rgb(255, 255, 255);
@@ -84,9 +54,6 @@ body {
 }
 .b-typing {
   background-color: #F9C53F;
-  /* padding-top: 12px; */
-   /* Warning, need to see if responsiveness is ok */
-  /* text-align: center; */
 }
 
 /* ---------  BOOTDEY  -------------- */
@@ -178,19 +145,6 @@ body {
   height: 0;
 }
 
-/* CHAT */
-
-/* .card {
-  background: #fff;
-  transition: 0.5s;
-  border: 0;
-  margin-bottom: 30px;
-  border-radius: 0.55rem;
-  position: relative;
-  width: 100%;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
-} */
-
 .chat-app .people-list {
   width: 280px;
   position: absolute;
@@ -207,13 +161,10 @@ body {
 
 .chat .chat-header {
   padding: 15px 20px;
-  /* border-bottom: 2px solid #f4f7f6; */
 }
 
 .chat .chat-header img {
   float: left;
-  /* border-radius: 40px;
-  width: 40px; */
   /* For rounded image */
   width: 40px;
   height: 40px;
@@ -248,8 +199,6 @@ body {
 }
 
 .chat .chat-history .message-data img {
-  /* border-radius: 40px;
-  width: 40px; */
     /* For rounded image */
     width: 40px;
     height: 40px;
@@ -271,39 +220,6 @@ body {
   display: inline-block;
   position: relative;
 }
-/* take arrow off TEST */
-/* .chat .chat-history .message:after {
-  bottom: 100%;
-  left: 7%;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none;
-  border-bottom-color: #fff;
-  border-width: 10px;
-  margin-left: -10px;
-} */
-
-/* .chat .chat-history .my-message {
-  background: #efefef;
-} */
-
-/* .chat .chat-history .my-message:after {
-  bottom: 100%;
-  left: 30px;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none;
-  border-bottom-color: #efefef;
-  border-width: 10px;
-  margin-left: -10px;
-} */
-/* take arrow off TEST */
 
 .chat .chat-history .other-message {
   background: #D2E3E6;
@@ -342,8 +258,6 @@ body {
 
 .navbar {
   justify-content: space-between;
-  /* background-color: #43B6B2;
-  border: 2px solid #43B6B2; */
   border-radius: 5px;
 }
 
@@ -421,16 +335,8 @@ body {
   display: block;
 }
 
-/* .dropdown-item {
-	  background-color: white;
-  } */
-
-/* .dropdown-item:hover{
-    background-color: red;
-  } */
-
 a:hover {
-  background-color: lightgray;
+  background-color: #D2E3E6;
   cursor: pointer;
 }
 
@@ -438,6 +344,32 @@ input[type="room-btn"]::placeholder {
   font-size: 12px;
 }
 
+input[type="search-someone"]::placeholder {
+  font-size: 12px;
+}
+
+
+/* new  */
+#room-name-join, #room-password-join, #room-name, #members, #password, #add-new-admin, #add-friend, #invite-to-play, #mute-room, #unmute-room,
+#ban-room, #change-password{
+  font-size: 12px;
+}
+
+#view-member {
+  font-size: 12px;
+  background-color: #43B6B2;
+  border: #43B6B2;
+  color: white;
+}
+.viewMembersRoom {
+ max-height: 150px;
+ overflow-y: auto;
+}
+
+.style-txt {
+  font-size: 12px;
+  padding: 8px;
+}
 
 .color-conv-name {
   background-color: white;
@@ -445,8 +377,6 @@ input[type="room-btn"]::placeholder {
   border-radius: 5px;
 }
 button[type="submit"] {
-  /* background-color: #D2E3E6;
-  border: #D2E3E6; */
   background-color: #43B6B2;
   border: #43B6B2;
   color: white;
@@ -455,4 +385,23 @@ button[type="submit"] {
 h6 {
   font-size: 16px;
   color: white;
+}
+
+
+/* NEW FOR WRAP CHATTER INFOS */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.right-chatter-wrap {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.left-chatter-wrap {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }

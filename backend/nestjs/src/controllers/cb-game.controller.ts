@@ -35,6 +35,15 @@ export class GameController {
 
 	}
 
+	@Get('history/:login')
+    async getPartiesFinishedByLogin(@Param('login') login: string, @Response() res): Promise<PongGameEntity[]> {
+        const task: PongGameEntity[] = await this.gameService.getAllPartiesFinishedByLogin(login);
+        if (task === undefined)
+            throw new InternalServerErrorException(`Query on table Stats has failed !`);
+        res.send(task);
+        return task;
+    }
+
 	@Get('party/login/:login')
 	async getPartyWithLogin(@Param('login') login: string, @Response() res): Promise<PongGameEntity> | undefined {
 		const task: PongGameEntity = await this.gameService.getPartyByLogin(login);
@@ -51,30 +60,4 @@ export class GameController {
 		return task;
 	}
 	
-	@Post('party/play')
-	async playNewGame(@Body() createPartyDto: CreatePartyDto): Promise<PongGameEntity> | undefined {
-	    const type: GameTypeEntity = await this.gameService.searchOneTypeOfGame(createPartyDto);
-	    const current: PongGameEntity = await this.gameService.searchOnePartyInProgress(createPartyDto);
-	    if (current)
-	        return current;
-	    else {
-	        const found: PongGameEntity[] = await this.gameService.searchAllNewParties(createPartyDto, type);
-	        if (found.length !== 0) {
-	            const partyMatch = await this.gameService.matchParty(found);
-				const partyJoin = await this.gameService.joinParty(partyMatch, createPartyDto);
-				const party = await this.gameService.getPartyById(partyJoin.game_id);
-				this.gameService.addGame(party.game_id, (party.player1 as unknown as WebAppUserEntity).login, (party.player2 as unknown as WebAppUserEntity).login);
-				return party
-	        }
-	        return this.gameService.createParty(createPartyDto, type);
-	    }
-	}
-
-	@Delete('party/id/:id')
-	async deleteNewGame(@Param('id') id: number, @Response() res): Promise<any> {
-		await this.gameService.deletePartyById(id);
-		res.send(true);
-		return true;
-	}
-
 }

@@ -83,15 +83,17 @@ export class ChatService {
     (<HTMLInputElement>document.getElementById(str)).value = '';
   }
 
-  checkFormat(str: string, users: Array<string>) {
+  checkFormat(str: string, users: Array<string>, roomName: string) {
     if (!/^[a-zA-Z,/-]+$/.test(str)) {
-      alert('error in format for members');
+      alert('The entered information cannot be processed');
       return false;
-    } else {
+    } else if(roomName === '') 
+      return (false);
+    else {
       const members = str.split(',');
       for (const member of members) {
         if (!users.find((user) => user === member)) {
-          alert('member does not exist');
+          alert('The entered member cannot be found');
           return false;
         }
       }
@@ -118,9 +120,9 @@ export class ChatService {
   async takeAndCheck(users: Array<string>) {
     const roomName = (<HTMLInputElement>document.getElementById('room-name'))
       .value;
-    const members = (<HTMLInputElement>(
+    const members = [...new Set((<HTMLInputElement>(
       document.getElementById('members')
-    )).value.split(',');
+    )).value.split(','))];
     const password = (<HTMLInputElement>document.getElementById('password'))
       .value;
     const memberString = (<HTMLInputElement>document.getElementById('members'))
@@ -128,18 +130,18 @@ export class ChatService {
     this.clearInputValues('room-name');
     this.clearInputValues('members');
     this.clearInputValues('password');
-    if (!this.checkFormat(memberString, users))
+    if (!this.checkFormat(memberString, users, roomName))
       return this.setResponse('ko', roomName, members, password);
     document.getElementById('creationRoomForm')?.classList.add('hidden');
     const response = (
-      await axios.post('http://127.0.0.1:3000/cb-chat/check', {
+      await axios.post(`http://${window.location.host}:3000/cb-chat/check`, {
         data: roomName,
       })
     ).data;
     if (response === 'ok')
       return this.setResponse('ok', roomName, members, password);
     else {
-      alert('error room Name already use');
+      alert('This room name is already used');
       return this.setResponse('ko', roomName, members, password);
     }
   }
@@ -176,7 +178,7 @@ export class ChatService {
   createPrivateRoom(selectedUser: string) {
     const data = {
       id: 0,
-      avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4I2nS9uwtIar75SLZwu5VzThGj3poJcJDzg&usqp=CAU',
+      avatar: '../../../assets/room-pictures/private.png',
       type: 'private',
       name: this.createPrivateRoomName(
         this.global.login as string,

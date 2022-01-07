@@ -1,0 +1,151 @@
+h1 {
+	text-align: center;
+}
+
+img {
+	object-fit: cover;
+}
+
+.count {
+	text-align: center;
+}
+
+.list {
+	padding: 2px;
+	text-align: center;
+}
+
+.item {
+	list-style: none;
+	margin: 5px;
+	background-color: #D2E3E6;
+	height: 40px;
+	width: calc(100% - 10px);
+	min-width: calc(200px - 10px);
+	max-width: calc(100% - 10px);
+	border-radius: 20px;
+	border-style: none;
+	display: inline-flex;
+}
+
+.title {
+	height: 25px;
+	width: max-content;
+	margin: auto;
+	padding-top: 2px;
+	padding-left: 10px;
+	padding-right: 10px;
+	background-color: #D2E3E6;
+	border-style: none;
+	border-radius: 10px;
+}
+
+.data {
+	height: 25px;
+	width: max-content;
+	margin: auto;
+	margin-bottom: 10px;
+	padding-top: 2px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-style: none;
+}
+
+.player1 {
+	height: 100%;
+	width: 50%;
+	position: relative;
+}
+
+.avatar_p1 {
+	height: 25px;
+	width: 25px;
+	border-radius: 12px;
+	position: absolute;
+	top: 8px;
+	left: 10px;
+}
+
+.pseudo_p1 {
+	width: calc(100% - 80px);
+	position: absolute;
+	top: 10px;
+	left: 40px;
+	text-align: left;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.score_p1 {
+	height: 30px;
+	width: 25px;
+	max-width: 30px;
+	padding: 5px;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	border-style: none;
+	border-radius: 10px;
+	text-align: center;
+}
+
+.versus {
+	height: 100%;
+	width: 30px;
+	min-width: 30px;
+	max-width: 40px;
+	background-color: #E6AB9B;
+	color: #324448;
+	text-align: center;
+	padding-top: 10px;
+}
+
+.player2 {
+	height: 100%;
+	width: 50%;
+	position: relative;
+}
+
+.avatar_p2 {
+	height: 25px;
+	width: 25px;
+	border-radius: 12px;
+	position: absolute;
+	top: 8px;
+	right: 10px;
+}
+
+.pseudo_p2 {
+	width: calc(100% - 80px);
+	position: absolute;
+	top: 10px;
+	right: 40px;
+	text-align: right;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.score_p2 {
+	height: 30px;
+	width: 25px;
+	max-width: 30px;
+	padding: 5px;
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	border-style: none;
+	border-radius: 10px;
+	text-align: center;
+}
+
+.win {
+	background-color: #43B6B2;
+	color: white;
+}
+
+.lost {
+	background-color: #324448;
+	color: white;
+}

@@ -1,5 +1,15 @@
-<button value="{{ activate }}" (click)="onDoubleAuth()">
+<!-- <button value="{{ activate }}" (click)="onDoubleAuth()"> -->
 
 <!-- <span *ngIf="authService.userService.readyToDisplayForm === true"> -->
-<app-input-prompt></app-input-prompt>
+<!-- <app-input-prompt></app-input-prompt> -->
 <!-- </span> -->
+
+<body>
+    <button
+      id="btn-double-auth"
+      class="btn btn-secondary btn-sm btn-block"
+      (click)="onDoubleAuth()"
+    >
+      {{ activate }}
+    </button>
+</body>

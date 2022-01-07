@@ -29,11 +29,12 @@ export class ChatterService {
 	async creationChattersForNewConv(emission, newConvDatas, convId) {
 		for (const name of newConvDatas.members) {
 			const chatter: ChatterEntity = {
-				chat_role: (name === emission.login) ? "admin" : "chatter",
+				chat_role: (name === emission.login) ? "owner" : "chatter",
 				conv_id: convId,
 				is_present: "yes",
 				login: name,
 				muted: false,
+        ban: false
 			};
 			const res = await this.createChatter(chatter);
       if (typeof(res) === 'string' && res != 'ac')
@@ -53,7 +54,8 @@ export class ChatterService {
       conv_id: conv_id,
       is_present: chatter.is_present,
       login: name,
-      muted: chatter.muted
+      muted: chatter.muted,
+      ban: false
     }
     return (final);
   }
@@ -76,6 +78,51 @@ export class ChatterService {
     }
     catch (error) {
       console.log('error in muting');
+      return ('ko');
+    }
+  }
+
+  async findAllChatters( conv_id ) {
+    const chatters = (await this.chatter.find({
+      join: {
+       alias: "tmp",
+       leftJoinAndSelect: {
+         login: "tmp.login",
+          conv_id: "tmp.conv_id",
+       }},
+      where: {conv_id: conv_id},
+   }));
+   for (const chatter of chatters) {
+     const tmp0 = chatter.conv_id;
+     const tmp = (chatter.login as any).login
+     chatter.login = tmp;
+     chatter.conv_id = tmp0;
+   }
+    return (chatters);
+  }
+
+  async createBanUser(user: ChatterEntity) {
+    try {
+      user.ban = true;
+      const creationResult = await this.createChatter(user);
+      if (typeof(creationResult) === 'string')
+        return (creationResult);
+      else
+        return ('ok');
+    }
+    catch (error) {
+      console.log('error = ', error)
+      return ('ko')
+    }
+  }
+
+  async unBan(name, conv_id) {
+    try {
+      await this.chatter.update({login: name, conv_id: conv_id}, {ban: true});
+      console.log('chatter = ', await this.chatter.findOne({where: {login:name, conv_id:conv_id}}))
+      return ('ok');
+    }
+    catch {
       return ('ko');
     }
   }

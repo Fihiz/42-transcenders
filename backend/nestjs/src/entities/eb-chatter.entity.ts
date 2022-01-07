@@ -28,5 +28,10 @@ export class ChatterEntity {
     type: "boolean"
   })
   muted: boolean;
+
+  @Column({
+    type: "boolean"
+  })
+  ban: boolean;
   
 }

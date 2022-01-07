@@ -73,13 +73,13 @@ export class ChatService {
 	getReceiver(tabLogin: Set<string>, emitter: string): Array<string> {
 		const tabReceiver: Array<string> = [];
 		tabLogin.forEach(login => {
-				GlobalDataService.loginIdMap.get(login)?.forEach(id => {
-				tabReceiver.push(id);
-			})
-		})
-			GlobalDataService.loginIdMap.get(emitter).forEach(id => {
-			tabReceiver.push(id);
-		})
+      GlobalDataService.loginIdMap.get(login)?.sockets.forEach(socket => {
+        tabReceiver.push(socket.id);
+      })
+    })
+		GlobalDataService.loginIdMap.get(emitter).sockets.forEach(socket => {
+      tabReceiver.push(socket.id);
+    })
 		return (tabReceiver);
 	}
 
@@ -119,7 +119,8 @@ export class ChatService {
       conv_id: conv_id,
       is_present: user.is_present,
       login: (user.login as any).login,
-      muted: user.muted
+      muted: user.muted,
+      ban: false
     }
     return (finalUser)
   }
@@ -132,6 +133,8 @@ export class ChatService {
   async handleMessage(emission) {
     const message = emission.data
     const doesConvExists = await this.convService.findOneConversation(message.conv_id);
+    const chatter = await this.chatter.findOne({login: emission.login, conv_id: message.conv_id});
+    const avatar = (await this.userService.findOneApiUser(emission.login))?.avatar;
     if (doesConvExists) {
       const messRegistered: MessageEntity = {
         content: message.content,
@@ -139,7 +142,8 @@ export class ChatService {
         date: message.date,
         id: ++this.messId,
         login: emission.login,
-        avatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Ffr.techtribune.net%2Fanime%2Fshrek-occupe-la-premiere-place-pour-lanime-sur-amazon%2F102182%2F&psig=AOvVaw20kB0wPmvDnlD_FTcqSOBO&ust=1640873495902000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCJDgu66YifUCFQAAAAAdAAAAABAD'
+        avatar: avatar,
+        role: chatter.chat_role
       }
       const messageCreated = await this.createMessage(messRegistered)
 			if (typeof(messageCreated) !== 'string' && typeof(messageCreated) !== 'number')
@@ -148,14 +152,16 @@ export class ChatService {
       return (convMessages);
     }
     else
-      return ('Error: Conv does not exist')
+      return ('Error: Conversation does not exist')
   }
 
   async checkConditionToModifie(userToBan, userAsking, conv_id) {
     
     const target = await this.findOneChatter(userToBan, conv_id);
-    const client = await this.findOneChatter(userAsking, conv_id); 
-    if (client.chat_role !== 'admin' || target.chat_role === 'admin') {
+    const client = await this.findOneChatter(userAsking, conv_id);
+    if (!client || !target)
+      return ('ko');
+    if (target.chat_role === 'owner' || (target.chat_role === 'admin' && client.chat_role != 'owner') && client.chat_role === 'chatter') {
       console.log('fail not good role')
       return ('ko');
     }
