@@ -28,6 +28,7 @@ export class UserService {
     mail: '',
     created: new Date(),
     updated: new Date(),
+    points_for_ladder: "000000",
   };
 
   avatarList: {
