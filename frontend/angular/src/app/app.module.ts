@@ -29,7 +29,6 @@ import { DoubleAuthComponent } from './auth-page/double-auth/double-auth.compone
 
 import { GlobalService } from './services/sf-global.service';
 
-
 // MERGE
 // const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoConnect: false} };
 const config: SocketIoConfig = {
@@ -58,7 +57,7 @@ const config: SocketIoConfig = {
     InputPromptComponent,
     NotFoundComponent,
     GameComponent,
-    DoubleAuthComponent
+    DoubleAuthComponent,
   ],
   imports: [
     BrowserModule,

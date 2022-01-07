@@ -134,7 +134,7 @@ export class ChatService {
       return this.setResponse('ko', roomName, members, password);
     document.getElementById('creationRoomForm')?.classList.add('hidden');
     const response = (
-      await axios.post('http://127.0.0.1:3000/cb-chat/check', {
+      await axios.post(`http://${window.location.host}:3000/cb-chat/check`, {
         data: roomName,
       })
     ).data;

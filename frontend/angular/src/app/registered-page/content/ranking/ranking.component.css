@@ -2,6 +2,14 @@ h1 {
 	text-align: center;
 }
 
+.tooltip {
+	background-color: brown;
+}
+
+img {
+	object-fit: cover;
+}
+
 .count {
 	text-align: center;
 }
@@ -84,8 +92,8 @@ h1 {
 	height: 25px;
 	width: 25px;
 	border-style: none;
-	border-radius: 12px;
 	position: absolute;
+	border-radius: 50%;
 	top: 8px;
 	left: 40px;
 }
@@ -98,6 +106,36 @@ h1 {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+}
+
+.online,
+.offline,
+.spectating,
+.playing{
+	content: "";
+	z-index: 1;
+	position: absolute;
+	border-radius: 50%;
+	top: 8px;
+	left: 45px;
+	width: 8px;
+	height: 8px;
+}
+
+.online {
+	background-color: #57CC99;
+}
+
+.offline {
+	background-color: rgb(85, 85, 85);
+}
+
+.spectating {
+	background-color: rgb(240, 139, 24);
+}
+
+.playing {
+	background-color: #E84855;
 }
 
 .right {
