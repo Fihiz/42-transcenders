@@ -160,38 +160,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 	}
 
-	// @SubscribeMessage('matchmaking')
-	// setMatchmaking(@MessageBody() body: any) {
-	// 	this.players.push( { id: "SALUTCOCO", login: "Moldu_01", gameType: 'classic' } );
-	// 	// console.log("IN:", this.players);
-	// 	const found = this.players.find((user) => user.gameType === body.gameType );
-	// 	if (found !== undefined) {
-	// 		this.gameService.searchOneTypeOfGame( { login: body.login, map_type: body.gameType } )
-	// 		.then((response) => {
-	// 			const player1 = found;
-	// 			const player2 = body;
-	// 			this.gameService.createMatchParty(player1.login, player2.login, response)
-	// 			.then((response) => {
-	// 				console.log("1:", response);
-	// 				this.gameService.getPartyById(response)
-	// 				.then((response) => {
-	// 					console.log("2", response);
-	// 					this.gameService.addGame(response.game_id, (response.player1 as unknown as WebAppUserEntity).login, (response.player2 as unknown as WebAppUserEntity).login);
-	// 				})
-	// 				this.server.to([player1.id, player2.id]).emit('launchgame', response);
-	// 				console.log("PASS");
-	// 			});
-	// 		});
-	// 	}
-	// 	else {
-	// 		this.players.push( { id: body.id, login: body.login, gameType: body.gameType } );
-	// 	}
-	// }
-
 	@SubscribeMessage('matchmaking')
 	async setMatchmaking(@MessageBody() body: any) {
 		console.log(`${body.login} join Matchmaking.`);
-		console.log(`${body.login} - IN:`, this.players);
+		// console.log(`${body.login} - IN:`, this.players);
 		const found = this.players.find((user) => user.gameType === body.gameType );
 		if (found !== undefined) {
 			const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(body.login, body.gameType)
@@ -209,7 +181,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				const index = this.players.findIndex((user) => user.login === found.login)
 				if (index != -1)
 					this.players.splice(index, 1);
-				console.log(`${body.login} - OUT:`, this.players);
+				// console.log(`${body.login} - OUT:`, this.players);
 				this.server.to([player1.id, player2.id]).emit('launchgame', party.game_id);
 			}
 			else {
@@ -221,7 +193,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 		else {
 			this.players.push( { id: body.id, login: body.login, gameType: body.gameType } );
-			console.log(`${body.login} - OUT:`, this.players);
+			// console.log(`${body.login} - OUT:`, this.players);
 		}
 	}
 	

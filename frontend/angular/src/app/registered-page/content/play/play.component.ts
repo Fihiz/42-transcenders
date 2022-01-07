@@ -22,7 +22,6 @@ export class PlayComponent implements OnInit, OnDestroy {
   constructor(private gameService: GameService, private router: Router) { }
 
   ngOnInit() {
-    // this.getSetsParty();
     this.getDisplay();
   }
   

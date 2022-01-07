@@ -173,23 +173,17 @@ export class UserService {
   }
 
   async uploadAvatar(file: File) {
-		// const url: string = `http://${window.location.host}:3000/cb-user/avatar/`;
-		const url: string = `http://${window.location.host}:3000/cb-user/avatar/${this.login}`;
     const formData: FormData = new FormData();
     formData.append("filename", String(this.login));
     formData.append("avatar", file);
+		const url: string = `http://${window.location.host}:3000/cb-user/avatar/${file.name}`;
 		return axios.post(url, formData)
 		.then((response: any) => {
       return response.data;
 		})
 		.catch((error: any) => {
-      console.log("upload avatar: FAIL");
       return null;
 		})
   }
-
-  // checkAvatar(setAvatar: any[]) {
-  //   const login: string = String(this.global.login);
-  // }
 
 }

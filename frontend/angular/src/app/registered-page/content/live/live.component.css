@@ -1,14 +1,5 @@
-h1 {
+h1, .count {
 	text-align: center;
-}
-
-.count {
-	text-align: center;
-}
-
-.error {
-	text-align: center;
-	color: #F97D64;
 }
 
 .list {
@@ -30,9 +21,8 @@ h1 {
 }
 
 .container {
+	width: 200px;
 	padding: 0px;
-	margin-bottom: 5px;
-	border-radius: 15px;
 }
 
 .versus {
@@ -53,9 +43,6 @@ h1 {
 	margin: 0px;
 	text-align: left;
 	color: #43B6B2;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
 }
 
 .right {
@@ -68,6 +55,9 @@ h1 {
 	margin: 0px;
 	text-align: right;
 	color: #F97D64;
+}
+
+.overflow {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;

@@ -23,8 +23,6 @@ export class RankingComponent implements OnInit {
     this.scores = await this.statsService.getScores();
     if (this.scores !== undefined)
       this.size = this.scores.length;
-    // else
-      //  redirect to Component error ?
   }
 
 }

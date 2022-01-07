@@ -9,7 +9,7 @@ import { NotFoundException, InternalServerErrorException } from '@nestjs/common'
 
 const editFileName = (req, file, callback) => {
     const name = req.body.filename;
-    // const extension = mime.extension(file.mimetype);
+    // const extension = mime.extension(file.mimetype); // if we want handle several extention
     const extension = "jpg";
     callback(null, `${name}.${extension}`);
 };
@@ -22,11 +22,13 @@ const checkFileExtension = (req, file, callback) => {
 
 @Controller('cb-user')
 export class UserController {
+    
     constructor(private userService: UserService) {}
 
     // will be used later to update our user
 
-    @Post('avatar/:login')
+    // @Post('avatar/:login')
+    @Post('avatar/:file')
     @UseInterceptors(
     FileInterceptor('avatar', {
         storage:
@@ -37,10 +39,10 @@ export class UserController {
         fileFilter: checkFileExtension,
     }),
     )
-    uploadAvatar(@Param('login') login: string, @UploadedFile() file, @Response() res) {
-        // TODO = IF user exist alors on appel updateAvatar
-        // const url = await this.userService.updateAvatar(login, file.path); // TEMP
-        const url = `http://localhost:3000/cb-user/avatar/${login}.jpg`;
+    // uploadAvatar(@Param('login') login: string, @UploadedFile() file, @Response() res)
+    uploadAvatar(@UploadedFile() file, @Response() res) {
+        // TODO = If user exist alors on appel updateAvatar
+        const url = `http://localhost:3000/cb-user/avatar/${file.filename}`;
         res.send(url);
         return url;
     }

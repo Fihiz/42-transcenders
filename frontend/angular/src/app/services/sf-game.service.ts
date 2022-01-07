@@ -29,19 +29,6 @@ export class GameService {
     globalSocket = this.socket;
   }
 
-  async image(filename: string) {
-    const url = `http://${window.location.host}:3000/cb-game/pong/${filename}`;
-    return axios.get(url)
-    .then((response: any) => {
-      const image = response.data;
-      return image;
-    })
-    .catch((error: any) => {
-      // console.error(error.response.data);
-      return undefined;
-    })
-  }
-
   async getTypesOfParty() {
     const url = `http://${window.location.host}:3000/cb-game/types`;
     return axios.get(url)
@@ -50,7 +37,6 @@ export class GameService {
       return types;
     })
     .catch((error: any) => {
-      // console.error(error.response.data);
       return undefined;
     })
   }
@@ -63,26 +49,8 @@ export class GameService {
       return parties;
     })
     .catch((error: any) => {
-      // console.log(error.response.data);
       return undefined;
     })
-  }
-
-  async setParty(type: string) {
-    const login = this.global.login;
-    const url = `http://${window.location.host}:3000/cb-game/party/play`;
-    const data = {
-      login: login,
-      map_type: type
-    }
-    return axios.post(url, data)
-    .then((response: any) => {
-      const party = response.data;
-      return party;
-    })
-    .catch((error: any) => {
-      return undefined;
-    });
   }
 
   async getPartyById(id: number) {
@@ -97,16 +65,16 @@ export class GameService {
     })
   }
 
-  async deletePartyById(id: number) {
-    const url = `http://${window.location.host}:3000/cb-game/party/id/${id}`;
-    return axios.delete(url)
-    .then((response: any) => {
-      return true;
-    })
-    .catch((error: any) => {
-      return false;
-    })
-  }
+  // async deletePartyById(id: number) {
+  //   const url = `http://${window.location.host}:3000/cb-game/party/id/${id}`;
+  //   return axios.delete(url)
+  //   .then((response: any) => {
+  //     return true;
+  //   })
+  //   .catch((error: any) => {
+  //     return false;
+  //   })
+  // }
 
   async getPartyByLogin() {
     const login = this.global.login;
@@ -132,12 +100,6 @@ export class GameService {
   emitCancelForPlay() {
     this.socket.emit('cancelmatch', { login: this.global.login });
   }
-
-  // launchparty() {
-  //   globalSocket.on('launchgame', (gameId : number) => {
-  //     this.router.navigate([`/pong/game/${gameId}`]);
-  //   });
-  // }
 
   emitLogin(gameId: number) {
     this.socket.emit('hello', {id: this.socket.ioSocket.id, login: this.global.login, gameId: gameId});
