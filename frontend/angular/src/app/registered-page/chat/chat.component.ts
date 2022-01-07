@@ -412,12 +412,12 @@ export class ChatComponent implements OnInit {
       this.listConv.push(data);
     });
     this.socket.on('youAreBan', (data: any) => {
-      if (this.currentConv.conv_id === data.conv_id) this.clearConv();
-      if (this.listConv.length === 0) this.listConv = [];
+      if (this.listConv.length === 0) this.listConv = []; /* Non-sens */
       const index = this.listConv.findIndex(
         (conv) => conv.conv_id === data.conv_id && conv.name === data.conv_name
       );
       if (index >= 0) this.listConv.splice(index, 1);
+      if (this.currentConv.conv_id === data.conv_id) this.clearConv();
     });
     this.socket.on('error', (data: any) => {
       alert(data);
