@@ -434,7 +434,6 @@ export class ChatComponent implements OnInit {
       const conv = this.listConv.find((conv) => conv.conv_id === data.conv_id);
       const index = conv?.members.findIndex((member) => member === data.login);
       if (typeof index === 'number') conv?.members.splice(index, 1);
-      console.log('conv = ', conv);
     });
     this.socket.on('newPassword', (data: any) => {
       const conv: if_conversation = this.listConv.find(

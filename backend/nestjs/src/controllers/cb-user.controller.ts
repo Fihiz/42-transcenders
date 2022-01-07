@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Response } from '@nestjs/common';
+import { Controller, Get, Post, Param, Response, Request } from '@nestjs/common';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { UserService } from 'src/services/sb-user.service';
 
@@ -26,8 +26,10 @@ export class UserController {
     constructor(private userService: UserService) {}
 
 	@Get('profile/:login')
-	async getProfileByLogin(@Param('login') login: string, @Response() res): Promise<WebAppUserEntity> {
+	async getProfileByLogin(@Param('login') login: string, @Response() res, @Request() req): Promise<WebAppUserEntity> {
 		const profile: WebAppUserEntity = await this.userService.findOneWebAppUser(login);
+        if (profile)
+            profile.avatar = profile.avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
 		res.send(profile);
 		return profile;
 	}

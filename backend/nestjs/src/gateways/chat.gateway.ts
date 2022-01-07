@@ -8,6 +8,7 @@ import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService } from "src/services/sb-global-data.service";
 import { AppService } from "src/app.service";
 import { UserService } from "src/services/sb-user.service";
+import { WebAppUserEntity } from "src/entities/eb-web-app-user.entity";
 
 @WebSocketGateway({cors:{origin: '*'}})
 
@@ -43,7 +44,7 @@ export class ChatGateway {
 	@SubscribeMessage('message')
 	async messageFunc(@MessageBody() emission) {
     const sender = await this.chatterService.findOneChatter(emission.data.conv_id, emission.login);
-      if (sender && sender.muted !== true) {
+    if (sender && sender.muted !== true) {
 		  const messages = await this.chatService.handleMessage(emission);
       if (typeof(messages) !== 'string') {
         const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
@@ -69,8 +70,12 @@ export class ChatGateway {
 	@SubscribeMessage('getMessages')
 	async getMessages(@MessageBody() emission, @MessageBody('data') message: MessageDto) {
 		const messages = await this.chatService.getMessage(message);
+    if (message.host)
+      messages.forEach(msg => {
+        msg.avatar = msg.avatar.replace("localhost:3000", message.host);
+      });
 		if (typeof(messages) !== 'string') {
-			this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;})).emit('allMessages', messages);
+			this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('allMessages', messages);
     }
     else
       this.errorResponse(emission);
@@ -79,7 +84,7 @@ export class ChatGateway {
 	@SubscribeMessage('newConversation')
 	async newConversation(@MessageBody() emission, @MessageBody('data') newConvDatas: ConversationEntity) {
     if (await this.ConvService.newConvcheckValue(newConvDatas) === false)
-        return this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
+        return this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
       // return (this.emitFail(emission.login, 'error in input')); /* Fail : emit an alert to all the users but only need on global login */
 		const tmp = await this.ConvService.createConv(newConvDatas) as any;
     if (tmp.success === true) {
@@ -87,7 +92,7 @@ export class ChatGateway {
 			const checkCreationChatter = await this.chatterService.creationChattersForNewConv(emission, newConvDatas, convId);
 			if (checkCreationChatter === 'error')
 				// return (this.emitFail(emission.login, 'error in registering chatter'));
-        return this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
+        return this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
 			newConvDatas.conv_id = convId;
 			this.server.to(this.chatService.getReceiver(new Set(newConvDatas.members), emission.login)).emit('newConversation', newConvDatas);
 		}
@@ -97,7 +102,7 @@ export class ChatGateway {
 
 	@SubscribeMessage('allConversations')
 	async getConv(@MessageBody() emission) {
-		this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;})).emit('allConversations', await this.ConvService.findAllConv(emission.login));
+		this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('allConversations', await this.ConvService.findAllConv(emission.login));
 	}
 
 	@SubscribeMessage('joinRoom')
@@ -105,7 +110,7 @@ export class ChatGateway {
     // CHAT GLOBAL LOGIN
     // const response = this.server.to(GlobalDataService.loginIdMap.get(emission.login));
     // PONG GLOBAL LOGIN
-    const response = this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;}));
+    const response = this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;}));
     const conv_id = (await this.ConvService.findOneConversationByName(emission.data.roomName))?.conv_id;
     const user = await this.chatterService.findOneChatter(conv_id, emission.login);
     if (user) {
@@ -129,21 +134,21 @@ export class ChatGateway {
     if (conv_id != 0 && (await this.userService.findOneAppUser(friendName))) {
       const conv = await this.ConvService.joinRoom(emission, friendName, true);
       if (await this.chatterService.unBan(friendName, conv_id) === 'ko')
-      this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
       if (conv) {
         const receivers = this.chatService.getReceiver(new Set(conv.members), emission.login);
         this.server.to(receivers).emit('newMember', {conv_id: conv.conv_id, name: friendName});
-        this.server.to(GlobalDataService.loginIdMap.get(friendName).sockets.map((socket) => {return socket.id;})).emit('newConversation', conv);
+        this.server.to(GlobalDataService.loginIdMap.get(friendName)?.sockets.map((socket) => {return socket.id;})).emit('newConversation', conv);
       }
       else {
       // CHAT GLOBAL LOGIN
       // this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "The entered information cannot be processed")
       // PONG GLOBAL LOGIN
-      this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
       }
     }
     else {
-      this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
     }
   }
 
@@ -185,10 +190,8 @@ export class ChatGateway {
         this.server.to(emission.socketId).emit('error happend in removing the user');
       else {
         const conv = await this.ConvService.findOneConversation(emission.data.conv_id);
-        console.log("test", conv);
         if (conv)
           this.server.to(this.chatService.getReceiver(new Set(conv.members), emission.login)).emit('MemberLeaves', {login: emission.login, conv_id: conv.conv_id});
-        console.log('okk');
       }
     }
   }
@@ -200,7 +203,7 @@ export class ChatGateway {
     const conv_name = emission.data.conv_name;
     const conv = await this.ConvService.findOneConversation(conv_id);
     if (conv) {
-      this.server.to(GlobalDataService.loginIdMap.get(target).sockets.map((socket) => {return socket.id;})).emit('youAreBan', {conv_id: conv_id, conv_name: conv_name});
+      this.server.to(GlobalDataService.loginIdMap.get(target)?.sockets.map((socket) => {return socket.id;})).emit('youAreBan', {conv_id: conv_id, conv_name: conv_name});
       this.server.to(this.chatService.getReceiver(conv.members, target)).emit('MemberLeaves', {login: target, conv_id: conv_id});
     }
   }
@@ -213,6 +216,6 @@ export class ChatGateway {
     if (await this.ConvService.changePassword(conv_id, password) === 'ok')
       this.server.to(this.chatService.getReceiver(new Set(conv.members), emission.login)).emit('newPassword', {conv_id: conv_id, password: password});
     else
-      this.server.to(GlobalDataService.loginIdMap.get(emission.login).sockets.map((socket) => {return socket.id;})).emit('error', "a problem has occured")
+      this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('error', "a problem has occured")
   }
 }

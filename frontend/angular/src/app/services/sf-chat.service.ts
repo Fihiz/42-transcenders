@@ -53,6 +53,7 @@ export class ChatService {
         login: this.global.login as string,
         date: new Date(),
         content: currentConv.name,
+        host: window.location.host + ":3000",
       },
       login: this.global.login as string,
       socketId: this.global.socketId as string,

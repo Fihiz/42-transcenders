@@ -77,7 +77,7 @@ export class ChatService {
         tabReceiver.push(socket.id);
       })
     })
-		GlobalDataService.loginIdMap.get(emitter).sockets.forEach(socket => {
+		GlobalDataService.loginIdMap.get(emitter)?.sockets.forEach(socket => {
       tabReceiver.push(socket.id);
     })
 		return (tabReceiver);

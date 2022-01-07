@@ -5,4 +5,5 @@ export class MessageDto {
     date: Date;
     body: any;
     to: Array<string>;
+    host: string;
 }

@@ -144,7 +144,7 @@ export class ConvService {
 
   async removeMemberOfConv(convName, id, login, user: ChatterEntity) {
     try {
-      let conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
+      let conv = await this.conversation.findOne({where: {name: convName, conv_id: id}});
       const members = conv.members;
       let index = members.findIndex(member => member === login);
       members.splice(index, 1);
@@ -156,12 +156,11 @@ export class ConvService {
       conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
       if (conv.members.length === 0)
       {
-        const chattersToRemove = await this.chatter.find({where: {conv_id: id}});
-        console.log(chattersToRemove);
-        chattersToRemove.forEach(chatter => this.chatter.remove(chatter));
-        const messagesToRemove = await this.message.find({where: {conv_id: id}});
-        messagesToRemove.forEach(message => this.message.remove(message));
-        this.conversation.remove(conv);
+        const chattersToRemove = await this.chatter.find({where: {conv_id: id}, relations: ["conv_id", "login"]});
+        await chattersToRemove.forEach(async chatter => await this.chatter.remove(chatter));
+        const messagesToRemove = await this.message.find({where: {conv_id: id}, relations: ["conv_id"]});
+        await messagesToRemove.forEach(async message => await this.message.remove(message));
+        await this.conversation.remove(conv)
         // return ('empty');
       }
       return ('ok')
