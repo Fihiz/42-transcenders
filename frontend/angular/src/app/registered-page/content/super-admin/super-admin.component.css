@@ -31,3 +31,15 @@ button[type="submit"] {
   border: #43b6b2;
   color: white;
 }
+
+#dropdownMenuButton {
+  background-color: #43b6b2;
+  border: #43b6b2;
+  color: white;
+}
+
+.viewUsers {
+  max-height: 150px;
+  overflow-y: auto;
+  min-width: 200px;
+}

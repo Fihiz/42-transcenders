@@ -5,7 +5,7 @@
       <!-- <a class="navbar-brand">Set user roles</a> -->
       <div class="dropdown">
         <button
-          class="btn btn-light btn-sm"
+          class="btn btn-light btn-lg"
           type="button"
           id="dropdownMenuButton"
           data-toggle="dropdown"
@@ -17,15 +17,23 @@
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <!--1 -->
           <li>
-            <a class="dropdown-item">View group rooms &raquo; </a>
+            <div class="viewUsers">
+              <a class="dropdown-item">Listing of users &raquo; </a>
+            </div>
             <ul class="dropdown-menu dropdown-submenu">
               <li>
-                <input
-                  class="form-control"
-                  id="room-name"
-                  placeholder="Room name"
-                  type="room-btn"
-                />
+                <button
+                  type="submit"
+                  class="btn btn-secondary btn-sm btn-block"
+                >
+                  Set as moderator
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-secondary btn-sm btn-block"
+                >
+                  Set as user
+                </button>
                 <!-- <div class="submenu">
                   HEYYY
                   <div class="style-txt">coucou</div>
