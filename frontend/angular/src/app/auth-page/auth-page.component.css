@@ -326,6 +326,10 @@ button {
     box-shadow: -4vmin 0 0.9000416566617344vmin currentColor;
 }
 
+.hidden {
+  display: none;
+}
+
 /* NEED TO DEAL WITH */
 /* @media screen and (max-width: 600px) {
   .hero {

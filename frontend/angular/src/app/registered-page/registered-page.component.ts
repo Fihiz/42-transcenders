@@ -1,5 +1,12 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { Socket } from "ngx-socket-io";
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
+import { Socket } from 'ngx-socket-io';
 import { GlobalService } from '../services/sf-global.service';
 
 @Component({
@@ -13,7 +20,7 @@ export class RegisteredPageComponent implements OnInit, OnDestroy {
   constructor(private socket: Socket, private global: GlobalService) {}
 
   ngOnInit() {
-    this.socket.on('status', (message: {login: string, status: string}) => {
+    this.socket.on('status', (message: { login: string; status: string }) => {
       this.global.allUserStatus.set(message.login, message.status);
     });
   }
@@ -24,5 +31,9 @@ export class RegisteredPageComponent implements OnInit, OnDestroy {
 
   sidebarLogOutEvent(event: Event) {
     this.notifyAppComponent.emit('event');
+  }
+
+  onSubmitCode() {
+    this.global.doubleAuth === false;
   }
 }

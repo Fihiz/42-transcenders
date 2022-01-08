@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { GlobalService } from '../services/sf-global.service';
 
 @Component({
   selector: 'app-auth-page',
@@ -6,8 +7,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./auth-page.component.css'],
 })
 export class AuthPageComponent {
-  constructor() {}
+  constructor(public global: GlobalService) {}
+  // doubleAuth = this.global.doubleAuth;
 
+  onDoubleAuth() {
+    console.log(`code received`);
+  }
   onRegister() {
 
     const knownHost: string[] = [

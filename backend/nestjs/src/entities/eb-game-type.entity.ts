@@ -16,33 +16,115 @@ export class GameTypeEntity {
 
   @Column({
 		type: "varchar",
-    length: 50,
-    default: "default"
+    length: 20,
+    default: "classic"
   })
-  game_aspect: string;
+  type: string;
+
+  @Column({
+		type: "varchar",
+    length: 21,
+    default: "rgba(50, 68, 72, 0.5)"
+  })
+  overlay_color: string;
+
+  @Column({
+		type: "varchar",
+    length: 7,
+    default: "#FFFFFF"
+  })
+  border_color: string;
+
+  @Column({
+		type: "varchar",
+    length: 7,
+    default: "#AAAAAA"
+  })
+  font_color: string;
+
+  @Column({
+		type: "varchar",
+    length: 7,
+    default: "#000000"
+  })
+  board_color: string;
 
   @Column({
 		type: "int",
     default: 1
   })
   ball_size: number;
+  
+  @Column({
+    type: "varchar",
+    length: 7,
+    default: "#FFFFFF"
+  })
+  ball_color: string;
+
+  @Column({
+		type: "int",
+    default: 1
+  })
+  ball_speed: number;
 
   @Column({
 		type: "varchar",
-    length: 20,
-    default: "default"
+    length: 15,
+    default: "normal / slow"
   })
-  map_type: string;
+  ball_desc: string;
 
   @Column({
 		type: "int",
     default: 1
   })
-  initial_speed: number;
+  racket1_size: number;
+
+  @Column({
+		type: "varchar",
+    length: 7,
+    default: "#FFFFFF"
+  })
+  racket1_color: string;
+  
+  @Column({
+		type: "int",
+    default: 1
+  })
+  racket1_speed: number;
+
+  @Column({
+		type: "varchar",
+    length: 15,
+    default: "big / slow"
+  })
+  racket1_desc: string;
 
   @Column({
 		type: "int",
     default: 1
   })
-  racket_size: number;
+  racket2_size: number;
+
+  @Column({
+		type: "varchar",
+    length: 7,
+    default: "#FFFFFF"
+  })
+  racket2_color: string;
+  
+  @Column({
+		type: "int",
+    default: 1
+  })
+  racket2_speed: number;
+
+  @Column({
+		type: "varchar",
+    length: 15,
+    default: "big / slow"
+  })
+  racket2_desc: string;
+
 }

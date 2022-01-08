@@ -23,8 +23,6 @@ export class LiveComponent implements OnInit {
       this.parties = await this.gameService.getPartiesInProgress();
       if (this.parties !== undefined)
         this.size = this.parties.length;
-      // else
-      //  redirect to Component error ?
   }
 
 }

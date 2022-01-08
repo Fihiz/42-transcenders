@@ -25,6 +25,7 @@ import { AuthComponent } from './auth-page/auth/auth.component';
 import { InputPromptComponent } from './auth-page/input-prompt/input-prompt.component';
 import { NotFoundComponent } from './registered-page/content/not-found/not-found.component';
 import { GameComponent } from './registered-page/content/game/game.component';
+import { DoubleAuthComponent } from './auth-page/double-auth/double-auth.component';
 
 import { GlobalService } from './services/sf-global.service';
 
@@ -56,6 +57,7 @@ const config: SocketIoConfig = {
     InputPromptComponent,
     NotFoundComponent,
     GameComponent,
+    DoubleAuthComponent,
   ],
   imports: [
     BrowserModule,

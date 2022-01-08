@@ -1,20 +1,16 @@
-<div *ngIf="profile" style="text-align: center;">
-    <div *ngIf="profile.login">
-        login : {{ profile.login }}
-    </div>
-    <div *ngIf="profile.pseudo">
-        pseudo : {{ profile.pseudo }}
-    </div>
-    <div *ngIf="profile.bio">
-        bio : {{ profile.bio }}
-    </div>
-    <div *ngIf="profile.avatar">
-        <img style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" alt="avatar" src="{{ profile.avatar }}">
-    </div>
-    <div *ngIf="profile.app_role">
-        role : {{ profile.app_role }}
-    </div>
+<p>about-me works!</p>
+<app-double-auth></app-double-auth>
+<div *ngIf="profile" style="text-align: center">
+  <div *ngIf="profile.login">login : {{ profile.login }}</div>
+  <div *ngIf="profile.pseudo">pseudo : {{ profile.pseudo }}</div>
+  <div *ngIf="profile.bio">bio : {{ profile.bio }}</div>
+  <div *ngIf="profile.avatar">
+    <img
+      style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover"
+      alt="avatar"
+      src="{{ profile.avatar }}"
+    />
+  </div>
+  <div *ngIf="profile.app_role">role : {{ profile.app_role }}</div>
 </div>
-<div *ngIf="!found">
-    Not found
-</div>
+<div *ngIf="!found">Not found</div>

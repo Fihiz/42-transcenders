@@ -6,4 +6,5 @@ export interface if_message {
   content: string;
   to: Array<string>;
   avatar: string;
+  role: string;
 }

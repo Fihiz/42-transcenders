@@ -87,6 +87,10 @@ export class UserService {
     return (merge);
   }
 
+  async findOneAppUser(login: string): Promise<WebAppUserEntity> {
+    const user = await this.webUsers.findOne({login: login});
+    return (user);
+  }
   async findOneWebAppUser(login: string) : Promise<WebAppUserEntity> {
     const user : WebAppUserEntity = await getRepository(WebAppUserEntity)
       .createQueryBuilder("userAlias")
@@ -139,6 +143,7 @@ export class UserService {
 
   async registerInfosInDatabase(data: CreateUserDto, res) {
     const webAppUserParam: WebAppUserEntity = data;
+    webAppUserParam.doubleAuth = false;
     const apiUserDataParam: ApiUserDataEntity = data;
     try {
       const isWebAppUserFilled = await this.createAppUser(webAppUserParam);
@@ -155,4 +160,19 @@ export class UserService {
       this.failLog(res);
     }
   }
+
+// JOBENASS TODO
+  async updateAvatar(profile: string, newAvatar: string) {
+    return `http://localhost:3000/cb-user/avatar/${profile}.jpg`;
+    // const userRepository = await getRepository(WebAppUserEntity)
+    // return userRepository.update( profile, { avatar: url, updated: new Date() } )
+    // .then((response) => {
+    //   return url;
+    // })
+    // .catch((error) => {
+    //   return null;
+    // })
+    // return url;
+  }
+
 }

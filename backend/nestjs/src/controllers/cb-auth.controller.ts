@@ -20,14 +20,16 @@ export class AuthController {
                 resp.send({data: "error"});
                 return ;
             }
-            const allUserInfos =  await this.userService.findOneApiUser(userApiInfos.data.login);
-            if (allUserInfos === undefined)
+            const allUserInfos = await this.userService.findOneApiUser(userApiInfos.data.login);
+            const allUserStats = await this.statsService.getStatsByLogin(userApiInfos.data.login);
+            if (allUserInfos === undefined || allUserStats === undefined)
             {
               resp.send({data: userApiInfos.data, isFound: 'not found'});
               return ;
             }
             else {
-                resp.send({data: allUserInfos, isFound: 'found'});
+                allUserInfos.avatar = allUserInfos.avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+                resp.send({data: {...allUserInfos, points_for_ladder: allUserStats.points_for_ladder}, isFound: 'found'});
             }
           }
         catch (error) {

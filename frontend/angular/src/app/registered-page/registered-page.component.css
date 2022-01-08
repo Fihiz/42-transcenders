@@ -11,6 +11,11 @@ app-header {
   background-color: #F9C53F;
   border: 4px solid #F9C53F;
   border-radius: 5px;
+
+  /* To not have the cut sidebar anymore */
+  /* Maybe have to play on it on the @media */
+  /* overflow-y: auto; */
+  /* overflow-x: unset; */
 }
 
 .left-col {

@@ -1,9 +1,14 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { GlobalDataService } from "src/services/sb-global-data.service";
+import { GameTypeEntity } from "src/entities/eb-game-type.entity";
+import { WebAppUserEntity } from "src/entities/eb-web-app-user.entity";
 import { GameService } from '../services/sb-game.service'
+import { PongGameEntity } from "src/entities/eb-pong-game.entity";
 
 @WebSocketGateway({cors:{origin: '*'}})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
+
+	players: {id: string, login: string, gameType: string}[] = [];
 
 	@WebSocketServer()
 	server;
@@ -22,8 +27,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	emitUpdate(test:GameGateway) {
 		test.gameService.updateAll();
-		let dest: string[] = [];
 		test.gameService.games.forEach((game) => {
+			let dest: string[] = [];
 			GlobalDataService.loginIdMap.forEach(user => {
 				user.sockets.filter(socket => socket.gameId === game.id).map((socket) => {return socket.id;}).forEach((socketId) => dest.push(socketId));
 			})
@@ -39,24 +44,24 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('hello')
 	setConnected(@MessageBody() body: any) {
+		let game = this.gameService.games.find((game) => game.id === body.gameId);
+		if (!game)
+		{
+			this.server.to(body.id).emit('welcome', {notFound: true});
+			return ;
+		}
 		console.log(body.login, 'successfully joined the game ', body.gameId);
 		GlobalDataService.loginIdMap.forEach((user, loginInMap) => {
 			const foundUser = user.sockets.find((socket) => socket.id === body.id);
 			if (foundUser)
 			{
 				foundUser.gameId = body.gameId;
-				let game = this.gameService.games.find((game) => game.id === foundUser.gameId);
-				if (game)
-				{
-					if (loginInMap === game.changing.leftPaddle.login || loginInMap === game.changing.rightPaddle.login)
-						user.status = "Playing";
-					else if (user.status === "Online")
-						user.status = "Spectating";
-					this.emitStatusToAll(loginInMap, user.status);
-					this.server.to(foundUser.id).emit('welcome', game);
-				}
-				else
-					console.log(`can't find game in gameGateway:setConnected`);
+				if (loginInMap === game.changing.leftPaddle.login || loginInMap === game.changing.rightPaddle.login)
+					user.status = "Playing";
+				else if (user.status === "Online")
+					user.status = "Spectating";
+				this.emitStatusToAll(loginInMap, user.status);
+				this.server.to(foundUser.id).emit('welcome', game);
 				return ;
 			}
 		});
@@ -127,5 +132,53 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				return ;
 			}
 		});
+	}
+
+	@SubscribeMessage('matchmaking')
+	async setMatchmaking(@MessageBody() body: any) {
+		console.log(`${body.login} join Matchmaking.`);
+		// console.log(`${body.login} - IN:`, this.players);
+		const found = this.players.find((user) => user.gameType === body.gameType );
+		if (found !== undefined) {
+			const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(body.login, body.gameType)
+			if (search) {
+				let player1 = found;
+				let player2 = body;
+				if (Math.floor(Math.random() * 2)) {
+					player1 = body;
+					player2 = found;
+				}
+				const id = await this.gameService.createMatchParty(player1.login, player2.login, search);
+				const party: PongGameEntity = await this.gameService.getPartyById(id);
+				console.log(`${body.login} match with ${player1.login}.`);
+				this.gameService.addGame(party);
+				const index = this.players.findIndex((user) => user.login === found.login)
+				if (index != -1)
+					this.players.splice(index, 1);
+				// console.log(`${body.login} - OUT:`, this.players);
+				this.server.to([player1.id, player2.id]).emit('launchgame', party.game_id);
+			}
+			else {
+				const index = this.players.findIndex((user) => user.login === body.login);
+				if (index == -1)
+					return ;
+				this.players.splice(index, 1);
+			}
+		}
+		else {
+			this.players.push( { id: body.id, login: body.login, gameType: body.gameType } );
+			// console.log(`${body.login} - OUT:`, this.players);
+		}
+	}
+	
+	@SubscribeMessage('cancelmatch')
+	unsetMatchmaking(@MessageBody() body: any) {
+		const index = this.players.findIndex((user) => user.login === body.login);
+		if (index == -1)
+			return ;
+		this.players.splice(index, 1);
+		console.log(`${body.login} left Matchmaking.`);
+		// this.players = [];
+		// console.log("OUT:", this.players);
 	}
 }

@@ -5,6 +5,6 @@ export interface if_conversation {
     type: string;
     name: string;
     password: string;
-    members: Array<string>
+    members: Array<string>;
   }
   

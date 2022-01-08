@@ -13,4 +13,5 @@ export interface if_user {
   mail: string;
   created: Date;
   updated: Date;
+  points_for_ladder: number;
 }

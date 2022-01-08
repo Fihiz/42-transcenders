@@ -1,14 +1,5 @@
-h1 {
+h1, .count {
 	text-align: center;
-}
-
-.count {
-	text-align: center;
-}
-
-.error {
-	text-align: center;
-	color: #F97D64;
 }
 
 .list {
@@ -18,10 +9,10 @@ h1 {
 
 .item {
 	list-style: none;
-	margin: 5px;
-	margin-bottom: 10px;
+	margin: 10px;
+	margin-bottom: 15px;
 	background-color: #D2E3E6;
-	height: 130px;
+	height: 180px;
 	width: 200px;
 	border-style: none;
 	border-radius: 13px;
@@ -29,51 +20,44 @@ h1 {
 	position: relative;
 }
 
-.position {
-	margin: 6px;
-	background-color: #528FAC;
-	min-height: 26px;
-	min-width: 26px;
-	border-style: none;
-	text-align: center;
-	vertical-align: middle;
-	padding-top: 3px;
-	color: #D2E3E6;
-}
-
-.party {
-	border-radius: 15px;
+.container {
+	width: 200px;
+	padding: 0px;
 }
 
 .versus {
 	position: absolute;
-	top: 43%;
-	left: 43%;
+	height: 20px;
+	width: 20px;
+	top: 135px;
+	left: calc(50% - 10px);
 	color: #F9C53F;
-	text-shadow: 0px 0px 5px #08638C;
 }
 
 .left {
 	font-style: italic;
 	position: absolute;
-	top: 8px;
-	left: 10px;
+	top: 110px;
+	width: 100%;
+	padding: 5px;
+	margin: 0px;
+	text-align: left;
 	color: #43B6B2;
-	text-shadow: 0px 0px 5px #C0C0C0;
-	max-width: calc(100% - 10px);
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
 }
 
 .right {
 	font-style: italic;
 	position: absolute;
-	bottom: -10px;
-	right: 10px;
+	bottom: 0px;
+	width: 100%;
+	padding: 5px;
+	padding-bottom: 0px;
+	margin: 0px;
+	text-align: right;
 	color: #F97D64;
-	text-shadow: 0px 0px 5px #F9C53F;
-	max-width: calc(100% - 10px);
+}
+
+.overflow {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;

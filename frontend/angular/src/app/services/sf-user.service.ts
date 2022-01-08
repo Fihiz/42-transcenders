@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
 import { if_message } from '../interfaces/if-message';
-import { Socket } from "ngx-socket-io";
+import { Socket } from 'ngx-socket-io';
 import { if_user } from '../interfaces/if-user';
 import { GlobalService } from './sf-global.service';
 import { BrowserModule } from '@angular/platform-browser';
 // MERGE
 // import * as Cookies from 'js-cookie';
-
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +28,7 @@ export class UserService {
     mail: '',
     created: new Date(),
     updated: new Date(),
+    points_for_ladder: 0,
   };
 
   avatarList: {
@@ -65,34 +65,56 @@ export class UserService {
     },
   ];
 
-  constructor(public global: GlobalService,
-              private router: Router,
-              private socket: Socket,
-              private test: BrowserModule) {}
+  login: string | null = null; // may be not required if we have access to login when we select avatar for the first connection
+
+  constructor(
+    public global: GlobalService,
+    private router: Router,
+    private socket: Socket,
+    private test: BrowserModule
+  ) {}
 
   ngOnInit() {}
 
   async doubleAUth(login: string) {
+    this.global.doubleAuth = (
+      await axios.get(
+        `http://${window.location.host}:3000/double-auth/isActivate`,
+        { params: login }
+      )
+    ).data;
+    console.log('double Auth = ', this.global.doubleAuth);
     if (this.global.doubleAuth === true) {
-      const code = (await axios.get(`http://${window.location.host}:3000/double-auth`, { params: login })).data;
-      console.log('code = ', code);
-      if (code === 'ko') {
+      const resp = (
+        await axios.get(`http://${window.location.host}:3000/double-auth`, {
+          params: login,
+        })
+      ).data;
+      console.log('code = ', resp);
+      if (resp === 'ko') {
         alert('an error as occured when sending the mail');
-        return ('ko');
+        return 'ko';
+      } else {
+        let checkCode;
+        do {
+          checkCode = prompt(
+            'Please enter the code (4 numbers) you received by mail for Double Authentification'
+          );
+        } while ((checkCode as string).length != 4);
+        checkCode = Number(checkCode);
+        return await axios.get(
+          `http://${window.location.host}:3000/double-auth/check`,
+          { params: checkCode }
+        );
       }
-      else {
-        const checkCode = (<HTMLInputElement>document.getElementById(''))?.value
-        return (code !== checkCode ? 'ko' : 'ok');
-      }
-    }
-    else
-      return ('ok');
+    } else return 'ok';
   }
 
   async apiStatus(response: any): Promise<string> {
+    this.login = response.data.login;
     const doubleAuthStatus = await this.doubleAUth(response.data.login);
-    if (doubleAuthStatus === 'ko')
-      return ('ko');
+    console.log('doubleAuth = ', doubleAuthStatus);
+    if (doubleAuthStatus === 'ko') return 'ko';
     if (response.isFound == 'found') {
       this.router.navigate(['/welcome']);
       this.user = response.data;
@@ -108,21 +130,22 @@ export class UserService {
       this.fillUserInfos(response);
       this.registerBackInRequest(response);
     }
-    return ('ok')
+    return 'ok';
   }
-  
+
   introduce(socket: Socket) {
     this.global.socketId = socket.ioSocket.id;
     const message: if_message = {
-        id: socket.ioSocket.id,
-        login: this.global.login as string,
-        content: 'connection',
-        to: ['nobody'],
-        conv_id:0,
-        date: new Date(),
-        avatar: ''
-      }
-      socket.emit('introduction', message);
+      id: socket.ioSocket.id,
+      login: this.global.login as string,
+      content: 'connection',
+      to: ['nobody'],
+      conv_id: 0,
+      date: new Date(),
+      avatar: '',
+      role: '',
+    };
+    socket.emit('introduction', message);
   }
 
   async registerBackInRequest(response: any) {
@@ -138,7 +161,7 @@ export class UserService {
       else {
         this.global.login = response.data.login;
         this.socket.on('connect', () => {
-          this.introduce( this.socket);
+          this.introduce(this.socket);
         });
         this.socket.connect();
         this.router.navigate(['/welcome']);
@@ -151,11 +174,15 @@ export class UserService {
 
   fillUserInfos(response: any): void {
     this.user.login = response.data.login;
-    this.user.avatar = (<HTMLInputElement>(document.getElementById('avatarUrl'))).value;
+    this.user.avatar = (<HTMLInputElement>(
+      document.getElementById('avatarUrl')
+    )).value;
     this.user.first_name = response.data.first_name;
     this.user.last_name = response.data.last_name;
     this.user.mail = response.data.email;
-    this.user.pseudo = (<HTMLInputElement>(document.getElementById('pseudo'))).value;
+    this.user.pseudo = (<HTMLInputElement>(
+      document.getElementById('pseudo')
+    )).value;
     this.user.bio = (<HTMLInputElement>document.getElementById('bio')).value;
   }
 
@@ -167,5 +194,20 @@ export class UserService {
           resolve('OK');
         });
     });
+  }
+
+  async uploadAvatar(file: File) {
+    const formData: FormData = new FormData();
+    formData.append('filename', String(this.login));
+    formData.append('avatar', file);
+    const url: string = `http://${window.location.host}:3000/cb-user/avatar/${file.name}`;
+    return axios
+      .post(url, formData)
+      .then((response: any) => {
+        return response.data;
+      })
+      .catch((error: any) => {
+        return null;
+      });
   }
 }

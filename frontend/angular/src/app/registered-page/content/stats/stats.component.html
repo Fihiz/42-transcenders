@@ -1,1 +1,33 @@
-<p>stats works!</p>
+<h1>Stats profile</h1>
+<p class="count">Last parties played: {{ size }}</p>
+<div class="list">
+	<li class="item" *ngFor="let match of matches">
+		<div class="player1">
+			<img class="avatar_p1" alt="{{ match.player1.login }}" src="{{ match.player1.avatar }}">
+			<p class="pseudo_p1">{{ match.player1.pseudo }}</p>
+			<p [ngClass]="{'win': match.winner === profile,
+						'lost': match.looser === profile}" class="score_p1">{{ match.player1_score }}</p>
+		</div>
+		<p class="versus">VS</p>
+		<div class="player2">
+			<p [ngClass]="{'win': match.winner !== profile,
+						'lost': match.looser !== profile}" class="score_p2">{{ match.player2_score }}</p>
+			<p class="pseudo_p2">{{ match.player2.pseudo }}</p>
+			<img class="avatar_p2" alt="{{ match.player2.login }}" src="{{ match.player2.avatar }}">
+		</div>
+	</li>
+</div>
+<br>
+<p *ngIf="stats" class="count">Others stats:</p>
+<div *ngIf="stats" class="bloc">
+	<p class="title">Number of victories:</p>
+	<p class="data">{{ stats.victory }}</p>
+	<p class="title">Number of defeats:</p>
+	<p class="data">{{ stats.loss }}</p>
+	<p class="title">Highest score:</p>
+	<p class="data">{{ stats.highest_score }}</p>
+	<p class="title">Worst score:</p>
+	<p class="data">{{ stats.worst_score }}</p>
+	<p *ngIf="stats.match_number > 0 && stats.loss > 0" class="title">Ratio (victory / loss):</p>
+	<p *ngIf="stats.match_number > 0 && stats.loss > 0" class="data">{{ ratio }}</p>
+</div>
