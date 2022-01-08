@@ -8,7 +8,6 @@ import { UserService } from 'src/app/services/sf-user.service';
   styleUrls: ['./input-prompt.component.css'],
 })
 export class InputPromptComponent implements OnInit {
-  
   i: number = 0;
   file: File | null = null;
   uploaded: boolean = false;
@@ -36,15 +35,22 @@ export class InputPromptComponent implements OnInit {
     this.file = event.target.files[0];
     if (this.file !== null) {
       try {
-        const avatar: Promise<string> | null = await this.userService.uploadAvatar(this.file);
-        if (this.uploaded === true)
-          this.userService.avatarList.pop();
+        const avatar: Promise<string> | null =
+          await this.userService.uploadAvatar(this.file);
+        if (this.uploaded === true) this.userService.avatarList.pop();
         if (avatar) {
-          this.userService.avatarList.push( { alt: "uploaded_file", url: avatar + "?" + String(Math.random() * 100000) } );
+          /* To load the uploaded avatar at index 0 */
+          this.userService.avatarList.splice(0, 0, {
+            alt: 'uploaded_file',
+            url: avatar + '?' + String(Math.random() * 100000),
+          });
+          // this.userService.avatarList.push({
+          //   alt: 'uploaded_file',
+          //   url: avatar + '?' + String(Math.random() * 100000),
+          // });
           this.uploaded = true;
         }
-      }
-      catch(error) {
+      } catch (error) {
         console.error(error);
       }
     }
