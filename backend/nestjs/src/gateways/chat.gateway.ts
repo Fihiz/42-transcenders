@@ -120,7 +120,7 @@ export class ChatGateway {
     const conv_id = (await this.ConvService.findOneConversationByName(emission.data.roomName))?.conv_id;
     const user = await this.chatterService.findOneChatter(conv_id, emission.login);
     if (user) {
-      response.emit('error', "You have been banned from this room");
+      response.emit('error', "Why would you join again ? You may have a problem of ego");
       return;
     }
     const conv = await this.ConvService.joinRoom(emission, emission.login, false);
