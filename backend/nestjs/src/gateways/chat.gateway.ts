@@ -95,6 +95,8 @@ export class ChatGateway {
         return this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
 			newConvDatas.conv_id = convId;
 			this.server.to(this.chatService.getReceiver(new Set(newConvDatas.members), emission.login)).emit('newConversation', newConvDatas);
+      //For View Room in chat
+      this.server.emit('newAvailableRoomsInApp', newConvDatas);
 		}
     else 
       this.server.to(emission.socketId).emit('error', tmp);
@@ -103,6 +105,10 @@ export class ChatGateway {
 	@SubscribeMessage('allConversations')
 	async getConv(@MessageBody() emission) {
 		this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('allConversations', await this.ConvService.findAllConv(emission.login));
+	}
+  @SubscribeMessage('allAvailableRoomsInApp')
+	async getAllAvailableRoomsInApp(@MessageBody() emission) {
+		this.server.emit('allAvailableRoomsInApp', await this.ConvService.findAllAvailableRoomsInApp());
 	}
 
 	@SubscribeMessage('joinRoom')
@@ -183,6 +189,8 @@ export class ChatGateway {
     if (conv.type === 'private') {
       this.ConvService.destroyRoom(conv);
       this.server.to(members).emit('youAreBan', {conv_id: conv_id, conv_name: conv_name});
+      //For View Room in chat
+      this.server.emit('deleteAvailableRoomsInApp', {conv_id: conv_id, conv_name: conv_name});
     }
     else {
       const user = await this.chatterService.findOneChatter(emission.data.conv_id, emission.data.login)

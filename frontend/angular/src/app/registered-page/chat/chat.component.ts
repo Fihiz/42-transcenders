@@ -33,6 +33,7 @@ export class ChatComponent implements OnInit {
   login: string = '';
   convInfo: Map<string, { role: string; avatar: string }> = new Map();
   inputChatAndPlay: string = '';
+  listAllAvailableRooms: Array<if_conversation> = [];
 
   constructor(
     private socket: Socket,
@@ -60,6 +61,10 @@ export class ChatComponent implements OnInit {
     if (event.key === 'Enter' && this.currentConv.name) {
       this.onSendMessage();
     }
+  }
+
+  onThreeDotsClick() {
+    this.socket.emit('allAvailableRoomsInApp');
   }
 
   onSelectOneToOneUserConv() {
@@ -441,6 +446,25 @@ export class ChatComponent implements OnInit {
       ) as if_conversation;
       conv.password = data.password;
       conv.type = 'protected';
+    });
+    //For View Room in chat
+    this.socket.on('allAvailableRoomsInApp', (data: any) => {
+      console.log('allAvailableRoomsInApp', data);
+      this.listAllAvailableRooms = data;
+    });
+    //For View Room in chat
+    this.socket.on('newAvailableRoomsInApp', (data: any) => {
+      this.listAllAvailableRooms.push(data);
+    });
+    //For View Room in chat
+    this.socket.on('deleteAvailableRoomsInApp', (data: any) => {
+      if (this.listAllAvailableRooms.length === 0)
+        this.listAllAvailableRooms = []; /* Non-sens */
+      const index = this.listAllAvailableRooms.findIndex(
+        (conv) => conv.conv_id === data.conv_id && conv.name === data.conv_name
+      );
+      if (index >= 0) this.listAllAvailableRooms.splice(index, 1);
+      if (this.currentConv.conv_id === data.conv_id) this.clearConv();
     });
   }
 }

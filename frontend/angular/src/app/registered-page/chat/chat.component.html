@@ -22,14 +22,15 @@
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
+            (click)="onThreeDotsClick()"
           >
             <i class="bi bi-three-dots-vertical"></i>
           </button>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <!--View rooms-->
-            <li>
-              <a class="dropdown-item">View Room &raquo; </a>
+            <!--View rooms to delete-->
+            <!-- <li>
+              <a class="dropdown-item">View Room (to delete) &raquo; </a>
               <ul class="dropdown-menu dropdown-submenu">
                 <li>
                   <div class="viewAllRooms">
@@ -38,6 +39,26 @@
                         {{ room.name }}
                         <br />
                       </div>
+                    </span>
+                  </div>
+                </li>
+              </ul>
+            </li> -->
+            <!--View rooms OFFICIAL-->
+            <!-- To put back -->
+            <li *ngIf="listAllAvailableRooms.length > 0">
+              <!-- <li> -->
+              <a class="dropdown-item">View group rooms &raquo; </a>
+              <ul class="dropdown-menu dropdown-submenu">
+                <li>
+                  <div class="viewAllRooms">
+                    <span *ngFor="let room of listAllAvailableRooms">
+                      <span *ngIf="room.type !== 'private'">
+                        <div class="style-txt">
+                          {{ room.name }} - {{ room.type }}
+                          <br />
+                        </div>
+                      </span>
                     </span>
                   </div>
                 </li>
