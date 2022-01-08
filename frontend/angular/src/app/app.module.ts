@@ -28,6 +28,8 @@ import { GameComponent } from './registered-page/content/game/game.component';
 import { DoubleAuthComponent } from './auth-page/double-auth/double-auth.component';
 
 import { GlobalService } from './services/sf-global.service';
+import { SuperAdminComponent } from './registered-page/content/super-admin/super-admin.component';
+import { ModeratorComponent } from './registered-page/content/moderator/moderator.component';
 
 // MERGE
 // const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoConnect: false} };
@@ -58,6 +60,8 @@ const config: SocketIoConfig = {
     NotFoundComponent,
     GameComponent,
     DoubleAuthComponent,
+    SuperAdminComponent,
+    ModeratorComponent,
   ],
   imports: [
     BrowserModule,

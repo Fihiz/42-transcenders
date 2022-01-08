@@ -22,6 +22,16 @@
         </button>
         <div class="collapse show" id="home-collapse">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <li *ngIf="currentAppRole === 'superadmin'">
+              <a class="link-dark rounded" routerLink="profile/super-admin"
+                >Super Admin</a
+              >
+            </li>
+            <li *ngIf="currentAppRole === 'moderator'">
+              <a class="link-dark rounded" routerLink="profile/moderator"
+                >Moderator</a
+              >
+            </li>
             <li>
               <a
                 class="link-dark rounded"
@@ -39,8 +49,6 @@
                 >My stats</a
               >
             </li>
-            <li *ngIf="currentAppRole === 'superadmin'">Super admin</li>
-            <li *ngIf="currentAppRole === 'moderator'">Moderator</li>
           </ul>
         </div>
       </li>
