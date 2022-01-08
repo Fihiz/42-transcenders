@@ -9,6 +9,7 @@ import { PongGameEntity } from "src/entities/eb-pong-game.entity";
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	players: {id: string, login: string, gameType: string}[] = [];
+	socketsOnPlayComponent: {id: string, login: string}[] = [];
 
 	@WebSocketServer()
 	server;
@@ -46,12 +47,30 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	isInPendingQueue(@MessageBody() body: any) {
 		let requestLogin: string;
 		GlobalDataService.loginIdMap.forEach((user, login) => {
-			if (user.sockets.find(socket => socket.id === body))
+			if (user.sockets.find(socket => socket.id === body.id))
 				requestLogin = login;
 		});
-		const user = this.players.find((user) => user.login === requestLogin)
+		const user = this.players.find((user) => user.login === requestLogin);
+		this.socketsOnPlayComponent.push({id: body.id, login: requestLogin});
 		if (user)
-			this.server.to(body).emit('isInPendingQueue', {selected: user.gameType});
+			this.server.to(body.id).emit('isInPendingQueue', {selected: user.gameType});
+	}
+
+	@SubscribeMessage('leavingPlay')
+	userLeavePlayComponent(@MessageBody() body: any) {
+		const index: number = this.socketsOnPlayComponent.findIndex((user) => user.id === body.id);
+		const userLogin: string = this.socketsOnPlayComponent[index].login;
+		if (index == -1)
+			return ;
+		this.socketsOnPlayComponent.splice(index, 1);
+		if (!this.socketsOnPlayComponent.find((user) => user.login === userLogin))
+		{
+			const index = this.players.findIndex((user) => user.login === userLogin);
+			if (index == -1)
+				return ;
+			this.players.splice(index, 1);
+			console.log(`${userLogin} left Matchmaking.`);
+		}
 	}
 
 	@SubscribeMessage('hello')
@@ -167,8 +186,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				const index = this.players.findIndex((user) => user.login === found.login)
 				if (index != -1)
 					this.players.splice(index, 1);
-				// console.log(`${body.login} - OUT:`, this.players);
-				this.server.to([player1.id, player2.id]).emit('launchgame', party.game_id);
+				const dest = this.socketsOnPlayComponent.filter((blabla) => (blabla.login === player1.login || blabla.login === player2.login)).map((blabla2) => blabla2.id);
+				this.server.to(dest).emit('isInPendingQueue', { navigate: `/pong/game/${party.game_id}`});
 			}
 			else {
 				const index = this.players.findIndex((user) => user.login === body.login);

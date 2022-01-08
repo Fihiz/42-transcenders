@@ -175,6 +175,8 @@ export class GameService {
 					updated: new Date,
 				});
 			}
+			await this.statsService.updateAchievementsOf(game.changing.leftPaddle.login);
+			await this.statsService.updateAchievementsOf(game.changing.rightPaddle.login);
 			this.games.splice(index, 1);
 		}
 		else

@@ -88,9 +88,6 @@ export class GameService {
       login: this.global.login,
       gameType: type,
     });
-    globalSocket.on('launchgame', (game: any) => {
-      this.router.navigate([`/pong/game/${game}`]);
-    });
   }
 
   emitCancelForPlay() {
@@ -259,7 +256,6 @@ export class GameService {
             test.router.navigate([
               `/profile/about-me/${test.game.leftPaddle.login}`,
             ]);
-          // console.log('player1');
           else if (
             x >=
               test.game.board.width -
@@ -272,7 +268,6 @@ export class GameService {
             test.router.navigate([
               `/profile/about-me/${test.game.rightPaddle.login}`,
             ]);
-          // console.log('player2');
         }
       }
 
@@ -4922,11 +4917,9 @@ export class GameService {
             '                    ',
             '                    ',
           ];
-          // console.log(this.charX, this.charY);
           this.itemImageData = this.gameContext.createImageData(50, 50);
           this.wallImageData = this.gameContext.createImageData(50, 50);
           this.ladderImageData = this.gameContext.createImageData(50, 50);
-          // console.log(this.map);
           for (let i = 0; i < this.itemImageData.data.length; i += 4) {
             const x = Math.floor(i / 4) % 50;
             const y = Math.floor(i / 200);
@@ -5460,7 +5453,6 @@ export class GameService {
 
         callDrawLoop(test: Game) {
           test.drawLoop(test);
-          console.log(test, frameId);
           if (frameId != -1 && loop == 2)
             frameId = requestAnimationFrame(test.callback);
         }

@@ -11,12 +11,22 @@ export class AboutMeComponent implements OnInit {
   user: string;
   profile: any;
   found: boolean;
+  unlockedAchievements: number;
+  totalNumberOfAchievements: number;
+  achievements: {
+      date: Date,
+      detail: string,
+      icon: string,
+  }[];
 
   constructor(private route: ActivatedRoute) {
     console.log('test1');
     this.user = '';
     this.profile = undefined;
     this.found = true;
+    this.achievements = [];
+    this.totalNumberOfAchievements = 0;
+    this.unlockedAchievements = 0;
   }
 
   async ngOnInit() {
@@ -33,5 +43,15 @@ export class AboutMeComponent implements OnInit {
       });
     if (this.profile === undefined) this.found = false;
     else this.found = true;
+
+    await axios.get(`http://${window.location.host}:3000/cb-stats/achievements/${this.user}`)
+      .then((response: any) => {
+        this.achievements = response.data.achievements;
+        this.totalNumberOfAchievements = response.data.total_number_of_achievements;
+        this.unlockedAchievements = this.achievements.length;
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
   }
 }

@@ -23,15 +23,21 @@ export class PlayComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.socket.on('isInPendingQueue', (body: any) => {
-      this.selected = body.selected;
+      if (body.navigate)
+      {
+        const nav: string = body.navigate;
+        this.router.navigate([nav]);
+      }
+      else
+        this.selected = body.selected;
     });
-    this.socket.emit('isInPendingQueue', this.socket.ioSocket.id);
+    this.socket.emit('isInPendingQueue', { id: this.socket.ioSocket.id });
     this.getDisplay();
   }
   
   ngOnDestroy() {
+    this.socket.emit('leavingPlay', { id: this.socket.ioSocket.id });
     this.socket.removeAllListeners('isInPendingQueue');
-    this.unsetParty();
   }
 
   setParty(type: string) {

@@ -12,5 +12,23 @@
     />
   </div>
   <div *ngIf="profile.app_role">role : {{ profile.app_role }}</div>
+  <div>
+    <h2>Achievements: {{ unlockedAchievements }} / {{ totalNumberOfAchievements }}</h2>
+    <table *ngIf="unlockedAchievements">
+      <tr *ngFor="let achievement of achievements">
+        <td>
+          <img src="{{ achievement.icon }}">
+        </td>
+        <td>
+          <p>
+            {{ achievement.detail }}
+          </p>
+        </td>
+        <td>
+            {{ achievement.date }}
+        </td>
+      </tr>
+    </table>
+  </div>
 </div>
 <div *ngIf="!found">Not found</div>
