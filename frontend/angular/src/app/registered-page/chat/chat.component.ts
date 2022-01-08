@@ -446,6 +446,9 @@ export class ChatComponent implements OnInit {
       ) as if_conversation;
       conv.password = data.password;
       conv.type = 'protected';
+      // need to change the room type into the Conv entity when we change password as empty
+      // if (data.password) conv.type = 'protected';
+      // else conv.type = 'public';
     });
     //For View Room in chat
     this.socket.on('allAvailableRoomsInApp', (data: any) => {

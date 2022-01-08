@@ -28,7 +28,7 @@ export class UserService {
     mail: '',
     created: new Date(),
     updated: new Date(),
-    points_for_ladder: "000000",
+    points_for_ladder: '000000',
   };
 
   avatarList: {
@@ -92,7 +92,7 @@ export class UserService {
       ).data;
       console.log('code = ', resp);
       if (resp === 'ko') {
-        alert('an error as occured when sending the mail');
+        alert('An error has occured when sending the email');
         return 'ko';
       } else {
         let checkCode;

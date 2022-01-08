@@ -89,8 +89,10 @@ export class UserService {
 
   async findOneAppUser(login: string): Promise<WebAppUserEntity> {
     const user = await this.webUsers.findOne({login: login});
+    console.log (`user is`, user)
     return (user);
   }
+
   async findOneWebAppUser(login: string) : Promise<WebAppUserEntity> {
     const user : WebAppUserEntity = await getRepository(WebAppUserEntity)
       .createQueryBuilder("userAlias")
