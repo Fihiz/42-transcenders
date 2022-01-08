@@ -15,7 +15,7 @@ import { WelcomeComponent } from './registered-page/content/welcome/welcome.comp
 const routes: Routes = [
   { path: 'auth', component: AuthComponent },
   { path: 'welcome', component: WelcomeComponent, canActivate: [AuthGuard]},
-  { path: 'profile/about-me', component: AboutMeComponent, canActivate: [AuthGuard]},
+  { path: 'profile/about-me/:login', component: AboutMeComponent, canActivate: [AuthGuard]},
   { path: 'profile/my-friends', component: FriendsComponent, canActivate: [AuthGuard]},
   { path: 'profile/my-stats', component: StatsComponent, canActivate: [AuthGuard]},
   { path: 'pong/play', component: PlayComponent, canActivate: [AuthGuard]},

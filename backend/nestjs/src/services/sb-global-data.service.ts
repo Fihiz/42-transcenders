@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GlobalDataService {
-    static loginIdMap: Map<string, Array<string>> = new Map<string, Array<string>>();
+    static loginIdMap: Map<string, {status: string, sockets: Array<{id: string, gameId: number}>}>
+            = new Map<string, {status: string, sockets: Array<{id: string, gameId: number}>}>();
 }
 
 //possible de faire une interface plus tard

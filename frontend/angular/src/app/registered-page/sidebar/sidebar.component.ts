@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { GlobalService } from 'src/app/services/sf-global.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -9,7 +10,7 @@ export class SidebarComponent {
 
   @Output() handleLogOutClick = new EventEmitter();
 
-  constructor() { }
+  constructor(public global: GlobalService) { }
 
   onLogOut () {
     this.handleLogOutClick.emit('event');

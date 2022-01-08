@@ -8,30 +8,223 @@ import { CreatePartyDto } from 'src/dtos/CreateParty.dto';
 
 import { status } from 'src/entities/eb-pong-game.entity';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
+import { StatsService } from './sb-stats.service';
 
 @Injectable()
 export class GameService {
 
   	games: Game[];
 
-	constructor(@InjectRepository(GameTypeEntity) private gameTypes: Repository<GameTypeEntity>, @InjectRepository(PongGameEntity) private pongGames: Repository<PongGameEntity>) {
+	constructor(@InjectRepository(GameTypeEntity) private gameTypes: Repository<GameTypeEntity>, @InjectRepository(PongGameEntity) private pongGames: Repository<PongGameEntity>, private statsService : StatsService) {
 		this.games = [];
+		this.OnInit();
 	}
 
-	addGame(id: number, player1: string, player2: string/*, type de game*/) {
-		// TO DO create into DB
-		console.log(id, player1, player2);
+	async OnInit() {
+		const parties: PongGameEntity[] = await this.getAllPartiesInProgress();
+		parties.forEach((game) => {
+			this.addGame(game.game_id, (game.player1 as unknown as WebAppUserEntity), (game.player2 as unknown as WebAppUserEntity));
+		})
+		// [
+		//   PongGameEntity {
+		//     game_id: 2,
+		//     player1_score: 0,
+		//     player2_score: 0,
+		//     game_status: 'playing',
+		//     winner: null,
+		//     looser: null,
+		//     created: 2022-01-04T10:56:29.605Z,
+		//     updated: 2022-01-04T10:56:29.605Z,
+		//     player1: WebAppUserEntity {
+		//       login: 'rlepart',
+		//       pseudo: 'test',
+		//       avatar: 'https://cdn.intra.42.fr/users/rlepart.jpg',
+		//       status: 'online',
+		//       bio: 'test\n',
+		//       pending_queue: false,
+		//       banned: false,
+		//       admonishement: 0,
+		//       app_role: 'user',
+		//       created: 2022-01-04T10:48:23.715Z,
+		//       updated: 2022-01-04T10:48:23.715Z,
+		//       doubleAuth: false
+		//     },
+		//     player2: WebAppUserEntity {
+		//       login: 'ttest',
+		//       pseudo: 'ok',
+		//       avatar: 'gfd',
+		//       status: 'offline',
+		//       bio: 'dfg',
+		//       pending_queue: false,
+		//       banned: false,
+		//       admonishement: 0,
+		//       app_role: 'User',
+		//       created: 2022-01-04T10:56:29.580Z,
+		//       updated: 2022-01-04T10:56:29.580Z,
+		//       doubleAuth: false
+		//     },
+		//     game_type_id: GameTypeEntity {
+		//       game_type_id: 1,
+		//       game_aspect: 'default',
+		//       ball_size: 1,
+		//       map_type: 'default',
+		//       initial_speed: 1,
+		//       racket_size: 1
+		//     }
+		//   }
+		// ]
+	}
+
+	addGame(id: number, player1: WebAppUserEntity, player2: WebAppUserEntity/*, type de game*/) {
 		this.games.push(new Game(id, player1, player2));
+		console.log("PASS add game");
 		// this.games.push(new Game(id, player1, player2, game params));
 	}
 
+	setReady(gameId: number, login: string) {
+		const game = this.games.find(game => game.id === gameId);
+		if (game && login)
+		{
+			if (login === game.changing.leftPaddle.login &&
+				game.changing.leftPaddle.ready === false)
+			{
+				game.changing.leftPaddle.ready = true;
+				if (game.changing.rightPaddle.ready === true)
+					game.changing.countdown = Math.min(game.changing.countdown, 180);
+				else
+				{
+					game.changing.countdown = 1800;
+				}
+			}
+			else if (login === game.changing.rightPaddle.login &&
+				game.changing.rightPaddle.ready === false)
+			{
+				game.changing.rightPaddle.ready = true;
+				if (game.changing.leftPaddle.ready === true)
+					game.changing.countdown = Math.min(game.changing.countdown, 180);
+				else
+				{
+					game.changing.countdown = 1800;
+				}
+			}
+		}
+	}
+
+	keyboard(gameId: number, login: string, key: string, state: boolean)
+	{
+		const game = this.games.find(game => game.id === gameId);
+		if (game)
+		{
+			if (login === game.changing.leftPaddle.login)
+			{
+				if (key == 'ArrowUp')
+					game.changing.leftPaddle.up = state;
+				else if (key == 'ArrowDown')
+					game.changing.leftPaddle.down = state;
+			}
+			else if (login === game.changing.rightPaddle.login)
+			{
+				if (key == 'ArrowUp')
+					game.changing.rightPaddle.up = state;
+				else if (key == 'ArrowDown')
+					game.changing.rightPaddle.down = state;
+			}
+		}
+	}
+
 	updateAll() {
-		this.games.forEach((game, index) => {
+		this.games.forEach(async (game, index) => {
 		if (game.changing.status === 'Finished')
 		{
-			// this.updatePartyStatus("Finished");
-			// // TO DO push sur la DB
-			// TO DO changer les status des joueurs
+			game.changing.status = 'Updating';
+			console.log(game.id);
+			if (game.changing.leftPaddle.score === 10)
+			{
+				await this.updateParty(game.id, {
+					player1_score: game.changing.leftPaddle.score,
+					player2_score: game.changing.rightPaddle.score,		
+					game_status: status.Finished,
+					winner: game.changing.leftPaddle.login,					
+					looser: game.changing.rightPaddle.login,
+					updated: new Date(),
+				});
+				// WINNER
+				await this.statsService.updateAfterGame(game.changing.leftPaddle.login, {
+					match_number: () => `match_number + 1`,
+					victory: () => `victory + 1`,
+					points_for_ladder: () => `points_for_ladder + 2 + ${game.changing.leftPaddle.score}`,
+					scored_points: () => `scored_points + ${game.changing.leftPaddle.score}`,
+					adversary_points: () => `adversary_points + ${game.changing.rightPaddle.score}`,
+					ball_hit: () => `ball_hit + ${game.changing.leftPaddle.hit}`,
+					updated: new Date,
+				});
+				// LOSER
+				await this.statsService.updateAfterGame(game.changing.rightPaddle.login, {
+					match_number: () => `match_number + 1`,
+					loss: () => `loss + 1`,
+					points_for_ladder: () => `points_for_ladder + ${game.changing.rightPaddle.score}`,
+					scored_points: () => `scored_points + ${game.changing.rightPaddle.score}`,
+					adversary_points: () => `adversary_points + ${game.changing.leftPaddle.score}`,
+					ball_hit: () => `ball_hit + ${game.changing.rightPaddle.hit}`,
+					updated: new Date,
+				});
+			}
+			else if (game.changing.rightPaddle.score === 10)
+			{
+				await this.updateParty(game.id, {
+					player1_score: game.changing.leftPaddle.score,
+					player2_score: game.changing.rightPaddle.score,
+					game_status: status.Finished,
+					winner: game.changing.rightPaddle.login,					
+					looser: game.changing.leftPaddle.login,
+					updated: new Date(),
+				});
+				// WINNER
+				await this.statsService.updateAfterGame(game.changing.rightPaddle.login, {
+					match_number: () => `match_number + 1`,
+					victory: () => `victory + 1`,
+					points_for_ladder: () => `points_for_ladder + 2 + ${game.changing.rightPaddle.score}`,
+					scored_points: () => `scored_points + ${game.changing.rightPaddle.score}`,
+					adversary_points: () => `adversary_points + ${game.changing.leftPaddle.score}`,
+					ball_hit: () => `ball_hit + ${game.changing.rightPaddle.hit}`,
+					updated: new Date,
+				});
+				// LOSER
+				await this.statsService.updateAfterGame(game.changing.leftPaddle.login, {
+					match_number: () => `match_number + 1`,
+					loss: () => `loss + 1`,
+					points_for_ladder: () => `points_for_ladder + ${game.changing.leftPaddle.score}`,
+					scored_points: () => `scored_points + ${game.changing.leftPaddle.score}`,
+					adversary_points: () => `adversary_points + ${game.changing.rightPaddle.score}`,
+					ball_hit: () => `ball_hit + ${game.changing.leftPaddle.hit}`,
+					updated: new Date,
+				});
+			}
+			else
+			{
+				await this.updateParty(game.id, {
+					player1_score: game.changing.leftPaddle.score,
+					player2_score: game.changing.rightPaddle.score,
+					game_status: status.Finished,
+					updated: new Date(),
+				});
+				await this.statsService.updateAfterGame(game.changing.leftPaddle.login, {
+					match_number: () => `match_number + 1`,
+					points_for_ladder: () => `points_for_ladder + ${game.changing.leftPaddle.score}`,
+					scored_points: () => `scored_points + ${game.changing.leftPaddle.score}`,
+					adversary_points: () => `adversary_points + ${game.changing.rightPaddle.score}`,
+					ball_hit: () => `ball_hit + ${game.changing.leftPaddle.hit}`,
+					updated: new Date,
+				});
+				await this.statsService.updateAfterGame(game.changing.rightPaddle.login, {
+					match_number: () => `match_number + 1`,
+					points_for_ladder: () => `points_for_ladder + ${game.changing.rightPaddle.score}`,
+					scored_points: () => `scored_points + ${game.changing.rightPaddle.score}`,
+					adversary_points: () => `adversary_points + ${game.changing.leftPaddle.score}`,
+					ball_hit: () => `ball_hit + ${game.changing.rightPaddle.hit}`,
+					updated: new Date,
+				});
+			}
 			this.games.splice(index, 1);
 		}
 		else
@@ -42,7 +235,9 @@ export class GameService {
 	
 	async getAllTypesOfGame(): Promise<GameTypeEntity[]> | undefined {
 		const typeRepository = await getRepository(GameTypeEntity);
-		return typeRepository.find()
+		return typeRepository.find({
+			order: { game_type_id: "ASC" }
+		})
 		.then((response) => {
 			const types: GameTypeEntity[] = response;
 			console.log(`Get all types of game has succeeded.`);
@@ -59,7 +254,8 @@ export class GameService {
 		const partyRepository = await getRepository(PongGameEntity);
 		return partyRepository.find({
 			relations: ["player1", "player2", "game_type_id"],
-			where: { game_status: status.Playing }
+			where: { game_status: status.Playing },
+			order: { created: "ASC" }
 		})
 		.then((response) => {
 			const parties: PongGameEntity[] = response;
@@ -73,10 +269,31 @@ export class GameService {
 		});
 	}
 
-	async searchOneTypeOfGame(createPartyDto: CreatePartyDto): Promise<GameTypeEntity> | undefined {
+	async getAllPartiesFinishedByLogin(login: string): Promise<PongGameEntity[]> {
+		const partyRepository = getRepository(PongGameEntity);
+		return partyRepository.find({
+			relations: ["player1", "player2"],
+			where: [
+				{ player1: login, game_status: status.Finished },
+				{ player2: login, game_status: status.Finished }
+			],
+		})
+		.then((response) => {
+			const parties: PongGameEntity[] = response;
+			console.log(`Get parties finished by login has succeeded.`);
+			return parties;
+		})
+		.catch((error) => {
+			console.log(`Get parties finished by login has failed...`);
+			console.log(`details: ${error}`);
+			return undefined;
+		})
+	}
+
+	async searchOneTypeOfGame(login: string, map_type: string): Promise<GameTypeEntity> {
 		const typeRepository = getRepository(GameTypeEntity);
 		return typeRepository.findOne({
-			where: { map_type: createPartyDto.map_type }
+			where: { type: map_type }
 		})
 		.then((response) => {
 			const type = response;
@@ -85,111 +302,6 @@ export class GameService {
 		})
 		.catch((error) => {
 			console.log(`Search new parties has failed...`);
-			console.log(`details: ${error}`);
-			return undefined;
-		})
-	}
-
-	async searchOnePartyInProgress(createPartyDto: CreatePartyDto): Promise<PongGameEntity> | undefined {
-		const pongRepository = getRepository(PongGameEntity);
-		return pongRepository.findOne({
-			relations: ["player1", "player2", "game_type_id"],
-			where: [
-				{ player1: createPartyDto.login, game_status: Not(status.Finished) },
-				{ player2: createPartyDto.login, game_status: Not(status.Finished) }
-			],
-		})
-		.then((response) => {
-			const party = response;
-			console.log(`Search one party in progress has succeeded.`);
-			return party;
-		})
-		.catch((error) => {
-			console.log(`Search one party in progress has failed...`);
-			console.log(`details: ${error}`);
-			return undefined;
-		})
-	}
-
-	async searchAllNewParties(createPartyDto: CreatePartyDto, type: GameTypeEntity): Promise<PongGameEntity[]> {
-		const pongRepository = getRepository(PongGameEntity);
-		return pongRepository.find({
-			where: { game_status: status.Creation, player1: Not(createPartyDto.login), player2: null, game_type_id: type.game_type_id }
-		})
-		.then((response) => {
-			const parties: PongGameEntity[] = response;
-			console.log(`Search new parties has succeeded.`);
-			return parties;
-		})
-		.catch((error) => {
-			console.log(`Search new parties has failed...`);
-			console.log(`details: ${error}`);
-			return undefined;
-		});
-	}
-
-	async createParty(createPartyDto: CreatePartyDto, type: GameTypeEntity): Promise<PongGameEntity> | undefined {
-		const pongRepository = getRepository(PongGameEntity);
-		const party: PongGameEntity = {
-			game_id: 0,
-			player1: createPartyDto.login,
-			player2: null,
-			player1_score: 0,
-			player2_score: 0,
-			game_status: status.Creation,
-			winner: null,
-			looser: null,
-			game_type_id: type.game_type_id,
-			// room_id: room.conv_id,
-			created: new Date(),
-			updated: new Date(),
-		}
-		return pongRepository.insert(party)
-		.then((result) => {
-			const id: number = result.identifiers[0].game_id;
-			console.log(`New Party has created. (id: ${id})`);
-			return pongRepository.findOne({
-				where: { game_id: id }
-			});
-		})
-		.catch((error) => {
-			console.log(`New party has failed...`);
-			console.log(`details: ${error}`);
-			return undefined;
-		});
-	}
-
-	async matchParty(parties: PongGameEntity[]): Promise<PongGameEntity> | undefined {
-		const pongRepository = getRepository(PongGameEntity);
-		const set: number [] = [];
-		parties.forEach(element => {
-			set.push(element.game_id);
-		});
-		const selected: number = set[Math.floor(Math.random() * set.length)];
-		return pongRepository.findOne({
-			relations: ["player1", "player2", "game_type_id"],
-			where: { game_id: selected }
-		})
-		.then((response) => {
-			console.log(`Match party has succeeded.`);
-			return response;
-		})
-		.catch((error) => {
-			console.log(`Match party has failed...`);
-			console.log(`details: ${error}`);
-			return undefined;
-		})
-	}
-	
-	async joinParty(party: PongGameEntity, createPartyDto: CreatePartyDto): Promise<PongGameEntity> | undefined {
-		const pongRepository = getRepository(PongGameEntity);
-		return pongRepository.update( party.game_id, { player2: createPartyDto.login, game_status: status.Playing, updated: new Date() } )
-		.then((response) => {
-			console.log(`Join party has succeeded.`);
-			return party;
-		})
-		.catch((error) => {
-			console.log(`Join party has failed...`);
 			console.log(`details: ${error}`);
 			return undefined;
 		})
@@ -234,20 +346,61 @@ export class GameService {
 		})
 	}
 
-	async deletePartyById(id: number): Promise<any> | undefined {
+	// async deletePartyById(id: number): Promise<any> | undefined {
+	// 	const pongRepository = getRepository(PongGameEntity);
+	// 	return pongRepository.delete(id)
+	// 	.then((response) => {
+	// 		console.log(`Delete party by id has succeeded.`);
+	// 		return true;
+	// 	})
+	// 	.catch((error) => {
+	// 		console.log(`Delete party by id has failed...`);
+	// 		console.log(`details: ${error}`);
+	// 		return false;
+	// 	})
+	// }
+
+	async createMatchParty(player1: string, player2: string, type: GameTypeEntity): Promise<number> | undefined {
 		const pongRepository = getRepository(PongGameEntity);
-		return pongRepository.delete(id)
-		.then((response) => {
-			console.log(`Delete party by id has succeeded.`);
-			return true;
+		const party: PongGameEntity = {
+			game_id: 0,
+			player1: player1,
+			player2: player2,
+			player1_score: 0,
+			player2_score: 0,
+			game_status: status.Playing,
+			winner: null,
+			looser: null,
+			game_type_id: type.game_type_id,
+			created: new Date(),
+			updated: new Date(),
+		}
+		return pongRepository.insert(party)
+		.then((result) => {
+			const id: number = result.identifiers[0].game_id;
+			console.log(`New Party has created. (id: ${id})`);
+			return id;
 		})
 		.catch((error) => {
-			console.log(`Delete party by id has failed...`);
+			console.log(`New party has failed...`);
 			console.log(`details: ${error}`);
-			return false;
-		})
+			return undefined;
+		});
 	}
 
+	async updateParty(id: number, update: object) {
+        const pongRepository = getRepository(PongGameEntity);
+        return pongRepository.update( id, update )
+        .then((response) => {
+            console.log(`Update party has succeeded.`);
+            return response;
+        })
+        .catch((error) => {
+            console.log(`Update party has failed...`);
+            console.log(`details: ${error}`);
+            return undefined;
+        })
+    }
 }
 
 
@@ -274,8 +427,8 @@ class Game {
 		rightPaddle : Paddle,
 	};
   
-	constructor(id: number, player1: string, player2: string) {
-		console.log(id, player1, player2)
+	constructor(id: number, player1: WebAppUserEntity, player2: WebAppUserEntity) {
+		// console.log(id, player1, player2)
 		let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
 		this.board = {
 			color: "#08638C",
@@ -301,7 +454,7 @@ class Game {
 	}
   
 	update() {
-		if (this.changing.status === 'Finished')
+		if (this.changing.status === 'Finished' || this.changing.status === 'Updating')
 			return;
 
 
@@ -320,7 +473,7 @@ class Game {
 				this.changing.status = "Ongoing";
 			return ;
 		}
-  
+
 		this.changing.ball.update(this);
 	}
 }
@@ -358,17 +511,23 @@ class Ball {
 		if(this.dx < 0 &&
 		this.x < game.changing.leftPaddle.x + game.changing.leftPaddle.width &&
 		this.x + this.width > game.changing.leftPaddle.x)
-		if (this.y < game.changing.leftPaddle.y + game.changing.leftPaddle.length &&
-			this.y + this.height > game.changing.leftPaddle.y)
-			this.dx *= -1;
+			if (this.y < game.changing.leftPaddle.y + game.changing.leftPaddle.length &&
+				this.y + this.height > game.changing.leftPaddle.y)
+				{
+					game.changing.leftPaddle.hit++;
+					this.dx *= -1;
+				}
 
 
 		if(this.dx > 0 &&
 		this.x < game.changing.rightPaddle.x + game.changing.rightPaddle.width &&
 		this.x + this.width > game.changing.rightPaddle.x)
-		if (this.y < game.changing.rightPaddle.y + game.changing.rightPaddle.length &&
-			this.y + this.height > game.changing.rightPaddle.y)
-			this.dx *= -1;
+			if (this.y < game.changing.rightPaddle.y + game.changing.rightPaddle.length &&
+				this.y + this.height > game.changing.rightPaddle.y)
+				{
+					game.changing.rightPaddle.hit++;
+					this.dx *= -1;
+				}
 
 
 		if (this.x + this.width < game.changing.leftPaddle.x)
@@ -414,6 +573,7 @@ class Ball {
 class Paddle {
 
 	login: string;
+	pseudo: string;
 	speed: number;
 	color: string;
 	width: number;
@@ -424,9 +584,11 @@ class Paddle {
 	down: boolean;
 	ready: boolean;
 	score: number;
+	hit: number;
 
-	constructor(login: string, color: string, x: number, y: number, width: number, length: number, speed: number) {
-		this.login = login;
+	constructor(user: WebAppUserEntity, color: string, x: number, y: number, width: number, length: number, speed: number) {
+		this.login = user.login;
+		this.pseudo = user.pseudo;
 		this.speed = speed;
 		this.color = color;
 		this.width = width;
@@ -437,6 +599,7 @@ class Paddle {
 		this.down = false;
 		this.score = 0;
 		this.ready = false;
+		this.hit = 0;
 	}
 
 	update(game: Game) {

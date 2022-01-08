@@ -91,6 +91,15 @@ export class UserService {
     const user = await this.webUsers.findOne({login: login});
     return (user);
   }
+  async findOneWebAppUser(login: string) : Promise<WebAppUserEntity> {
+    const user : WebAppUserEntity = await getRepository(WebAppUserEntity)
+      .createQueryBuilder("userAlias")
+      .where("userAlias.login = :login", { login: login })
+      .getOne();
+    if (user === undefined)
+      return undefined;
+    return (user);
+  }
 
   updateWebAppUser(id: number, newUser: WebAppUserEntity) {
     return this.webUsers.update("test", newUser);
@@ -132,13 +141,13 @@ export class UserService {
     res.send('error');
   }
 
-  async registerInfosInDatabase(data: CreateUserDto, userData: UserService, res) {
+  async registerInfosInDatabase(data: CreateUserDto, res) {
     const webAppUserParam: WebAppUserEntity = data;
     webAppUserParam.doubleAuth = false;
     const apiUserDataParam: ApiUserDataEntity = data;
     try {
-      const isWebAppUserFilled = await userData.createAppUser(webAppUserParam);
-      const isApiUserDataFilled = await userData.createApiUserData(apiUserDataParam);
+      const isWebAppUserFilled = await this.createAppUser(webAppUserParam);
+      const isApiUserDataFilled = await this.createApiUserData(apiUserDataParam);
       if ( isWebAppUserFilled === 'Successfully created' && isApiUserDataFilled === 'Successfully created')
         return('Successfully created');
       else if (isWebAppUserFilled === 'Already created' && isApiUserDataFilled === 'Already created')
@@ -151,4 +160,19 @@ export class UserService {
       this.failLog(res);
     }
   }
+
+// JOBENASS TODO
+  async updateAvatar(profile: string, newAvatar: string) {
+    return `http://localhost:3000/cb-user/avatar/${profile}.jpg`;
+    // const userRepository = await getRepository(WebAppUserEntity)
+    // return userRepository.update( profile, { avatar: url, updated: new Date() } )
+    // .then((response) => {
+    //   return url;
+    // })
+    // .catch((error) => {
+    //   return null;
+    // })
+    // return url;
+  }
+
 }

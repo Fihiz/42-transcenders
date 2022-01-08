@@ -39,7 +39,10 @@ export class DoubleAuthController {
     async sendMail(@Req() req, @Res() res) {
       const email = await this.userService.getMail(req.query[0])
       console.log('emeil = ', email);
-      const code = (Math.round(Math.random() * 10000)).toString();
+      let code = "";
+      for(let i = 0; i < 4; i++)
+        code = code + (Math.floor(Math.random() * 10)).toString();
+      // const code = (Math.round(Math.random() * 10000)).toString();
       this.code = Number(code);
         const transporter = nodemailer.createTransport({
           service: 'Yahoo',
@@ -51,7 +54,7 @@ export class DoubleAuthController {
         const mailOptions = {
           from: 'mytranscendance@yahoo.com',
           to: email,
-          subject: 'i find you',
+          subject: 'Your activation code to log on 42Pong',
           text: code,
         };
         transporter.sendMail(mailOptions, function (error, info) {

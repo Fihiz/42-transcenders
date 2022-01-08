@@ -73,13 +73,13 @@ export class ChatService {
 	getReceiver(tabLogin: Set<string>, emitter: string): Array<string> {
 		const tabReceiver: Array<string> = [];
 		tabLogin.forEach(login => {
-				GlobalDataService.loginIdMap.get(login)?.forEach(id => {
-				tabReceiver.push(id);
-			})
-		})
-			GlobalDataService.loginIdMap.get(emitter).forEach(id => {
-			tabReceiver.push(id);
-		})
+      GlobalDataService.loginIdMap.get(login)?.sockets.forEach(socket => {
+        tabReceiver.push(socket.id);
+      })
+    })
+		GlobalDataService.loginIdMap.get(emitter)?.sockets.forEach(socket => {
+      tabReceiver.push(socket.id);
+    })
 		return (tabReceiver);
 	}
 
@@ -152,7 +152,7 @@ export class ChatService {
       return (convMessages);
     }
     else
-      return ('Error: Conv does not exist')
+      return ('Error: Conversation does not exist')
   }
 
   async checkConditionToModifie(userToBan, userAsking, conv_id) {

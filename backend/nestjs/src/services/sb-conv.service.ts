@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ChatterEntity } from "src/entities/eb-chatter.entity";
 import { ConversationEntity } from "src/entities/eb-conversation.entity";
+import { MessageEntity } from "src/entities/eb-message.entity";
 import { Repository } from "typeorm";
 import { ChatterService } from "./sb-chatter.service";
 import { UserService } from "./sb-user.service";
@@ -14,6 +15,8 @@ export class ConvService {
 
   constructor( @InjectRepository(ConversationEntity)
                 private conversation: Repository<ConversationEntity>,
+                @InjectRepository(MessageEntity)
+                private message: Repository<MessageEntity>,
                 @InjectRepository(ChatterEntity)
                 private chatter: Repository<ChatterEntity>,
                 private user: UserService,
@@ -117,9 +120,31 @@ export class ConvService {
 		return (conv);
 	}
 
+  // async removeMemberOfConv(convName, id, login, user: ChatterEntity) {
+  //   try {
+  //     let conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
+  //     const members = conv.members;
+  //     let index = members.findIndex(member => member === login);
+  //     members.splice(index, 1);
+  //     while ((index = members.findIndex(member => member === login)) >= 0) {
+  //       members.splice(index, 1);
+  //     }
+  //     await this.conversation.update({name: convName}, {members: [...members]});
+  //     await this.chatter.remove(user);
+  //     conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
+  //     if (conv.members.length === 0)
+  //       this.conversation.remove(conv);
+  //     return ('ok')
+  //   }
+  //   catch (error) {
+  //     console.log('error = ', error)
+  //     return ('ko')
+  //   }
+  // }
+
   async removeMemberOfConv(convName, id, login, user: ChatterEntity) {
     try {
-      let conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
+      let conv = await this.conversation.findOne({where: {name: convName, conv_id: id}});
       const members = conv.members;
       let index = members.findIndex(member => member === login);
       members.splice(index, 1);
@@ -130,7 +155,14 @@ export class ConvService {
       await this.chatter.remove(user);
       conv = await this.conversation.findOne({where: {name: convName, conv_id: id}})
       if (conv.members.length === 0)
-        this.conversation.remove(conv);
+      {
+        const chattersToRemove = await this.chatter.find({where: {conv_id: id}, relations: ["conv_id", "login"]});
+        await chattersToRemove.forEach(async chatter => await this.chatter.remove(chatter));
+        const messagesToRemove = await this.message.find({where: {conv_id: id}, relations: ["conv_id"]});
+        await messagesToRemove.forEach(async message => await this.message.remove(message));
+        await this.conversation.remove(conv)
+        // return ('empty');
+      }
       return ('ok')
     }
     catch (error) {
@@ -139,12 +171,16 @@ export class ConvService {
     }
   }
 
+
+
   async destroyRoom(conv: ConversationEntity) {
     try {
       const chatters = await this.chatterService.findAllChatters(conv.conv_id);
       for (const chatter of chatters) {
         await this.chatter.remove(chatter);
       }
+      const messagesToRemove = await this.message.find({where: {conv_id: conv.conv_id}});
+      messagesToRemove.forEach(message => this.message.remove(message));
       await this.conversation.remove(conv);
       return ('ok');
     }

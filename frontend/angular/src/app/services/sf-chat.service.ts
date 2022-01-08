@@ -53,6 +53,7 @@ export class ChatService {
         login: this.global.login as string,
         date: new Date(),
         content: currentConv.name,
+        host: window.location.host + ":3000",
       },
       login: this.global.login as string,
       socketId: this.global.socketId as string,
@@ -134,7 +135,7 @@ export class ChatService {
       return this.setResponse('ko', roomName, members, password);
     document.getElementById('creationRoomForm')?.classList.add('hidden');
     const response = (
-      await axios.post('http://127.0.0.1:3000/cb-chat/check', {
+      await axios.post(`http://${window.location.host}:3000/cb-chat/check`, {
         data: roomName,
       })
     ).data;
