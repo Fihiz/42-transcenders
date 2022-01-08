@@ -42,6 +42,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.server.emit('status', {login: login, status: status});
 	}
 
+	@SubscribeMessage('isInPendingQueue')
+	isInPendingQueue(@MessageBody() body: any) {
+		let requestLogin: string;
+		GlobalDataService.loginIdMap.forEach((user, login) => {
+			if (user.sockets.find(socket => socket.id === body))
+				requestLogin = login;
+		});
+		const user = this.players.find((user) => user.login === requestLogin)
+		if (user)
+			this.server.to(body).emit('isInPendingQueue', {selected: user.gameType});
+	}
+
 	@SubscribeMessage('hello')
 	setConnected(@MessageBody() body: any) {
 		let game = this.gameService.games.find((game) => game.id === body.gameId);
@@ -167,6 +179,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 		else {
 			this.players.push( { id: body.id, login: body.login, gameType: body.gameType } );
+			this.server.to(GlobalDataService.loginIdMap.get(body.login).sockets.map((socket) => {return socket.id;})).emit('isInPendingQueue', {selected: body.gameType});
 			// console.log(`${body.login} - OUT:`, this.players);
 		}
 	}
@@ -178,6 +191,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			return ;
 		this.players.splice(index, 1);
 		console.log(`${body.login} left Matchmaking.`);
+		this.server.to(GlobalDataService.loginIdMap.get(body.login).sockets.map((socket) => {return socket.id;})).emit('isInPendingQueue', {selected: undefined});
 		// this.players = [];
 		// console.log("OUT:", this.players);
 	}
