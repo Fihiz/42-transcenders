@@ -58,6 +58,94 @@
       </div>
     </div>
   </nav>
+  <!-- CHAT ROOM -->
+  <nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+      <!-- <a class="navbar-brand">Set user roles</a> -->
+      <div class="dropdown">
+        <button
+          class="btn btn-light btn-lg"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          (click)="onGetAllUsersList()"
+        >
+          Channels Rights
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <!--1 -->
+          <li>
+            <!-- <li *ngFor="let conv of allConvInfo"> -->
+            <div class="viewUsers">
+              <a class="dropdown-item"> List of all conv &raquo; </a>
+            </div>
+            <ul class="dropdown-menu dropdown-submenu">
+              <li>
+                <a class="dropdown-item"> Delete room &raquo; </a>
+                <ul class="dropdown-menu dropdown-submenu">
+                  <li>
+                    <button
+                      type="submit"
+                      class="btn btn-secondary btn-sm btn-block"
+                    >
+                      Delete room
+                    </button>
+                  </li>
+                </ul>
+              </li>
+              <!-- <li>
+                <button
+                  type="submit"
+                  class="btn btn-secondary btn-sm btn-block"
+                >
+                  View members
+                </button>
+              </li> -->
+              <li>
+                <a class="dropdown-item"> View members &raquo; </a>
+                <ul class="dropdown-menu dropdown-submenu">
+                  <li>
+                    <a class="dropdown-item">
+                      List of all members + role &raquo;
+                      <span class="badge badge-pill badge-warning">role</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-submenu">
+                      <li>
+                        <button
+                          type="submit"
+                          class="btn btn-secondary btn-sm btn-block"
+                        >
+                          Set as room owner
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          type="submit"
+                          class="btn btn-secondary btn-sm btn-block"
+                        >
+                          Set as room admin
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          type="submit"
+                          class="btn btn-secondary btn-sm btn-block"
+                        >
+                          Set as room chatter
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
   <!-- BAN USER -->
   <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
