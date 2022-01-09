@@ -28,8 +28,8 @@ export class UserController {
 	@Get('profile/:login')
 	async getProfileByLogin(@Param('login') login: string, @Response() res, @Request() req): Promise<WebAppUserEntity> {
 		const profile: WebAppUserEntity = await this.userService.findOneWebAppUser(login);
-        if (profile)
-            profile.avatar = profile.avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+        // if (profile)
+        //     profile.avatar = profile.avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
 		res.send(profile);
 		return profile;
 	}

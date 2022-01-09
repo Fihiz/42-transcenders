@@ -144,6 +144,7 @@ export class UserService {
       date: new Date(),
       avatar: '',
       role: '',
+      invitation: false
     };
     socket.emit('introduction', message);
   }

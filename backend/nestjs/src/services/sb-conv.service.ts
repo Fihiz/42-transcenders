@@ -1,9 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, getRepository, Not } from 'typeorm';
 import { ChatterEntity } from "src/entities/eb-chatter.entity";
 import { ConversationEntity } from "src/entities/eb-conversation.entity";
+import { InvitationEntity } from "src/entities/eb-invitation.entity";
 import { MessageEntity } from "src/entities/eb-message.entity";
-import { Repository } from "typeorm";
+// import { Repository } from "typeorm";
 import { ChatterService } from "./sb-chatter.service";
 import { UserService } from "./sb-user.service";
 
@@ -19,6 +21,8 @@ export class ConvService {
                 private message: Repository<MessageEntity>,
                 @InjectRepository(ChatterEntity)
                 private chatter: Repository<ChatterEntity>,
+                @InjectRepository(ChatterEntity)
+                private invitation: Repository<InvitationEntity>,
                 private user: UserService,
                 private chatterService: ChatterService
                 ){}
@@ -199,6 +203,85 @@ export class ConvService {
       console.log(error);
       return ('ko');
     }
+  }
+
+  // OK
+  async getConversationById(id: number): Promise<ConversationEntity> {
+    const convRepository = getRepository(ConversationEntity);
+    return convRepository.findOne({
+      where: { conv_id: id }
+    })
+    .then((response: any) => {
+      const conversation: ConversationEntity = response;
+      return conversation;
+    })
+    .catch((error: any) => {
+      return undefined;
+    })
+  }
+
+  // async getAllInvitationsByLogin(login: string): Promise<InvitationEntity[]> {
+  //   const invitRepository = getRepository(InvitationEntity);
+  //   return invitRepository.find({
+  //     relations: ["emitter", "receiver", "room"],
+  //     where: [ 
+  //       { emitter: login },
+  //       { receiver: login }
+  //     ]
+  //   })
+  //   .then((response: any) => {
+  //     const invitations: InvitationEntity[] = response;
+  //     return invitations;
+  //   })
+  //   .catch((error) => {
+  //     console.error("OOPS -> getAllInvitationsByLogin()");
+  //     return undefined;
+  //   })
+  // }
+
+  // OK
+  async getInvitationRoomById(id: number): Promise<InvitationEntity> {
+    const invitRepository = getRepository(InvitationEntity);
+    return invitRepository.findOne({
+      relations: ["emitter", "receiver", "room"],
+      where: { room: id }
+    })
+    .then((response) => {
+      const invitation: InvitationEntity = response;
+      return invitation;
+    })
+    .catch((error) => {
+      console.error("OOPS -> getInvitationForRoomById()");
+      return undefined;
+    })
+  }
+
+  // OK
+  async setInvitation(id: number, emitter: string, receiver: string) {
+    const invitRepository = getRepository(InvitationEntity);
+		const invitation: InvitationEntity = {
+      id: 0,
+      emitter: emitter,
+      receiver: receiver,
+      invitation_type: "play",
+      room: id,
+      created: new Date()
+		}
+		return invitRepository.insert(invitation);
+  }
+
+  // OK
+  async unsetInvitation(invitation: InvitationEntity): Promise<boolean> {
+    const invitRepository = getRepository(InvitationEntity);
+		return invitRepository.delete(invitation)
+		.then((response) => {
+			console.log(`Delete invitation by entity has succeeded.`);
+			return true;
+		})
+		.catch((error) => {
+      console.error("OOPS -> getInvitationForRoomById()");
+			return false;
+		})
   }
 
 }

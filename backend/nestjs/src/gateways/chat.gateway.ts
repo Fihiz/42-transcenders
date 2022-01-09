@@ -9,15 +9,21 @@ import { GlobalDataService } from "src/services/sb-global-data.service";
 import { AppService } from "src/app.service";
 import { UserService } from "src/services/sb-user.service";
 import { WebAppUserEntity } from "src/entities/eb-web-app-user.entity";
+import { InvitationEntity } from "src/entities/eb-invitation.entity";
+import { GameService } from "src/services/sb-game.service";
+import { GameTypeEntity } from "src/entities/eb-game-type.entity";
 
 @WebSocketGateway({cors:{origin: '*'}})
 
 export class ChatGateway {
 	conv_id: number = 0;
 
+  invits: { conv_id: number, id: string, login: string }[] = [];
+
 	constructor(private chatService: ChatService,
               private ConvService: ConvService,
 							private chatterService: ChatterService,
+							private gameService: GameService,
               private userService: UserService){}
 
 	@WebSocketServer()
@@ -36,8 +42,10 @@ export class ChatGateway {
       id: emission.id,
       login: emission.login,
       avatar:'https://www.google.com/url?sa=i&url=https%3A%2F%2Ffr.techtribune.net%2Fanime%2Fshrek-occupe-la-premiere-place-pour-lanime-sur-amazon%2F102182%2F&psig=AOvVaw20kB0wPmvDnlD_FTcqSOBO&ust=1640873495902000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCJDgu66YifUCFQAAAAAdAAAAABAD',
-      role: 'chatter'
+      role: 'chatter',
+      invitation: emission.data.invitation
     })
+    console.log("PLAY BACK \n", emission.login);
     this.server.to(emission.login).emit('allMessages', messArray);
   }
 
@@ -70,10 +78,10 @@ export class ChatGateway {
 	@SubscribeMessage('getMessages')
 	async getMessages(@MessageBody() emission, @MessageBody('data') message: MessageDto) {
 		const messages = await this.chatService.getMessage(message);
-    if (message.host)
-      messages.forEach(msg => {
-        msg.avatar = msg.avatar.replace("localhost:3000", message.host);
-      });
+    // if (message.host)
+    //   messages.forEach(msg => {
+    //     msg.avatar = msg.avatar.replace("localhost:3000", message.host);
+    //   });
 		if (typeof(messages) !== 'string') {
 			this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('allMessages', messages);
     }
@@ -218,4 +226,158 @@ export class ChatGateway {
     else
       this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('error', "a problem has occured")
   }
+
+  // @SubscribeMessage('setInvitation')
+	// async setInvitationFunc(@MessageBody() emission) {
+  //   console.log(emission);
+  //   const foundPlayer = this.invits.find((user) => user.login === emission.login);
+  //   const foundConversation = this.invits.find((user) => user.conv_id === emission.data.conv_id);
+  //   console.log(foundPlayer);
+  //   console.log(foundConversation);
+  //   if (foundPlayer === undefined || (foundPlayer !== undefined && foundPlayer.conv_id !== foundConversation.conv_id)) {
+  //     this.invits.push( { conv_id: emission.data.conv_id, id: emission.socketId, login: emission.login } );
+  //   }
+  //   console.log(this.invits);
+	// }
+
+  @SubscribeMessage('setInvitation')
+	async setInvitationFunc(@MessageBody() emission) {
+    // console.log("emission:", emission);
+
+    const alreadyInvited = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
+    const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
+    
+    // CAS D"ERREURS SI ADVERSAIRE EST OFFLINE OU INGAME
+    const receiver = emission.data.logins_conv.find((search) => search !== emission.login);
+    const statusReceiver = GlobalDataService.loginIdMap.get(receiver)?.status;
+    if (statusReceiver === undefined) { // change for Offline ? undefine when not connected
+      const error: MessageEntity = {
+        id: emission.socketId,
+        conv_id: emission.data.conv_id,
+        login: emission.login,
+        date: emission.data.date,
+        content: "User not connected...",
+        avatar: (emission.login as any as WebAppUserEntity).avatar, // fail
+        role: (emission.login as any as WebAppUserEntity).app_role, // fail
+        invitation: emission.data.invitation
+      }
+      if (alreadyInvited && invitation)
+        this.ConvService.unsetInvitation(invitation);
+      this.server.to(emission.socketId).emit('errorException', error);
+      return;
+    }
+    if (statusReceiver === "inGame") { // inGame realy?
+      const error: MessageEntity = {
+        id: emission.socketId,
+        conv_id: emission.data.conv_id,
+        login: emission.login,
+        date: emission.data.date,
+        content: "Already in a game...",
+        avatar: (emission.login as any as WebAppUserEntity).avatar, // fail
+        role: (emission.login as any as WebAppUserEntity).app_role, // fail
+        invitation: emission.data.invitation
+      }
+      if (alreadyInvited && invitation)
+        this.ConvService.unsetInvitation(invitation);
+      this.server.to(emission.socketId).emit('errorException', error);
+      return;
+    }
+    
+    // CAS STANDARD D'INVITATIONS
+    if (alreadyInvited !== undefined) {
+      const emitter: WebAppUserEntity = alreadyInvited.emitter as any as WebAppUserEntity;
+      if (emitter.login !== emission.login) {
+        const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame("classic")
+        if (search) {
+          const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
+          const id = await this.gameService.createMatchParty((invitation.emitter as any as WebAppUserEntity).login, (invitation.receiver as any as WebAppUserEntity).login, search);
+          const party = await this.gameService.getPartyById(id);
+          // TODO: Put status of player like inGame.
+          // TODO: Change boolean of invitation in messages.
+          console.log(`${emitter.login} paly with ${receiver.login}.`);
+          this.gameService.addGame(party.game_id, (party.player1 as unknown as WebAppUserEntity), (party.player2 as unknown as WebAppUserEntity));      
+          this.ConvService.unsetInvitation(invitation);
+          emission.data.content = "Invitation accepted!";
+          // Partie copié / collé
+          const messages = await this.chatService.handleMessage(emission);
+          if (typeof(messages) !== 'string') {
+            const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
+            console.log(receivers);
+            this.server.to(this.chatService.getReceiver(receivers, emission.login)).emit('launchgame', messages);
+            //
+            this.server.to(receivers).emit('launchgameInvitation', party.game_id);
+          }
+        }
+        console.log(`${emission.login} a fait une demande pour jouer alors qu'il a été invité.`);
+      }
+      else {
+        // TODO: ?
+        console.log(`${emission.login} a déjà fait une demande pour jouer.`);
+        const error: MessageEntity = {
+          id: emission.socketId,
+          conv_id: emission.data.conv_id,
+          login: emission.login,
+          date: emission.data.date,
+          content: "Request to play already launched...",
+          avatar: (emission.login as any as WebAppUserEntity).avatar, // fail
+          role: (emission.login as any as WebAppUserEntity).app_role, // fail
+          invitation: emission.data.invitation
+        }
+        this.server.to(emission.socketId).emit('errorException', error);
+        return;
+      }
+    }
+    else {
+      console.log(`${emission.login} fait une demande pour jouer.`);
+      await this.ConvService.setInvitation(emission.data.conv_id, emission.login, emission.data.logins_conv.find((login) => login !== emission.login));
+    }
+	}
+
+  // @SubscribeMessage('takeInvitation')
+	// async takeInvitationFunc(@MessageBody() emission) {
+  //   const alreadyInvited = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
+  //   if (alreadyInvited !== undefined) {
+  //     const emitter: WebAppUserEntity = alreadyInvited.emitter as any as WebAppUserEntity;
+    
+  //     if (emitter.login !== emission.login) {
+  //       // TODO: delete party, launch game, and change bool invitation in message !
+  //       const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
+  //       const emitter: WebAppUserEntity = invitation.emitter as any as WebAppUserEntity;
+  //       const receiver = invitation.receiver as any as WebAppUserEntity;
+
+	// 		  const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame("classic")
+  //       if (search) {
+  //         const id = await this.gameService.createMatchParty(emitter.login, receiver.login, search);
+  //         const party = await this.gameService.getPartyById(id);
+  //         console.log(`${emitter.login} paly with ${receiver.login}.`);
+  //         this.gameService.addGame(party.game_id, (party.player1 as unknown as WebAppUserEntity), (party.player2 as unknown as WebAppUserEntity));      
+  //         this.ConvService.unsetInvitation(invitation);
+          
+  //         const messages = await this.chatService.handleMessage(emission);
+  //         if (typeof(messages) !== 'string') {
+  //           const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
+  //           console.log(receivers);
+  //           this.server.to(this.chatService.getReceiver(receivers, emission.login)).emit('launchgame', messages);
+  //           this.server.to(receivers).emit('launchgameInvitation', party.game_id);
+  //         }
+  //       }
+  //       console.log(`${emission.login} accepte une demande pour jouer.`);
+  //     }
+	// }
+
+  // @SubscribeMessage('unsetInvitation')
+	// async unsetInvitationFunc(@MessageBody() emission) {
+  //   const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
+  //   if (invitation) {
+  //     await this.ConvService.unsetInvitation(invitation);
+  //     emission.data.content = "Invitation declined!";
+  //     const messages = await this.chatService.handleMessage(emission);
+  //     if (typeof(messages) !== 'string') {
+  //       const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
+  //       console.log(receivers);
+  //       this.server.to(this.chatService.getReceiver(receivers, emission.login)).emit('launchgame', messages);
+  //     }
+  //   }
+	// }
+
 }

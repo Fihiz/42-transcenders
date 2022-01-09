@@ -126,7 +126,7 @@ export class ChatController {
 
       for (const chatter of chatters) {
         const avatar = (await this.userService.findOneApiUser(chatter.login)).avatar;
-        avatars.push(avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]));
+        // avatars.push(avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]));
         login.push(chatter.login);
         roles.push(chatter.chat_role);
       }

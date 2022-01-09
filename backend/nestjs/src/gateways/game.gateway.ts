@@ -139,7 +139,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		// console.log(`${body.login} - IN:`, this.players);
 		const found = this.players.find((user) => user.gameType === body.gameType );
 		if (found !== undefined) {
-			const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(body.login, body.gameType)
+			const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(body.gameType)
 			if (search) {
 				let player1 = found;
 				let player2 = body;

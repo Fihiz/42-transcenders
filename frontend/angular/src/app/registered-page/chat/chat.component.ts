@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
+import { Router } from '@angular/router';
 import { if_message } from 'src/app/interfaces/if-message';
 import { if_conversation } from 'src/app/interfaces/if_conversation';
 import { if_emission } from 'src/app/interfaces/if_emmission';
@@ -37,7 +38,8 @@ export class ChatComponent implements OnInit {
   constructor(
     private socket: Socket,
     private global: GlobalService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private router: Router
   ) {}
 
   onSendMessage() {
@@ -442,5 +444,59 @@ export class ChatComponent implements OnInit {
       conv.password = data.password;
       conv.type = 'protected';
     });
+
+    this.socket.on('errorException', (message: if_message) => {
+      if (message.conv_id === this.currentConv.conv_id) {
+        this.convMessages.push(message);
+      }
+    });
+
   }
+
+  onErrorException() {
+    this.socket.on('errorException', (message: any) => {
+      console.log(message);
+      if (message.length > 0 && message[0].conv_id === this.currentConv.conv_id) {
+        this.convMessages.splice(0, this.convMessages.length);
+        this.convMessages = message;
+      }
+    });
+  }
+
+  onInvitToPlay() {
+    this.emission.data = {
+      conv_id: this.currentConv.conv_id,
+      logins_conv: this.currentConv.members,
+      date: new Date(),
+      content: "Invitation to start party!",
+      invitation: true
+    };
+    this.emission.socketId = this.global.socketId as string;
+    if (this.currentConv.name) {
+      // this.socket.emit('message', this.emission);
+      this.socket.emit('setInvitation', this.emission);
+    }
+    this.socket.on('launchgameInvitation', (game: any) => {
+      this.router.navigate([`/pong/game/${game}`]);
+    });
+  }
+
+  onAcceptToPlay() {
+    this.emission.data = {
+      conv_id: this.currentConv.conv_id,
+      date: new Date(),
+      content: "Invitation accepted!",
+      invitation: true
+    };
+    this.socket.emit('takeInvitation', this.emission);
+    this.socket.on('launchgameInvitation', (game: any) => {
+      this.router.navigate([`/pong/game/${game}`]);
+    });
+  }
+  
+  onCancelToPlay() {
+    this.socket.emit('unsetInvitation', this.emission);
+    console.log("PASS CANCEL");
+  }
+
 }

@@ -20,6 +20,17 @@ export class GameService {
 		this.OnInit();
 	}
 
+	// async change(data: CreatePartyDto) {
+	// 	const partyRepository = getRepository(PongGameEntity);
+	// 	return partyRepository.update( 13, { game_status: data.login as status })
+	// 	.then((response) => {
+	// 		return 1;
+	// 	})
+	// 	.catch((error) => {
+	// 		return 0;
+	// 	})
+	// }
+
 	async OnInit() {
 		const parties: PongGameEntity[] = await this.getAllPartiesInProgress();
 		parties.forEach((game) => {
@@ -251,7 +262,7 @@ export class GameService {
 	}
 
 	async getAllPartiesInProgress(): Promise<PongGameEntity[]> | undefined {
-		const partyRepository = await getRepository(PongGameEntity);
+		const partyRepository = getRepository(PongGameEntity);
 		return partyRepository.find({
 			relations: ["player1", "player2", "game_type_id"],
 			where: { game_status: status.Playing },
@@ -290,7 +301,7 @@ export class GameService {
 		})
 	}
 
-	async searchOneTypeOfGame(login: string, map_type: string): Promise<GameTypeEntity> {
+	async searchOneTypeOfGame(map_type: string): Promise<GameTypeEntity> {
 		const typeRepository = getRepository(GameTypeEntity);
 		return typeRepository.findOne({
 			where: { type: map_type }

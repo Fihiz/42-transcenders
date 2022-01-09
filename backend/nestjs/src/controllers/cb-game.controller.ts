@@ -16,6 +16,11 @@ export class GameController {
 
 	constructor(private gameService: GameService) {}
 
+	// @Post('push')
+	// async push(@Body('data') createPartyDto: CreatePartyDto) {
+	// 	return this.gameService.change(createPartyDto);
+	// }
+
 	@Get('types')
 	async getTypesOfGame(@Response() res): Promise<GameTypeEntity[]> | undefined {
 		const task: GameTypeEntity[] = await this.gameService.getAllTypesOfGame();
@@ -30,12 +35,12 @@ export class GameController {
 		const task: PongGameEntity[] = await this.gameService.getAllPartiesInProgress()
 		if (task === undefined)
 			throw new InternalServerErrorException(`Query on table PongGame has failed !`);
-		task.forEach((elem) => {
-			(elem.player1 as unknown as WebAppUserEntity).avatar = (elem.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(elem.player2 as unknown as WebAppUserEntity).avatar = (elem.player2 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(elem.winner as unknown as WebAppUserEntity).avatar = (elem.winner as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(elem.looser as unknown as WebAppUserEntity).avatar = (elem.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-		})
+		// task.forEach((elem) => {
+		// 	(elem.player1 as unknown as WebAppUserEntity).avatar = (elem.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// 	(elem.player2 as unknown as WebAppUserEntity).avatar = (elem.player2 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// 	(elem.winner as unknown as WebAppUserEntity).avatar = (elem.winner as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// 	(elem.looser as unknown as WebAppUserEntity).avatar = (elem.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// })
 		res.send(task);
 		return task;
 
@@ -46,12 +51,12 @@ export class GameController {
         const task: PongGameEntity[] = await this.gameService.getAllPartiesFinishedByLogin(login);
         if (task === undefined)
             throw new InternalServerErrorException(`Query on table Stats has failed !`);
-		task.forEach((elem) => {
-			(elem.player1 as unknown as WebAppUserEntity).avatar = (elem.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(elem.player2 as unknown as WebAppUserEntity).avatar = (elem.player2 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(elem.winner as unknown as WebAppUserEntity).avatar = (elem.winner as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(elem.looser as unknown as WebAppUserEntity).avatar = (elem.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-		})
+		// task.forEach((elem) => {
+		// 	(elem.player1 as unknown as WebAppUserEntity).avatar = (elem.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// 	(elem.player2 as unknown as WebAppUserEntity).avatar = (elem.player2 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// 	(elem.winner as unknown as WebAppUserEntity).avatar = (elem.winner as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// 	(elem.looser as unknown as WebAppUserEntity).avatar = (elem.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// })
         res.send(task);
         return task;
     }
@@ -59,13 +64,13 @@ export class GameController {
 	@Get('party/login/:login')
 	async getPartyWithLogin(@Param('login') login: string, @Response() res, @Request() req): Promise<PongGameEntity> | undefined {
 		const task: PongGameEntity = await this.gameService.getPartyByLogin(login);
-		if (task)
-		{
-			(task.player1 as unknown as WebAppUserEntity).avatar = (task.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(task.player2 as unknown as WebAppUserEntity).avatar = (task.player2 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(task.winner as unknown as WebAppUserEntity).avatar = (task.winner as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(task.looser as unknown as WebAppUserEntity).avatar = (task.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-		}
+		// if (task)
+		// {
+		// 	(task.player1 as unknown as WebAppUserEntity).avatar = (task.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// 	(task.player2 as unknown as WebAppUserEntity).avatar = (task.player2 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// 	(task.winner as unknown as WebAppUserEntity).avatar = (task.winner as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// 	(task.looser as unknown as WebAppUserEntity).avatar = (task.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// }
 		res.send(task);
 		return task;
 	}
@@ -75,10 +80,10 @@ export class GameController {
 		const task: PongGameEntity = await this.gameService.getPartyById(id);
 		if (task === undefined)
 			throw new NotFoundException(`Query on table PongGame has failed, id ${id} not exist.`);
-		(task.player1 as unknown as WebAppUserEntity).avatar = (task.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-		(task.player2 as unknown as WebAppUserEntity).avatar = (task.player2 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-		(task.winner as unknown as WebAppUserEntity).avatar = (task.winner as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-		(task.looser as unknown as WebAppUserEntity).avatar = (task.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);	
+		// (task.player1 as unknown as WebAppUserEntity).avatar = (task.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// (task.player2 as unknown as WebAppUserEntity).avatar = (task.player2 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// (task.winner as unknown as WebAppUserEntity).avatar = (task.winner as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+		// (task.looser as unknown as WebAppUserEntity).avatar = (task.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);	
 		res.send(task);
 		return task;
 	}

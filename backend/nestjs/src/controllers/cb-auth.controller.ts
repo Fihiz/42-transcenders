@@ -28,7 +28,7 @@ export class AuthController {
               return ;
             }
             else {
-                allUserInfos.avatar = allUserInfos.avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+                // allUserInfos.avatar = allUserInfos.avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
                 resp.send({data: {...allUserInfos, points_for_ladder: allUserStats.points_for_ladder.toString().padStart(6, "0")}, isFound: 'found'});
             }
           }

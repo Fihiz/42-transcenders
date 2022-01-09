@@ -143,7 +143,8 @@ export class ChatService {
         id: ++this.messId,
         login: emission.login,
         avatar: avatar,
-        role: chatter.chat_role
+        role: chatter.chat_role,
+        invitation: message.invitation
       }
       const messageCreated = await this.createMessage(messRegistered)
 			if (typeof(messageCreated) !== 'string' && typeof(messageCreated) !== 'number')

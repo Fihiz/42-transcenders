@@ -16,9 +16,9 @@ export class StatsController {
         const task: StatEntity[] = await this.statsService.getAllPlayerScores();
         if (task === undefined)
             throw new InternalServerErrorException(`Query on table Stats has failed !`);
-        task.forEach((stat) => {
-            (stat.login as unknown as WebAppUserEntity).avatar = (stat.login as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-        });
+        // task.forEach((stat) => {
+        //     (stat.login as unknown as WebAppUserEntity).avatar = (stat.login as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+        // });
         res.send(task);
         return task;
     }
@@ -28,9 +28,9 @@ export class StatsController {
         const task: StatEntity = await this.statsService.getStatsByLogin(login);
         // if (task === undefined)
             // throw new InternalServerErrorException(`Query on table Stats has failed !`);
-        if (task)
-            (task.login as unknown as WebAppUserEntity).avatar = (task.login as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-        res.send(task);
+        // if (task)
+        //     (task.login as unknown as WebAppUserEntity).avatar = (task.login as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+        // res.send(task);
         return task;
     }
 
