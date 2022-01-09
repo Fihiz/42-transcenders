@@ -26,10 +26,11 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     this.currentAppRole = this.user.user.app_role;
     console.log(`role: ${this.currentAppRole}`);
-    // this.socket.on('updateAppRole', (data: any) => {
-    //   this.appRole = data;
-    //   console.log('appRole', data);
-    //   // this.listConv = data as Array<if_conversation>;
-    // });
+
+    this.socket.on('updatedUserGlobalRole', (data: any) => {
+      // this.appRole = data;
+      // console.log('appRole', data);
+      // this.listConv = data as Array<if_conversation>;
+    });
   }
 }

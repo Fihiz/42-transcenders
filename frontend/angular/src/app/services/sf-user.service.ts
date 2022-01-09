@@ -76,6 +76,27 @@ export class UserService {
 
   ngOnInit() {}
 
+  async adminChangeUserRole(data: object) {
+    console.log('We are in adminChangeUserRole');
+    await axios.post(
+      `http://${window.location.host}:3000/cb-user/adminUpdateRole`,
+      { data }
+    );
+
+    // const response = (
+    //   await axios.post(`http://${window.location.host}:3000/cb-chat/check`, {
+    //     data: roomName,
+    //   })
+    // ).data;
+
+    // const registerData = await axios.post(
+    //   `http://${window.location.host}:3000/cb-user/adminUpdateRole`,
+    //   {
+    //     data: this.user,
+    //   }
+    // );
+  }
+
   async doubleAUth(login: string) {
     this.global.doubleAuth = (
       await axios.get(
@@ -129,7 +150,7 @@ export class UserService {
       await this.handleSubmitClick();
       this.fillUserInfos(response);
       this.registerBackInRequest(response);
-      console.log('IS OKAYYYY');
+      // console.log('IS OKAYYYY');
       // EMIT
       this.socket.emit('allUsersInApp');
     }

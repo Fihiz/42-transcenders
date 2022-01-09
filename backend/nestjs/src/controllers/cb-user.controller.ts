@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Param, Response, Request } from '@nestjs/common';
+import { Controller, Get, Post, Param, Response, Request, Body } from '@nestjs/common';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { UserService } from 'src/services/sb-user.service';
 
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
+import { AdminChangeUserRoleDto } from 'src/dtos/adminChangeUserRole.dto';
 
 
 const editFileName = (req, file, callback) => {
@@ -25,6 +26,17 @@ export class UserController {
     
     constructor(private userService: UserService) {}
 
+    @Post('adminUpdateRole')
+    async postAdminUpdateRole(@Body('data') dataDto:  AdminChangeUserRoleDto) {
+        try {
+            const response = await this.userService.adminChangeUserRole(dataDto)
+        }
+        catch {
+            alert('An error has occured when changing the user role');
+        }
+        
+    }
+  
 	@Get('profile/:login')
 	async getProfileByLogin(@Param('login') login: string, @Response() res, @Request() req): Promise<WebAppUserEntity> {
 		const profile: WebAppUserEntity = await this.userService.findOneWebAppUser(login);

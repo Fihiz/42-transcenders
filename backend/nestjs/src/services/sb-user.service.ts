@@ -1,9 +1,10 @@
 import { Injectable, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { role, WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
+import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { ApiUserDataEntity } from 'src/entities/eb-api-user-data.entity';
 import { getRepository, Repository } from 'typeorm';
 import { CreateUserDto } from 'src/dtos/createUser.dto';
+import { AdminChangeUserRoleDto } from 'src/dtos/adminChangeUserRole.dto';
 
 @Injectable()
 export class UserService {
@@ -103,25 +104,25 @@ export class UserService {
     return (user);
   }
 
-  updateWebAppUser(id: number, newUser: WebAppUserEntity) {
-    return this.webUsers.update("test", newUser);
-  }
+  // updateWebAppUser(id: number, newUser: WebAppUserEntity) {
+  //   return this.webUsers.update("test", newUser);
+  // }
 
-  updateApiUserData(id: number, newUser: ApiUserDataEntity) {
-    return this.apiUsers.update("test", newUser);
-  }
+  // updateApiUserData(id: number, newUser: ApiUserDataEntity) {
+  //   return this.apiUsers.update("test", newUser);
+  // }
 
-  async removeWebAppUser(user: WebAppUserEntity) {
-    console.log('deletion');
-    return (await this.webUsers.delete(user));
-  }
+  // async removeWebAppUser(user: WebAppUserEntity) {
+  //   console.log('deletion');
+  //   return (await this.webUsers.delete(user));
+  // }
 
-  async removeApiUserData(user: WebAppUserEntity) {
-    console.log('deletion');
-    return (await this.apiUsers.delete(user));
-  }
+  // async removeApiUserData(user: WebAppUserEntity) {
+  //   console.log('deletion');
+  //   return (await this.apiUsers.delete(user));
+  // }
 
-  async modifieWebAppUser(set1: object, where1: string, where2: object) {
+  async modifyWebAppUser(set1: object, where1: string, where2: object) {
     const user = await getRepository(WebAppUserEntity)
     .createQueryBuilder()
     .update(WebAppUserEntity)
@@ -130,14 +131,30 @@ export class UserService {
     .execute();
   }
 
-  async modifieApiUserData(set1: object, where1: string, where2: object) {
-    const user = await getRepository(ApiUserDataEntity)
-    .createQueryBuilder()
-    .update(ApiUserDataEntity)
-    .set(set1)
-    .where(where1, where2)
-    .execute();
+  async adminChangeUserRole(data: AdminChangeUserRoleDto): Promise<boolean> {
+    const userRepository = await getRepository(WebAppUserEntity);
+    // console.log('From sb-user-service: ', data.role)
+    return userRepository.update( data.login, { app_role: data.role as any })
+    .then((response) => {
+      return true;
+    })
+    .catch((error) => {
+      console.log("An error has occured when changing the user role");
+      return false;
+    })
+    // await this.webUsers.app_role.update()
+    // this.game.leftPaddle.update(fullGame.changing.leftPaddle);
   }
+
+
+  // async modifieApiUserData(set1: object, where1: string, where2: object) {
+  //   const user = await getRepository(ApiUserDataEntity)
+  //   .createQueryBuilder()
+  //   .update(ApiUserDataEntity)
+  //   .set(set1)
+  //   .where(where1, where2)
+  //   .execute();
+  // }
 
   failLog(@Res() res) {
     res.send('error');
