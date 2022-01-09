@@ -14,7 +14,7 @@ export class ConnectedGateway {
 	server;
 
 	handleConnection() {
-			console.log('connection connected')
+			console.log('A new client is connected')
 	}
 
 	emitStatusToAll(login: string, status: string) {

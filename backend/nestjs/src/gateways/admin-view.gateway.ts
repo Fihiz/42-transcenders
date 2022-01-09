@@ -14,4 +14,10 @@ server;
   async getAllUsersInApp(@MessageBody() emission) {
 		this.server.emit('allUsersInApp', await this.userService.findAllAppUser());
 	}
+
+  // @SubscribeMessage('getNewUser')
+  // async getNewUser(@MessageBody() emission) {
+	// 	this.server.emit('allUsersInApp', await this.userService.findAllAppUser());
+	// }
+
 }

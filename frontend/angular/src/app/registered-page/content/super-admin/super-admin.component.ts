@@ -16,11 +16,19 @@ export class SuperAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.socket.on('allUsersInApp', (data: any) => {
+      this.allUsersInfo = [];
       this.allUsersInfo = data;
       console.log('allUsers', this.allUsersInfo);
       console.log('allUsers', this.allUsersInfo[0]);
 
       // this.listAllAvailableRooms = data;
     });
+
+    // this.socket.on('updatedAppUsers', (data: any) => {
+    // this.allUsersInfo = data;
+    // console.log('allUsers', this.allUsersInfo);
+    // console.log('allUsers', this.allUsersInfo[0]);
+    // this.listAllAvailableRooms = data;
+    // });
   }
 }

@@ -129,7 +129,11 @@ export class UserService {
       await this.handleSubmitClick();
       this.fillUserInfos(response);
       this.registerBackInRequest(response);
+      console.log('IS OKAYYYY');
+      // EMIT
+      this.socket.emit('allUsersInApp');
     }
+
     return 'ok';
   }
 
@@ -156,9 +160,9 @@ export class UserService {
           data: this.user,
         }
       );
-      if (registerData.data !== 'Successfully created')
+      if (registerData.data !== 'Successfully created') {
         this.router.navigate(['/auth']);
-      else {
+      } else {
         this.global.login = response.data.login;
         this.socket.on('connect', () => {
           this.introduce(this.socket);
