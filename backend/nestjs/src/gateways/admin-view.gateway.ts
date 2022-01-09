@@ -15,6 +15,12 @@ server;
 		this.server.emit('allUsersInApp', await this.userService.findAllAppUser());
 	}
 
+  @SubscribeMessage('currentUserNewRoleInApp')
+  async getCurrentUserNewRoleInApp(@MessageBody() emission) {
+		this.server.emit('updatedUserGlobalRole', await this.userService.findOneAppUser(emission));
+	}
+
+
   // @SubscribeMessage('getNewUser')
   // async getNewUser(@MessageBody() emission) {
 	// 	this.server.emit('allUsersInApp', await this.userService.findAllAppUser());
