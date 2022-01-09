@@ -5,6 +5,7 @@ import { ApiUserDataEntity } from 'src/entities/eb-api-user-data.entity';
 import { getRepository, Repository } from 'typeorm';
 import { CreateUserDto } from 'src/dtos/createUser.dto';
 import { AdminChangeUserRoleDto } from 'src/dtos/adminChangeUserRole.dto';
+import { AdminChangeIsBannedDto } from 'src/dtos/adminChangeIsBanned.dto';
 
 @Injectable()
 export class UserService {
@@ -145,6 +146,22 @@ export class UserService {
     // await this.webUsers.app_role.update()
     // this.game.leftPaddle.update(fullGame.changing.leftPaddle);
   }
+
+  async adminChangeIsBanned(data: AdminChangeIsBannedDto): Promise<boolean> {
+    const userRepository = await getRepository(WebAppUserEntity);
+    // console.log('From sb-user-service: ', data.role)
+    return userRepository.update( data.login, { banned: data.isBanned as any })
+    .then((response) => {
+      return true;
+    })
+    .catch((error) => {
+      console.log("An error has occured when changing the user role");
+      return false;
+    })
+    // await this.webUsers.app_role.update()
+    // this.game.leftPaddle.update(fullGame.changing.leftPaddle);
+  }
+
 
 
   // async modifieApiUserData(set1: object, where1: string, where2: object) {

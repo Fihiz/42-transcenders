@@ -82,19 +82,14 @@ export class UserService {
       `http://${window.location.host}:3000/cb-user/adminUpdateRole`,
       { data }
     );
+  }
 
-    // const response = (
-    //   await axios.post(`http://${window.location.host}:3000/cb-chat/check`, {
-    //     data: roomName,
-    //   })
-    // ).data;
-
-    // const registerData = await axios.post(
-    //   `http://${window.location.host}:3000/cb-user/adminUpdateRole`,
-    //   {
-    //     data: this.user,
-    //   }
-    // );
+  async adminChangeIsBanned(data: object) {
+    console.log('We are in adminChangeIsBanned');
+    await axios.post(
+      `http://${window.location.host}:3000/cb-user/adminUpdateIsBanned`,
+      { data }
+    );
   }
 
   async doubleAUth(login: string) {

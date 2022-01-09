@@ -6,6 +6,7 @@ import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { AdminChangeUserRoleDto } from 'src/dtos/adminChangeUserRole.dto';
+import { AdminChangeIsBannedDto } from 'src/dtos/adminChangeIsBanned.dto';
 
 
 const editFileName = (req, file, callback) => {
@@ -33,6 +34,16 @@ export class UserController {
         }
         catch {
             alert('An error has occured when changing the user role');
+        } 
+    }
+
+    @Post('adminUpdateIsBanned')
+    async postAdminUpdateIsBanned(@Body('data') dataDto: AdminChangeIsBannedDto) {
+        try {
+            const response = await this.userService.adminChangeIsBanned(dataDto)
+        }
+        catch {
+            alert('An error has occured when banning the user');
         }
         
     }

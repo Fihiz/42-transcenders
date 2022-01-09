@@ -38,7 +38,7 @@ export class SidebarComponent implements OnInit {
       /* Kind of guard : redirection if the user was a moderator and navigate on the component and becomes a user */
       if (
         this.currentAppRole !== 'moderator' &&
-        this.router.url === '/profile/moderator'
+        this.router.url === '/profile/super-admin'
       )
         this.router.navigate(['/welcome']);
     });

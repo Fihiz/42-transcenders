@@ -10,8 +10,8 @@ import { UserService } from 'src/app/services/sf-user.service';
 export class SuperAdminComponent implements OnInit {
   allUsersInfo: Array<any> = [];
   constructor(private socket: Socket, private userService: UserService) {}
-  onSetUserRoles() {
-    console.log('onSetUserRoles');
+  onGetAllUsersList() {
+    console.log('onGetAllUsersList()');
     this.socket.emit('allUsersInApp');
   }
 
@@ -26,6 +26,14 @@ export class SuperAdminComponent implements OnInit {
     // si la reponse est bonne
     // mettre a jour allUserInfo avec l entity updated
     this.socket.emit('currentUserNewRoleInApp', currentLogin);
+  }
+
+  async onBanChange(currentLogin: string, isBanned: boolean) {
+    const data = {
+      login: currentLogin,
+      isBanned: isBanned,
+    };
+    await this.userService.adminChangeIsBanned(data);
   }
 
   ngOnInit(): void {
