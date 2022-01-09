@@ -27,7 +27,11 @@ export class SidebarComponent implements OnInit {
     this.currentAppRole = this.user.user.app_role;
 
     this.socket.on('updatedUserGlobalRole', (data: any) => {
-      if (this.user.user.app_role !== 'superadmin')
+      console.log('global', this.global.login, 'data', data.login);
+      if (
+        this.user.user.app_role !== 'superadmin' &&
+        this.global.login === data.login
+      )
         this.currentAppRole = data.app_role;
     });
   }
