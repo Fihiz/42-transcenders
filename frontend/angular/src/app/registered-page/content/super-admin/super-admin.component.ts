@@ -7,13 +7,20 @@ import { Socket } from 'ngx-socket-io';
   styleUrls: ['./super-admin.component.css'],
 })
 export class SuperAdminComponent implements OnInit {
-  // allUsers;
+  allUsersInfo: Array<any> = [];
   constructor(private socket: Socket) {}
+  onSetUserRoles() {
+    console.log('onSetUserRoles');
+    this.socket.emit('allUsersInApp');
+  }
 
   ngOnInit(): void {
-    // this.socket.on('allUsers', (data: any) => {
-    // console.log('allAvailableRoomsInApp', data);
-    // this.listAllAvailableRooms = data;
-    // });
+    this.socket.on('allUsersInApp', (data: any) => {
+      this.allUsersInfo = data;
+      console.log('allUsers', this.allUsersInfo);
+      console.log('allUsers', this.allUsersInfo[0]);
+
+      // this.listAllAvailableRooms = data;
+    });
   }
 }

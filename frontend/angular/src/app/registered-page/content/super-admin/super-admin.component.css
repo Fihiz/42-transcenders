@@ -38,8 +38,14 @@ button[type="submit"] {
   color: white;
 }
 
+/* Display users list */
+
 .viewUsers {
   max-height: 150px;
   overflow-y: auto;
   min-width: 200px;
+}
+
+.badge {
+  font-size: 7px;
 }

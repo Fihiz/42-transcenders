@@ -11,14 +11,21 @@
           data-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
+          (click)="onSetUserRoles()"
         >
           Set user roles
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <!--1 -->
-          <li>
+          <li *ngFor="let user of allUsersInfo">
             <div class="viewUsers">
-              <a class="dropdown-item">Listing of users &raquo; </a>
+              <a *ngIf="user.app_role !== 'superadmin'" class="dropdown-item">
+                {{ user.login }}
+                <span class="badge badge-pill badge-warning">{{
+                  user.app_role
+                }}</span>
+                &raquo;
+              </a>
             </div>
             <ul class="dropdown-menu dropdown-submenu">
               <li>

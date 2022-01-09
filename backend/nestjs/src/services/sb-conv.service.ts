@@ -57,6 +57,7 @@ export class ConvService {
         return (result);
       }
   }
+  
   //For View Room in chat
   async findAllAvailableRoomsInApp() : Promise<ConversationEntity[]> {
     console.log(`findAllAvailableRoomsInApp`);

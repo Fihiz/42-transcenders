@@ -6,9 +6,7 @@ import { ChatterService } from "src/services/sb-chatter.service";
 import { ConvService } from "src/services/sb-conv.service";
 import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService } from "src/services/sb-global-data.service";
-import { AppService } from "src/app.service";
 import { UserService } from "src/services/sb-user.service";
-import { WebAppUserEntity } from "src/entities/eb-web-app-user.entity";
 
 @WebSocketGateway({cors:{origin: '*'}})
 
@@ -106,6 +104,7 @@ export class ChatGateway {
 	async getConv(@MessageBody() emission) {
 		this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('allConversations', await this.ConvService.findAllConv(emission.login));
 	}
+  
   @SubscribeMessage('allAvailableRoomsInApp')
 	async getAllAvailableRoomsInApp(@MessageBody() emission) {
 		this.server.emit('allAvailableRoomsInApp', await this.ConvService.findAllAvailableRoomsInApp());

@@ -11,9 +11,10 @@ import { AuthService } from 'src/services/sb-auth.service';
 import { StatsService } from 'src/services/sb-stats.service';
 import { UserService } from 'src/services/sb-user.service';
 import { UserModule } from './mb-user.module';
+import { AdminViewModule } from './mb-admin-view.module';
 
 @Module({
-    imports: [UserModule, TypeOrmModule.forFeature([WebAppUserEntity, ApiUserDataEntity, StatEntity, AwardEntity, AchievementEntity])],
+    imports: [UserModule, TypeOrmModule.forFeature([WebAppUserEntity, ApiUserDataEntity, StatEntity, AwardEntity, AchievementEntity]), AdminViewModule],
     providers: [AuthService, UserService, StatsService],
     controllers: [AuthController, DoubleAuthController],
 })
