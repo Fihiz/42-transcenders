@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { GlobalService } from 'src/app/services/sf-global.service';
 import { Socket } from 'ngx-socket-io';
 import { UserService } from 'src/app/services/sf-user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -16,7 +17,8 @@ export class SidebarComponent implements OnInit {
   constructor(
     private socket: Socket,
     public global: GlobalService,
-    private user: UserService
+    private user: UserService,
+    private router: Router
   ) {}
 
   onLogOut(): void {
@@ -33,6 +35,12 @@ export class SidebarComponent implements OnInit {
         this.global.login === data.login
       )
         this.currentAppRole = data.app_role;
+      /* Kind of guard : redirection if the user was a moderator and navigate on the component and becomes a user */
+      if (
+        this.currentAppRole !== 'moderator' &&
+        this.router.url === '/profile/moderator'
+      )
+        this.router.navigate(['/welcome']);
     });
   }
 }
