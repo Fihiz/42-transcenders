@@ -34,12 +34,14 @@ export class SuperAdminComponent implements OnInit {
       isBanned: isBanned,
     };
     await this.userService.adminChangeIsBanned(data);
+    this.socket.emit('allUsersInApp');
   }
 
   ngOnInit(): void {
     this.socket.on('allUsersInApp', (data: any) => {
       this.allUsersInfo = [];
       this.allUsersInfo = data;
+
       console.log('allUsers', this.allUsersInfo);
       console.log('allUsers', this.allUsersInfo[0]);
 
