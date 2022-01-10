@@ -1,0 +1,133 @@
+@import url("https://fonts.googleapis.com/css2?family=Secular+One&display=swap");
+
+h1,
+h5 {
+  text-align: center;
+  font-family: "Secular One", sans-serif;
+  color: #528fac;
+}
+
+h4 {
+  font-family: "Secular One", sans-serif;
+  color: #528fac;
+}
+
+h6 {
+  text-align: center;
+  font-family: "Secular One", sans-serif;
+}
+
+.rounded-circle {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin: 3%;
+}
+
+.rounded-circle-sm {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  margin: 3%;
+}
+
+.card {
+  margin: 10px;
+}
+
+/* NEW TEST DROPDOWN */
+
+.dropdown-menu.show {
+  background: #43b6b2;
+  color: white;
+}
+
+.dropdown-menu {
+  background-color: #43b6b2;
+  color: white;
+}
+
+p {
+  margin: 15px;
+}
+
+.dropdown-menu li {
+  position: relative;
+}
+.dropdown-menu .dropdown-submenu {
+  display: none;
+  position: absolute;
+  left: 100%;
+  top: -7px;
+}
+.dropdown-menu .dropdown-submenu-left {
+  right: 100%;
+  left: auto;
+}
+.dropdown-menu > li:hover > .dropdown-submenu {
+  display: block;
+}
+
+a:hover {
+  background-color: #d2e3e6;
+  cursor: pointer;
+}
+
+.style-txt {
+  font-size: 12px;
+  padding: 8px;
+}
+
+button[type="submit"] {
+  background-color: #43b6b2;
+  border: #43b6b2;
+  color: white;
+}
+
+#dropdownMenuButton {
+  background-color: #43b6b2;
+  border: #43b6b2;
+  color: white;
+}
+
+/* Display users list */
+
+.viewUsers {
+  max-height: 150px;
+  overflow-y: auto;
+  /* min-width: 200px; */
+}
+
+.badge {
+  font-size: 7px;
+}
+
+/* rows */
+
+.row-top {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.middle {
+  height: 100%;
+  max-height: 75vh; /*to scroll*/
+  /* Seems to work in the same way */
+  /*  */
+}
+
+.row {
+  margin-left: 0%;
+  margin-right: 0%;
+  overflow-y: auto; /*to scroll*/
+}
+
+.badge-success {
+  background-color: #43b6b2;
+}
+
+.style-txt {
+  font-size: 12px;
+  padding: 8px;
+  text-align: justify;
+}
