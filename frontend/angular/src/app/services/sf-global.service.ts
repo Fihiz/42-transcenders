@@ -9,5 +9,6 @@ export class GlobalService {
   doubleAuth: boolean = false;
   allUserStatus: Map<string, string> = new Map<string, string>();
   isBanned: boolean = false;
+  role: string = 'chatter';
   constructor() {}
 }

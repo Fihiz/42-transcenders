@@ -91,6 +91,7 @@ export class ConvService {
     return(convArray);
   }
 
+
   async joinRoomCheckValue(emission, conv: ConversationEntity, isInvited: boolean, name:string) {
     emission.data.roomPassword = atob(emission.data.roomPassword);
     if (!conv || conv?.members?.find(member => member === name) || conv.type === 'private') {

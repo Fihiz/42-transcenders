@@ -114,7 +114,6 @@ export class ChatComponent implements OnInit {
   async onCreateRoom() {
     const res = await this.chatService.takeAndCheck(this.users);
     if (res.status != 'ok') return;
-    console.log('res = ', res.status);
     const roomAvatarsArray: string[] = [
       '../../../assets/room-pictures/1.png',
       '../../../assets/room-pictures/2.png',
@@ -410,7 +409,6 @@ export class ChatComponent implements OnInit {
       }
     });
     this.socket.on('allConversations', (data: any) => {
-      console.log('all conversations');
       this.listConv = data as Array<if_conversation>;
     });
     this.socket.on('newConversation', (data: any) => {
@@ -452,7 +450,6 @@ export class ChatComponent implements OnInit {
     });
     //For View Room in chat
     this.socket.on('allAvailableRoomsInApp', (data: any) => {
-      console.log('allAvailableRoomsInApp', data);
       this.listAllAvailableRooms = data;
     });
     //For View Room in chat

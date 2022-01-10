@@ -67,6 +67,18 @@ export class ChatController {
       }
     }
 
+    @Get('newOwner')
+    async addNewOwner(@Req() req, @Res() res) {
+      const target = req.query.newAdmin;
+      const userAsking = req.query.requester;
+      const conv_id = req.query.conv_id;
+      if ((await this.chatService.checkConditionToModifie(target, userAsking, conv_id)) === 'ko')
+        res.send('Action not allowed');
+      else {
+        (await this.chatService.addOwnerInConv(target, conv_id)) !== 'ko' ? res.send('ok') : res.send('ko');
+      }
+    }
+
     @Get('newAdmin')
     async addNewAdmin(@Req() req, @Res() res) {
       const target = req.query.newAdmin;
@@ -76,6 +88,18 @@ export class ChatController {
         res.send('Action not allowed');
       else {
         (await this.chatService.addAdminInConv(target, conv_id)) !== 'ko' ? res.send('ok') : res.send('ko');
+      }
+    }
+
+    @Get('newChatter')
+    async addNewChatter(@Req() req, @Res() res) {
+      const target = req.query.newAdmin;
+      const userAsking = req.query.requester;
+      const conv_id = req.query.conv_id;
+      if ((await this.chatService.checkConditionToModifie(target, userAsking, conv_id)) === 'ko')
+        res.send('Action not allowed');
+      else {
+        (await this.chatService.addChatterInConv(target, conv_id)) !== 'ko' ? res.send('ok') : res.send('ko');
       }
     }
 
@@ -91,7 +115,6 @@ export class ChatController {
         if (conv.type === 'private')
           res.send((await this.chatterService.muteSomeone(target)) === 'ok' ?  'ok' : 'ko');
         else {
-          console.log('userAsking.chat_role = ', userAsking.chat_role, 'target.chat_role = ', target.chat_role);
           if ((userAsking.chat_role !== 'admin' && userAsking.chat_role !== 'owner') || target.chat_role === 'owner')
             res.send('Error: not good role');
           else {

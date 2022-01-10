@@ -35,7 +35,6 @@ export class UserService {
   }
 
   async createAppUser(user: WebAppUserEntity): Promise<any> {
-    console.log('WepAppUser creation');
     try {
       if (!await this.webUsers.findOne(user.login)) {
         const res= await this.webUsers.insert(user);
@@ -91,7 +90,6 @@ export class UserService {
 
   async findOneAppUser(login: string): Promise<WebAppUserEntity> {
     const user = await this.webUsers.findOne({login: login});
-    console.log (`user is`, user)
     return (user);
   }
 
@@ -114,12 +112,10 @@ export class UserService {
   // }
 
   // async removeWebAppUser(user: WebAppUserEntity) {
-  //   console.log('deletion');
   //   return (await this.webUsers.delete(user));
   // }
 
   // async removeApiUserData(user: WebAppUserEntity) {
-  //   console.log('deletion');
   //   return (await this.apiUsers.delete(user));
   // }
 

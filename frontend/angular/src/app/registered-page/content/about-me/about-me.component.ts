@@ -13,14 +13,12 @@ export class AboutMeComponent implements OnInit {
   found: boolean;
 
   constructor(private route: ActivatedRoute) {
-    console.log('test1');
     this.user = '';
     this.profile = undefined;
     this.found = true;
   }
 
   async ngOnInit() {
-    console.log('test2');
     this.user = this.route.snapshot.paramMap.get('login') + '';
     const url = `http://${window.location.host}:3000/cb-user/profile/${this.user}`;
     await axios

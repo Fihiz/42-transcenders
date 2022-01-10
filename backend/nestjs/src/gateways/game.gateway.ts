@@ -17,11 +17,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	handleConnection() {
-		console.log('game connected');
 	}
 
 	handleDisconnect(@MessageBody() body: any) {
-		console.log('game disconnection');
 	}
 
 	emitUpdate(test:GameGateway) {
@@ -49,7 +47,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			this.server.to(body.id).emit('welcome', {notFound: true});
 			return ;
 		}
-		console.log(body.login, 'successfully joined the game ', body.gameId);
 		GlobalDataService.loginIdMap.forEach((user, loginInMap) => {
 			const foundUser = user.sockets.find((socket) => socket.id === body.id);
 			if (foundUser)
@@ -90,7 +87,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				})
 				user.status = status;
 				this.emitStatusToAll(loginInMap, user.status);
-				console.log(loginInMap, 'successfully left the game');
 				return ;
 			}
 		});
@@ -103,7 +99,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (foundUser)
 			{
 				this.gameService.setReady(foundUser.gameId, login);
-				console.log(login, 'successfully set ready in game', foundUser.gameId);
 				return ;
 			}
 		});
@@ -135,7 +130,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('matchmaking')
 	async setMatchmaking(@MessageBody() body: any) {
-		console.log(`${body.login} join Matchmaking.`);
 		// console.log(`${body.login} - IN:`, this.players);
 		const found = this.players.find((user) => user.gameType === body.gameType );
 		if (found !== undefined) {
@@ -149,7 +143,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				}
 				const id = await this.gameService.createMatchParty(player1.login, player2.login, search);
 				const party = await this.gameService.getPartyById(id);
-				console.log(`${body.login} match with ${player1.login}.`);
 				this.gameService.addGame(party.game_id, (party.player1 as unknown as WebAppUserEntity), (party.player2 as unknown as WebAppUserEntity));
 				const index = this.players.findIndex((user) => user.login === found.login)
 				if (index != -1)
@@ -176,7 +169,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		if (index == -1)
 			return ;
 		this.players.splice(index, 1);
-		console.log(`${body.login} left Matchmaking.`);
 		// this.players = [];
 		// console.log("OUT:", this.players);
 	}

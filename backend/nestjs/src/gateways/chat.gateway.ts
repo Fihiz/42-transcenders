@@ -161,27 +161,6 @@ export class ChatGateway {
   }
 
 
-  // @SubscribeMessage('leaveRoom')
-  // async leaveRoom(@MessageBody() emission) {
-  //   const conv = await this.ConvService.findOneConversation(emission.data.conv_id);
-  //   const conv_id = conv.conv_id;
-  //   const conv_name = conv.name;
-  //   const members = this.chatService.getReceiver(new Set(conv.members), emission.login);
-  //   if (conv.type === 'private') {
-  //     this.ConvService.destroyRoom(conv);
-  //     this.server.to(members).emit('youAreBan', {conv_id: conv_id, conv_name: conv_name});
-  //   }
-  //   else {
-  //     const user = await this.chatterService.findOneChatter(emission.data.conv_id, emission.data.login)
-  //     if ((await this.ConvService.removeMemberOfConv(emission.data.content, emission.data.conv_id, emission.login, user)) !== 'ok')
-  //       this.emitFail(emission.socketId, 'error happend in removing the user');
-  //     else {
-  //       const conv = await this.ConvService.findOneConversation(emission.data.conv_id);
-  //       this.server.to(this.chatService.getReceiver(new Set(conv.members), emission.login)).emit('MemberLeaves', {login: emission.login, conv_id: conv.conv_id});
-  //     }
-  //   }
-  // }
-
   @SubscribeMessage('leaveRoom')
   async leaveRoom(@MessageBody() emission) {
     const conv = await this.ConvService.findOneConversation(emission.data.conv_id);

@@ -29,12 +29,13 @@ export class SidebarComponent implements OnInit {
     this.currentAppRole = this.user.user.app_role;
 
     this.socket.on('updatedUserGlobalRole', (data: any) => {
-      console.log('global', this.global.login, 'data', data.login);
       if (
         this.user.user.app_role !== 'superadmin' &&
         this.global.login === data.login
-      )
+      ) {
         this.currentAppRole = data.app_role;
+        this.global.role = data.app_role;
+      }
       /* Kind of guard : redirection if the user was a moderator and navigate on the component and becomes a user */
       if (
         this.currentAppRole !== 'moderator' &&

@@ -4,7 +4,7 @@
   <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
       <!-- <a class="navbar-brand">Set user roles</a> -->
-      <div class="dropdown">
+      <div *ngIf="global.role === 'superadmin'" class="dropdown">
         <button
           class="btn btn-light btn-lg"
           type="button"
@@ -76,11 +76,13 @@
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <!--1 -->
-          <li>
+          <li *ngFor="let conv of listConv">
             <!-- <li *ngFor="let conv of allConvInfo"> -->
             <div class="viewUsers">
-              <a class="dropdown-item"> List of all conv &raquo; </a>
+              <a class="dropdown-item"> {{ conv.conv.name }} &raquo; </a>
             </div>
+
+
             <ul class="dropdown-menu dropdown-submenu">
               <li>
                 <a class="dropdown-item"> Delete room &raquo; </a>
@@ -89,49 +91,55 @@
                     <button
                       type="submit"
                       class="btn btn-secondary btn-sm btn-block"
+                      (click)="onDelete(conv.conv)"
                     >
                       Delete room
                     </button>
                   </li>
                 </ul>
               </li>
-              <!-- <li>
-                <button
+              <li>
+                <!-- <button
                   type="submit"
                   class="btn btn-secondary btn-sm btn-block"
+                  
                 >
                   View members
-                </button>
-              </li> -->
+                </button> -->
+              </li>
               <li>
                 <a class="dropdown-item"> View members &raquo; </a>
                 <ul class="dropdown-menu dropdown-submenu">
-                  <li>
+                  <li *ngFor="let member of (conv.members) ">
+                    <!-- <li *ngFor="let member of (listConv[0].members) "> -->
                     <a class="dropdown-item">
-                      List of all members + role &raquo;
-                      <span class="badge badge-pill badge-warning">role</span>
+                     {{ member.login }}  &raquo;
+                      <span class="badge badge-pill badge-warning">{{ member.role }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-submenu">
-                      <li>
+                      <li *ngIf="member.role !== 'owner'">
                         <button
                           type="submit"
                           class="btn btn-secondary btn-sm btn-block"
+                          (click)="onSetOwner(conv.conv, member.login)"
                         >
                           Set as room owner
                         </button>
                       </li>
-                      <li>
+                      <li *ngIf="member.role !== 'admin'">
                         <button
                           type="submit"
                           class="btn btn-secondary btn-sm btn-block"
+                          (click)="onSetAdmin(conv.conv, member.login)"
                         >
                           Set as room admin
                         </button>
                       </li>
-                      <li>
+                      <li *ngIf="member.role !== 'chatter'">
                         <button
                           type="submit"
                           class="btn btn-secondary btn-sm btn-block"
+                          (click)="onSetChatter(conv.conv, member.login)"
                         >
                           Set as room chatter
                         </button>

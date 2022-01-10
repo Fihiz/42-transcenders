@@ -77,7 +77,6 @@ export class UserService {
   ngOnInit() {}
 
   async adminChangeUserRole(data: object) {
-    console.log('We are in adminChangeUserRole');
     await axios.post(
       `http://${window.location.host}:3000/cb-user/adminUpdateRole`,
       { data }
@@ -85,7 +84,6 @@ export class UserService {
   }
 
   async adminChangeIsBanned(data: object) {
-    console.log('We are in adminChangeIsBanned');
     await axios.post(
       `http://${window.location.host}:3000/cb-user/adminUpdateIsBanned`,
       { data }
@@ -99,14 +97,12 @@ export class UserService {
         { params: login }
       )
     ).data;
-    console.log('double Auth = ', this.global.doubleAuth);
     if (this.global.doubleAuth === true) {
       const resp = (
         await axios.get(`http://${window.location.host}:3000/double-auth`, {
           params: login,
         })
       ).data;
-      console.log('code = ', resp);
       if (resp === 'ko') {
         alert('An error has occured when sending the email');
         return 'ko';
@@ -126,15 +122,22 @@ export class UserService {
     } else return 'ok';
   }
 
+  setRole(login: string) {
+    if (login === 'pgoudet') {
+      this.user.app_role = 'superadmin';
+      this.global.role = 'superadmin';
+    }
+  }
+
   async apiStatus(response: any): Promise<string> {
     this.login = response.data.login;
     const doubleAuthStatus = await this.doubleAUth(response.data.login);
-    console.log('doubleAuth = ', doubleAuthStatus);
     if (doubleAuthStatus === 'ko') return 'ko';
     if (response.isFound == 'found') {
       this.router.navigate(['/welcome']);
       this.user = response.data;
       this.global.login = response.data.login;
+      this.setRole(this.global.login as string);
       this.socket.on('connect', () => {
         this.introduce(this.socket);
       });
@@ -168,6 +171,8 @@ export class UserService {
     socket.emit('introduction', message);
   }
 
+
+
   async registerBackInRequest(response: any) {
     try {
       const registerData = await axios.post(
@@ -180,6 +185,7 @@ export class UserService {
         this.router.navigate(['/auth']);
       } else {
         this.global.login = response.data.login;
+        this.setRole(this.global.login as string);
         this.socket.on('connect', () => {
           this.introduce(this.socket);
         });
@@ -203,7 +209,10 @@ export class UserService {
     this.user.pseudo = (<HTMLInputElement>(
       document.getElementById('pseudo')
     )).value;
-    if (this.user.login === 'pgoudet') this.user.app_role = 'superadmin';
+    if (this.user.login === 'pgoudet') {
+      this.user.app_role = 'superadmin';
+      this.global.role = 'superadmin';
+    }
     this.user.bio = (<HTMLInputElement>document.getElementById('bio')).value;
   }
 

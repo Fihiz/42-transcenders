@@ -77,7 +77,6 @@ export class GameService {
 
 	addGame(id: number, player1: WebAppUserEntity, player2: WebAppUserEntity/*, type de game*/) {
 		this.games.push(new Game(id, player1, player2));
-		console.log("PASS add game");
 		// this.games.push(new Game(id, player1, player2, game params));
 	}
 
@@ -240,7 +239,6 @@ export class GameService {
 		})
 		.then((response) => {
 			const types: GameTypeEntity[] = response;
-			console.log(`Get all types of game has succeeded.`);
 			return types;
 		})
 		.catch((error) => {

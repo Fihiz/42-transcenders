@@ -24,7 +24,6 @@ export class ChatService {
 
 
     async createMessage(message: MessageEntity): Promise<number | MessageEntity | string> {
-      console.log('Message creation');
       try {
           await this.messages.insert(message);
           return (message);
@@ -159,6 +158,9 @@ export class ChatService {
     
     const target = await this.findOneChatter(userToBan, conv_id);
     const client = await this.findOneChatter(userAsking, conv_id);
+    if (target && userAsking === 'superadmin') {
+      return (target);
+    }
     if (!client || !target)
       return ('ko');
     if (target.chat_role === 'owner' || (target.chat_role === 'admin' && client.chat_role != 'owner') && client.chat_role === 'chatter') {
@@ -168,9 +170,29 @@ export class ChatService {
     return (target);
   }
 
+  async addOwnerInConv(target, conv_id) {
+    try {
+      await this.chatter.update({login: target, conv_id: conv_id}, {chat_role: 'owner'})
+      return ('ok');
+    }
+    catch {
+      return ('ko');
+    }
+  }
+
   async addAdminInConv(target, conv_id) {
     try {
       await this.chatter.update({login: target, conv_id: conv_id}, {chat_role: 'admin'})
+      return ('ok');
+    }
+    catch {
+      return ('ko');
+    }
+  }
+
+  async addChatterInConv(target, conv_id) {
+    try {
+      await this.chatter.update({login: target, conv_id: conv_id}, {chat_role: 'chatter'})
       return ('ok');
     }
     catch {

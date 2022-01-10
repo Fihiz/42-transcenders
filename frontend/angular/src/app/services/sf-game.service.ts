@@ -1368,7 +1368,6 @@ export class GameService {
 
         callDrawLoop(test: Game) {
           test.drawLoop(test);
-          console.log(test, frameId);
           if (frameId != -1 && loop == 2)
             frameId = requestAnimationFrame(test.callback);
         }
