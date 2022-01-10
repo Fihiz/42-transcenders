@@ -244,12 +244,14 @@ export class ChatGateway {
 	async setInvitationFunc(@MessageBody() emission) {
     // console.log("emission:", emission);
 
+    // CHECK INVITATION
     const alreadyInvited = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
-    const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
+    const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id); // doublons du au "merge" de fonction -> TODO 
     
-    // CAS D"ERREURS SI ADVERSAIRE EST OFFLINE OU INGAME
+    // CHECK STATUS
     const receiver = emission.data.logins_conv.find((search) => search !== emission.login);
     const statusReceiver = GlobalDataService.loginIdMap.get(receiver)?.status;
+    // CAS D'ERREURS: ADVERSARY OFFLINE
     if (statusReceiver === undefined) { // change for Offline ? undefine when not connected
       const error: MessageEntity = {
         id: emission.socketId,
@@ -259,14 +261,15 @@ export class ChatGateway {
         content: "User not connected...",
         avatar: (emission.login as any as WebAppUserEntity).avatar, // fail
         role: (emission.login as any as WebAppUserEntity).app_role, // fail
-        invitation: emission.data.invitation
+        invitation: false
       }
       if (alreadyInvited && invitation)
         this.ConvService.unsetInvitation(invitation);
-      this.server.to(emission.socketId).emit('errorException', error);
+      this.server.to(emission.socketId).emit('errorInvitation', error);
       return;
     }
-    if (statusReceiver === "inGame") { // inGame realy?
+    // CAS D'ERREURS: ADVERSARY INGAME
+    else if (statusReceiver === "inGame") { // inGame realy?
       const error: MessageEntity = {
         id: emission.socketId,
         conv_id: emission.data.conv_id,
@@ -275,41 +278,61 @@ export class ChatGateway {
         content: "Already in a game...",
         avatar: (emission.login as any as WebAppUserEntity).avatar, // fail
         role: (emission.login as any as WebAppUserEntity).app_role, // fail
-        invitation: emission.data.invitation
+        invitation: false
       }
       if (alreadyInvited && invitation)
         this.ConvService.unsetInvitation(invitation);
-      this.server.to(emission.socketId).emit('errorException', error);
+      this.server.to(emission.socketId).emit('errorInvitation', error);
       return;
     }
     
-    // CAS STANDARD D'INVITATIONS
+    // INVITATION
     if (alreadyInvited !== undefined) {
       const emitter: WebAppUserEntity = alreadyInvited.emitter as any as WebAppUserEntity;
+      // SEND INVITATION DURING INVITATION FROM ADVERSARY 
       if (emitter.login !== emission.login) {
         const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame("classic")
+        // TYPE GAME EXIST
         if (search) {
           const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
           const id = await this.gameService.createMatchParty((invitation.emitter as any as WebAppUserEntity).login, (invitation.receiver as any as WebAppUserEntity).login, search);
+          console.log("ID:\n", id);
           const party = await this.gameService.getPartyById(id);
           // TODO: Put status of player like inGame.
           // TODO: Change boolean of invitation in messages.
-          console.log(`${emitter.login} paly with ${receiver.login}.`);
+          console.log(`${(invitation.emitter as any as WebAppUserEntity).login} paly with ${(invitation.emitter as any as WebAppUserEntity).login}.`);
           this.gameService.addGame(party.game_id, (party.player1 as unknown as WebAppUserEntity), (party.player2 as unknown as WebAppUserEntity));      
           this.ConvService.unsetInvitation(invitation);
           emission.data.content = "Invitation accepted!";
-          // Partie copié / collé
+          emission.data.invitation = false;
+          // PARTS COPY/PAST [start]
           const messages = await this.chatService.handleMessage(emission);
           if (typeof(messages) !== 'string') {
             const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
             console.log(receivers);
-            this.server.to(this.chatService.getReceiver(receivers, emission.login)).emit('launchgame', messages);
-            //
+            this.server.to(this.chatService.getReceiver(receivers, emission.login)).emit('allMessages', messages);
+            // [end]
             this.server.to(receivers).emit('launchgameInvitation', party.game_id);
           }
         }
+        // CAS D'ERREURS: TYPE GAME NOT EXIST
+        else {
+          const error: MessageEntity = {
+            id: emission.socketId,
+            conv_id: emission.data.conv_id,
+            login: emission.login,
+            date: emission.data.date,
+            content: "Type game not exist...",
+            avatar: (emission.login as any as WebAppUserEntity).avatar, // fail
+            role: (emission.login as any as WebAppUserEntity).app_role, // fail
+            invitation: false
+          }
+          this.server.to(emission.socketId).emit('errorInvitation', error);
+          return;
+        }
         console.log(`${emission.login} a fait une demande pour jouer alors qu'il a été invité.`);
       }
+      // SEND DOUBLE INVITATION
       else {
         // TODO: ?
         console.log(`${emission.login} a déjà fait une demande pour jouer.`);
@@ -321,15 +344,24 @@ export class ChatGateway {
           content: "Request to play already launched...",
           avatar: (emission.login as any as WebAppUserEntity).avatar, // fail
           role: (emission.login as any as WebAppUserEntity).app_role, // fail
-          invitation: emission.data.invitation
+          invitation: false
         }
-        this.server.to(emission.socketId).emit('errorException', error);
+        this.server.to(emission.socketId).emit('errorInvitation', error);
         return;
       }
     }
+    // SEND INVITATION FROM USER
     else {
       console.log(`${emission.login} fait une demande pour jouer.`);
       await this.ConvService.setInvitation(emission.data.conv_id, emission.login, emission.data.logins_conv.find((login) => login !== emission.login));
+       // PARTS COPY/PAST [start]
+      const messages = await this.chatService.handleMessage(emission);
+      if (typeof(messages) !== 'string') {
+        const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
+        console.log(receivers);
+        this.server.to(this.chatService.getReceiver(receivers, emission.login)).emit('allMessages', messages);
+        // [end]
+      }
     }
 	}
 
@@ -365,19 +397,36 @@ export class ChatGateway {
   //     }
 	// }
 
-  // @SubscribeMessage('unsetInvitation')
-	// async unsetInvitationFunc(@MessageBody() emission) {
-  //   const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
-  //   if (invitation) {
-  //     await this.ConvService.unsetInvitation(invitation);
-  //     emission.data.content = "Invitation declined!";
-  //     const messages = await this.chatService.handleMessage(emission);
-  //     if (typeof(messages) !== 'string') {
-  //       const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
-  //       console.log(receivers);
-  //       this.server.to(this.chatService.getReceiver(receivers, emission.login)).emit('launchgame', messages);
-  //     }
-  //   }
-	// }
+  @SubscribeMessage('unsetInvitation')
+	async unsetInvitationFunc(@MessageBody() emission) {
+    const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
+    if (invitation !== undefined) {
+      await this.ConvService.unsetInvitation(invitation);
+      emission.data.content = "Invitation refused!";
+      emission.data.invitation = false;
+      const messages = await this.chatService.handleMessage(emission);
+      if (typeof(messages) !== 'string') {
+        const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
+        console.log(receivers);
+        this.server.to(this.chatService.getReceiver(receivers, emission.login)).emit('allMessages', messages);
+      }
+    }
+    // CAS D'ERREURS: INVITATION NOT EXIST
+    else {
+      console.log(`${emission.login} repond a une invitation expirée.`);
+      const error: MessageEntity = {
+        id: emission.socketId,
+        conv_id: emission.data.conv_id,
+        login: emission.login,
+        date: emission.data.date,
+        content: "Invitation has expired...",
+        avatar: (emission.login as any as WebAppUserEntity).avatar, // fail
+        role: (emission.login as any as WebAppUserEntity).app_role, // fail
+        invitation: false
+      }
+      this.server.to(emission.socketId).emit('errorInvitation', error);
+      return;
+    }
+	}
 
 }

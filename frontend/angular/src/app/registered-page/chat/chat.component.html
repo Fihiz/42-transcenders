@@ -512,7 +512,7 @@
                     {{ message.content }}
                   </div>
                   <div *ngIf="message.invitation === true" class="message other-message float-right">
-                    <p>You have sent an invitation!</p>
+                    <!-- <p>You have sent an invitation!</p> -->
                     <a class="cancel" (click)="onCancelToPlay()">Cancel</a>
                   </div>
                 </li>
@@ -541,7 +541,7 @@
                     {{ message.content }}
                   </div>
                   <div *ngIf="message.invitation === true" class="message other-message float-left">
-                    <p>You have received an invitation!</p>
+                    <!-- <p>You have received an invitation!</p> -->
                     <a class="accept" (click)="onAcceptToPlay()">Accept</a>
                     <a class="cancel" (click)="onCancelToPlay()">Decline</a>
                   </div>

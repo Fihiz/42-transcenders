@@ -179,4 +179,19 @@ export class ChatService {
     }
   }
 
+  async errorMessage(emission: any, message: string) {
+    console.log("ERROR: ", message);
+    const error: MessageEntity = {
+      id: emission.socketId,
+      conv_id: emission.data.conv_id,
+      login: emission.login,
+      date: emission.data.date,
+      content: message,
+      avatar: (emission.login as any as WebAppUserEntity).avatar, // fail
+      role: (emission.login as any as WebAppUserEntity).app_role, // fail
+      invitation: false
+    }
+    return error;
+  }
+
 }

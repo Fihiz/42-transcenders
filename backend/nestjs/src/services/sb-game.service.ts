@@ -33,8 +33,8 @@ export class GameService {
 
 	async OnInit() {
 		const parties: PongGameEntity[] = await this.getAllPartiesInProgress();
-		parties.forEach((game) => {
-			this.addGame(game.game_id, (game.player1 as unknown as WebAppUserEntity), (game.player2 as unknown as WebAppUserEntity));
+		parties.forEach(async (game) => {
+			await this.addGame(game.game_id, (game.player1 as unknown as WebAppUserEntity), (game.player2 as unknown as WebAppUserEntity));
 		})
 		// [
 		//   PongGameEntity {
@@ -88,7 +88,9 @@ export class GameService {
 
 	addGame(id: number, player1: WebAppUserEntity, player2: WebAppUserEntity/*, type de game*/) {
 		this.games.push(new Game(id, player1, player2));
-		console.log("PASS add game");
+		// console.log("PASS add game");
+		// console.log("------>", id, player1, player2);
+		// console.log(this.games);
 		// this.games.push(new Game(id, player1, player2, game params));
 	}
 
@@ -439,7 +441,6 @@ class Game {
 	};
   
 	constructor(id: number, player1: WebAppUserEntity, player2: WebAppUserEntity) {
-		// console.log(id, player1, player2)
 		let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
 		this.board = {
 			color: "#08638C",

@@ -451,52 +451,130 @@ export class ChatComponent implements OnInit {
       }
     });
 
-  }
-
-  onErrorException() {
-    this.socket.on('errorException', (message: any) => {
-      console.log(message);
-      if (message.length > 0 && message[0].conv_id === this.currentConv.conv_id) {
-        this.convMessages.splice(0, this.convMessages.length);
-        this.convMessages = message;
-      }
-    });
-  }
-
-  onInvitToPlay() {
-    this.emission.data = {
-      conv_id: this.currentConv.conv_id,
-      logins_conv: this.currentConv.members,
-      date: new Date(),
-      content: "Invitation to start party!",
-      invitation: true
-    };
-    this.emission.socketId = this.global.socketId as string;
-    if (this.currentConv.name) {
-      // this.socket.emit('message', this.emission);
-      this.socket.emit('setInvitation', this.emission);
-    }
     this.socket.on('launchgameInvitation', (game: any) => {
+      console.log(game);
       this.router.navigate([`/pong/game/${game}`]);
     });
+
+  }
+
+  // onErrorInvitation() {
+  //   this.socket.on('errorInvitation', (message: any) => {
+  //     if (message.length > 0 && message[0].conv_id === this.currentConv.conv_id) {
+  //       this.convMessages.splice(0, this.convMessages.length);
+  //       this.convMessages = message;
+  //     }
+  //   });
+  // }
+
+  onInvitToPlay() {
+    this.chatService.emission(
+      'setInvitation',
+      this.currentConv,
+      this.currentConv.conv_id,
+      {
+        conv_id: this.currentConv.conv_id,
+        logins_conv: this.currentConv.members,
+        date: new Date(),
+        content: "Invitation to start party!",
+        invitation: true,
+      }
+    );
   }
 
   onAcceptToPlay() {
-    this.emission.data = {
-      conv_id: this.currentConv.conv_id,
-      date: new Date(),
-      content: "Invitation accepted!",
-      invitation: true
-    };
-    this.socket.emit('takeInvitation', this.emission);
-    this.socket.on('launchgameInvitation', (game: any) => {
-      this.router.navigate([`/pong/game/${game}`]);
-    });
+    this.chatService.emission(
+      'setInvitation',
+      this.currentConv,
+      this.currentConv.conv_id,
+      {
+        conv_id: this.currentConv.conv_id,
+        logins_conv: this.currentConv.members,
+        date: new Date(),
+        content: "Invitation accepted!",
+        invitation: false
+      }
+    );
   }
-  
+
   onCancelToPlay() {
-    this.socket.emit('unsetInvitation', this.emission);
-    console.log("PASS CANCEL");
+    this.chatService.emission(
+      'unsetInvitation',
+      this.currentConv,
+      this.currentConv.conv_id,
+      {
+        conv_id: this.currentConv.conv_id,
+        date: new Date(),
+        content: "Invitation refused!",
+        invitation: false
+      }
+    );
   }
+
+  // onInvitToPlay() {
+  //   this.chatService.invitToPlay(this.emission, this.currentConv);
+  // }
+
+  // onAcceptToPlay() {
+  //   this.chatService.acceptToPlay(this.emission, this.currentConv);
+  // }
+  
+  // onCancelToPlay() {
+  //   this.chatService.cancelToPlay(this.emission, this.currentConv);
+  // }
+
+
+
+
+
+
+
+
+
+
+  // onInvitToPlay() {
+  //   this.emission.data = {
+  //     conv_id: this.currentConv.conv_id,
+  //     logins_conv: this.currentConv.members,
+  //     date: new Date(),
+  //     content: "Invitation to start party!",
+  //     invitation: true
+  //   };
+  //   this.emission.socketId = this.global.socketId as string;
+  //   if (this.currentConv.name) {
+  //     // this.socket.emit('message', this.emission);
+  //     this.socket.emit('setInvitation', this.emission);
+  //   }
+  //   this.socket.on('launchgameInvitation', (game: any) => {
+  //     this.router.navigate([`/pong/game/${game}`]);
+  //   });
+  // }
+
+  // onAcceptToPlay() {
+  //   this.emission.data = {
+  //     conv_id: this.currentConv.conv_id,
+  //     logins_conv: this.currentConv.members,
+  //     date: new Date(),
+  //     content: "Invitation accepted!",
+  //     invitation: false
+  //   };
+  //   // this.socket.emit('takeInvitation', this.emission);
+  //   this.socket.emit('setInvitation', this.emission);
+  //   this.socket.on('launchgameInvitation', (game: any) => {
+  //     console.log(game);
+  //     this.router.navigate([`/pong/game/${game}`]);
+  //   });
+  // }
+  
+  // onCancelToPlay() {
+  //   this.emission.data = {
+  //     conv_id: this.currentConv.conv_id,
+  //     date: new Date(),
+  //     content: "Invitation refused!",
+  //     invitation: false
+  //   };
+  //   this.socket.emit('unsetInvitation', this.emission);
+  //   console.log("PASS CANCEL");
+  // }
 
 }
