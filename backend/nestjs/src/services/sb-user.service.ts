@@ -2,7 +2,7 @@ import { Injectable, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { role, WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { ApiUserDataEntity } from 'src/entities/eb-api-user-data.entity';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Repository, Not } from 'typeorm';
 import { CreateUserDto } from 'src/dtos/createUser.dto';
 
 @Injectable()
@@ -18,6 +18,25 @@ export class UserService {
     return ((await this.apiUsers.findOne({
       where: {login: login}
     })).mail)
+  }
+
+  async findPseudo(pseudo: string, login: string): Promise<boolean> {
+    let result;
+    if (login)
+      result = await this.webUsers.findOne({
+        where: {
+          pseudo: pseudo, 
+          login: Not(login)
+        }
+      });
+    else
+      result = await this.webUsers.findOne({
+        where: {pseudo: pseudo}
+      });
+    if (result)
+      return true;
+    else
+      return false;
   }
 
   async activateDoubleAuth(login: string, activate: string) {
@@ -135,6 +154,11 @@ export class UserService {
     .set(set1)
     .where(where1, where2)
     .execute();
+  }
+
+  async updateUser(login: string, where) {
+    const result = await this.webUsers.update(login, where);
+    return result;
   }
 
   failLog(@Res() res) {

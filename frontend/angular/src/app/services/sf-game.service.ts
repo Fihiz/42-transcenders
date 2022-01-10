@@ -169,11 +169,15 @@ export class GameService {
 
       listenForReadyClick: boolean;
       gameCanvas: HTMLCanvasElement;
+      figmaImage: HTMLImageElement;
       gameContext: CanvasRenderingContext2D;
 
       constructor(private global: GlobalService, private router: Router) {
         this.gameCanvas = <HTMLCanvasElement>(
           document.getElementById('game-canvas')
+        );
+        this.figmaImage = <HTMLImageElement>(
+          document.getElementById('figma')
         );
         this.gameContext = <CanvasRenderingContext2D>(
           this.gameCanvas.getContext('2d')
@@ -200,7 +204,7 @@ export class GameService {
           leftPaddle: new Paddle(),
           rightPaddle: new Paddle(),
         };
-        this.gameContext.font = '30px Comfortaa';
+        this.gameContext.font = '150px Comfortaa';
         globalSocket.on('update', (game: any) => {
           this.game.status = game.status;
           this.game.countdown = game.countdown;
@@ -252,18 +256,18 @@ export class GameService {
           const y = Math.floor(
             (e.offsetY * test.gameCanvas.height) / test.gameCanvas.clientHeight
           );
-          if (x >= 40 && x <= 40 + 250 && y < 70 && y > 30)
+          if (x >= 200 && x <= 200 + 1250 && y < 350 && y > 150)
             test.router.navigate([
               `/profile/about-me/${test.game.leftPaddle.login}`,
             ]);
           else if (
             x >=
-              test.game.board.width -
-                40 -
-                Math.min(20 * test.game.rightPaddle.login.length, 250) &&
-            x <= test.game.board.width - 40 &&
-            y < 70 &&
-            y > 30
+              test.game.board.width * 5 -
+                200 -
+                Math.min(100 * test.game.rightPaddle.login.length, 1250) &&
+            x <= 5 * (test.game.board.width - 40) &&
+            y < 350 &&
+            y > 150
           )
             test.router.navigate([
               `/profile/about-me/${test.game.rightPaddle.login}`,
@@ -273,44 +277,54 @@ export class GameService {
 
       drawBoard() {
         // board bg color
-        this.gameContext.fillStyle = this.game.board.color;
-        this.gameContext.fillRect(
-          0,
-          0,
-          this.gameCanvas.width,
-          this.gameCanvas.height
-        );
+        if (this.game.board.color === "figma")
+        {
+          this.gameContext.drawImage(this.figmaImage, 0, 0,
+            this.gameCanvas.width,
+            this.gameCanvas.height,
+            );
+        }
+        else
+        {
+          this.gameContext.fillStyle = this.game.board.color;
+          this.gameContext.fillRect(
+            0,
+            0,
+            this.gameCanvas.width,
+            this.gameCanvas.height
+            );
+        }
 
         // scores
         this.gameContext.fillStyle = this.game.font_color;
         if (this.game.leftPaddle.score === 10)
           this.gameContext.fillText(
             this.game.leftPaddle.score.toString(),
-            312,
-            50
+            312 * 5,
+            50 * 5
           );
         else
           this.gameContext.fillText(
             this.game.leftPaddle.score.toString(),
-            322,
-            50
+            322 * 5,
+            50 * 5
           );
         this.gameContext.fillText(
           this.game.rightPaddle.score.toString(),
-          360,
-          50,
-          this.game.rightPaddle.score.toString().length * 16
+          360 * 5,
+          50 * 5,
+          this.game.rightPaddle.score.toString().length * 80
         );
 
         // pseudo
-        this.gameContext.fillText(this.game.leftPaddle.pseudo, 40, 50, 250);
+        this.gameContext.fillText(this.game.leftPaddle.pseudo, 40 * 5, 50 * 5, 250 * 5);
         this.gameContext.fillText(
           this.game.rightPaddle.pseudo,
-          this.game.board.width -
+          (this.game.board.width -
             40 -
-            Math.min(20 * this.game.rightPaddle.pseudo.length, 250),
-          50,
-          Math.min(this.game.rightPaddle.pseudo.length * 20, 250)
+            Math.min(20 * this.game.rightPaddle.pseudo.length, 250)) * 5,
+          50 * 5,
+          Math.min(this.game.rightPaddle.pseudo.length * 20, 250) * 5
         );
 
         // borders and middle line
@@ -321,18 +335,18 @@ export class GameService {
         ) {
           this.gameContext.fillStyle = this.game.border.color;
           this.gameContext.fillRect(
-            i,
-            this.game.border.marginTopBot,
-            this.game.border.length,
-            this.game.border.width
+            i * 5,
+            this.game.border.marginTopBot * 5,
+            this.game.border.length * 5,
+            this.game.border.width * 5
           );
           this.gameContext.fillRect(
-            i,
-            this.game.board.height -
+            i * 5,
+            (this.game.board.height -
               this.game.border.marginTopBot -
-              this.game.border.width,
-            this.game.border.length,
-            this.game.border.width
+              this.game.border.width) * 5,
+            this.game.border.length * 5,
+            this.game.border.width * 5
           );
         }
         for (
@@ -342,24 +356,24 @@ export class GameService {
         ) {
           this.gameContext.fillStyle = this.game.border.color;
           this.gameContext.fillRect(
-            this.game.border.marginLeftRight,
-            j,
-            this.game.border.width,
-            this.game.border.length
+            this.game.border.marginLeftRight * 5,
+            j * 5,
+            this.game.border.width * 5,
+            this.game.border.length * 5
           );
           this.gameContext.fillRect(
-            (this.game.board.width - this.game.border.width) / 2,
-            j,
-            this.game.border.width,
-            this.game.border.length
+            (this.game.board.width - this.game.border.width) * 5 / 2,
+            j * 5,
+            this.game.border.width * 5,
+            this.game.border.length * 5
           );
           this.gameContext.fillRect(
-            this.game.board.width -
+            (this.game.board.width -
               this.game.border.marginLeftRight -
-              this.game.border.width,
-            j,
-            this.game.border.width,
-            this.game.border.length
+              this.game.border.width) * 5,
+            j * 5,
+            this.game.border.width * 5,
+            this.game.border.length * 5
           );
         }
       }
@@ -367,27 +381,27 @@ export class GameService {
       drawCountdown() {
         // countdown
         if (this.game.countdown > 0) {
-          this.gameContext.font = '200px Comfortaa';
+          this.gameContext.font = '1000px Comfortaa';
           this.gameContext.fillStyle = this.game.font_color;
           if (this.game.countdown > 19 * 60)
             this.gameContext.fillText(
               Math.ceil(this.game.countdown / 60).toString(),
-              this.game.board.width / 2 - 115,
-              this.game.board.height - 130
+              (this.game.board.width / 2 - 115) * 5,
+              (this.game.board.height - 130) * 5
             );
           else if (this.game.countdown > 9 * 60)
             this.gameContext.fillText(
               Math.ceil(this.game.countdown / 60).toString(),
-              this.game.board.width / 2 - 75,
-              this.game.board.height - 130
+              (this.game.board.width / 2 - 75) * 5,
+              (this.game.board.height - 130) * 5
             );
           else
             this.gameContext.fillText(
               Math.ceil(this.game.countdown / 60).toString(),
-              this.game.board.width / 2 - 58,
-              this.game.board.height - 130
+              (this.game.board.width / 2 - 58) * 5,
+              (this.game.board.height - 130) * 5
             );
-          this.gameContext.font = '30px Comfortaa';
+          this.gameContext.font = '150px Comfortaa';
         }
       }
 
@@ -408,28 +422,29 @@ export class GameService {
           this.gameContext.fillRect(
             0,
             0,
-            this.game.board.width,
-            this.game.board.height
+            this.game.board.width * 5,
+            this.game.board.height * 5
           );
           this.gameContext.fillStyle = this.game.font_color;
           this.gameContext.fillText(
             "click here if you're ready".toUpperCase(),
-            175,
-            this.game.board.height / 2 + 15,
-            350
+            175 * 5,
+            (this.game.board.height / 2 + 15) * 5,
+            350 * 5
           );
         }
       }
 
       drawEnd() {
         // end screen
-        if (this.game.status === 'Finished') {
+        if (this.game.status === 'Finished' || this.game.status === 'Updating') {
+          console.log(this.game.status);
           this.gameContext.fillStyle = this.game.overlay_color;
           this.gameContext.fillRect(
             0,
             0,
-            this.game.board.width,
-            this.game.board.height
+            this.game.board.width * 5,
+            this.game.board.height * 5
           );
           this.gameContext.fillStyle = this.game.font_color;
           if (
@@ -440,9 +455,9 @@ export class GameService {
           ) {
             this.gameContext.fillText(
               'YOU WON THE GAME',
-              200,
-              this.game.board.height / 2 + 15,
-              300
+              200 * 5,
+              (this.game.board.height / 2 + 15) * 5,
+              300 * 5
             );
           } else if (
             this.game.leftPaddle.login === this.global.login ||
@@ -450,31 +465,31 @@ export class GameService {
           ) {
             this.gameContext.fillText(
               'YOU LOST THE GAME',
-              200,
-              this.game.board.height / 2 + 15,
-              300
+              200 * 5,
+              (this.game.board.height / 2 + 15) * 5,
+              300 * 5
             );
           } else {
             if (this.game.leftPaddle.score === 10) {
               this.gameContext.fillText(
                 `${this.game.leftPaddle.pseudo} won the game !`.toUpperCase(),
-                200,
-                this.game.board.height / 2 + 15,
-                300
+                200 * 5,
+                (this.game.board.height / 2 + 15) * 5,
+                300 * 5
               );
             } else if (this.game.rightPaddle.score === 10) {
               this.gameContext.fillText(
                 `${this.game.rightPaddle.pseudo} won the game`.toUpperCase(),
-                200,
-                this.game.board.height / 2 + 15,
-                300
+                200 * 5,
+                (this.game.board.height / 2 + 15) * 5,
+                300 * 5
               );
             } else {
               this.gameContext.fillText(
                 `Something went wrong, no one won the game....`.toUpperCase(),
-                200,
-                this.game.board.height / 2 + 15,
-                300
+                200 * 5,
+                (this.game.board.height / 2 + 15) * 5,
+                300 * 5
               );
             }
           }
@@ -543,7 +558,7 @@ export class GameService {
 
       draw(context: CanvasRenderingContext2D) {
         context.fillStyle = this.color;
-        context.fillRect(this.x, this.y, this.width, this.length);
+        context.fillRect(this.x * 5, this.y * 5, this.width * 5, this.length * 5);
       }
 
       update(next: any) {
@@ -577,7 +592,7 @@ export class GameService {
 
       draw(context: CanvasRenderingContext2D) {
         context.fillStyle = this.color;
-        context.fillRect(this.x, this.y, this.size, this.size);
+        context.fillRect(this.x * 5, this.y * 5, this.size * 5, this.size * 5);
       }
 
       update(next: any) {

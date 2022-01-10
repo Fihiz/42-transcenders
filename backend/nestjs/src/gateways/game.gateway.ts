@@ -59,9 +59,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('leavingPlay')
 	userLeavePlayComponent(@MessageBody() body: any) {
 		const index: number = this.socketsOnPlayComponent.findIndex((user) => user.id === body.id);
-		const userLogin: string = this.socketsOnPlayComponent[index].login;
 		if (index == -1)
 			return ;
+		const userLogin: string = this.socketsOnPlayComponent[index].login;
 		this.socketsOnPlayComponent.splice(index, 1);
 		if (!this.socketsOnPlayComponent.find((user) => user.login === userLogin))
 		{
@@ -87,11 +87,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (foundUser)
 			{
 				foundUser.gameId = body.gameId;
-				if (loginInMap === game.changing.leftPaddle.login || loginInMap === game.changing.rightPaddle.login)
-					user.status = "Playing";
-				else if (user.status === "Online")
+				if (user.status !== "Playing")
+				{
 					user.status = "Spectating";
-				this.emitStatusToAll(loginInMap, user.status);
+					this.emitStatusToAll(loginInMap, user.status);
+				}
 				this.server.to(foundUser.id).emit('welcome', game);
 				return ;
 			}
@@ -105,23 +105,20 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (foundUser)
 			{
 				foundUser.gameId = 0;
-				let status = "Online";
-				user.sockets.forEach((socket) => {
-					if (status != "Playing" && socket.gameId != 0)
-					{
-						const game = this.gameService.games.find((game) => game.id === socket.gameId)
-						if (game)
+				if (user.status !== "Playing")
+				{
+					let status = "Online";
+					user.sockets.forEach((socket) => {
+						if (status != "Spectating" && socket.gameId != 0)
 						{
-							if (loginInMap === game.changing.leftPaddle.login ||
-								loginInMap === game.changing.rightPaddle.login)
-								status = "Playing";
-							else if (status === "Online")
-								status = "Spectating";
+							const game = this.gameService.games.find((game) => game.id === socket.gameId)
+							if (game && status === "Online")
+							status = "Spectating";
 						}
-					}
-				})
-				user.status = status;
-				this.emitStatusToAll(loginInMap, user.status);
+					})
+					user.status = status;
+					this.emitStatusToAll(loginInMap, user.status);
+				}
 				console.log(loginInMap, 'successfully left the game');
 				return ;
 			}

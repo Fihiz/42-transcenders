@@ -64,6 +64,9 @@ export class UserService {
       url: 'https://cdn.intra.42.fr/users/large_rlepart.jpg',
     },
   ];
+  i: number = 0;
+  file: File | null = null;
+  uploaded: boolean = false;
 
   login: string | null = null; // may be not required if we have access to login when we select avatar for the first connection
 
@@ -190,8 +193,18 @@ export class UserService {
     return new Promise(function (resolve) {
       document
         .getElementById('submitId')
-        ?.addEventListener('click', function () {
-          resolve('OK');
+        ?.addEventListener('click', async function () {
+          const pseudo: string = (<HTMLInputElement>(
+            document.getElementById('pseudo')
+          )).value;
+          const response = await axios.get(`http://${window.location.host}:3000/cb-user/pseudo/${pseudo}`);
+          if (!response.data)
+            resolve('OK');
+          else
+          {
+            document.getElementById('toOpenModal')?.click();
+            document.getElementById('pseudo already exists')?.classList?.remove('d-none');
+          }
         });
     });
   }
@@ -209,5 +222,34 @@ export class UserService {
       .catch((error: any) => {
         return null;
       });
+  }
+
+  increment() {
+    this.i = (this.i + 1) % this.avatarList.length;
+  }
+
+  decrement() {
+    this.i =
+      (this.i + this.avatarList.length - 1) %
+      this.avatarList.length;
+  }
+
+  async inputFile(event: any) {
+    this.file = event.target.files[0];
+    if (this.file !== null) {
+      try {
+        const avatar: Promise<string> | null = await this.uploadAvatar(this.file);
+        if (this.uploaded === true)
+          this.avatarList.pop();
+        if (avatar) {
+          this.avatarList.push( { alt: "uploaded_file", url: avatar + "?" + String(Math.random() * 100000) } );
+          this.uploaded = true;
+          this.i = this.avatarList.length - 1;
+        }
+      }
+      catch(error) {
+        console.error(error);
+      }
+    }
   }
 }

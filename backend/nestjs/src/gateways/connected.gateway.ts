@@ -37,7 +37,7 @@ export class ConnectedGateway {
 		if (keyIndex) {
 			const index = GlobalDataService.loginIdMap.get(keyIndex).sockets.findIndex((socket) => socket.id === theWantedId);
 			GlobalDataService.loginIdMap.get(keyIndex).sockets.splice(index, 1);
-			if (GlobalDataService.loginIdMap.get(keyIndex).sockets.length === 0)
+			if (GlobalDataService.loginIdMap.get(keyIndex).sockets.length === 0 && GlobalDataService.loginIdMap.get(keyIndex).status != "Playing")
 			{
 				this.emitStatusToAll(keyIndex, 'Offline');
 				GlobalDataService.loginIdMap.delete(keyIndex);

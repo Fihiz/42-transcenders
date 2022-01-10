@@ -41,6 +41,8 @@ export class AuthController {
 
     @Post('registerData')
     async registerdata(@Req() req, @Res() res, @Body('data') createUserDto: CreateUserDto) {
+        if (await this.userService.findPseudo(createUserDto.pseudo, undefined))
+            res.send('pseudo already exists');
         const areDataRegistered = await this.userService.registerInfosInDatabase(createUserDto, res);
         const areStatsRegistered = await this.statsService.registerStatsInDatabase(createUserDto, res);
         if (areDataRegistered === areStatsRegistered &&

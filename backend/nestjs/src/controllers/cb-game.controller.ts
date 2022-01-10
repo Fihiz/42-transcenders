@@ -26,7 +26,7 @@ export class GameController {
 	}
 
 	setAvatar(player: WebAppUserEntity, req) {
-		if (player)
+		if (player && player.avatar && req?.rawHeaders && (req.rawHeaders.indexOf('Host') != -1))
 			player.avatar = player.avatar?.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
 	}
 

@@ -6,7 +6,10 @@
 			<a routerLink="../game/{{ party.game_id }}">
 				<svg version="1.1" id="{{ party.game_type_id.type }}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 				viewBox="0 0 700 400" style="border-radius: 10px 10px 0px 0px;" xml:space="preserve">
-					<g>
+					<g *ngIf="party.game_type_id.board_color === 'figma'">
+						<image width="750" height="400" clip-path="url(#figma)" xlink:href="../../../../assets/landscapebannerfigma.png" />
+					</g>
+					<g *ngIf="party.game_type_id.board_color !== 'figma'">
 						<rect width="700" height="400" style="fill: {{ party.game_type_id.board_color }};"/>
 					</g>
 					<g *ngIf="party.game_type_id.type === 'classic'">
