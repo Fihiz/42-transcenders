@@ -316,18 +316,12 @@
                     <a class="dropdown-item"> Invite to play &raquo; </a>
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
-                        <!-- <input
-                          class="form-control"
-                          placeholder="Name"
-                          id="invite-to-play"
-                          type="room-btn"
-                        /> -->
-                        <button
+                        <button *ngFor="let set of sets"
                           type="submit"
                           class="btn btn-secondary btn-sm btn-block"
-                          (click)="onInvitToPlay()"
+                          (click)="onInvitToPlay(set.type)"
                         >
-                          Invite
+                          {{ set.type }}
                         </button>
                       </li>
                     </ul>

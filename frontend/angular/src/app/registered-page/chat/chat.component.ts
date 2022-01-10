@@ -7,6 +7,8 @@ import { if_emission } from 'src/app/interfaces/if_emmission';
 import { ChatService } from 'src/app/services/sf-chat.service';
 import { GlobalService } from 'src/app/services/sf-global.service';
 import axios from 'axios';
+import { if_game_type } from 'src/app/interfaces/if-game';
+import { GameService } from 'src/app/services/sf-game.service';
 
 @Component({
   selector: 'app-chat',
@@ -34,13 +36,19 @@ export class ChatComponent implements OnInit {
   login: string = '';
   convInfo: Map<string, { role: string; avatar: string }> = new Map();
   inputChatAndPlay: string = '';
+  sets: if_game_type[] = [];
 
   constructor(
     private socket: Socket,
     private global: GlobalService,
     private chatService: ChatService,
+    private gameService: GameService,
     private router: Router
   ) {}
+
+  async getSetsParty() {
+    this.sets = await this.gameService.getTypesOfParty();
+  }
 
   onSendMessage() {
     const content = (<HTMLInputElement>document.getElementById('input-message'))
@@ -393,6 +401,7 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getSetsParty();
     this.login = this.global.login as string;
     this.inputChatAndPlay = (<HTMLInputElement>(
       document.getElementById('search-user')
@@ -467,7 +476,7 @@ export class ChatComponent implements OnInit {
   //   });
   // }
 
-  onInvitToPlay() {
+  onInvitToPlay(type: string) {
     this.chatService.emission(
       'setInvitation',
       this.currentConv,
@@ -477,6 +486,7 @@ export class ChatComponent implements OnInit {
         logins_conv: this.currentConv.members,
         date: new Date(),
         content: "Invitation to start party!",
+        type: type,
         invitation: true,
       }
     );
@@ -492,6 +502,7 @@ export class ChatComponent implements OnInit {
         logins_conv: this.currentConv.members,
         date: new Date(),
         content: "Invitation accepted!",
+        type: null,
         invitation: false
       }
     );

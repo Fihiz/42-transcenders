@@ -257,12 +257,13 @@ export class ConvService {
   }
 
   // OK
-  async setInvitation(id: number, emitter: string, receiver: string) {
+  async setInvitation(id: number, emitter: string, receiver: string, type: string) {
     const invitRepository = getRepository(InvitationEntity);
 		const invitation: InvitationEntity = {
       id: 0,
       emitter: emitter,
       receiver: receiver,
+      game_type: type,
       invitation_type: "play",
       room: id,
       created: new Date()

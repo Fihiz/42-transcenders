@@ -250,16 +250,22 @@ export class ChatGateway {
     // INVITATION EXIST
     if (alreadyInvited !== undefined) {
       const emitter: WebAppUserEntity = alreadyInvited.emitter as any as WebAppUserEntity;
-      // SEND INVITATION DURING INVITATION FROM ADVERSARY 
+      // SEND INVITATION DURING INVITATION FROM ADVERSARY
       if (emitter.login !== emission.login) {
-        const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame("classic")
+        if (alreadyInvited && emission.data.type === null)
+          emission.data.type = alreadyInvited.game_type;
+        const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(emission.data.type);
         // TYPE GAME EXIST
         if (search) {
+          if (emission.data.invitation === true && alreadyInvited.game_type !== emission.data.type) {
+            console.log(`${emission.login} a déjà fait une demande de type differente.`);
+            this.ConvService.unsetInvitation(alreadyInvited);
+            this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Type game differs... Last invitation deleted!"));
+            return;
+          }
           const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
           const id = await this.gameService.createMatchParty((invitation.emitter as any as WebAppUserEntity).login, (invitation.receiver as any as WebAppUserEntity).login, search);
           const party = await this.gameService.getPartyById(id);
-          // TODO: Put status of player like Playing. <IMPORTANT>
-          // TODO: Change boolean of invitation in messages.
           this.gameService.addGame(party.game_id, (party.player1 as unknown as WebAppUserEntity), (party.player2 as unknown as WebAppUserEntity));      
           this.ConvService.unsetInvitation(invitation);
           emission.data.content = "Invitation accepted!";
@@ -294,7 +300,7 @@ export class ChatGateway {
       }
       else {
         console.log(`${emission.login} fait une demande pour jouer.`);
-        await this.ConvService.setInvitation(emission.data.conv_id, emission.login, emission.data.logins_conv.find((login) => login !== emission.login));
+        await this.ConvService.setInvitation(emission.data.conv_id, emission.login, emission.data.logins_conv.find((login) => login !== emission.login), emission.game_type);
         const messages = await this.chatService.handleMessage(emission);
         if (typeof(messages) !== 'string') {
           const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
