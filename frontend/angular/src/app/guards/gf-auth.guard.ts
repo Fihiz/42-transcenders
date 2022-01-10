@@ -39,7 +39,7 @@ export class AuthGuard implements CanActivate {
     | boolean
     | UrlTree {
     if (
-      this.global.login != undefined
+      this.global.login && this.global.isBanned === false
       // ||
       // (this.global.login === undefined && route.routeConfig.path === 'auth')
     )

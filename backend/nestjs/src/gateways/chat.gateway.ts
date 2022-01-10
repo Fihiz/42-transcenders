@@ -25,10 +25,10 @@ export class ChatGateway {
   //   this.server.emit('error', error);
   // }
 
-  async errorResponse(emission) {
+  async errorResponse(emission, content) {
     const messArray: Array<MessageEntity> = await this.chatService.getMessage(emission.data);
     messArray.push({
-			content: 'An error has occured',
+			content: content,
       conv_id: emission.data.conv_id,
       date: new Date(),
       id: emission.id,
@@ -36,7 +36,7 @@ export class ChatGateway {
       avatar:'https://www.google.com/url?sa=i&url=https%3A%2F%2Ffr.techtribune.net%2Fanime%2Fshrek-occupe-la-premiere-place-pour-lanime-sur-amazon%2F102182%2F&psig=AOvVaw20kB0wPmvDnlD_FTcqSOBO&ust=1640873495902000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCJDgu66YifUCFQAAAAAdAAAAABAD',
       role: 'chatter'
     })
-    this.server.to(emission.login).emit('allMessages', messArray);
+    this.server.to(emission.socketId).emit('allMessages', messArray);
   }
 
 	@SubscribeMessage('message')
@@ -49,7 +49,10 @@ export class ChatGateway {
         this.server.to(this.chatService.getReceiver(receivers, emission.login)).emit('allMessages', messages);
       }
       else
-        this.errorResponse(emission);
+        this.errorResponse(emission, 'an error has occured');
+    }
+    else {
+      this.errorResponse(emission, 'you are muted');
     }
 	}
 
@@ -76,7 +79,7 @@ export class ChatGateway {
 			this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('allMessages', messages);
     }
     else
-      this.errorResponse(emission);
+      this.errorResponse(emission, 'an error has occured while getting messages');
 	}
 
 	@SubscribeMessage('newConversation')
@@ -139,7 +142,7 @@ export class ChatGateway {
     if (conv_id != 0 && (await this.userService.findOneAppUser(friendName))) {
       const conv = await this.ConvService.joinRoom(emission, friendName, true);
       if (await this.chatterService.unBan(friendName, conv_id) === 'ko')
-      this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
+        this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
       if (conv) {
         const receivers = this.chatService.getReceiver(new Set(conv.members), emission.login);
         this.server.to(receivers).emit('newMember', {conv_id: conv.conv_id, name: friendName});
@@ -149,7 +152,7 @@ export class ChatGateway {
       // CHAT GLOBAL LOGIN
       // this.server.to(GlobalDataService.loginIdMap.get(emission.login)).emit('error', "The entered information cannot be processed")
       // PONG GLOBAL LOGIN
-      this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
+        this.server.to(GlobalDataService.loginIdMap.get(emission.login)?.sockets.map((socket) => {return socket.id;})).emit('error', "The entered information cannot be processed");
       }
     }
     else {

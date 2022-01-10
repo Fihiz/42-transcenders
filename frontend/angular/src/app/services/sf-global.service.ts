@@ -8,5 +8,6 @@ export class GlobalService {
   socketId: string | undefined = undefined;
   doubleAuth: boolean = false;
   allUserStatus: Map<string, string> = new Map<string, string>();
+  isBanned: boolean = false;
   constructor() {}
 }

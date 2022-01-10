@@ -198,7 +198,7 @@ export class ConvService {
 
   async changePassword(conv_id: number, password: string) {
     try {
-      this.conversation.update({conv_id: conv_id}, {password: password, type: 'protected'});
+      this.conversation.update({conv_id: conv_id}, {password: password, type: password.length === 0 ? 'public' : 'protected'});
       return ('ok')
     }
     catch (error) {

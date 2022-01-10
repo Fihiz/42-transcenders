@@ -227,7 +227,7 @@ export class ChatComponent implements OnInit {
           },
         }
       );
-      if (isMute.data !== 'ok') alert(isMute.data);
+      if (isMute.data !== 'ok') alert(isMute.data === 'ko' ? 'you don t have the rights or the user is not in the room' : isMute.data);
     }
   }
 

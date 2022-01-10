@@ -85,13 +85,18 @@ export class ChatController {
       const userAsking = await this.chatService.findOneChatter(req.query.requester, conv_id);
       const target = await this.chatService.findOneChatter(req.query.mutedOne, conv_id);
       const conv: ConversationEntity = await this.convService.findOneConversation(conv_id);
-      if (conv.type === 'private')
-        res.send((await this.chatterService.muteSomeone(target)) === 'ok' ?  'ok' : 'ko');
+      if (!target)
+        res.send('The entered information cannot be processed');
       else {
-        if (userAsking.chat_role !== 'admin' && target.chat_role != 'owner')
-          res.send('Error: not good role');
-        else {
+        if (conv.type === 'private')
           res.send((await this.chatterService.muteSomeone(target)) === 'ok' ?  'ok' : 'ko');
+        else {
+          console.log('userAsking.chat_role = ', userAsking.chat_role, 'target.chat_role = ', target.chat_role);
+          if ((userAsking.chat_role !== 'admin' && userAsking.chat_role !== 'owner') || target.chat_role === 'owner')
+            res.send('Error: not good role');
+          else {
+            res.send((await this.chatterService.muteSomeone(target)) === 'ok' ?  'ok' : 'ko');
+          }
         }
       }
     }
@@ -105,7 +110,7 @@ export class ChatController {
       if (conv.type === 'private')
         res.send((await this.chatterService.deMuteSomeone(target)) === 'ok' ?  'ok' : 'ko');
       else {
-        if (userAsking.chat_role !== 'admin')
+        if ((userAsking.chat_role !== 'admin' && userAsking.chat_role !== 'owner') || target.chat_role === 'owner')
           res.send('Error: not good role');
         else {
           res.send((await this.chatterService.deMuteSomeone(target)) === 'ok' ?  'ok' : 'ko');
