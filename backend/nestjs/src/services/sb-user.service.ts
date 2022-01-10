@@ -6,6 +6,8 @@ import { getRepository, Repository } from 'typeorm';
 import { CreateUserDto } from 'src/dtos/createUser.dto';
 import { AdminChangeUserRoleDto } from 'src/dtos/adminChangeUserRole.dto';
 import { AdminChangeIsBannedDto } from 'src/dtos/adminChangeIsBanned.dto';
+import { AddNewFriendDto } from 'src/dtos/addNewFriend.dto';
+import { RelationEntity } from 'src/entities/eb-relation.entity';
 
 @Injectable()
 export class UserService {
@@ -13,7 +15,9 @@ export class UserService {
     @InjectRepository(WebAppUserEntity)
     private webUsers: Repository<WebAppUserEntity>,
     @InjectRepository(ApiUserDataEntity)
-    private apiUsers: Repository<ApiUserDataEntity>
+    private apiUsers: Repository<ApiUserDataEntity>,
+    @InjectRepository(RelationEntity)
+    private relation: Repository<RelationEntity>
   ) {}
 
   async getMail(login: string) {
@@ -94,12 +98,25 @@ export class UserService {
     console.log (`user is`, user)
     return (user);
   }
+  
 
   async findOneWebAppUser(login: string) : Promise<WebAppUserEntity> {
     const user : WebAppUserEntity = await getRepository(WebAppUserEntity)
       .createQueryBuilder("userAlias")
       .where("userAlias.login = :login", { login: login })
       .getOne();
+    if (user === undefined)
+      return undefined;
+    return (user);
+  }
+
+  async findIfAlreadyFriend(login: string, loginFriend: string) : Promise<RelationEntity> {
+    const user : RelationEntity = await getRepository(RelationEntity)
+      .createQueryBuilder("userAlias")
+      .where("userAlias.user1 = :login", { login: login })
+      .andWhere("userAlias.user2 = :loginFriend", { loginFriend: loginFriend })
+      .getOne();
+    console.log(user);
     if (user === undefined)
       return undefined;
     return (user);
@@ -162,7 +179,17 @@ export class UserService {
     // this.game.leftPaddle.update(fullGame.changing.leftPaddle);
   }
 
-
+  async addNewFriend(data: AddNewFriendDto): Promise<boolean> {
+    const relationRepository = await getRepository(RelationEntity);
+    return relationRepository.insert({ user1: data.currentLogin as any, user2: data.newFriendLogin as any, friendship: data.friendship as any })
+    .then((response) => {
+      return true;
+    })
+    .catch((error) => {
+      console.log("An error has occured when adding a new friend");
+      return false;
+    })
+  }
 
   // async modifieApiUserData(set1: object, where1: string, where2: object) {
   //   const user = await getRepository(ApiUserDataEntity)

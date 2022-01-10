@@ -76,6 +76,17 @@ export class UserService {
 
   ngOnInit() {}
 
+  async checkIfAlreadyFriend(data: object): Promise<Boolean> {
+    console.log('We are in checkIfAlreadyFriend', data);
+    const resp = (
+      await axios.get(
+        `http://${window.location.host}:3000/cb-user/checkIfAlreadyFriend`,
+        { params: data }
+      )
+    ).data;
+    return resp;
+  }
+
   async adminChangeUserRole(data: object) {
     console.log('We are in adminChangeUserRole');
     await axios.post(
@@ -88,6 +99,14 @@ export class UserService {
     console.log('We are in adminChangeIsBanned');
     await axios.post(
       `http://${window.location.host}:3000/cb-user/adminUpdateIsBanned`,
+      { data }
+    );
+  }
+
+  async addNewFriend(data: object) {
+    console.log('We are in addNewFriend');
+    await axios.post(
+      `http://${window.location.host}:3000/cb-user/addNewFriend`,
       { data }
     );
   }

@@ -7,6 +7,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { AdminChangeUserRoleDto } from 'src/dtos/adminChangeUserRole.dto';
 import { AdminChangeIsBannedDto } from 'src/dtos/adminChangeIsBanned.dto';
+import { AddNewFriendDto } from 'src/dtos/addNewFriend.dto';
+import { RelationEntity } from 'src/entities/eb-relation.entity';
 
 
 const editFileName = (req, file, callback) => {
@@ -46,7 +48,27 @@ export class UserController {
             alert('An error has occured when banning the user');
         }
         
+    } 
+    
+    @Post('addNewFriend')
+    async postAddNewFriend(@Body('data') dataDto: AddNewFriendDto) {
+        try {
+            const response = await this.userService.addNewFriend(dataDto)
+        }
+        catch {
+            alert('An error has occured when adding a new friend');
+        } 
     }
+
+    @Get('checkIfAlreadyFriend')
+	async getCheckIfAlreadyFriend(@Request() req, @Response() res): Promise<any> {
+        console.log('data', req.query);
+		const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
+        if (isAlreadyFriend && isAlreadyFriend.friendship === "friend")
+            res.send(true);
+		else
+		    res.send(false);
+	}
   
 	@Get('profile/:login')
 	async getProfileByLogin(@Param('login') login: string, @Response() res, @Request() req): Promise<WebAppUserEntity> {
