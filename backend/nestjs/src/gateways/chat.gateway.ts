@@ -33,7 +33,7 @@ export class ChatGateway {
       date: new Date(),
       id: emission.id,
       login: emission.login,
-      avatar:'https://www.google.com/url?sa=i&url=https%3A%2F%2Ffr.techtribune.net%2Fanime%2Fshrek-occupe-la-premiere-place-pour-lanime-sur-amazon%2F102182%2F&psig=AOvVaw20kB0wPmvDnlD_FTcqSOBO&ust=1640873495902000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCJDgu66YifUCFQAAAAAdAAAAABAD',
+      avatar:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLoHISAbaLunfRgJ2FHPtFsHUIPa5iC66eZwBK7uc8KgzpMzuDh3cPA4CfXz8mIQlpOpM&usqp=CAU',
       role: 'chatter'
     })
     this.server.to(emission.socketId).emit('allMessages', messArray);
@@ -52,7 +52,7 @@ export class ChatGateway {
         this.errorResponse(emission, 'an error has occured');
     }
     else {
-      this.errorResponse(emission, 'you are muted');
+      this.errorResponse(emission, 'Sorry, you cannot talk. You have been muted.');
     }
 	}
 

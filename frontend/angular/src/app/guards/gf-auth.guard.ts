@@ -38,13 +38,8 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    if (
-      this.global.login && this.global.isBanned === false
-      // ||
-      // (this.global.login === undefined && route.routeConfig.path === 'auth')
-    )
+    if (this.global.login && this.global.isBanned === false)
       return true;
-
     return false;
   }
 }
