@@ -445,7 +445,7 @@ export class ChatComponent implements OnInit {
       conv.type = 'protected';
     });
 
-    this.socket.on('errorException', (message: if_message) => {
+    this.socket.on('errorInvitation', (message: if_message) => {
       if (message.conv_id === this.currentConv.conv_id) {
         this.convMessages.push(message);
       }

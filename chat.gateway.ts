@@ -322,7 +322,7 @@ export class ChatGateway {
       // SEND DOUBLE INVITATION
       else {
         // TODO: ?
-        console.log(`${emission.login} fait encore une demande pour jouer.`);
+        console.log(`${emission.login} a déjà fait une demande pour jouer.`);
         this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Request to play already launched..."));
         return;
       }

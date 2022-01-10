@@ -179,7 +179,7 @@ export class ChatService {
     }
   }
 
-  async errorMessage(emission: any, message: string) {
+  errorMessage(emission: any, message: string) {
     console.log("ERROR: ", message);
     const error: MessageEntity = {
       id: emission.socketId,
