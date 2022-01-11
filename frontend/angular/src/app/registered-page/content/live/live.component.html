@@ -13,13 +13,13 @@
 						<rect x="25" y="40" width="7" height="50" style="fill: {{ party.game_type_id.racket1_color }};"/>
 						<rect x="668" y="260" width="7" height="50" style="fill: {{ party.game_type_id.racket2_color }};"/>
 					</g>
-					<g *ngIf="party.game_type_id.type === 'medium'">
-						<rect x="25" y="40" width="7" height="50" style="fill: {{ party.game_type_id.racket1_color }};"/>
-						<rect x="668" y="260" width="7" height="50" style="fill: {{ party.game_type_id.racket2_color }};"/>
-					</g>
-					<g *ngIf="party.game_type_id.type === 'hard'">
+					<g *ngIf="party.game_type_id.type === 'special'">
 						<rect x="25" y="40" width="7" height="20" style="fill: {{ party.game_type_id.racket1_color }};"/>
 						<rect x="660" y="260" width="15" height="100" style="fill: {{ party.game_type_id.racket2_color }};"/>
+					</g>
+					<g *ngIf="party.game_type_id.type === 'our'">
+						<rect x="25" y="40" width="7" height="50" style="fill: {{ party.game_type_id.racket1_color }};"/>
+						<rect x="668" y="260" width="7" height="50" style="fill: {{ party.game_type_id.racket2_color }};"/>
 					</g>
 					<rect x="460" y="260" width="10" height="10" style="fill: {{ party.game_type_id.ball_color }};"/>
 				</svg>

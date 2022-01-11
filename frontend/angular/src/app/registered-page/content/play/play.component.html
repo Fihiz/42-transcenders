@@ -14,13 +14,13 @@
                     <rect x="25" y="40" width="7" height="50" style="fill: {{ set.racket1_color }};"/>
                     <rect x="668" y="260" width="7" height="50" style="fill: {{ set.racket2_color }};"/>
                 </g>
-                <g *ngIf="set.type === 'medium'">
-                    <rect x="25" y="40" width="7" height="50" style="fill: {{ set.racket1_color }};"/>
-                    <rect x="668" y="260" width="7" height="50" style="fill: {{ set.racket2_color }};"/>
-                </g>
-                <g *ngIf="set.type === 'hard'">
+                <g *ngIf="set.type === 'special'">
                     <rect x="25" y="40" width="7" height="20" style="fill: {{ set.racket1_color }};"/>
                     <rect x="660" y="260" width="15" height="100" style="fill: {{ set.racket2_color }};"/>
+                </g>
+                <g *ngIf="set.type === 'our'">
+                    <rect x="25" y="40" width="7" height="50" style="fill: {{ set.racket1_color }};"/>
+                    <rect x="668" y="260" width="7" height="50" style="fill: {{ set.racket2_color }};"/>
                 </g>
                 <rect x="460" y="260" width="10" height="10" style="fill: {{ set.ball_color }};"/>
             </svg>
