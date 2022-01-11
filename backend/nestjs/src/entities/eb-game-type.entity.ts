@@ -23,6 +23,27 @@ export class GameTypeEntity {
 
   @Column({
 		type: "varchar",
+    length: 21,
+    default: "rgba(50, 68, 72, 0.5)"
+  })
+  overlay_color: string;
+
+  @Column({
+		type: "varchar",
+    length: 7,
+    default: "#FFFFFF"
+  })
+  border_color: string;
+
+  @Column({
+		type: "varchar",
+    length: 7,
+    default: "#AAAAAA"
+  })
+  font_color: string;
+
+  @Column({
+		type: "varchar",
     length: 7,
     default: "#000000"
   })

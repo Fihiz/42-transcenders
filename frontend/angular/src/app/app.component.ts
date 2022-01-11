@@ -12,22 +12,30 @@ import { GameService } from './services/sf-game.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  constructor(public global: GlobalService, public user: UserService, private socket: Socket, private router: Router, private gameService: GameService) {}
+  constructor(
+    public global: GlobalService,
+    public user: UserService,
+    private socket: Socket,
+    private router: Router,
+    private gameService: GameService
+  ) {}
 
   onLogOutHandleClick(event: Event) {
     const mess: if_message = {
       id: this.global.socketId,
       login: this.global.login as string,
-      to:['nobody'],
-      content:'loging-out',
+      to: ['nobody'],
+      content: 'loging-out',
       date: new Date(),
       conv_id: 0,
       avatar: '',
-      role: ''
+      role: '',
+      invitation: false,
+      pseudo: '',
     };
     this.socket.emit('log-out', mess);
   }
-  
+
   ngOnInit(): void {
     this.socket.on('disconnection', () => {
       console.log('disconnection');

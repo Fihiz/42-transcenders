@@ -16,7 +16,6 @@ export class GameComponent implements OnInit, OnDestroy {
   constructor(private onlineStatusService: OnlineStatusService, private gameService: GameService, private route: ActivatedRoute, private router: Router) {}
 
   navigate(str: string) {
-    console.log(str);
   }
 
   ngOnInit() {
@@ -42,7 +41,6 @@ export class GameComponent implements OnInit, OnDestroy {
           this.gameService.emitLogin(Number(this.route.snapshot.paramMap.get('id')));
         }, 4000);
         
-        console.log("Online");
         
         this.gameService.startListen();
     

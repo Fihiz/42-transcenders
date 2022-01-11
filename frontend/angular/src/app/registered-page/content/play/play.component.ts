@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { GameService } from 'src/app/services/sf-game.service';
 import { if_game_object, if_game_type } from 'src/app/interfaces/if-game';
-
+import { Socket } from 'ngx-socket-io';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,14 +19,25 @@ export class PlayComponent implements OnInit, OnDestroy {
   time: number = 0;
   intervalId: number | null = null;
 
-  constructor(private gameService: GameService, private router: Router) { }
+  constructor(private gameService: GameService, private router: Router, private socket: Socket) { }
 
   ngOnInit() {
+    this.socket.on('isInPendingQueue', (body: any) => {
+      if (body.navigate)
+      {
+        const nav: string = body.navigate;
+        this.router.navigate([nav]);
+      }
+      else
+        this.selected = body.selected;
+    });
+    this.socket.emit('isInPendingQueue', { id: this.socket.ioSocket.id });
     this.getDisplay();
   }
   
   ngOnDestroy() {
-    this.unsetParty();
+    this.socket.emit('leavingPlay', { id: this.socket.ioSocket.id });
+    this.socket.removeAllListeners('isInPendingQueue');
   }
 
   setParty(type: string) {

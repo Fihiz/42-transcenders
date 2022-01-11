@@ -18,7 +18,6 @@ export class DoubleAuthController {
 
     @Get('isActivate') 
     async isDoubleAuthActive(@Req() req, @Res() res) {
-      console.log('req = ', req.query[0])
       const response = await this.userService.findOneAppUser(req.query[0]);
       if (response)
         res.send(response.doubleAuth);
@@ -38,7 +37,6 @@ export class DoubleAuthController {
     @Get()
     async sendMail(@Req() req, @Res() res) {
       const email = await this.userService.getMail(req.query[0])
-      console.log('emeil = ', email);
       let code = "";
       for(let i = 0; i < 4; i++)
         code = code + (Math.floor(Math.random() * 10)).toString();

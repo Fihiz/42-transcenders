@@ -25,6 +25,11 @@ export class MessageEntity {
 		type: "varchar"
   })
   content: string;
+
+  @Column({
+		type: "varchar"
+  })
+  pseudo: string;
   
   @Column({
 		type: "varchar"
@@ -35,5 +40,11 @@ export class MessageEntity {
 		type: "varchar"
   })
   role: string;
+
+  @Column({
+		type: "boolean",
+    default: false
+  })
+  invitation: boolean;
 
 }

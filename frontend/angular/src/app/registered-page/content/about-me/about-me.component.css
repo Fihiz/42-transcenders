@@ -1,10 +1,15 @@
-.padding-text {
+/* .padding-text {
     padding-top: 3%;
+  }
+
+  .input-group {
+    margin: 5px;
+    justify-content: center;
   }
   
   .rounded-circle {
-    width: 50px;
-    height: 50px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
     margin: 3%;
   }
@@ -14,3 +19,140 @@
     font-size: 25px;
   }
   
+  #input {
+    width: 20%;
+  }
+
+  h6 {
+    margin: 5px;
+  } */
+
+
+
+  .padding-text {
+    padding-top: 3%;
+  }
+
+  .input-group {
+    margin: 5px;
+    justify-content: center;
+  }
+  
+  .rounded-circle {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin: 3%;
+  }
+  
+  .title-form {
+    font-family: "Comfortaa";
+    font-size: 25px;
+  }
+  
+  #input {
+    width: 20%;
+  }
+
+  h6 {
+    margin: 5px;
+  }
+
+
+button[type="submit"] {
+  background-color: #43b6b2;
+  border: #43b6b2;
+  color: white;
+}
+
+.container {
+  height: 100%;
+}
+
+.middle {
+  overflow-y: auto;
+}
+
+/* STYLE */
+
+h1,
+h5 {
+  text-align: center;
+  font-family: "Secular One", sans-serif;
+  color: #528fac;
+}
+
+h4 {
+  font-family: "Secular One", sans-serif;
+  color: #528fac;
+}
+
+h6 {
+  text-align: center;
+  font-family: "Secular One", sans-serif;
+}
+
+p {
+  margin: 15px;
+}
+
+.rounded-circle {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin: 3%;
+}
+
+.card {
+  margin: 10px;
+}
+
+.badge-success {
+  background-color: #43b6b2;
+}
+
+.style-txt {
+  font-size: 12px;
+  padding: 8px;
+  text-align: justify;
+}
+
+.viewMembersRoom {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* NOW */
+
+.btn {
+  color: white;
+  background-color: #43b6b2;
+}
+
+#uploaded-avatar {
+  color: #324448;
+  /* background-color: #43b6b2; */
+}
+
+#uploaded-avatar {
+  color: #324448;
+  /* background-color: #43b6b2; */
+}
+
+.input-group-text {
+  color: white;
+  background-color: #43b6b2;;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  /* border: 1px solid #ccc; */
+  /* color:#c8dee2; */
+  color:#43b6b2;
+  display: inline-block;
+  /* padding: 6px 12px; */
+  cursor: pointer;
+}

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import axios from 'axios';
+import { UserService } from 'src/app/services/sf-user.service';
 
 @Component({
   selector: 'app-about-me',
@@ -11,16 +13,30 @@ export class AboutMeComponent implements OnInit {
   user: string;
   profile: any;
   found: boolean;
+  unlockedAchievements: number;
+  totalNumberOfAchievements: number;
+  achievements: {
+      date: Date,
+      detail: string,
+      icon: string,
+  }[];
 
-  constructor(private route: ActivatedRoute) {
-    console.log('test1');
+  profileForm = new FormGroup({
+    pseudo: new FormControl('', Validators.required),
+    bio: new FormControl('', Validators.required),
+    avatarUrl: new FormControl(this.userService.avatarList[0].url),
+  });
+
+  constructor(private route: ActivatedRoute, public userService: UserService) {
     this.user = '';
     this.profile = undefined;
     this.found = true;
+    this.achievements = [];
+    this.totalNumberOfAchievements = 0;
+    this.unlockedAchievements = 0;
   }
 
   async ngOnInit() {
-    console.log('test2');
     this.user = this.route.snapshot.paramMap.get('login') + '';
     const url = `http://${window.location.host}:3000/cb-user/profile/${this.user}`;
     await axios
@@ -33,5 +49,73 @@ export class AboutMeComponent implements OnInit {
       });
     if (this.profile === undefined) this.found = false;
     else this.found = true;
+
+    await axios.get(`http://${window.location.host}:3000/cb-stats/achievements/${this.user}`)
+      .then((response: any) => {
+        this.achievements = response.data.achievements;
+        this.totalNumberOfAchievements = response.data.total_number_of_achievements;
+        this.unlockedAchievements = this.achievements.length;
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+
+    this.profileForm = new FormGroup({
+      pseudo: new FormControl(this.profile.pseudo, Validators.required),
+      bio: new FormControl(this.profile.bio, Validators.required),
+      avatarUrl: new FormControl(this.userService.avatarList[0].url),
+    });
+    if (this.userService.uploaded === false && this.userService.user.avatar.search(`${window.location.host}:3000`))
+      this.userService.avatarList[0] = {alt: this.userService.user.login, url: this.userService.user.avatar};
+    else
+      this.userService.avatarList.splice(1, 1);
+  }
+
+  async saveChanges() {
+    document.getElementById('pseudo already exists')?.classList?.add('d-none');
+    document.getElementById('Success')?.classList?.add('d-none');
+    document.getElementById('Oops something went wrong updating your profile')?.classList?.add('d-none');
+    const pseudo: string = (<HTMLInputElement>(
+      document.getElementById('pseudo')
+    )).value;
+    const bio: string = (<HTMLInputElement>(
+      document.getElementById('bio')
+    )).value;
+    const avatar: string = (<HTMLInputElement>(
+      document.getElementById('avatarUrl')
+    )).value;
+    const response = await axios.get(`http://${window.location.host}:3000/cb-user/pseudo/${pseudo}`, {
+      params: { login: this.profile.login }
+    });
+    if (response.data)
+    {
+      document.getElementById('pseudo already exists')?.classList?.remove('d-none');
+    }
+    else
+    {
+      const responseToUpdate = await axios.post(`http://${window.location.host}:3000/cb-user/profile/${this.profile.login}`, {
+        data: {
+          pseudo: pseudo,
+          bio: bio,
+          avatar: avatar,
+        }
+      });
+      if (responseToUpdate.data !== "Success")
+      {
+        document.getElementById('Oops something went wrong updating your profile')?.classList?.remove('d-none');
+      }
+      else
+      {
+        document.getElementById('Success')?.classList?.remove('d-none');
+      }
+    }
+  }
+
+  increment() {
+    this.userService.increment();
+  }
+
+  decrement() {
+    this.userService.decrement();
   }
 }

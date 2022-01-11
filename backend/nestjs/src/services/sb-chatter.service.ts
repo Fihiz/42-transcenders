@@ -9,7 +9,6 @@ export class ChatterService {
 							private chatter: Repository<ChatterEntity>,){}
 
 	async createChatter(chatter: ChatterEntity) {
-		console.log('Chatter creation');
 		try {
 				const isFind = await this.findOneChatter(chatter.conv_id, chatter.login)
 				if (!isFind) {
@@ -119,7 +118,6 @@ export class ChatterService {
   async unBan(name, conv_id) {
     try {
       await this.chatter.update({login: name, conv_id: conv_id}, {ban: true});
-      console.log('chatter = ', await this.chatter.findOne({where: {login:name, conv_id:conv_id}}))
       return ('ok');
     }
     catch {

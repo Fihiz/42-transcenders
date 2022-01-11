@@ -24,7 +24,6 @@ export class ChatService {
 
 
     async createMessage(message: MessageEntity): Promise<number | MessageEntity | string> {
-      console.log('Message creation');
       try {
           await this.messages.insert(message);
           return (message);
@@ -134,7 +133,8 @@ export class ChatService {
     const message = emission.data
     const doesConvExists = await this.convService.findOneConversation(message.conv_id);
     const chatter = await this.chatter.findOne({login: emission.login, conv_id: message.conv_id});
-    const avatar = (await this.userService.findOneApiUser(emission.login))?.avatar;
+    const avatar = (await this.userService.findOneApiUser(emission.login));
+    const user = (await this.userService.findOneAppUser(emission.login));
     if (doesConvExists) {
       const messRegistered: MessageEntity = {
         content: message.content,
@@ -142,8 +142,11 @@ export class ChatService {
         date: message.date,
         id: ++this.messId,
         login: emission.login,
-        avatar: avatar,
-        role: chatter.chat_role
+        // avatar: avatar,
+        avatar: avatar.avatar,
+        role: chatter.chat_role,
+        pseudo: user.pseudo,
+        invitation: message.invitation
       }
       const messageCreated = await this.createMessage(messRegistered)
 			if (typeof(messageCreated) !== 'string' && typeof(messageCreated) !== 'number')
@@ -159,6 +162,9 @@ export class ChatService {
     
     const target = await this.findOneChatter(userToBan, conv_id);
     const client = await this.findOneChatter(userAsking, conv_id);
+    if (target && userAsking === 'superadmin') {
+      return (target);
+    }
     if (!client || !target)
       return ('ko');
     if (target.chat_role === 'owner' || (target.chat_role === 'admin' && client.chat_role != 'owner') && client.chat_role === 'chatter') {
@@ -168,9 +174,45 @@ export class ChatService {
     return (target);
   }
 
+  async addOwnerInConv(target, conv_id) {
+    try {
+      await this.chatter.update({login: target, conv_id: conv_id}, {chat_role: 'owner'})
+      return ('ok');
+    }
+    catch {
+      return ('ko');
+    }
+  }
+
   async addAdminInConv(target, conv_id) {
     try {
       await this.chatter.update({login: target, conv_id: conv_id}, {chat_role: 'admin'})
+      return ('ok');
+    }
+    catch {
+      return ('ko');
+    }
+  }
+
+  errorMessage(emission: any, message: string) {
+    console.log("ERROR: ", message);
+    const error: MessageEntity = {
+      id: emission.socketId,
+      conv_id: emission.data.conv_id,
+      login: emission.login,
+      date: emission.data.date,
+      content: message,
+      avatar: (emission.login as any as WebAppUserEntity).avatar, // fail
+      role: (emission.login as any as WebAppUserEntity).app_role, // fail
+      invitation: false,
+      pseudo: (emission.login as any as WebAppUserEntity).pseudo,
+    }
+    return error;
+  }
+
+  async addChatterInConv(target, conv_id) {
+    try {
+      await this.chatter.update({login: target, conv_id: conv_id}, {chat_role: 'chatter'})
       return ('ok');
     }
     catch {

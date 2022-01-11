@@ -1,125 +1,105 @@
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
-  <body class="modal-open">
-    <div
-      id="toOpenModal"
-      data-bs-toggle="modal"
-      data-bs-target="#myModal"
-    ></div>
-    <!-- The Modal -->
-    <div class="modal" id="myModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title">Tell us more about you...</h4>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
+<body class="modal-open">
+  <div id="toOpenModal" data-bs-toggle="modal" data-bs-target="#myModal"></div>
+  <!-- The Modal -->
+  <div class="modal" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Tell us more about you...</h4>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
 
-          <!-- Modal body -->
-          <div class="modal-body">
-            <form [formGroup]="profileForm">
-              <div class="form-group">
-                <label for="pseudo" class="col-form-label title-form">
-                  Pseudo
-                </label>
-                <h6><em>Only letters and numbers are accepted</em></h6>
-                <input
-                  id="pseudo"
-                  class="form-control"
-                  type="text"
-                  maxlength="20"
-                  formControlName="pseudo"
-                  pattern="[A-Za-z0-9]+"
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="bio" class="col-form-label title-form"> Bio </label>
-
-                <textarea
-                  id="bio"
-                  class="form-control"
-                  type="text"
-                  maxlength="200"
-                  formControlName="bio"
-                ></textarea>
-              </div>
-
-              <div class="form-group">
-                <label for="avatar" class="col-form-label title-form"
-                  >Avatar</label
-                >
-
-                <div>
-                  <div class="btn btn-dark" (click)="decrement()">&lt;</div>
-                  <img
-                    id="avatar"
-                    class="rounded-circle"
-                    alt="{{ userService.avatarList[i].alt }}"
-                    src="{{ userService.avatarList[i].url }}"
-                  />
-                  <input
-                    class="d-none"
-                    type="text"
-                    id="avatarUrl"
-                    formControlName="avatarUrl"
-                    value="{{ userService.avatarList[i].url }}"
-                  />
-                  <div class="btn btn-dark" (click)="increment()">&gt;</div>
-                </div>
-                <div>
-                  <!-- <label class="col-form-label">Upload your own</label>
-                  <input type="checkbox" id="own" /> -->
-                  <input
-                    type="file"
-                    class="form-control"
-                    id="uploaded-avatar"
-                    name="avatar"
-                    accept="image/png, image/jpeg, image/gif"
-                    (change)="inputFile($event)"
-                  />
-                </div>
-              </div>
-              <!-- <div
-                class="form-group"
-                [class.d-none]="pseudo_test.value !== 'color'"
-              >
-                <label for="paddle-color" class="col-form-label"
-                  ><h4>Your paddle color</h4></label
-                >
-                <div>
-                  <input type="color" id="paddle-color" value="#000000" />
-                </div>
-              </div> -->
-            </form>
-            <br />
-            <button
-              id="submitId"
-              type="button"
-              [disabled]="!profileForm.valid"
-              data-bs-dismiss="modal"
-              class="btn btn-primary"
-            >
-              Submit
-            </button>
-            <div class="padding-text">
-              <h6><em>Complete the form to enable the button</em></h6>
+        <!-- Modal body -->
+        <div class="modal-body">
+          <form [formGroup]="profileForm">
+            <div class="form-group">
+              <label for="pseudo" class="col-form-label title-form">
+                Pseudo
+              </label>
+              <h6 id="pseudo already exists" class="d-none" style="color: red">
+                <em>This pseudo already exists</em>
+              </h6>
+              <h6><em>Only letters and numbers are accepted</em></h6>
+              <input
+                id="pseudo"
+                class="form-control"
+                type="text"
+                maxlength="20"
+                formControlName="pseudo"
+                pattern="[A-Za-z0-9]+"
+              />
             </div>
 
-            <h6>
-              <em>Form Status: {{ profileForm.status }}</em>
-            </h6>
+            <div class="form-group">
+              <label for="bio" class="col-form-label title-form"> Bio </label>
+
+              <textarea
+                id="bio"
+                class="form-control"
+                type="text"
+                maxlength="200"
+                formControlName="bio"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="avatar" class="col-form-label title-form"
+                >Avatar</label
+              >
+
+              <div>
+                <div class="btn btn-dark" (click)="decrement()">&lt;</div>
+                <img
+                  id="avatar"
+                  class="rounded-circle"
+                  alt="{{ userService.avatarList[userService.i].alt }}"
+                  src="{{ userService.avatarList[userService.i].url }}"
+                />
+                <input
+                  class="d-none"
+                  type="text"
+                  id="avatarUrl"
+                  formControlName="avatarUrl"
+                  value="{{ userService.avatarList[userService.i].url }}"
+                />
+                <div class="btn btn-dark" (click)="increment()">&gt;</div>
+              </div>
+              <div>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="uploaded-avatar"
+                  name="avatar"
+                  accept="image/jpeg"
+                  (change)="userService.inputFile($event)"
+                />
+              </div>
+            </div>
+          </form>
+          <br />
+          <button
+            id="submitId"
+            type="button"
+            [disabled]="!profileForm.valid"
+            data-bs-dismiss="modal"
+            class="btn btn-primary"
+          >
+            Submit
+          </button>
+          <div class="padding-text">
+            <h6><em>Complete the form to enable the button</em></h6>
           </div>
+
+          <h6>
+            <em>Form Status: {{ profileForm.status }}</em>
+          </h6>
         </div>
       </div>
     </div>
-  </body>
-</html>
+  </div>
+</body>

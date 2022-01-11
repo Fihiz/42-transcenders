@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, Not } from 'typeorm';
-
 import { GameTypeEntity } from 'src/entities/eb-game-type.entity';
 import { PongGameEntity } from 'src/entities/eb-pong-game.entity';
 import { CreatePartyDto } from 'src/dtos/CreateParty.dto';
@@ -9,13 +8,78 @@ import { CreatePartyDto } from 'src/dtos/CreateParty.dto';
 import { status } from 'src/entities/eb-pong-game.entity';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { StatsService } from './sb-stats.service';
+import { GlobalDataService } from './sb-global-data.service';
+import { ConnectedGateway } from 'src/gateways/connected.gateway';
 
 @Injectable()
 export class GameService {
 
   	games: Game[];
+	id: number = 0;
+	sets: GameTypeEntity[] = [
+		{
+			game_type_id: 0,
+			type: "classic",
+			board_color: "#000000",
+			ball_size: 16,
+			ball_color: "#FFFFFF",
+			ball_speed: 6,
+			ball_desc: "big / slow",
+			racket1_size: 10,
+			racket1_color: "#FFFFFF",
+			racket1_speed: 8,
+			racket1_desc: "medium / medium",
+			racket2_size: 10,
+			racket2_color: "#FFFFFF",
+			racket2_speed: 8,
+			racket2_desc: "medium / medium",
+			overlay_color:'rgba(150,150,150,0.5)',
+			border_color: '#FFFFFF',
+			font_color: '#FFFFFF',
+		},
+		{
+			game_type_id: 0,
+			type: "special",
+			board_color: "#FFFFFF",
+			ball_size: 8,
+			ball_color: "#000000",
+			ball_speed: 12,
+			ball_desc: "small / fast",
+			racket1_size: 6,
+			racket1_color: "#00FFFF",
+			racket1_speed: 20,
+			racket1_desc: "small / fast++",
+			racket2_size: 15,
+			racket2_color: "#AA0000",
+			racket2_speed: 2,
+			racket2_desc: "big / very slow",
+			overlay_color:'rgba(50,50,50,0.5)',
+			border_color: '#000000',
+			font_color: '#000000',
+		},
+		{
+			game_type_id: 0,
+			type: "our",
+			board_color: "figma",
+			ball_size: 16,
+			ball_color: "#43B6B2",
+			ball_speed: 10,
+			ball_desc: "big / medium",
+			racket1_size: 10,
+			racket1_color: "#F9C53F",
+			racket1_speed: 14,
+			racket1_desc: "medium / fast",
+			racket2_size: 10,
+			racket2_color: "#F97D64",
+			racket2_speed: 14,
+			racket2_desc: "medium / fast",
+			overlay_color:'rgba(50,68,72,0.5)',
+			border_color: '#528FAC',
+			font_color: '#D3E3E6',
+		},
+	]
 
-	constructor(@InjectRepository(GameTypeEntity) private gameTypes: Repository<GameTypeEntity>, @InjectRepository(PongGameEntity) private pongGames: Repository<PongGameEntity>, private statsService : StatsService) {
+	constructor(@InjectRepository(GameTypeEntity) private gameTypes: Repository<GameTypeEntity>, @InjectRepository(PongGameEntity) private pongGames: Repository<PongGameEntity>, private statsService : StatsService, private connectedGateway: ConnectedGateway) {
 		this.games = [];
 		this.OnInit();
 	}
@@ -23,62 +87,24 @@ export class GameService {
 	async OnInit() {
 		const parties: PongGameEntity[] = await this.getAllPartiesInProgress();
 		parties.forEach((game) => {
-			this.addGame(game.game_id, (game.player1 as unknown as WebAppUserEntity), (game.player2 as unknown as WebAppUserEntity));
+			this.addGame(game);
 		})
-		// [
-		//   PongGameEntity {
-		//     game_id: 2,
-		//     player1_score: 0,
-		//     player2_score: 0,
-		//     game_status: 'playing',
-		//     winner: null,
-		//     looser: null,
-		//     created: 2022-01-04T10:56:29.605Z,
-		//     updated: 2022-01-04T10:56:29.605Z,
-		//     player1: WebAppUserEntity {
-		//       login: 'rlepart',
-		//       pseudo: 'test',
-		//       avatar: 'https://cdn.intra.42.fr/users/rlepart.jpg',
-		//       status: 'online',
-		//       bio: 'test\n',
-		//       pending_queue: false,
-		//       banned: false,
-		//       admonishement: 0,
-		//       app_role: 'user',
-		//       created: 2022-01-04T10:48:23.715Z,
-		//       updated: 2022-01-04T10:48:23.715Z,
-		//       doubleAuth: false
-		//     },
-		//     player2: WebAppUserEntity {
-		//       login: 'ttest',
-		//       pseudo: 'ok',
-		//       avatar: 'gfd',
-		//       status: 'offline',
-		//       bio: 'dfg',
-		//       pending_queue: false,
-		//       banned: false,
-		//       admonishement: 0,
-		//       app_role: 'User',
-		//       created: 2022-01-04T10:56:29.580Z,
-		//       updated: 2022-01-04T10:56:29.580Z,
-		//       doubleAuth: false
-		//     },
-		//     game_type_id: GameTypeEntity {
-		//       game_type_id: 1,
-		//       game_aspect: 'default',
-		//       ball_size: 1,
-		//       map_type: 'default',
-		//       initial_speed: 1,
-		//       racket_size: 1
-		//     }
-		//   }
-		// ]
 	}
 
-	addGame(id: number, player1: WebAppUserEntity, player2: WebAppUserEntity/*, type de game*/) {
-		this.games.push(new Game(id, player1, player2));
-		console.log("PASS add game");
-		// this.games.push(new Game(id, player1, player2, game params));
+	addGame(game: PongGameEntity) {
+		this.games.push(new Game(game));
+		const player1: string = (game.player1 as unknown as WebAppUserEntity).login;
+		const player2: string = (game.player2 as unknown as WebAppUserEntity).login;
+		if (GlobalDataService.loginIdMap.has(player1))
+			GlobalDataService.loginIdMap.get(player1).status = "Playing";
+		else
+			GlobalDataService.loginIdMap.set(player1, {status: 'Playing', sockets: []});
+		if (GlobalDataService.loginIdMap.has(player2))
+			GlobalDataService.loginIdMap.get(player2).status = "Playing";
+		else
+			GlobalDataService.loginIdMap.set(player2, {status: 'Playing', sockets: []});
+		this.connectedGateway.server.emit('status', {login: player1, status: "Playing"});
+		this.connectedGateway.server.emit('status', {login: player2, status: "Playing"});
 	}
 
 	setReady(gameId: number, login: string) {
@@ -137,7 +163,48 @@ export class GameService {
 		if (game.changing.status === 'Finished')
 		{
 			game.changing.status = 'Updating';
-			console.log(game.id);
+			const player1: string = game.changing.leftPaddle.login;
+			if (GlobalDataService.loginIdMap.has(player1) && GlobalDataService.loginIdMap.get(player1).sockets.length)
+			{
+				let status: string = "Online";
+				GlobalDataService.loginIdMap.get(player1).sockets.forEach(socket => {
+					if (status != "Spectating" && socket.gameId != 0)
+					{
+						const game = this.games.find((game) => game.id === socket.gameId)
+						if (game && player1 !== game.changing.leftPaddle.login &&
+							player1 !== game.changing.rightPaddle.login)
+								status = "Spectating";
+					}
+				});
+				GlobalDataService.loginIdMap.get(player1).status = status;
+				this.connectedGateway.server.emit('status', {login: player1, status: status});
+			}
+			else if (GlobalDataService.loginIdMap.has(player1))
+			{
+				GlobalDataService.loginIdMap.delete(player1);
+				this.connectedGateway.server.emit('status', {login: player1, status: "Offline"});
+			}
+			const player2: string = game.changing.rightPaddle.login;
+			if (GlobalDataService.loginIdMap.has(player2) && GlobalDataService.loginIdMap.get(player2).sockets.length)
+			{
+				let status: string = "Online";
+				GlobalDataService.loginIdMap.get(player2).sockets.forEach(socket => {
+					if (status != "Spectating" && socket.gameId != 0)
+					{
+						const game = this.games.find((game) => game.id === socket.gameId)
+						if (game && player2 !== game.changing.leftPaddle.login &&
+							player2 !== game.changing.rightPaddle.login)
+								status = "Spectating";
+					}
+				});
+				GlobalDataService.loginIdMap.get(player2).status = status;
+				this.connectedGateway.server.emit('status', {login: player2, status: status});
+			}
+			else if (GlobalDataService.loginIdMap.has(player2))
+			{
+				GlobalDataService.loginIdMap.delete(player2);
+				this.connectedGateway.server.emit('status', {login: player2, status: "Offline"});
+			}
 			if (game.changing.leftPaddle.score === 10)
 			{
 				await this.updateParty(game.id, {
@@ -225,6 +292,8 @@ export class GameService {
 					updated: new Date,
 				});
 			}
+			await this.statsService.updateAchievementsOf(game.changing.leftPaddle.login);
+			await this.statsService.updateAchievementsOf(game.changing.rightPaddle.login);
 			this.games.splice(index, 1);
 		}
 		else
@@ -232,15 +301,51 @@ export class GameService {
 		});
 	}
 	
-	
+	async createTypeOfGame(type: string) {
+		let index: number = -1;
+		if (type === "classic")
+			index = 0;
+		else if (type === "special")
+			index = 1;
+		else if (type === "our")
+			index = 2;
+		else
+			return;
+		const data: GameTypeEntity = this.sets[index];
+		const typeRepository = await getRepository(GameTypeEntity);
+		return typeRepository.insert(data)
+		.then((response) => {
+			return true;
+		})
+		.catch((error) => {
+			return false;
+		})
+	}
+
+	async initTypeOfGame() {
+		const classic = await this.searchOneTypeOfGame("classic");
+		if (classic === undefined)
+			if (await this.createTypeOfGame("classic") === false)
+				return false;
+		const special = await this.searchOneTypeOfGame("special");
+		if (special === undefined)
+			if (await this.createTypeOfGame("special") === false)
+				return false;
+		const our = await this.searchOneTypeOfGame("our");
+		if (our === undefined)
+			if (await this.createTypeOfGame("our") === false)
+				return false;
+	}
+
 	async getAllTypesOfGame(): Promise<GameTypeEntity[]> | undefined {
+		if (await this.initTypeOfGame() === false)
+			console.log("Error initiatialization of game types.");
 		const typeRepository = await getRepository(GameTypeEntity);
 		return typeRepository.find({
 			order: { game_type_id: "ASC" }
 		})
 		.then((response) => {
 			const types: GameTypeEntity[] = response;
-			console.log(`Get all types of game has succeeded.`);
 			return types;
 		})
 		.catch((error) => {
@@ -251,7 +356,7 @@ export class GameService {
 	}
 
 	async getAllPartiesInProgress(): Promise<PongGameEntity[]> | undefined {
-		const partyRepository = await getRepository(PongGameEntity);
+		const partyRepository = getRepository(PongGameEntity);
 		return partyRepository.find({
 			relations: ["player1", "player2", "game_type_id"],
 			where: { game_status: status.Playing },
@@ -290,7 +395,7 @@ export class GameService {
 		})
 	}
 
-	async searchOneTypeOfGame(login: string, map_type: string): Promise<GameTypeEntity> {
+	async searchOneTypeOfGame(map_type: string): Promise<GameTypeEntity> {
 		const typeRepository = getRepository(GameTypeEntity);
 		return typeRepository.findOne({
 			where: { type: map_type }
@@ -345,20 +450,6 @@ export class GameService {
 			return undefined;
 		})
 	}
-
-	// async deletePartyById(id: number): Promise<any> | undefined {
-	// 	const pongRepository = getRepository(PongGameEntity);
-	// 	return pongRepository.delete(id)
-	// 	.then((response) => {
-	// 		console.log(`Delete party by id has succeeded.`);
-	// 		return true;
-	// 	})
-	// 	.catch((error) => {
-	// 		console.log(`Delete party by id has failed...`);
-	// 		console.log(`details: ${error}`);
-	// 		return false;
-	// 	})
-	// }
 
 	async createMatchParty(player1: string, player2: string, type: GameTypeEntity): Promise<number> | undefined {
 		const pongRepository = getRepository(PongGameEntity);
@@ -418,7 +509,9 @@ class Game {
 		length: number,
 	};
 	id: number;
-	fontColor: string;
+	font_color: string;
+	border_color: string;
+	overlay_color: string;
 	changing: {
 		status: string,
 		countdown : number;
@@ -427,29 +520,30 @@ class Game {
 		rightPaddle : Paddle,
 	};
   
-	constructor(id: number, player1: WebAppUserEntity, player2: WebAppUserEntity) {
-		// console.log(id, player1, player2)
-		let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
+	// constructor(id: number, player1: WebAppUserEntity, player2: WebAppUserEntity) {
+	constructor(game: PongGameEntity) {
+		const game_type: GameTypeEntity = game.game_type_id as unknown as GameTypeEntity;
 		this.board = {
-			color: "#08638C",
+			color: game_type.board_color,
 			width: 700,
 			height: 400,
 		};
 		this.border = {
-			color: "#D3E3E6",
+			color: game_type.border_color,
 			marginLeftRight: 10,
 			marginTopBot: 10,
 			width: 5,
 			length: 15,
 		};
-		this.id = id;
-		this.fontColor = "#528FAC",
+		this.id = game.game_id;
+		this.font_color = game_type.font_color,
+		this.overlay_color = game_type.overlay_color,
 		this.changing = {
 			status: "Starting",
 			countdown : -1,
-			ball : new Ball("#43B6B2", 345, 195, 10, 10, 6),
-			leftPaddle : new Paddle(player1, "#F9C53F", 25, 175, 7, 50, 8),
-			rightPaddle : new Paddle(player2, "#F97D64", 675 - 7, 175, 7, 50, 8),
+			ball : new Ball(game_type.ball_color, 350 - game_type.ball_size / 2, 200 - game_type.ball_size / 2, game_type.ball_size, game_type.ball_speed),
+			leftPaddle : new Paddle(game.player1 as unknown as WebAppUserEntity, game_type.racket1_color, 25, 200 - game_type.racket1_size * 4, game_type.racket1_size, game_type.racket1_size * 8, game_type.racket1_speed),
+			rightPaddle : new Paddle(game.player2 as unknown as WebAppUserEntity, game_type.racket2_color, 675 - game_type.racket2_size, 200 - game_type.racket2_size * 4, game_type.racket2_size, game_type.racket2_size * 8, game_type.racket2_speed),
 		};
 	}
   
@@ -483,36 +577,42 @@ class Ball {
 
 	speed: number;
 	color: string;
-	width: number;
-	height: number;
+	size: number;
 	x: number;
 	y: number;
 	dx: number;
 	dy: number;
+	initialX: number;
+	initialY: number;
 
-	constructor(color: string, x: number, y: number, width: number, height: number, speed: number) {
-		let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
+	constructor(color: string, x: number, y: number, size: number, speed: number) {
 		this.speed = speed;
 		this.color = color;
-		this.width = width;
-		this.height = height;
-		this.x = x;
-		this.y = y;
+		this.size = size;
+		this.initialX = x;
+		this.initialY = y;
+		this.initBall();
+	}
+	
+	initBall() {
+		let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
+		this.x = this.initialX;
+		this.y = this.initialY;
 		this.dx = dx;
 		this.dy = Math.sqrt(1 - Math.pow(dx, 2));
 	}
 
 	update(game: Game) {
 		if (this.y + this.dy * this.speed < game.border.marginTopBot + game.border.width ||
-		this.y + this.dy * this.speed + this.height > game.board.height - game.border.marginTopBot - game.border.width)
+		this.y + this.dy * this.speed + this.size > game.board.height - game.border.marginTopBot - game.border.width)
 			this.dy *= -1;
 
 
 		if(this.dx < 0 &&
 		this.x < game.changing.leftPaddle.x + game.changing.leftPaddle.width &&
-		this.x + this.width > game.changing.leftPaddle.x)
+		this.x + this.size > game.changing.leftPaddle.x)
 			if (this.y < game.changing.leftPaddle.y + game.changing.leftPaddle.length &&
-				this.y + this.height > game.changing.leftPaddle.y)
+				this.y + this.size > game.changing.leftPaddle.y)
 				{
 					game.changing.leftPaddle.hit++;
 					this.dx *= -1;
@@ -521,23 +621,19 @@ class Ball {
 
 		if(this.dx > 0 &&
 		this.x < game.changing.rightPaddle.x + game.changing.rightPaddle.width &&
-		this.x + this.width > game.changing.rightPaddle.x)
+		this.x + this.size > game.changing.rightPaddle.x)
 			if (this.y < game.changing.rightPaddle.y + game.changing.rightPaddle.length &&
-				this.y + this.height > game.changing.rightPaddle.y)
+				this.y + this.size > game.changing.rightPaddle.y)
 				{
 					game.changing.rightPaddle.hit++;
 					this.dx *= -1;
 				}
 
 
-		if (this.x + this.width < game.changing.leftPaddle.x)
+		if (this.x + this.size < game.changing.leftPaddle.x)
 		{
-			let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
+			this.initBall();
 			game.changing.rightPaddle.score++;
-			this.x = 345;
-			this.y = 195;
-			this.dx = dx;
-			this.dy = Math.sqrt(1 - Math.pow(dx, 2));
 			if (game.changing.rightPaddle.score === 10)
 			{
 				this.dx = 0;
@@ -549,12 +645,8 @@ class Ball {
 
 		if (this.x > game.changing.rightPaddle.x + game.changing.rightPaddle.width)
 		{
-			let dx = (Math.floor(Math.random() * 2) * 2 - 1) * (Math.random() / 4 + 0.375);
+			this.initBall();
 			game.changing.leftPaddle.score++;
-			this.x = 345;
-			this.y = 195;
-			this.dx = dx;
-			this.dy = Math.sqrt(1 - Math.pow(dx, 2));
 			if (game.changing.leftPaddle.score === 10)
 			{
 				this.dx = 0;
@@ -568,7 +660,6 @@ class Ball {
 		this.y += this.dy * this.speed;
 	}
 }
-
 
 class Paddle {
 

@@ -1,1 +1,140 @@
-<p>friends works!</p>
+<div class="container">
+  <h1>MY FRIENDS</h1>
+  <h4>My favorite friends</h4>
+  <!-- MY FAVORITE FRIENDS -->
+  <div class="row-top">
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      <!-- an user -->
+      <span *ngFor="let relation of allMyRelations">
+        <span *ngIf="relation.relation.friendship === 'friend'">
+          <div class="col">
+            <div class="card">
+              <div class="text-center">
+                <img
+                  src="{{ relation.relation.user2.avatar }}"
+                  class="card-img-top rounded-circle"
+                  alt="..."
+                />
+                <div class="card-body">
+                  <h5 class="card-title">{{ relation.relation.user2.pseudo }}</h5>
+                  <div [ngSwitch]="global.allUserStatus.get(relation.relation.user2.login)">
+                    <div *ngSwitchCase="'Offline'" ><h6>Offline</h6></div>
+                    <div *ngSwitchCase="'Online'" ><h6>Online</h6></div>
+                    <div *ngSwitchCase="'Playing'" ><h6>Playing</h6></div>
+                    <div *ngSwitchCase="'Spectating'" ><h6>Spectating</h6></div>
+                    <div *ngSwitchCase="" ><h6>Offline</h6></div>
+                  </div>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      <span class="badge badge-pill badge-success">Bio</span>
+                      <div class="style-txt">
+                        {{ relation.relation.user2.bio }}
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <span class="badge badge-pill badge-success">Stats</span>
+                      <div class="style-txt">
+                        Number of matches: {{ relation.stat.match_number}}
+                      </div>
+                      <div class="style-txt">
+                        Wins: {{ relation.stat.victory}}
+                      </div>
+                      <div class="style-txt">
+                        Losses: {{ relation.stat.loss}}
+                      </div>
+                      <div class="style-txt">
+                        Scored_points: {{ relation.stat.scored_points}}
+                      </div>
+                      <div class="style-txt">
+                        Adversary_points: {{ relation.stat.adversary_points}}
+                      </div>
+                      <div class="style-txt">
+                        Number of ball hits: {{ relation.stat.ball_hit}}
+                      </div>
+                    
+                    </li>
+                    <li class="list-group-item">
+                      <span class="badge badge-pill badge-success"
+                        >Achievement</span
+                      >
+                      <div *ngIf="relation.achievement !== undefined" class="achievements">
+                        <img
+                          src="{{relation.achievement.achievement_id.icon}}"
+                          class="rounded-circle-sm"
+                          
+                          onerror="this.src='../../../../assets/room-pictures/5.png'"
+                        />
+                        {{relation.achievement.achievement_id.detail }}
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </span>
+      </span>
+      <!-- /an user -->
+    </div>
+  </div>
+</div>
+<!-- ALL USERS -->
+<br />
+<br />
+<div class="row-bottom">
+  <h4>All users</h4>
+  <nav class="navbar navbar-expand-lg" id="header-conv-nav">
+    <!-- BOTTOM DROPDOWN -->
+    <div class="dropdown">
+      <button
+        class="btn btn-light btn-lg"
+        type="button"
+        id="dropdownMenuButton"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        (click)="onSeeAllUsers()"
+      >
+        See all users
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <!--View members-->
+        <li *ngFor="let user of allUsersInfo">
+          <a *ngIf="user.login !== global.login" class="dropdown-item"
+            >{{ user.login }} &raquo;
+          </a>
+          <ul class="dropdown-menu dropdown-submenu">
+            <li>
+              <div class="text-center">
+                <img
+                  src="{{ user.avatar }}"
+                  class="rounded-circle-sm"
+                  alt="..."
+                />
+                <div class="style-txt text-center">{{ user.pseudo }}</div>
+              </div>
+              <button
+                class="btn btn-secondary btn-sm btn-block"
+                id="view-member"
+                role="button"
+                type="submit"
+                (click)="onAddFriend(user.login, 'friend')"
+              >
+                Add
+              </button>
+              <button
+                class="btn btn-secondary btn-sm btn-block"
+                id="view-member"
+                role="button"
+                type="submit"
+              >
+                Block
+              </button>
+            </li>
+          </ul>
+        </li>
+        <!-- /view memebers -->
+      </ul>
+    </div>
+  </nav>
+</div>

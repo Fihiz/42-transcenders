@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
+import { Router } from '@angular/router';
 import { if_message } from 'src/app/interfaces/if-message';
 import { if_conversation } from 'src/app/interfaces/if_conversation';
 import { if_emission } from 'src/app/interfaces/if_emmission';
 import { ChatService } from 'src/app/services/sf-chat.service';
 import { GlobalService } from 'src/app/services/sf-global.service';
 import axios from 'axios';
+import { if_game_type } from 'src/app/interfaces/if-game';
+import { GameService } from 'src/app/services/sf-game.service';
 
 @Component({
   selector: 'app-chat',
@@ -14,6 +17,7 @@ import axios from 'axios';
 })
 export class ChatComponent implements OnInit {
   convMessages: Array<if_message> = [];
+  membersPseudo: Array<{ login: string; pseudo: string }> = [];
   users: Array<string> = new Array();
   currentConv: if_conversation = {
     avatar: '',
@@ -33,12 +37,20 @@ export class ChatComponent implements OnInit {
   login: string = '';
   convInfo: Map<string, { role: string; avatar: string }> = new Map();
   inputChatAndPlay: string = '';
-
+  sets: if_game_type[] = [];
+  listAllAvailableRooms: Array<if_conversation> = [];
+  
   constructor(
     private socket: Socket,
     private global: GlobalService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private gameService: GameService,
+    private router: Router
   ) {}
+
+  async getSetsParty() {
+    this.sets = await this.gameService.getTypesOfParty();
+  }
 
   onSendMessage() {
     const content = (<HTMLInputElement>document.getElementById('input-message'))
@@ -60,6 +72,10 @@ export class ChatComponent implements OnInit {
     if (event.key === 'Enter' && this.currentConv.name) {
       this.onSendMessage();
     }
+  }
+
+  onThreeDotsClick() {
+    this.socket.emit('allAvailableRoomsInApp');
   }
 
   onSelectOneToOneUserConv() {
@@ -109,7 +125,6 @@ export class ChatComponent implements OnInit {
   async onCreateRoom() {
     const res = await this.chatService.takeAndCheck(this.users);
     if (res.status != 'ok') return;
-    console.log('res = ', res.status);
     const roomAvatarsArray: string[] = [
       '../../../assets/room-pictures/1.png',
       '../../../assets/room-pictures/2.png',
@@ -141,12 +156,25 @@ export class ChatComponent implements OnInit {
   }
 
   async onSelectConv(value: any) {
+    this.membersPseudo = [];
     this.convMessages = [];
     this.currentConv = this.chatService.getConvFromId(
       value,
       this.listConv,
       this.currentConv
     );
+    const tmpMembers = (
+      await axios.get(
+        `http://${window.location.host}:3000/cb-chat/getMembers`,
+        { params: this.currentConv.members }
+      )
+    ).data;
+    let i = -1;
+    while (++i < tmpMembers.length)
+      this.membersPseudo.push({
+        login: this.currentConv.members[i],
+        pseudo: tmpMembers[i],
+      });
     this.emission = this.chatService.emission(
       'getMessages',
       this.currentConv,
@@ -222,7 +250,12 @@ export class ChatComponent implements OnInit {
           },
         }
       );
-      if (isMute.data !== 'ok') alert(isMute.data);
+      if (isMute.data !== 'ok')
+        alert(
+          isMute.data === 'ko'
+            ? 'you don t have the rights or the user is not in the room'
+            : isMute.data
+        );
     }
   }
 
@@ -271,7 +304,6 @@ export class ChatComponent implements OnInit {
   }
 
   async onKick() {
-    // alert pgoudet: to keep for cleaning !
     const value = (<HTMLInputElement>document.getElementById('kick-room'))
       ?.value;
     this.chatService.clearInputValues('kick-room');
@@ -298,7 +330,6 @@ export class ChatComponent implements OnInit {
   }
 
   onChangePassword() {
-    // alert pgoudet: to keep for cleaning !
     const value = (<HTMLInputElement>document.getElementById('change-password'))
       ?.value;
     this.chatService.clearInputValues('change-password');
@@ -391,6 +422,7 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getSetsParty();
     this.login = this.global.login as string;
     this.inputChatAndPlay = (<HTMLInputElement>(
       document.getElementById('search-user')
@@ -405,7 +437,6 @@ export class ChatComponent implements OnInit {
       }
     });
     this.socket.on('allConversations', (data: any) => {
-      console.log('all conversations');
       this.listConv = data as Array<if_conversation>;
     });
     this.socket.on('newConversation', (data: any) => {
@@ -441,6 +472,161 @@ export class ChatComponent implements OnInit {
       ) as if_conversation;
       conv.password = data.password;
       conv.type = 'protected';
+      // need to change the room type into the Conv entity when we change password as empty
+      // if (data.password) conv.type = 'protected';
+      // else conv.type = 'public';
     });
+    //For View Room in chat
+    this.socket.on('allAvailableRoomsInApp', (data: any) => {
+      this.listAllAvailableRooms = data;
+    });
+    //For View Room in chat
+    this.socket.on('newAvailableRoomsInApp', (data: any) => {
+      this.listAllAvailableRooms.push(data);
+    });
+    //For View Room in chat
+    this.socket.on('deleteAvailableRoomsInApp', (data: any) => {
+      if (this.listAllAvailableRooms.length === 0)
+        this.listAllAvailableRooms = []; /* Non-sens */
+      const index = this.listAllAvailableRooms.findIndex(
+        (conv) => conv.conv_id === data.conv_id && conv.name === data.conv_name
+      );
+      if (index >= 0) this.listAllAvailableRooms.splice(index, 1);
+      if (this.currentConv.conv_id === data.conv_id) this.clearConv();
+    });
+
+    this.socket.on('errorInvitation', (message: if_message) => {
+      if (message.conv_id === this.currentConv.conv_id) {
+        this.convMessages.push(message);
+      }
+    });
+
+    this.socket.on('launchgameInvitation', (game: any) => {
+      console.log(game);
+      this.router.navigate([`/pong/game/${game}`]);
+    });
+
   }
+
+  // onErrorInvitation() {
+  //   this.socket.on('errorInvitation', (message: any) => {
+  //     if (message.length > 0 && message[0].conv_id === this.currentConv.conv_id) {
+  //       this.convMessages.splice(0, this.convMessages.length);
+  //       this.convMessages = message;
+  //     }
+  //   });
+  // }
+
+  onInvitToPlay(type: string) {
+    this.chatService.emission(
+      'setInvitation',
+      this.currentConv,
+      this.currentConv.conv_id,
+      {
+        conv_id: this.currentConv.conv_id,
+        logins_conv: this.currentConv.members,
+        date: new Date(),
+        content: "Invitation to start party!",
+        type: type,
+        invitation: true,
+      }
+    );
+  }
+
+  onAcceptToPlay() {
+    this.chatService.emission(
+      'setInvitation',
+      this.currentConv,
+      this.currentConv.conv_id,
+      {
+        conv_id: this.currentConv.conv_id,
+        logins_conv: this.currentConv.members,
+        date: new Date(),
+        content: "Invitation accepted!",
+        type: undefined,
+        invitation: false
+      }
+    );
+  }
+
+  onCancelToPlay() {
+    this.chatService.emission(
+      'unsetInvitation',
+      this.currentConv,
+      this.currentConv.conv_id,
+      {
+        conv_id: this.currentConv.conv_id,
+        date: new Date(),
+        content: "Invitation refused!",
+        invitation: false
+      }
+    );
+  }
+
+  // onInvitToPlay() {
+  //   this.chatService.invitToPlay(this.emission, this.currentConv);
+  // }
+
+  // onAcceptToPlay() {
+  //   this.chatService.acceptToPlay(this.emission, this.currentConv);
+  // }
+  
+  // onCancelToPlay() {
+  //   this.chatService.cancelToPlay(this.emission, this.currentConv);
+  // }
+
+
+
+
+
+
+
+
+
+
+  // onInvitToPlay() {
+  //   this.emission.data = {
+  //     conv_id: this.currentConv.conv_id,
+  //     logins_conv: this.currentConv.members,
+  //     date: new Date(),
+  //     content: "Invitation to start party!",
+  //     invitation: true
+  //   };
+  //   this.emission.socketId = this.global.socketId as string;
+  //   if (this.currentConv.name) {
+  //     // this.socket.emit('message', this.emission);
+  //     this.socket.emit('setInvitation', this.emission);
+  //   }
+  //   this.socket.on('launchgameInvitation', (game: any) => {
+  //     this.router.navigate([`/pong/game/${game}`]);
+  //   });
+  // }
+
+  // onAcceptToPlay() {
+  //   this.emission.data = {
+  //     conv_id: this.currentConv.conv_id,
+  //     logins_conv: this.currentConv.members,
+  //     date: new Date(),
+  //     content: "Invitation accepted!",
+  //     invitation: false
+  //   };
+  //   // this.socket.emit('takeInvitation', this.emission);
+  //   this.socket.emit('setInvitation', this.emission);
+  //   this.socket.on('launchgameInvitation', (game: any) => {
+  //     console.log(game);
+  //     this.router.navigate([`/pong/game/${game}`]);
+  //   });
+  // }
+  
+  // onCancelToPlay() {
+  //   this.emission.data = {
+  //     conv_id: this.currentConv.conv_id,
+  //     date: new Date(),
+  //     content: "Invitation refused!",
+  //     invitation: false
+  //   };
+  //   this.socket.emit('unsetInvitation', this.emission);
+  //   console.log("PASS CANCEL");
+  // }
+
 }
