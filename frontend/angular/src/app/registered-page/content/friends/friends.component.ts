@@ -53,11 +53,29 @@ export class FriendsComponent implements OnInit {
 	  };
 	  if (await this.userService.checkIfAlreadyRelation(data))
    		{
-			console.log('There is a relation that we can delete');
+			console.log('There is a relation that we can remove');
 			//await this.userService.removeFriend(data);
 		}
 		else{
-			console.log('There is NO relation that we can delete');
+			console.log('There is NO relation that we can remove');
+		}
+  }
+
+
+  async onBlockFriend(blockFriendLogin: string, blocked: boolean)
+  {
+	const data = {
+		currentLogin: this.global.login,
+		newFriendLogin: blockFriendLogin,
+		friendship: blocked,
+	  };
+	  if (await this.userService.checkIfAlreadyRelation(data))
+   		{
+			console.log('There is a relation that we can block');
+			//await this.userService.removeFriend(data);
+		}
+		else{
+			console.log('There is NO relation that we can block');
 		}
   }
 
