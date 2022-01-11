@@ -44,6 +44,23 @@ export class FriendsComponent implements OnInit {
     this.getAllMyRelations();
   }
 
+  async onRemoveFriend(deleteFriendLogin: string, friendship: string)
+  {
+	const data = {
+		currentLogin: this.global.login,
+		newFriendLogin: deleteFriendLogin,
+		friendship: friendship,
+	  };
+	  if (await this.userService.checkIfAlreadyRelation(data))
+   		{
+			console.log('There is a relation that we can delete');
+			//await this.userService.removeFriend(data);
+		}
+		else{
+			console.log('There is NO relation that we can delete');
+		}
+  }
+
   setMyFriends() {
     console.log('COUCOUCOUCOUCOCU', this.allMyRelations);
     this.allMyFriends = [];

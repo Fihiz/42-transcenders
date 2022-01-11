@@ -126,6 +126,7 @@
                   id="view-member"
                   role="button"
                   type="submit"
+				  (click)="onRemoveFriend(user.login, 'notfriend')"
                 >
                   Remove
                 </button>
@@ -135,7 +136,6 @@
                   id="view-member"
                   role="button"
                   type="submit"
-                  (click)="onAddFriend(user.login, 'friend')"
                 >
                   Block
                 </button>
