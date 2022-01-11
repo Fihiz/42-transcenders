@@ -4,7 +4,7 @@
 <!-- <app-input-prompt></app-input-prompt> -->
 <!-- </span> -->
 
-<body>
+<!-- <body>
     <button
       id="btn-double-auth"
       class="btn btn-secondary btn-sm btn-block"
@@ -12,4 +12,19 @@
     >
       {{ activate }}
     </button>
-</body>
+</body> -->
+
+<!-- NEW -->
+<span *ngIf="activate === 'activate'; else desactivateState">
+  <h6>If you click on activate, you will be asked for a two-factor authentication on your intra mail next time you connect</h6>
+</span>
+<ng-template #desactivateState>
+  <h6>If you click on deactivate, you won't be asked for a two-factor authentication next time you connect</h6>
+</ng-template>
+  <button
+    id="btn-double-auth"
+    class="btn"
+    (click)="onDoubleAuth()"
+  >
+    {{ activate }}
+  </button>

@@ -1,43 +1,12 @@
-/*.col {
-  margin: 5%;
-  background-color: rgb(248, 248, 248);
-}
-
-.middle {
-  height: 100%;
-  max-height: 75vh;
-}
-
-.row {
-  margin-left: 0%;
-  margin-right: 0%;
-  overflow-y: auto;
-}
-.block {
-  background-color: rgb(245, 237, 237);
-}
-
-img {
-  width: 230px;
-  height: 150px;
-}
-
-p {
-	font-size: 12px;
-}*/
-
-@import url("https://fonts.googleapis.com/css2?family=Londrina+Solid&display=swap");
 .col {
   margin: 5%;
-  /*background-color: rgb(248, 248, 248);*/
-  /* min-width: 250px; */
 }
 
 .middle {
   height: 100%;
   max-height: 75vh; /*to scroll*/
   /* Seems to work in the same way */
-  /*  */
+  /* flex-grow: 1; */
 }
 
 .row {
@@ -59,25 +28,22 @@ p {
   color: #324448;
 }
 
-h1 {
-  color: #528fac;
-  /* color: #43B6B2; */
+h1
+{
+  color: #528FAC;
   text-align: center;
-  font-family: "Londrina Solid";
+  font-family: 'Secular One', sans-serif;
 }
 
-h3,
-h5 {
+h3, h5 {
   text-align: center;
-  font-family: "Londrina Solid";
-  color: #528fac;
-  /* color: #43B6B2; */
+  font-family: 'Secular One', sans-serif;
+  color: #528FAC;
 }
 
 .card-header {
   background-color: white;
-  border-bottom: 10px solid #528fac;
-  /* border-bottom: 10px solid #43B6B2; */
+  border-bottom: 10px solid #528FAC;
 }
 
 .card {
