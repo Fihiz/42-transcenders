@@ -147,6 +147,7 @@ export class UserService {
       date: new Date(),
       avatar: '',
       role: '',
+      invitation: false
     };
     socket.emit('introduction', message);
   }
@@ -213,7 +214,7 @@ export class UserService {
     const formData: FormData = new FormData();
     formData.append('filename', String(this.login));
     formData.append('avatar', file);
-    const url: string = `http://${window.location.host}:3000/cb-user/avatar/${file.name}`;
+    const url: string = `http://${window.location.host}:3000/cb-user/avatar/upload/${file.name}`;
     return axios
       .post(url, formData)
       .then((response: any) => {
@@ -251,5 +252,16 @@ export class UserService {
         console.error(error);
       }
     }
+  }
+
+  async saveAvatar() {
+    const url: string = `http://${window.location.host}:3000/cb-user/avatar/save/${this.login}`;
+    return axios.post(url, { login: this.login })
+    .then((response: any) => {
+      return response.data;
+    })
+    .catch((error: any) => {
+      return null;
+    });
   }
 }

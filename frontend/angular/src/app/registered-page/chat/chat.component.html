@@ -316,18 +316,12 @@
                     <a class="dropdown-item"> Invite to play &raquo; </a>
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
-                        <!-- <input
-                          class="form-control"
-                          placeholder="Name"
-                          id="invite-to-play"
-                          type="room-btn"
-                        /> -->
-                        <button
+                        <button *ngFor="let set of sets"
                           type="submit"
                           class="btn btn-secondary btn-sm btn-block"
-                          (click)="onAddFriend()"
+                          (click)="onInvitToPlay(set.type)"
                         >
-                          Invite
+                          {{ set.type }}
                         </button>
                       </li>
                     </ul>
@@ -504,12 +498,16 @@
                           message.date | date: "short"
                         }}</span>
                       </div>
-                      <img src="{{ message.avatar }}" alt="avatarrr" />
+                      <img src="{{ message.avatar }}" alt="Play Pong" />
                     </div>
                   </div>
                   <!-- end of new wrap for right-chatter infos -->
                   <div class="message other-message float-right">
                     {{ message.content }}
+                  </div>
+                  <div *ngIf="message.invitation === true" class="message other-message float-right">
+                    <!-- <p>You have sent an invitation!</p> -->
+                    <a class="cancel" (click)="onCancelToPlay()">Cancel</a>
                   </div>
                 </li>
               </span>
@@ -535,6 +533,11 @@
                   </div>
                   <div class="message other-message float-left">
                     {{ message.content }}
+                  </div>
+                  <div *ngIf="message.invitation === true" class="message other-message float-left">
+                    <!-- <p>You have received an invitation!</p> -->
+                    <a class="accept" (click)="onAcceptToPlay()">Accept</a>
+                    <a class="cancel" (click)="onCancelToPlay()">Decline</a>
                   </div>
                 </li>
               </ng-template>

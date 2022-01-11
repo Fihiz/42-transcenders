@@ -8,8 +8,7 @@ import { UserService } from 'src/app/services/sf-user.service';
   styleUrls: ['./input-prompt.component.css'],
 })
 export class InputPromptComponent implements OnInit {
-  
-  i: number = 0;
+
   profileForm = new FormGroup({
     pseudo: new FormControl('', Validators.required),
     bio: new FormControl('', Validators.required),

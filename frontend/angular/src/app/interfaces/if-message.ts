@@ -7,4 +7,5 @@ export interface if_message {
   to: Array<string>;
   avatar: string;
   role: string;
+  invitation: boolean;
 }

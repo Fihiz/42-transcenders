@@ -15,6 +15,68 @@ import { ConnectedGateway } from 'src/gateways/connected.gateway';
 export class GameService {
 
   	games: Game[];
+	sets: GameTypeEntity[] = [
+		{
+			game_type_id: 0,
+			type: "classic",
+			board_color: "#000000",
+			ball_size: 16,
+			ball_color: "#FFFFFF",
+			ball_speed: 6,
+			ball_desc: "big / slow",
+			racket1_size: 10,
+			racket1_color: "#FFFFFF",
+			racket1_speed: 8,
+			racket1_desc: "medium / medium",
+			racket2_size: 10,
+			racket2_color: "#FFFFFF",
+			racket2_speed: 8,
+			racket2_desc: "medium / medium",
+			overlay_color:'rgba(150,150,150,0.5)',
+			border_color: '#FFFFFF',
+			font_color: '#FFFFFF',
+		},
+		{
+			game_type_id: 0,
+			type: "special",
+			board_color: "#FFFFFF",
+			ball_size: 8,
+			ball_color: "#000000",
+			ball_speed: 12,
+			ball_desc: "small / fast",
+			racket1_size: 6,
+			racket1_color: "#00FFFF",
+			racket1_speed: 20,
+			racket1_desc: "small / fast++",
+			racket2_size: 15,
+			racket2_color: "#AA0000",
+			racket2_speed: 2,
+			racket2_desc: "big / very slow",
+			overlay_color:'rgba(50,50,50,0.5)',
+			border_color: '#000000',
+			font_color: '#000000',
+		},
+		{
+			game_type_id: 0,
+			type: "our",
+			board_color: "figma",
+			ball_size: 16,
+			ball_color: "#43B6B2",
+			ball_speed: 10,
+			ball_desc: "big / medium",
+			racket1_size: 10,
+			racket1_color: "#F9C53F",
+			racket1_speed: 14,
+			racket1_desc: "medium / fast",
+			racket2_size: 10,
+			racket2_color: "#F97D64",
+			racket2_speed: 14,
+			racket2_desc: "medium / fast",
+			overlay_color:'rgba(50,68,72,0.5)',
+			border_color: '#528FAC',
+			font_color: '#D3E3E6',
+		},
+	]
 
 	constructor(@InjectRepository(GameTypeEntity) private gameTypes: Repository<GameTypeEntity>, @InjectRepository(PongGameEntity) private pongGames: Repository<PongGameEntity>, private statsService : StatsService, private connectedGateway: ConnectedGateway) {
 		this.games = [];
@@ -238,8 +300,45 @@ export class GameService {
 		});
 	}
 	
-	
+	async createTypeOfGame(type: string) {
+		let index: number = -1;
+		if (type === "classic")
+			index = 0;
+		else if (type === "special")
+			index = 1;
+		else if (type === "our")
+			index = 2;
+		else
+			return;
+		const data: GameTypeEntity = this.sets[index];
+		const typeRepository = await getRepository(GameTypeEntity);
+		return typeRepository.insert(data)
+		.then((response) => {
+			return true;
+		})
+		.catch((error) => {
+			return false;
+		})
+	}
+
+	async initTypeOfGame() {
+		const classic = await this.searchOneTypeOfGame("classic");
+		if (classic === undefined)
+			if (await this.createTypeOfGame("classic") === false)
+				return false;
+		const special = await this.searchOneTypeOfGame("special");
+		if (special === undefined)
+			if (await this.createTypeOfGame("special") === false)
+				return false;
+		const our = await this.searchOneTypeOfGame("our");
+		if (our === undefined)
+			if (await this.createTypeOfGame("our") === false)
+				return false;
+	}
+
 	async getAllTypesOfGame(): Promise<GameTypeEntity[]> | undefined {
+		if (await this.initTypeOfGame() === false)
+			console.log("Error initiatialization of game types.");
 		const typeRepository = await getRepository(GameTypeEntity);
 		return typeRepository.find({
 			order: { game_type_id: "ASC" }
@@ -257,7 +356,7 @@ export class GameService {
 	}
 
 	async getAllPartiesInProgress(): Promise<PongGameEntity[]> | undefined {
-		const partyRepository = await getRepository(PongGameEntity);
+		const partyRepository = getRepository(PongGameEntity);
 		return partyRepository.find({
 			relations: ["player1", "player2", "game_type_id"],
 			where: { game_status: status.Playing },
@@ -296,7 +395,7 @@ export class GameService {
 		})
 	}
 
-	async searchOneTypeOfGame(login: string, map_type: string): Promise<GameTypeEntity> {
+	async searchOneTypeOfGame(map_type: string): Promise<GameTypeEntity> {
 		const typeRepository = getRepository(GameTypeEntity);
 		return typeRepository.findOne({
 			where: { type: map_type }
@@ -561,7 +660,6 @@ class Ball {
 		this.y += this.dy * this.speed;
 	}
 }
-
 
 class Paddle {
 

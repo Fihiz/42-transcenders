@@ -143,7 +143,8 @@ export class ChatService {
         id: ++this.messId,
         login: emission.login,
         avatar: avatar,
-        role: chatter.chat_role
+        role: chatter.chat_role,
+        invitation: message.invitation
       }
       const messageCreated = await this.createMessage(messRegistered)
 			if (typeof(messageCreated) !== 'string' && typeof(messageCreated) !== 'number')
@@ -176,6 +177,21 @@ export class ChatService {
     catch {
       return ('ko');
     }
+  }
+
+  errorMessage(emission: any, message: string) {
+    console.log("ERROR: ", message);
+    const error: MessageEntity = {
+      id: emission.socketId,
+      conv_id: emission.data.conv_id,
+      login: emission.login,
+      date: emission.data.date,
+      content: message,
+      avatar: (emission.login as any as WebAppUserEntity).avatar, // fail
+      role: (emission.login as any as WebAppUserEntity).app_role, // fail
+      invitation: false
+    }
+    return error;
   }
 
 }

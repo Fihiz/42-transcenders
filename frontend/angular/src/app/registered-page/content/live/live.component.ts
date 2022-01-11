@@ -20,6 +20,7 @@ export class LiveComponent implements OnInit {
   }
 
   async getLives() {
+    console.log("ROMAIN")
       this.parties = await this.gameService.getPartiesInProgress();
       if (this.parties !== undefined)
         this.size = this.parties.length;

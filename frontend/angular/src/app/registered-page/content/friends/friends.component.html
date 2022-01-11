@@ -1,1 +1,39 @@
 <p>friends works!</p>
+<div class="form-group">
+    <label for="avatar" class="col-form-label title-form"
+      >Avatar</label
+    >
+
+    <div>
+      <div class="btn btn-dark" (click)="decrement()">&lt;</div>
+      <img
+        id="avatar"
+        class="rounded-circle"
+        alt="{{ userService.avatarList[i].alt }}"
+        src="{{ userService.avatarList[i].url }}"
+      />
+      <input
+        class="d-none"
+        type="text"
+        id="avatarUrl"
+        formControlName="avatarUrl"
+        value="{{ userService.avatarList[i].url }}"
+      />
+      <div class="btn btn-dark" (click)="increment()">&gt;</div>
+    </div>
+    <div>
+      <!-- <label class="col-form-label">Upload your own</label>
+      <input type="checkbox" id="own" /> -->
+      <input
+        type="file"
+        class="form-control"
+        id="uploaded-avatar"
+        name="avatar"
+        accept="image/png, image/jpeg, image/gif"
+        (change)="inputFile($event)"
+      />
+    </div>
+    <button id="submitId" type="button" data-bs-dismiss="modal" class="btn btn-primary" (click)=saveAvatar()>
+      Submit
+    </button>
+  </div>

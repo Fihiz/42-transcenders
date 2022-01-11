@@ -78,6 +78,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		let game = this.gameService.games.find((game) => game.id === body.gameId);
 		if (!game)
 		{
+			console.log("CKKC", this.gameService.games);
+			console.log("CKKKC");
+			this.gameService.games.forEach((game2) => {
+				console.log(game2.id);
+				if(game2.id === body.gameId)
+					console.log("found");
+			});
+			console.log("CKC", this.gameService.games.find((game) => game.id === body.gameId));
 			this.server.to(body.id).emit('welcome', {notFound: true});
 			return ;
 		}
@@ -168,7 +176,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		// console.log(`${body.login} - IN:`, this.players);
 		const found = this.players.find((user) => user.gameType === body.gameType );
 		if (found !== undefined) {
-			const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(body.login, body.gameType)
+			const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(body.gameType)
 			if (search) {
 				let player1 = found;
 				let player2 = body;
