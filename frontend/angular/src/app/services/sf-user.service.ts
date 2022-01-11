@@ -201,7 +201,7 @@ export class UserService {
     const formData: FormData = new FormData();
     formData.append('filename', String(this.login));
     formData.append('avatar', file);
-    const url: string = `http://${window.location.host}:3000/cb-user/avatar/${file.name}`;
+    const url: string = `http://${window.location.host}:3000/cb-user/avatar/upload/${file.name}`;
     return axios
       .post(url, formData)
       .then((response: any) => {
@@ -211,4 +211,16 @@ export class UserService {
         return null;
       });
   }
+
+  async saveAvatar() {
+    const url: string = `http://${window.location.host}:3000/cb-user/avatar/save/${this.login}`;
+    return axios.post(url, { login: this.login })
+    .then((response: any) => {
+      return response.data;
+    })
+    .catch((error: any) => {
+      return null;
+    });
+  }
+
 }

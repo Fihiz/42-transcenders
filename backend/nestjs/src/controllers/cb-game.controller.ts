@@ -16,11 +16,6 @@ export class GameController {
 
 	constructor(private gameService: GameService) {}
 
-	// @Post('push')
-	// async push(@Body('data') createPartyDto: CreatePartyDto) {
-	// 	return this.gameService.change(createPartyDto);
-	// }
-
 	@Get('types')
 	async getTypesOfGame(@Response() res): Promise<GameTypeEntity[]> | undefined {
 		const task: GameTypeEntity[] = await this.gameService.getAllTypesOfGame();

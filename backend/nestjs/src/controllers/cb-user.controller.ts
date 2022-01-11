@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Response, Request } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Response, Request } from '@nestjs/common';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { UserService } from 'src/services/sb-user.service';
 
@@ -6,6 +6,7 @@ import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 
+import * as fs from 'fs';
 
 const editFileName = (req, file, callback) => {
     const name = req.body.filename;
@@ -37,27 +38,45 @@ export class UserController {
     // will be used later to update our user
 
     // @Post('avatar/:login')
-    @Post('avatar/:file')
+    @Post('avatar/upload/:file')
     @UseInterceptors(
     FileInterceptor('avatar', {
         storage:
         diskStorage({
-            destination: 'src/assets/avatar',
+            destination: 'src/assets/avatar/upload',
             filename: editFileName,
         }),
         fileFilter: checkFileExtension,
     }),
     )
-    // uploadAvatar(@Param('login') login: string, @UploadedFile() file, @Response() res)
     uploadAvatar(@UploadedFile() file, @Response() res) {
-        // TODO = If user exist alors on appel updateAvatar
-        const url = `http://localhost:3000/cb-user/avatar/${file.filename}`;
+        console.log();
+        const url = `http://localhost:3000/cb-user/avatar/upload/${file.filename}`;
         res.send(url);
         return url;
     }
 
-    @Get('avatar/:filename')
+    @Post('avatar/save/:login')
+    saveAvatar(@Body('login') login: string) {
+        const oldPath = `src/assets/avatar/upload/${login}.jpg`;
+        const newPath = `src/assets/avatar/${login}.jpg`;
+        fs.rename(oldPath, newPath, (error) => {
+            if (error) {
+                console.log('Uploaded file moove has failed...');
+                throw error;
+            }
+            console.log('Uploaded file moove has succeded!');
+        })
+        this.userService.updateAvatar(login);
+    }
+
+    @Get('avatar/upload/:filename')
     getUploadedAvatar(@Param('filename') filename, @Response() res) {
+        res.sendFile(filename, { root: './src/assets/avatar/upload' });
+    }
+
+    @Get('avatar/:filename')
+    getSaveAvatar(@Param('filename') filename, @Response() res) {
         res.sendFile(filename, { root: './src/assets/avatar' });
     }
 
