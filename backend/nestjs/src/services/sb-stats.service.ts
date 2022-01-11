@@ -61,6 +61,59 @@ export class StatsService {
       res.send('error');
     }
 
+    async updateAchievementsOf(login: string) {
+        const userStats: StatEntity = await this.getStatsByLogin(login);
+        if (!userStats)
+            return ;
+        const achievementNotOwned: AchievementEntity[] = await this.achievements.query(`SELECT * FROM "t_achievement" WHERE "achievement_id" NOT IN (SELECT "achievement_id" FROM "t_award" WHERE login = '${login}');`);
+        achievementNotOwned.forEach((achievement: AchievementEntity) => {
+            if (achievement.type === "ball hit")
+            {
+                if (achievement.value <= userStats.ball_hit)
+                {
+                    this.awards.insert({
+                        login: login,
+                        achievement_id: achievement.achievement_id,
+                        date: new Date(),
+                    })
+                }
+            }
+            else if (achievement.type === "victory")
+            {
+                if (achievement.value <= userStats.victory)
+                {
+                    this.awards.insert({
+                        login: login,
+                        achievement_id: achievement.achievement_id,
+                        date: new Date(),
+                    })
+                }
+            }
+            else if (achievement.type === "adversary points")
+            {
+                if (achievement.value <= userStats.adversary_points)
+                {
+                    this.awards.insert({
+                        login: login,
+                        achievement_id: achievement.achievement_id,
+                        date: new Date(),
+                    })
+                }
+            }
+            else if (achievement.type === "points for ladder")
+            {
+                if (achievement.value <= userStats.points_for_ladder)
+                {
+                    this.awards.insert({
+                        login: login,
+                        achievement_id: achievement.achievement_id,
+                        date: new Date(),
+                    })
+                }
+            }
+        })
+    }
+
     async registerStatsInDatabase(data: CreateUserDto, res) {
         try {
             const isStatsFilled = await this.createStat(data.login);
@@ -87,6 +140,17 @@ export class StatsService {
             console.log(`details: ${error}`);
             return undefined;
         })
+    }
+
+    async getAmountOfAchievement(): Promise<number | undefined> {
+        return (await this.achievements.count());
+    }
+
+    async getAchievementsByLogin(login: string): Promise<AwardEntity[]> | undefined {
+        return (await this.awards.find({
+            relations: ["achievement_id"],
+            where: { login: login },
+        }));
     }
 
     async getStatsByLogin(login: string): Promise<StatEntity> | undefined {

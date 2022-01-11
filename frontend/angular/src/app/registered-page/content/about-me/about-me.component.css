@@ -1,10 +1,15 @@
 .padding-text {
     padding-top: 3%;
   }
+
+  .input-group {
+    margin: 5px;
+    justify-content: center;
+  }
   
   .rounded-circle {
-    width: 50px;
-    height: 50px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
     margin: 3%;
   }
@@ -14,3 +19,10 @@
     font-size: 25px;
   }
   
+  #input {
+    width: 20%;
+  }
+
+  h6 {
+    margin: 5px;
+  }

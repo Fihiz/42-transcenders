@@ -29,7 +29,7 @@ export class AuthController {
             }
             else {
                 allUserInfos.avatar = allUserInfos.avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-                resp.send({data: {...allUserInfos, points_for_ladder: allUserStats.points_for_ladder.toString().padStart(6, "0")}, isFound: 'found'});
+                resp.send({data: {...allUserInfos, points_for_ladder: allUserStats.points_for_ladder}, isFound: 'found'});
             }
           }
         catch (error) {
@@ -41,6 +41,8 @@ export class AuthController {
 
     @Post('registerData')
     async registerdata(@Req() req, @Res() res, @Body('data') createUserDto: CreateUserDto) {
+        if (await this.userService.findPseudo(createUserDto.pseudo, undefined))
+            res.send('pseudo already exists');
         const areDataRegistered = await this.userService.registerInfosInDatabase(createUserDto, res);
         const areStatsRegistered = await this.statsService.registerStatsInDatabase(createUserDto, res);
         if (areDataRegistered === areStatsRegistered &&

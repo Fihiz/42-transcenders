@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Response, Request } from '@nestjs/common';
+import { Controller, Get, Post, Param, Response, Request, Body } from '@nestjs/common';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { UserService } from 'src/services/sb-user.service';
 
@@ -34,9 +34,21 @@ export class UserController {
 		return profile;
 	}
 
-    // will be used later to update our user
+    @Get('pseudo/:pseudo')
+    async isPseudoAvailable(@Param('pseudo') pseudo: string, @Response() res, @Request() req) {
+        const result: boolean = await this.userService.findPseudo(pseudo, req.query.login);
+        res.send(result);
+    }
 
-    // @Post('avatar/:login')
+    @Post('profile/:login')
+    async updateProfile(@Param('login') login: string, @Response() res, @Request() req, @Body('data') data) {
+        const response = await this.userService.updateUser(login, data);
+        if (response.affected === 1)
+            res.send("Success");
+        else
+            res.send("Failure");
+    }
+
     @Post('avatar/:file')
     @UseInterceptors(
     FileInterceptor('avatar', {

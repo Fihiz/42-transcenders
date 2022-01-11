@@ -1,6 +1,5 @@
 canvas {
-  width: 80%;
-  max-width: 800px;
+  width: 100%;
   display: block;
   margin: 0px auto;
   background: rgb(187, 101, 101);
