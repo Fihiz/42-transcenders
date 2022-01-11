@@ -14,22 +14,73 @@ import { StatsService } from './sb-stats.service';
 export class GameService {
 
   	games: Game[];
+	sets: GameTypeEntity[] = [
+		{
+			game_type_id: 0,
+			type: "classic",
+			board_color: "#000000",
+			ball_size: 16,
+			ball_color: "#FFFFFF",
+			ball_speed: 6,
+			ball_desc: "big / slow",
+			racket1_size: 10,
+			racket1_color: "#FFFFFF",
+			racket1_speed: 8,
+			racket1_desc: "medium / medium",
+			racket2_size: 10,
+			racket2_color: "#FFFFFF",
+			racket2_speed: 8,
+			racket2_desc: "medium / medium",
+			// '#FFFFFF'
+			// '#FFFFFF'
+			// 'rgba(150,150,150,0.5)'),
+		},
+		{
+			game_type_id: 0,
+			type: "special",
+			board_color: "#FFFFFF",
+			ball_size: 8,
+			ball_color: "#000000",
+			ball_speed: 12,
+			ball_desc: "small / fast",
+			racket1_size: 6,
+			racket1_color: "#00FFFF",
+			racket1_speed: 20,
+			racket1_desc: "small / fast++",
+			racket2_size: 15,
+			racket2_color: "#AA0000",
+			racket2_speed: 2,
+			racket2_desc: "big / very slow",
+			// '#000000',
+			// '#000000',
+			// 'rgba(50, 50, 50, 0.5)');
+		},
+		{
+			game_type_id: 0,
+			type: "our",
+			board_color: "figma",
+			ball_size: 16,
+			ball_color: "#43B6B2",
+			ball_speed: 10,
+			ball_desc: "big / medium",
+			racket1_size: 10,
+			racket1_color: "#F9C53F",
+			racket1_speed: 14,
+			racket1_desc: "medium / fast",
+			racket2_size: 10,
+			racket2_color: "#F97D64",
+			racket2_speed: 14,
+			racket2_desc: "medium / fast",
+			// '#528FAC'
+			// '#D3E3E6'
+			// 'rgba(50, 68, 72, 0.5)'),
+		},
+	]
 
 	constructor(@InjectRepository(GameTypeEntity) private gameTypes: Repository<GameTypeEntity>, @InjectRepository(PongGameEntity) private pongGames: Repository<PongGameEntity>, private statsService : StatsService) {
 		this.games = [];
 		this.OnInit();
 	}
-
-	// async change(data: CreatePartyDto) {
-	// 	const partyRepository = getRepository(PongGameEntity);
-	// 	return partyRepository.update( 13, { game_status: data.login as status })
-	// 	.then((response) => {
-	// 		return 1;
-	// 	})
-	// 	.catch((error) => {
-	// 		return 0;
-	// 	})
-	// }
 
 	async OnInit() {
 		const parties: PongGameEntity[] = await this.getAllPartiesInProgress();
@@ -245,8 +296,45 @@ export class GameService {
 		});
 	}
 	
-	
+	async createTypeOfGame(type: string) {
+		let index: number = -1;
+		if (type === "classic")
+			index = 0;
+		else if (type === "special")
+			index = 1;
+		else if (type === "our")
+			index = 2;
+		else
+			return;
+		const data: GameTypeEntity = this.sets[index];
+		const typeRepository = await getRepository(GameTypeEntity);
+		return typeRepository.insert(data)
+		.then((response) => {
+			return true;
+		})
+		.catch((error) => {
+			return false;
+		})
+	}
+
+	async initTypeOfGame() {
+		const classic = await this.searchOneTypeOfGame("classic");
+		if (classic === undefined)
+			if (await this.createTypeOfGame("classic") === false)
+				return false;
+		const special = await this.searchOneTypeOfGame("special");
+		if (special === undefined)
+			if (await this.createTypeOfGame("special") === false)
+				return false;
+		const our = await this.searchOneTypeOfGame("our");
+		if (our === undefined)
+			if (await this.createTypeOfGame("our") === false)
+				return false;
+	}
+
 	async getAllTypesOfGame(): Promise<GameTypeEntity[]> | undefined {
+		if (await this.initTypeOfGame() === false)
+			console.log("Error initiatialization of game types.");
 		const typeRepository = await getRepository(GameTypeEntity);
 		return typeRepository.find({
 			order: { game_type_id: "ASC" }
@@ -358,20 +446,6 @@ export class GameService {
 			return undefined;
 		})
 	}
-
-	// async deletePartyById(id: number): Promise<any> | undefined {
-	// 	const pongRepository = getRepository(PongGameEntity);
-	// 	return pongRepository.delete(id)
-	// 	.then((response) => {
-	// 		console.log(`Delete party by id has succeeded.`);
-	// 		return true;
-	// 	})
-	// 	.catch((error) => {
-	// 		console.log(`Delete party by id has failed...`);
-	// 		console.log(`details: ${error}`);
-	// 		return false;
-	// 	})
-	// }
 
 	async createMatchParty(player1: string, player2: string, type: GameTypeEntity): Promise<number> | undefined {
 		const pongRepository = getRepository(PongGameEntity);
@@ -580,7 +654,6 @@ class Ball {
 		this.y += this.dy * this.speed;
 	}
 }
-
 
 class Paddle {
 
