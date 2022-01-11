@@ -26,3 +26,184 @@
   h6 {
     margin: 5px;
   }
+
+
+  /* FRIENDS */
+
+  /* NEW TEST DROPDOWN */
+
+.dropdown-menu.show {
+  background: #ffffff;
+}
+
+.dropdown-menu {
+  background-color: #ffffff;
+}
+
+.dropdown-menu li {
+  position: relative;
+}
+.dropdown-menu .dropdown-submenu {
+  display: none;
+  position: absolute;
+  left: 100%;
+  top: -7px;
+}
+.dropdown-menu .dropdown-submenu-left {
+  right: 100%;
+  left: auto;
+}
+.dropdown-menu > li:hover > .dropdown-submenu {
+  display: block;
+}
+
+a:hover {
+  background-color: #d2e3e6;
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  background-color: #43b6b2;
+  border: #43b6b2;
+  color: white;
+}
+
+#dropdownMenuButton {
+  background-color: #43b6b2;
+  border: #43b6b2;
+  color: white;
+}
+
+/* Display users list */
+
+/* .viewUsers {
+  max-height: 150px;
+  overflow-y: auto; */
+/* min-width: 200px; */
+/* } */
+
+/* ROWS */
+
+.container {
+  height: 100%;
+}
+
+.row-top {
+  min-height: 650px;
+  max-height: 650px;
+  overflow-y: auto;
+}
+
+.row-bottom {
+  min-height: 350px;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.row {
+  margin-left: 0%;
+  margin-right: 0%;
+  /* overflow-y: auto; to scroll */
+}
+
+/* STYLE */
+
+h1,
+h5 {
+  text-align: center;
+  font-family: "Secular One", sans-serif;
+  color: #528fac;
+}
+
+h4 {
+  font-family: "Secular One", sans-serif;
+  color: #528fac;
+}
+
+h6 {
+  text-align: center;
+  font-family: "Secular One", sans-serif;
+}
+
+p {
+  margin: 15px;
+}
+
+.rounded-circle {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin: 3%;
+}
+
+.rounded-circle-sm {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  margin: 3%;
+  border-radius: 50%;
+}
+
+.card {
+  margin: 10px;
+}
+
+/* .badge {
+  font-size: 7px;
+} */
+
+.badge-success {
+  background-color: #43b6b2;
+}
+
+.style-txt {
+  font-size: 12px;
+  padding: 8px;
+  text-align: justify;
+}
+
+.viewMembersRoom {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+
+
+/* NOW */
+
+.btn {
+  color: white;
+  background-color: #43b6b2;
+}
+
+#uploaded-avatar {
+  color: #324448;
+  /* background-color: #43b6b2; */
+}
+
+#uploaded-avatar {
+  color: #324448;
+  /* background-color: #43b6b2; */
+}
+
+/* .left {
+  float: left;
+} */
+
+.input-group-text {
+  color: white;
+  background-color: #43b6b2;;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  /* border: 1px solid #ccc; */
+  /* color:#c8dee2; */
+  color:#43b6b2;
+  display: inline-block;
+  /* padding: 6px 12px; */
+  cursor: pointer;
+}

@@ -1,5 +1,197 @@
+<div class="container">
+  <h1>ABOUT ME</h1>
+  <br>
+  <br>
+  <h4>My information</h4>
+  <!-- MY FAVORITE FRIENDS -->
+
+<div *ngIf="profile">
+  <div class="card mb-3">
+    <div class="text-center">
+      <div class="card-body">
+        <h5 class="card-title">Set my public information</h5>
+
+
+        <form [formGroup]="profileForm">
+          <h6 id="Oops something went wrong updating your profile" class="d-none" style="color:red;"><em>Oops something went wrong updating your profile</em></h6>
+          <h6 id="Success" class="d-none" style="color:rgb(0, 255, 64);"><em>Profile update successfull</em></h6>
+          
+
+
+
+          <!-- avatar -->
+          <div class="form-group">
+            <label for="avatar" class="col-form-label title-form"
+              ><h6>My avatar</h6></label
+            >
+      
+            <div>
+              <div class="btn" (click)="decrement()">&lt;</div>
+              <img
+                id="avatar"
+                class="rounded-circle"
+                alt="{{ userService.avatarList[userService.i].alt }}"
+                src="{{ userService.avatarList[userService.i].url }}"
+              />
+              <input
+                class="d-none"
+                type="text"
+                id="avatarUrl"
+                formControlName="avatarUrl"
+                value="{{ userService.avatarList[userService.i].url }}"
+              />
+              <div class="btn" (click)="increment()">&gt;</div>
+            </div>
+            <div>
+
+              <!-- upload, need to see if diplay: none and label adding doesn't corrupt the typescript -->
+              <label class="custom-file-upload">
+              <input
+                type="file"
+                class="form-control"
+                id="uploaded-avatar"
+                name="avatar"
+                accept="image/jpeg"
+                (change)="userService.inputFile($event)"
+              />
+              <i class="fa fa-cloud-upload fa-3x"></i>
+              <div class="left">
+                <h6><em>Only .jpeg format accepted</em></h6>
+              </div>
+              </label>
+              <!-- /upload -->
+
+
+
+            </div>
+          </div>
+          <br>
+          <!-- /avatar -->
+
+
+          <!-- login -->
+          <!-- <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Login</span>
+            </div>
+            <input
+              id="login"
+              value={{profile.login}}
+              disabled>
+          </div> -->
+          <!-- /login -->
+      
+          <!-- pseudo -->
+          <h6>My pseudo</h6>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Pseudo</span>
+            </div>
+            <input
+              id="pseudo"
+              type="text"
+              maxlength="20"
+              class="form-control"
+              formControlName="pseudo"
+              pattern="[A-Za-z0-9]+"
+            />
+          </div>
+          <h6 id="pseudo already exists" class="d-none" style="color:red;"><em>This pseudo already exists</em></h6>
+          <br>
+          <!-- /pseudo -->
+
+          <!-- bio -->
+          <h6>My bio</h6>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Bio</span>
+            </div>
+            <textarea class="form-control"
+            id="bio"
+            type="text"
+            maxlength="200"
+            formControlName="bio"></textarea>
+          </div>
+          <br>
+          <!-- /bio -->
+        </form>
+
+
+        <!-- save changes -->
+        <button
+          id="submitId"
+          type="button"
+          [disabled]="!profileForm.valid"
+          class="btn"
+          (click)="saveChanges()"
+        >
+          Save changes
+        </button>
+        <div class="padding-text">
+          <h6><em>Complete all the form fields to enable the button</em></h6>
+        </div>
+      
+        <h6>
+          <em>Form Status: {{ profileForm.status }}</em>
+        </h6>
+        <!-- /save changes -->
+
+      </div>      
+
+    </div>
+
+    <div class="card-body">
+      <h5 class="card-title">My achievements</h5>
+       <!-- achievements: make it scrollable ? -->
+       <div>
+        <h6>My achievements: {{ unlockedAchievements }} / {{ totalNumberOfAchievements }}</h6>
+        <table *ngIf="unlockedAchievements">
+          <tr *ngFor="let achievement of achievements">
+            <td>
+              <img src="{{ achievement.icon }}">
+            </td>
+            <td>
+              <p>
+                {{ achievement.detail }}
+              </p>
+            </td>
+            <td>
+                {{ achievement.date }}
+            </td>
+          </tr>
+        </table>
+      </div>
+      <!-- /achievements -->
+      <!-- <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+    </div>
+  </div>
+</div>
+
+<!-- should be a ng-template? -->
+<div *ngIf="!found" class="text-center"><span class="badge badge-warning">No user found</span></div>
+<br>
+<br>
+
+
+<!-- 2FA -->
+<h4>Set a two factor authentication (2FA)</h4>
 <app-double-auth></app-double-auth>
-<div *ngIf="profile" style="text-align: center">
+<!-- /2FA -->
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!-- ROMAIN -->
+
+
+<!-- <div *ngIf="profile" style="text-align: center">
 
   <form [formGroup]="profileForm">
     <h6 id="Oops something went wrong updating your profile" class="d-none" style="color:red;"><em>Oops something went wrong updating your profile</em></h6>
@@ -110,4 +302,64 @@
     </table>
   </div>
 </div>
-<div *ngIf="!found">Not found</div>
+<div *ngIf="!found">Not found</div> -->
+<!-- /ROMAIN -->
+
+
+
+
+<!-- <div class="row-top">
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+      <div class="col lg-20">
+        <div class="text-center">
+        <div class="card">
+          <div class="text-center">
+            <img
+              src="../../../../assets/profile-pictures/nigoncal.jpeg"
+              class="card-img-top rounded-circle"
+              alt="..."
+            />
+            <div class="card-body">
+              <h5 class="card-title">nigoncal</h5>
+              <h6>Online</h6>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <span class="badge badge-pill badge-success">Bio</span>
+                  <div class="style-txt">
+                    text texttext texttexttexttexttexttexttexttexttexttext
+                  </div>
+                </li>
+                <li class="list-group-item">
+                  <span class="badge badge-pill badge-success">Stats</span>
+                  <div class="style-txt">
+                    Like any other social media site Facebook has length
+                    requirements when it comes to writing on the wall,
+                    providing status, messaging and commenting. Understanding
+                    how many characters you can use, enab.
+                  </div>
+                </li>
+                <li class="list-group-item">
+                  <span class="badge badge-pill badge-success"
+                    >Achievements</span
+                  >
+                  <div class="achievements">
+                    <img
+                      src="../../../../assets/achievements/achievement1.png"
+                      class="rounded-circle-sm"
+                      alt="..."
+                    />
+                    <img
+                      src="../../../../assets/achievements/achievement4.png"
+                      class="rounded-circle-sm"
+                      alt="..."
+                    />
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+</div> -->
