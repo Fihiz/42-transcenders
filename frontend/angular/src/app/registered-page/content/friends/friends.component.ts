@@ -14,7 +14,9 @@ export class FriendsComponent implements OnInit {
     private socket: Socket,
     private userService: UserService,
     public global: GlobalService
-  ) {}
+  ) {
+    console.log(global.allUserStatus);
+  }
 
   allMyFriends: Array<any> = [];
 
@@ -50,15 +52,15 @@ export class FriendsComponent implements OnInit {
 
   async getAllMyRelations() {
     // FOR FRIENDS
-    // const relations = await this.userService.getAllMyrelations(
-    //   this.userService.user.login
-    // );
-    // this.allMyRelations = relations;
-    // console.log(relations);
+    const relations = await this.userService.getAllMyrelations(
+      this.userService.user.login
+    );
+    this.allMyRelations = relations;
+    console.log(relations);
   }
 
-  ngOnInit(): void {
-    this.getAllMyRelations();
+  async ngOnInit() {
+    await this.getAllMyRelations();
     this.socket.on('allUsersInApp', (data: any) => {
       this.allUsersInfo = [];
       this.allUsersInfo = data;

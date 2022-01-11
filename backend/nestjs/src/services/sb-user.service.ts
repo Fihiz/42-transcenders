@@ -111,40 +111,20 @@ export class UserService {
   }
 
   // FOR FRIENDS
-  // async getStatsAndAchievementsFromRelation(relations: any[]) : Promise<any> {
-  //   await relations.forEach(async (relation) => {
-  //     relation.stats = await getRepository(StatEntity).findOne({
-  //       where: {login: relation.user2.login}
-  //     });
-  //     relation.achievements = await getRepository(AwardEntity).findOne({
-  //       relations: ["achievement_id"],
-  //       where: {login: relation.user2.login},
-  //     });
-  //     console.log("relation : ", relations);
-  //   });
-  //   return relations;
-  // }
 
-  // async findAllrelationsOf(login: string) : Promise<any> {
-  //   // const relations : any[] = await 
-  //   return this.relation
-  //   .find({
-  //     relations: ["user2"],
-  //     where: {user1: login},
-  //   }).then((relations) => {
-  //     console.log(relations);
-  //     return (relations);
-  //   }).catch((error) => {
-  //     console.log(error);
-  //     return undefined
-  //   });
-  //   ;
-
-
-  //   // const returnn = await this.getStatsAndAchievementsFromRelation(relations);
-  //   // console.log("test", relations);
-  //   // return (relations);
-  // }
+  async findAllrelationsOf(login: string) : Promise<any> {
+    // const relations : any[] = await
+    const obj: Array<{relation: RelationEntity, stat: StatEntity, achievement: AwardEntity}> = [];
+    const relations = await this.relation.find({relations: ["user2"],where: {user1: login}});
+    for (const relation of relations) {
+      const stats = await getRepository(StatEntity).findOne({where: {login: relation.user2}});
+      const achievements = await getRepository(AwardEntity).findOne({relations: ["achievement_id"],
+      where: {login: relation.user2}});
+      obj.push({relation: relation, stat: stats, achievement: achievements});
+    }
+    console.log('obj = ', obj);
+    return (obj);
+  }
 
   // async findIfAlreadyFriend(login: string, loginFriend: string) : Promise<RelationEntity> {
   //   const user : RelationEntity = await getRepository(RelationEntity)
