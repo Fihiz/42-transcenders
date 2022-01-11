@@ -14,7 +14,7 @@ import axios from 'axios';
 })
 export class ChatComponent implements OnInit {
   convMessages: Array<if_message> = [];
-  membersPseudo: Array<{login: string, pseudo: string}> = [];
+  membersPseudo: Array<{ login: string; pseudo: string }> = [];
   users: Array<string> = new Array();
   currentConv: if_conversation = {
     avatar: '',
@@ -73,7 +73,6 @@ export class ChatComponent implements OnInit {
       document.getElementById('search-user')
     ))?.value;
     if (selectedUser) {
-
       if (selectedUser === this.global.login) {
         alert("Can't create a room with yourself");
         return;
@@ -153,11 +152,19 @@ export class ChatComponent implements OnInit {
       value,
       this.listConv,
       this.currentConv
-      );
-    const tmpMembers = (await axios.get('http://127.0.0.1:3000/cb-chat/getMembers', {params: this.currentConv.members})).data;
+    );
+    const tmpMembers = (
+      await axios.get(
+        `http://${window.location.host}:3000/cb-chat/getMembers`,
+        { params: this.currentConv.members }
+      )
+    ).data;
     let i = -1;
     while (++i < tmpMembers.length)
-      this.membersPseudo.push({login: this.currentConv.members[i], pseudo: tmpMembers[i]});
+      this.membersPseudo.push({
+        login: this.currentConv.members[i],
+        pseudo: tmpMembers[i],
+      });
     this.emission = this.chatService.emission(
       'getMessages',
       this.currentConv,
@@ -233,7 +240,12 @@ export class ChatComponent implements OnInit {
           },
         }
       );
-      if (isMute.data !== 'ok') alert(isMute.data === 'ko' ? 'you don t have the rights or the user is not in the room' : isMute.data);
+      if (isMute.data !== 'ok')
+        alert(
+          isMute.data === 'ko'
+            ? 'you don t have the rights or the user is not in the room'
+            : isMute.data
+        );
     }
   }
 

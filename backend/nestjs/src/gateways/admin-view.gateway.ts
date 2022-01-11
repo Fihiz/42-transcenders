@@ -32,12 +32,12 @@ server;
 	}
 
   @SubscribeMessage('GiveAllConv')
-  async getAllConvForSa() {
+  async getAllConvForSa(@MessageBody() name) {
     // this.server.to(GlobalDataService.loginIdMap.get('pgoudet')?.sockets.map((socket) => socket.id ))?.emit('allConversationsSA', await this.adminService.findAllConvOfDb());
     const chattersRoles = await this.adminService.getChattersAndRoles();
     const convs = await this.adminService.findAllConvOfDb();
     const final = [convs, chattersRoles];
-    this.server.to(GlobalDataService.loginIdMap.get('pgoudet')?.sockets.map((socket) => socket.id ))?.emit('allConversationsSA', final);
+    this.server.to(GlobalDataService.loginIdMap.get(name)?.sockets.map((socket) => socket.id ))?.emit('allConversationsSA', final);
   }
 
   @SubscribeMessage('deleteRoom')

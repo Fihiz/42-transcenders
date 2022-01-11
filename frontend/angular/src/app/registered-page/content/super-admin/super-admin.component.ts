@@ -14,68 +14,74 @@ import { UserService } from 'src/app/services/sf-user.service';
 export class SuperAdminComponent implements OnInit {
   allUsersInfo: Array<any> = [];
   // allConversations: Map<if_conversation, Array<{login: string, role: string}>> = new Map();
-  listConv: Array<{conv: if_conversation, members: Array<{login: string, role: string}>}> = [];
+  listConv: Array<{
+    conv: if_conversation;
+    members: Array<{ login: string; role: string }>;
+  }> = [];
 
+  constructor(
+    private socket: Socket,
+    private userService: UserService,
+    public global: GlobalService
+  ) {}
 
-  constructor(private socket: Socket, private userService: UserService, public global: GlobalService) {}
-
- async onSetOwner(conv: if_conversation, login: string) {
-  const repsonse = await axios.get(
-    `http://${window.location.host}:3000/cb-chat/newOwner`,
-    {
-      params: {
-        newAdmin: login,
-        requester: 'superadmin',
-        conv_id: conv.conv_id,
-      },
-    }
-  );
-  if (repsonse.data === 'ok') {
-    alert('ok');
+  async onSetOwner(conv: if_conversation, login: string) {
+    const repsonse = await axios.get(
+      `http://${window.location.host}:3000/cb-chat/newOwner`,
+      {
+        params: {
+          newAdmin: login,
+          requester: 'superadmin',
+          conv_id: conv.conv_id,
+        },
+      }
+    );
+    // if (repsonse.data === 'ok') {
+    //   alert('ok');
+    // }
   }
- }
 
- async onSetAdmin(conv: if_conversation, login: string) {
-  const repsonse = await axios.get(
-    `http://${window.location.host}:3000/cb-chat/newAdmin`,
-    {
-      params: {
-        newAdmin: login,
-        requester: 'superadmin',
-        conv_id: conv.conv_id,
-      },
-    }
-  );
-  if (repsonse.data === 'ok') {
-    alert('ok');
-  }
+  async onSetAdmin(conv: if_conversation, login: string) {
+    const repsonse = await axios.get(
+      `http://${window.location.host}:3000/cb-chat/newAdmin`,
+      {
+        params: {
+          newAdmin: login,
+          requester: 'superadmin',
+          conv_id: conv.conv_id,
+        },
+      }
+    );
+    // if (repsonse.data === 'ok') {
+    //   alert('ok');
+    // }
     // console.log('convName = ', conv.name, 'login = ', login);
- }
-
- async onSetChatter(conv: if_conversation, login: string) {
-  const repsonse = await axios.get(
-    `http://${window.location.host}:3000/cb-chat/newChatter`,
-    {
-      params: {
-        newAdmin: login,
-        requester: 'superadmin',
-        conv_id: conv.conv_id,
-      },
-    }
-  );
-  if (repsonse.data === 'ok') {
-    alert('ok');
   }
- }
 
- onDelete(conv: if_conversation) {
-   this.socket.emit('deleteRoom', conv);
-  console.log('the room is = ', conv);
- }
+  async onSetChatter(conv: if_conversation, login: string) {
+    const repsonse = await axios.get(
+      `http://${window.location.host}:3000/cb-chat/newChatter`,
+      {
+        params: {
+          newAdmin: login,
+          requester: 'superadmin',
+          conv_id: conv.conv_id,
+        },
+      }
+    );
+    // if (repsonse.data === 'ok') {
+    //   alert('ok');
+    // }
+  }
+
+  onDelete(conv: if_conversation) {
+    this.socket.emit('deleteRoom', conv);
+    console.log('the room is = ', conv);
+  }
 
   onGetAllUsersList() {
     this.socket.emit('allUsersInApp');
-    this.socket.emit('GiveAllConv');
+    this.socket.emit('GiveAllConv', this.global.login);
   }
 
   async onSetNewRole(currentLogin: string, newRole: string) {
@@ -106,7 +112,10 @@ export class SuperAdminComponent implements OnInit {
     this.socket.on('allConversationsSA', (data: any) => {
       this.listConv = [];
       console.log('SA all conv=', data);
-      const tmp: Map<string, Array<{login: string, role: string}>> = new Map();
+      const tmp: Map<
+        string,
+        Array<{ login: string; role: string }>
+      > = new Map();
       let i = -1;
       while (++i < data[0].length) {
         const members = [];
@@ -114,7 +123,7 @@ export class SuperAdminComponent implements OnInit {
           members.push(member);
         }
         console.log(members);
-        this.listConv.push({conv: data[0][i], members});
+        this.listConv.push({ conv: data[0][i], members });
       }
       console.log('this.listConv = ', this.listConv);
     });

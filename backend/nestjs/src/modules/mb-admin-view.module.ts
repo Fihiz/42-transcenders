@@ -12,10 +12,11 @@ import { ChatService } from 'src/services/sb-chat.service';
 import { MessageEntity } from 'src/entities/eb-message.entity';
 import { ConvService } from 'src/services/sb-conv.service';
 import { ChatterService } from 'src/services/sb-chatter.service';
+import { RelationEntity } from 'src/entities/eb-relation.entity';
 
 
 @Module({
-    imports: [Repository, TypeOrmModule.forFeature([ WebAppUserEntity, ApiUserDataEntity, ConversationEntity, ChatterEntity, MessageEntity])],
+    imports: [Repository, TypeOrmModule.forFeature([ RelationEntity, WebAppUserEntity, ApiUserDataEntity, ConversationEntity, ChatterEntity, MessageEntity])],
     providers: [ AdminViewGateway, UserService, AdminService, ChatService, ConvService, ChatterService],
     controllers: [],
 })
