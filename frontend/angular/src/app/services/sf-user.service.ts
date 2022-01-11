@@ -81,7 +81,7 @@ export class UserService {
 
   // FOR FRIENDS
   async getAllMyrelations(login: string): Promise<any> {
-  // console.log('We are in checkIfAlreadyFriend', data);
+  // console.log('We are in checkIfAlreadyRelation', data);
   const resp = (
     await axios.get(
       `http://${window.location.host}:3000/cb-user/getAllMyrelations/${login}`
@@ -90,16 +90,16 @@ export class UserService {
   return resp;
   }
 
-  // async checkIfAlreadyFriend(data: object): Promise<Boolean> {
-  //   console.log('We are in checkIfAlreadyFriend', data);
-  //   const resp = (
-  //     await axios.get(
-  //       `http://${window.location.host}:3000/cb-user/checkIfAlreadyFriend`,
-  //       { params: data }
-  //     )
-  //   ).data;
-  //   return resp;
-  // }
+  async checkIfAlreadyRelation(data: object): Promise<Boolean> {
+    console.log('We are in checkIfAlreadyRelation', data);
+    const resp = (
+      await axios.get(
+        `http://${window.location.host}:3000/cb-user/checkIfAlreadyRelation`,
+        { params: data }
+      )
+    ).data;
+    return resp;
+  }
 
   async adminChangeUserRole(data: object) {
     await axios.post(

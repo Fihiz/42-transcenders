@@ -6,7 +6,6 @@
     <div class="row row-cols-1 row-cols-md-2 g-4">
       <!-- an user -->
       <span *ngFor="let relation of allMyFriends">
-        <!-- <span *ngIf="relation.relation.friendship === 'friend'; else notFriendAnymore"> -->
           <div class="col">
             <div class="card">
               <div class="text-center">
@@ -72,8 +71,6 @@
               </div>
             </div>
           </div>
-        <!-- </span>
-        <ng-template #notFriendAnymore> <h2>ici</h2></ng-template> -->
       </span>
       <!-- /an user -->
     </div>

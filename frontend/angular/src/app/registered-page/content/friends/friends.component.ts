@@ -28,31 +28,25 @@ export class FriendsComponent implements OnInit {
   }
 
   async onAddFriend(newFriendLogin: string, friendship: string) {
-    // const data = {
-    //   currentLogin: this.global.login,
-    //   newFriendLogin: newFriendLogin,
-    //   friendship: friendship,
-    // };
-    // // mettre dans une reponse
-    // // Avant de faire insert, faire un get sur newFriendLogin pour check si deja existant (violation case)
-    // if (!(await this.userService.checkIfAlreadyFriend(data)))
-    //   await this.userService.addNewFriend(data);
-    // console.log(data.currentLogin, data.newFriendLogin, data.friendship);
-    // // si la reponse est bonne
-    // // mettre a jour allUserInfo avec l entity updated
-    // this.socket.emit('getNewFriendInfo', data.newFriendLogin);
+    const data = {
+      currentLogin: this.global.login,
+      newFriendLogin: newFriendLogin,
+      friendship: friendship,
+    };
+    // mettre dans une reponse
+    // Avant de faire insert, faire un get sur newFriendLogin pour check si deja existant (violation case)
+    if (!(await this.userService.checkIfAlreadyRelation(data)))
+    {
+      console.log('No relation yet, need to post');
+      await this.userService.addNewFriend(data);
+    }
+    console.log(data.currentLogin, data.newFriendLogin, data.friendship);
+    this.getAllMyRelations();
   }
-
-  // getAllMyfriends() {
-  //   console.log('COUCOUCOUCOUCOCU', this.allMyFriends);
-  // for (let i = 0; i < this.allMyFriends.length; i++) {
-  //   console.log('EMIT FOR: ', this.allMyFriends[i].login);
-  //   this.socket.emit('getNewFriendInfo', this.allMyFriends[i].login);
-  // }
-  // }
 
   setMyFriends() {
     console.log('COUCOUCOUCOUCOCU', this.allMyRelations);
+    this.allMyFriends = [];
     for (let i = 0; i < this.allMyRelations.length; i++) {
       if (this.allMyRelations[i].relation.friendship === 'friend')
       {
@@ -67,6 +61,7 @@ export class FriendsComponent implements OnInit {
     const relations = await this.userService.getAllMyrelations(
       this.userService.user.login
     );
+    this.allMyRelations = [];
     this.allMyRelations = relations;
     console.log(relations);
     this.setMyFriends();

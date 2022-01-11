@@ -145,17 +145,17 @@ export class UserService {
     return (obj);
   }
 
-  // async findIfAlreadyFriend(login: string, loginFriend: string) : Promise<RelationEntity> {
-  //   const user : RelationEntity = await getRepository(RelationEntity)
-  //     .createQueryBuilder("userAlias")
-  //     .where("userAlias.user1 = :login", { login: login })
-  //     .andWhere("userAlias.user2 = :loginFriend", { loginFriend: loginFriend })
-  //     .getOne();
-  //   console.log(user);
-  //   if (user === undefined)
-  //     return undefined;
-  //   return (user);
-  // }
+  async findIfAlreadyFriend(login: string, loginFriend: string) : Promise<RelationEntity> {
+    const user : RelationEntity = await getRepository(RelationEntity)
+      .createQueryBuilder("userAlias")
+      .where("userAlias.user1 = :login", { login: login })
+      .andWhere("userAlias.user2 = :loginFriend", { loginFriend: loginFriend })
+      .getOne();
+    console.log('user is from user-service', user);
+    if (user === undefined)
+      return undefined;
+    return (user);
+  }
 
   // updateWebAppUser(id: number, newUser: WebAppUserEntity) {
   //   return this.webUsers.update("test", newUser);

@@ -68,25 +68,15 @@ export class UserController {
         res.send(relations);
 	}
 
-    // @Get('checkIfAlreadyFriend')
-	// async getCheckIfAlreadyFriend(@Request() req, @Response() res): Promise<any> {
-    //     console.log('data', req.query);
-	// 	const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
-    //     if (isAlreadyFriend && isAlreadyFriend.friendship === "friend")
-    //         res.send(true);
-	// 	else
-	// 	    res.send(false);
-	// }
-
-    // @Get('checkIfAlreadyFriend')
-	// async getCheckIfAlreadyFriend(@Request() req, @Response() res): Promise<any> {
-    //     console.log('data', req.query);
-	// 	const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
-    //     if (isAlreadyFriend && isAlreadyFriend.friendship === "friend")
-    //         res.send(true);
-	// 	else
-	// 	    res.send(false);
-	// }
+    @Get('checkIfAlreadyRelation')
+	async getcheckIfAlreadyRelation(@Request() req, @Response() res): Promise<any> {
+        console.log('data', req.query);
+		const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
+        if (isAlreadyFriend /*&& isAlreadyFriend.friendship === "friend"*/)
+            res.send(true);
+		else
+		    res.send(false);
+	}
   
 	@Get('profile/:login')
 	async getProfileByLogin(@Param('login') login: string, @Response() res, @Request() req): Promise<WebAppUserEntity> {
