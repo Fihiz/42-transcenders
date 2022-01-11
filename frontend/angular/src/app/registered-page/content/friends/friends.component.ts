@@ -1,94 +1,78 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Socket } from 'ngx-socket-io';
+import { GlobalService } from 'src/app/services/sf-global.service';
 import { UserService } from 'src/app/services/sf-user.service';
 
 @Component({
   selector: 'app-friends',
   templateUrl: './friends.component.html',
-  styleUrls: ['./friends.component.css']
+  styleUrls: ['./friends.component.css'],
 })
 export class FriendsComponent implements OnInit {
+  allUsersInfo: Array<any> = [];
+  constructor(
+    private socket: Socket,
+    private userService: UserService,
+    public global: GlobalService
+  ) {}
 
-  i: number = 0;
-  file: File | null = null;
-  uploaded: boolean = false;
-  profileForm = new FormGroup({
-    pseudo: new FormControl('', Validators.required),
-    bio: new FormControl('', Validators.required),
-    avatarUrl: new FormControl(this.userService.avatarList[0].url),
-  });
+  allMyFriends: Array<any> = [];
 
-  avatarList: {
-    alt: string;
-    url: string;
-  }[] = [
-    {
-      alt: 'My Intra Pic',
-      url: '../../assets/profile-pictures/myIntraPictureBlack.png',
-    },
-    {
-      alt: 'ageraud',
-      url: 'https://cdn.intra.42.fr/users/large_ageraud.jpg',
-    },
-    {
-      alt: 'sad-aude',
-      url: 'https://cdn.intra.42.fr/users/large_sad-aude.jpg',
-    },
-    {
-      alt: 'jobenass',
-      url: 'https://cdn.intra.42.fr/users/large_jobenass.jpg',
-    },
-    {
-      alt: 'lpieri',
-      url: 'https://cdn.intra.42.fr/users/large_lpieri.jpg',
-    },
-    {
-      alt: 'pgoudet',
-      url: 'https://cdn.intra.42.fr/users/large_pgoudet.jpg',
-    },
-    {
-      alt: 'rlepart',
-      url: 'https://cdn.intra.42.fr/users/large_rlepart.jpg',
-    },
-  ];
+  allMyRelations: Array<any> = [];
 
-  login: string | null = null; // may be not required if we have access to login when we select avatar for the first connection
-
-
-  constructor(public userService: UserService) {}
-
-  ngOnInit(): void {}
-
-  increment(): void {
-    this.i = (this.i + 1) % this.userService.avatarList.length;
+  onSeeAllUsers() {
+    this.socket.emit('allUsersInApp');
   }
 
-  decrement(): void {
-    this.i =
-      (this.i + this.userService.avatarList.length - 1) %
-      this.userService.avatarList.length;
+  async onAddFriend(newFriendLogin: string, friendship: string) {
+    // const data = {
+    //   currentLogin: this.global.login,
+    //   newFriendLogin: newFriendLogin,
+    //   friendship: friendship,
+    // };
+    // // mettre dans une reponse
+    // // Avant de faire insert, faire un get sur newFriendLogin pour check si deja existant (violation case)
+    // if (!(await this.userService.checkIfAlreadyFriend(data)))
+    //   await this.userService.addNewFriend(data);
+    // console.log(data.currentLogin, data.newFriendLogin, data.friendship);
+    // // si la reponse est bonne
+    // // mettre a jour allUserInfo avec l entity updated
+    // this.socket.emit('getNewFriendInfo', data.newFriendLogin);
   }
 
-  async inputFile(event: any) {
-    this.file = event.target.files[0];
-    if (this.file !== null) {
-      try {
-        const avatar: Promise<string> | null = await this.userService.uploadAvatar(this.file);
-        if (this.uploaded === true)
-          this.userService.avatarList.pop();
-        if (avatar) {
-          this.userService.avatarList.push( { alt: "uploaded_file", url: avatar + "?" + String(Math.random() * 100000) } );
-          this.uploaded = true;
-        }
-      }
-      catch(error) {
-        console.error(error);
-      }
-    }
+  // getAllMyfriends() {
+  //   console.log('COUCOUCOUCOUCOCU', this.allMyFriends);
+  // for (let i = 0; i < this.allMyFriends.length; i++) {
+  //   console.log('EMIT FOR: ', this.allMyFriends[i].login);
+  //   this.socket.emit('getNewFriendInfo', this.allMyFriends[i].login);
+  // }
+  // }
+
+  async getAllMyRelations() {
+    // FOR FRIENDS
+    // const relations = await this.userService.getAllMyrelations(
+    //   this.userService.user.login
+    // );
+    // this.allMyRelations = relations;
+    // console.log(relations);
   }
 
-  async saveAvatar() {
-    await this.userService.saveAvatar();
+  ngOnInit(): void {
+    this.getAllMyRelations();
+    this.socket.on('allUsersInApp', (data: any) => {
+      this.allUsersInfo = [];
+      this.allUsersInfo = data;
+      console.log('allUsers', this.allUsersInfo);
+    });
+    this.socket.on('aNewFriend', (data: any) => {
+      this.allMyFriends.push(data);
+      console.log('allMyFriends', this.allMyFriends);
+      // this.allUsersInfo = [];
+      // this.allUsersInfo = data;
+      // console.log('allUsers', this.allUsersInfo);
+      // console.log('allUsers', this.allUsersInfo[0]);
+      // this.listAllAvailableRooms = data;
+    });
   }
-
 }

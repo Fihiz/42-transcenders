@@ -1,8 +1,3 @@
-<link
-  href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-  rel="stylesheet"
-/>
-
 <body>
   <!-- TOP -->
   <div class="row top">
@@ -22,22 +17,25 @@
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
+            (click)="onThreeDotsClick()"
           >
             <i class="bi bi-three-dots-vertical"></i>
           </button>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <!--View rooms-->
-            <li>
-              <a class="dropdown-item">View Room &raquo; </a>
+            <!--View group rooms -->
+            <li *ngIf="listAllAvailableRooms.length > 0">
+              <a class="dropdown-item">View group rooms &raquo; </a>
               <ul class="dropdown-menu dropdown-submenu">
                 <li>
                   <div class="viewAllRooms">
-                    <span *ngFor="let room of listConv">
-                      <div class="style-txt">
-                        {{ room.name }}
-                        <br />
-                      </div>
+                    <span *ngFor="let room of listAllAvailableRooms">
+                      <span *ngIf="room.type !== 'private'">
+                        <div class="style-txt">
+                          {{ room.name }} - {{ room.type }}
+                          <br />
+                        </div>
+                      </span>
                     </span>
                   </div>
                 </li>
@@ -74,7 +72,6 @@
                 </li>
               </ul>
             </li>
-
             <!--Create a room-->
             <li>
               <a class="dropdown-item"> Create a room &raquo; </a>
@@ -129,15 +126,6 @@
               <span *ngIf="user !== login">{{ user }}</span>
             </option>
           </datalist>
-
-          <!-- <span *ngIf="!inputChatAndPlay else okToSelectUser">
-            <button type="button" class="btn btn-outline-light rounded"
-            disabled>
-                <i class="fa fa-send"></i>
-              </button>
-          </span>
-
-          <ng-template #okToSelectUser> -->
           <button
             class="btn btn-outline-light my-2 my-sm-0"
             type="button"
@@ -145,29 +133,9 @@
           >
             <i class="bi bi-search"></i>
           </button>
-          <!-- </ng-template> -->
         </div>
       </nav>
     </div>
-
-    <!-- <div class="input-group-prepend">
-      <span *ngIf="!currentConv.name else okToSendMessage">
-        <button type="button" class="btn btn-outline-light rounded"
-        disabled>
-            <i class="fa fa-send"></i>
-          </button>
-      </span>
-        <ng-template #okToSendMessage>
-          <button
-            type="button"
-            class="btn btn-outline-light rounded"
-            (click)="onSendMessage()"
-          >
-            <i class="fa fa-send"></i>
-          </button>
-        </ng-template>
-    </div> -->
-
     <div class="list-conv">
       <div id="plist" class="people-list">
         <ul class="list-unstyled chat-list mt-2 mb-0">
@@ -182,7 +150,8 @@
                   {{ conversation.name }}
                 </button>
                 <div class="status">
-                  <i class="fa fa-circle online"></i> online
+                  <i class="fa fa-circle online"></i>
+                  {{ conversation.type }} room
                 </div>
               </div>
             </li>
@@ -217,18 +186,19 @@
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
                         <div class="viewMembersRoom">
-                          <span *ngFor="let member of currentConv.members">
+                          <span *ngFor="let member of membersPseudo">
                             <div class="style-txt">
-                              <a
-                                class="btn btn-secondary btn-sm btn-block"
-                                id="view-member"
-                                href="#"
-                                role="button"
-                                >{{ member }}</a
-                              >
+                              {{ member.login }} / {{ member.pseudo }}
                               <br />
                             </div>
                           </span>
+                          <a
+                            class="btn btn-secondary btn-sm btn-block"
+                            id="view-member"
+                            role="button"
+                            routerLink="profile/my-friends"
+                            >View profiles
+                          </a>
                         </div>
                       </li>
                     </ul>
@@ -316,7 +286,8 @@
                     <a class="dropdown-item"> Invite to play &raquo; </a>
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
-                        <button *ngFor="let set of sets"
+                        <button
+                          *ngFor="let set of sets"
                           type="submit"
                           class="btn btn-secondary btn-sm btn-block"
                           (click)="onInvitToPlay(set.type)"
@@ -327,7 +298,13 @@
                     </ul>
                   </li>
                   <!--Mute-->
-                  <li>
+                  <li
+                    *ngIf="
+                      currentConv.type === 'private' ||
+                      (currentConv.type !== 'private' &&
+                        currentRole !== 'chatter')
+                    "
+                  >
                     <a class="dropdown-item"> Mute &raquo; </a>
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
@@ -347,7 +324,13 @@
                       </li>
                     </ul>
                   </li>
-                  <li>
+                  <li
+                    *ngIf="
+                      currentConv.type === 'private' ||
+                      (currentConv.type !== 'private' &&
+                        currentRole !== 'chatter')
+                    "
+                  >
                     <a class="dropdown-item"> Unmute &raquo; </a>
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
@@ -465,7 +448,6 @@
             </div>
             <div class="chat-about">
               <h6 class="m-b-0">{{ currentConv.name }}</h6>
-              <!-- <span class="badge badge-pill badge-secondary">{{ currentConv.type }}</span> -->
               <span *ngIf="currentConv.members.length > 0">
                 <span class="badge badge-pill badge-warning">{{
                   currentConv.members.length
@@ -482,6 +464,7 @@
           <ul class="m-b-0">
             <div class="messages" *ngFor="let message of convMessages">
               <!-- if global.login is emitter, print on right -->
+              <!-- <div *ngIf="message.avatar !== 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLoHISAbaLunfRgJ2FHPtFsHUIPa5iC66eZwBK7uc8KgzpMzuDh3cPA4CfXz8mIQlpOpM&usqp=CAU'; else errorMessage"> -->
               <span *ngIf="login === message.login; else leftMessages">
                 <li class="clearfix">
                   <div class="message-data text-right">
@@ -489,7 +472,7 @@
                     <div class="right-chatter-wrap">
                       <div class="wrapper">
                         <span class="message-data-time"
-                          >{{ message.login }}
+                          >{{ message.pseudo }}
                           <span class="badge badge-pill badge-info">{{
                             message.role
                           }}</span>
@@ -505,7 +488,10 @@
                   <div class="message other-message float-right">
                     {{ message.content }}
                   </div>
-                  <div *ngIf="message.invitation === true" class="message other-message float-right">
+                  <div
+                    *ngIf="message.invitation === true"
+                    class="message other-message float-right"
+                  >
                     <!-- <p>You have sent an invitation!</p> -->
                     <a class="cancel" (click)="onCancelToPlay()">Cancel</a>
                   </div>
@@ -520,7 +506,7 @@
                       <img src="{{ message.avatar }}" alt="avatar" />
                       <div class="wrapper">
                         <span class="message-data-time"
-                          >{{ message.login }}
+                          >{{ message.pseudo }}
                           <span class="badge badge-pill badge-info">{{
                             message.role
                           }}</span>
@@ -534,13 +520,20 @@
                   <div class="message other-message float-left">
                     {{ message.content }}
                   </div>
-                  <div *ngIf="message.invitation === true" class="message other-message float-left">
+                  <div
+                    *ngIf="message.invitation === true"
+                    class="message other-message float-left"
+                  >
                     <!-- <p>You have received an invitation!</p> -->
                     <a class="accept" (click)="onAcceptToPlay()">Accept</a>
                     <a class="cancel" (click)="onCancelToPlay()">Decline</a>
                   </div>
                 </li>
               </ng-template>
+              <!-- </div> -->
+              <!-- <ng-template #errorMessage class="message other-message float-right">
+                <span class="badge bg-warning text-dark">{{ message.content }}</span>
+              </ng-template> -->
             </div>
           </ul>
         </div>

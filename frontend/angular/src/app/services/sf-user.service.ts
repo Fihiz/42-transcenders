@@ -79,6 +79,50 @@ export class UserService {
 
   ngOnInit() {}
 
+  // FOR FRIENDS
+  // async getAllMyrelations(login: string): Promise<any> {
+  // // console.log('We are in checkIfAlreadyFriend', data);
+  // const resp = (
+  //   await axios.get(
+  //     `http://${window.location.host}:3000/cb-user/getAllMyrelations/${login}`
+  //   )
+  // ).data;
+  // return resp;
+  // }
+
+  // async checkIfAlreadyFriend(data: object): Promise<Boolean> {
+  //   console.log('We are in checkIfAlreadyFriend', data);
+  //   const resp = (
+  //     await axios.get(
+  //       `http://${window.location.host}:3000/cb-user/checkIfAlreadyFriend`,
+  //       { params: data }
+  //     )
+  //   ).data;
+  //   return resp;
+  // }
+
+  async adminChangeUserRole(data: object) {
+    await axios.post(
+      `http://${window.location.host}:3000/cb-user/adminUpdateRole`,
+      { data }
+    );
+  }
+
+  async adminChangeIsBanned(data: object) {
+    await axios.post(
+      `http://${window.location.host}:3000/cb-user/adminUpdateIsBanned`,
+      { data }
+    );
+  }
+
+  async addNewFriend(data: object) {
+    console.log('We are in addNewFriend');
+    await axios.post(
+      `http://${window.location.host}:3000/cb-user/addNewFriend`,
+      { data }
+    );
+  }
+
   async doubleAUth(login: string) {
     this.global.doubleAuth = (
       await axios.get(
@@ -86,16 +130,14 @@ export class UserService {
         { params: login }
       )
     ).data;
-    console.log('double Auth = ', this.global.doubleAuth);
     if (this.global.doubleAuth === true) {
       const resp = (
         await axios.get(`http://${window.location.host}:3000/double-auth`, {
           params: login,
         })
       ).data;
-      console.log('code = ', resp);
       if (resp === 'ko') {
-        alert('an error as occured when sending the mail');
+        alert('An error has occured when sending the email');
         return 'ko';
       } else {
         let checkCode;
@@ -113,15 +155,28 @@ export class UserService {
     } else return 'ok';
   }
 
+  setRole(login: string) {
+    if (login === 'pgoudet') {
+      this.user.app_role = 'superadmin';
+      this.global.role = 'superadmin';
+    }
+  }
+
   async apiStatus(response: any): Promise<string> {
     this.login = response.data.login;
     const doubleAuthStatus = await this.doubleAUth(response.data.login);
-    console.log('doubleAuth = ', doubleAuthStatus);
-    if (doubleAuthStatus === 'ko') return 'ko';
+    const isBanned: boolean = (
+      await axios.get(`http://${window.location.host}:3000/cb-user/isBanned`, {
+        params: this.login,
+      })
+    ).data;
+    if (doubleAuthStatus === 'ko' || isBanned === true) return 'ko';
     if (response.isFound == 'found') {
       this.router.navigate(['/welcome']);
       this.user = response.data;
       this.global.login = response.data.login;
+      this.global.pseudo = response.data.pseudo;
+      this.setRole(this.global.login as string);
       this.socket.on('connect', () => {
         this.introduce(this.socket);
       });
@@ -131,8 +186,13 @@ export class UserService {
       document.getElementById('toOpenModal')?.click();
       await this.handleSubmitClick();
       this.fillUserInfos(response);
+      this.i = 0;
       this.registerBackInRequest(response);
+      // console.log('IS OKAYYYY');
+      // EMIT
+      this.socket.emit('allUsersInApp');
     }
+
     return 'ok';
   }
 
@@ -147,7 +207,8 @@ export class UserService {
       date: new Date(),
       avatar: '',
       role: '',
-      invitation: false
+      invitation: false,
+      pseudo: '',
     };
     socket.emit('introduction', message);
   }
@@ -160,10 +221,11 @@ export class UserService {
           data: this.user,
         }
       );
-      if (registerData.data !== 'Successfully created')
+      if (registerData.data !== 'Successfully created') {
         this.router.navigate(['/auth']);
-      else {
+      } else {
         this.global.login = response.data.login;
+        this.setRole(this.global.login as string);
         this.socket.on('connect', () => {
           this.introduce(this.socket);
         });
@@ -187,6 +249,11 @@ export class UserService {
     this.user.pseudo = (<HTMLInputElement>(
       document.getElementById('pseudo')
     )).value;
+    this.global.pseudo = this.user.pseudo;
+    if (this.user.login === 'pgoudet') {
+      this.user.app_role = 'superadmin';
+      this.global.role = 'superadmin';
+    }
     this.user.bio = (<HTMLInputElement>document.getElementById('bio')).value;
   }
 
@@ -198,13 +265,15 @@ export class UserService {
           const pseudo: string = (<HTMLInputElement>(
             document.getElementById('pseudo')
           )).value;
-          const response = await axios.get(`http://${window.location.host}:3000/cb-user/pseudo/${pseudo}`);
-          if (!response.data)
-            resolve('OK');
-          else
-          {
+          const response = await axios.get(
+            `http://${window.location.host}:3000/cb-user/pseudo/${pseudo}`
+          );
+          if (!response.data) resolve('OK');
+          else {
             document.getElementById('toOpenModal')?.click();
-            document.getElementById('pseudo already exists')?.classList?.remove('d-none');
+            document
+              .getElementById('pseudo already exists')
+              ?.classList?.remove('d-none');
           }
         });
     });
@@ -230,25 +299,26 @@ export class UserService {
   }
 
   decrement() {
-    this.i =
-      (this.i + this.avatarList.length - 1) %
-      this.avatarList.length;
+    this.i = (this.i + this.avatarList.length - 1) % this.avatarList.length;
   }
 
   async inputFile(event: any) {
     this.file = event.target.files[0];
     if (this.file !== null) {
       try {
-        const avatar: Promise<string> | null = await this.uploadAvatar(this.file);
-        if (this.uploaded === true)
-          this.avatarList.pop();
+        const avatar: Promise<string> | null = await this.uploadAvatar(
+          this.file
+        );
+        if (this.uploaded === true) this.avatarList.pop();
         if (avatar) {
-          this.avatarList.push( { alt: "uploaded_file", url: avatar + "?" + String(Math.random() * 100000) } );
+          this.avatarList.push({
+            alt: 'uploaded_file',
+            url: avatar + '?' + String(Math.random() * 100000),
+          });
           this.uploaded = true;
           this.i = this.avatarList.length - 1;
         }
-      }
-      catch(error) {
+      } catch (error) {
         console.error(error);
       }
     }
@@ -256,12 +326,13 @@ export class UserService {
 
   async saveAvatar() {
     const url: string = `http://${window.location.host}:3000/cb-user/avatar/save/${this.login}`;
-    return axios.post(url, { login: this.login })
-    .then((response: any) => {
-      return response.data;
-    })
-    .catch((error: any) => {
-      return null;
-    });
+    return axios
+      .post(url, { login: this.login })
+      .then((response: any) => {
+        return response.data;
+      })
+      .catch((error: any) => {
+        return null;
+      });
   }
 }

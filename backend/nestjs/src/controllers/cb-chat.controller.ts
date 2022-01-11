@@ -67,6 +67,18 @@ export class ChatController {
       }
     }
 
+    @Get('newOwner')
+    async addNewOwner(@Req() req, @Res() res) {
+      const target = req.query.newAdmin;
+      const userAsking = req.query.requester;
+      const conv_id = req.query.conv_id;
+      if ((await this.chatService.checkConditionToModifie(target, userAsking, conv_id)) === 'ko')
+        res.send('Action not allowed');
+      else {
+        (await this.chatService.addOwnerInConv(target, conv_id)) !== 'ko' ? res.send('ok') : res.send('ko');
+      }
+    }
+
     @Get('newAdmin')
     async addNewAdmin(@Req() req, @Res() res) {
       const target = req.query.newAdmin;
@@ -79,19 +91,35 @@ export class ChatController {
       }
     }
 
+    @Get('newChatter')
+    async addNewChatter(@Req() req, @Res() res) {
+      const target = req.query.newAdmin;
+      const userAsking = req.query.requester;
+      const conv_id = req.query.conv_id;
+      if ((await this.chatService.checkConditionToModifie(target, userAsking, conv_id)) === 'ko')
+        res.send('Action not allowed');
+      else {
+        (await this.chatService.addChatterInConv(target, conv_id)) !== 'ko' ? res.send('ok') : res.send('ko');
+      }
+    }
+
     @Get('Mute')
     async Mute(@Req() req, @Res() res) {
       const conv_id = req.query.conv_id;
       const userAsking = await this.chatService.findOneChatter(req.query.requester, conv_id);
       const target = await this.chatService.findOneChatter(req.query.mutedOne, conv_id);
       const conv: ConversationEntity = await this.convService.findOneConversation(conv_id);
-      if (conv.type === 'private')
-        res.send((await this.chatterService.muteSomeone(target)) === 'ok' ?  'ok' : 'ko');
+      if (!target)
+        res.send('The entered information cannot be processed');
       else {
-        if (userAsking.chat_role !== 'admin' && target.chat_role != 'owner')
-          res.send('Error: not good role');
-        else {
+        if (conv.type === 'private')
           res.send((await this.chatterService.muteSomeone(target)) === 'ok' ?  'ok' : 'ko');
+        else {
+          if ((userAsking.chat_role !== 'admin' && userAsking.chat_role !== 'owner') || target.chat_role === 'owner')
+            res.send('Error: not good role');
+          else {
+            res.send((await this.chatterService.muteSomeone(target)) === 'ok' ?  'ok' : 'ko');
+          }
         }
       }
     }
@@ -105,7 +133,7 @@ export class ChatController {
       if (conv.type === 'private')
         res.send((await this.chatterService.deMuteSomeone(target)) === 'ok' ?  'ok' : 'ko');
       else {
-        if (userAsking.chat_role !== 'admin')
+        if ((userAsking.chat_role !== 'admin' && userAsking.chat_role !== 'owner') || target.chat_role === 'owner')
           res.send('Error: not good role');
         else {
           res.send((await this.chatterService.deMuteSomeone(target)) === 'ok' ?  'ok' : 'ko');
@@ -131,5 +159,20 @@ export class ChatController {
         roles.push(chatter.chat_role);
       }
       res.send({avatars: avatars, login: login, roles: roles});
+    }
+
+    @Get('getMembers')
+    async getMembersPseudo(@Req() req, @Res() res) {
+      const tmp = new Array(...Object.entries(req.query));
+      const members = []
+      for (const obj of tmp) {
+        members.push(obj[1] as string);
+      }
+      const pseudos: Array<string> = [];
+      for (const member of members) {
+        const user = await this.userService.findOneAppUser(member);
+        pseudos.push(user.pseudo)
+      }
+      res.send(pseudos);
     }
 }

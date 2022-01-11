@@ -61,6 +61,12 @@ export class ConvService {
         return (result);
       }
   }
+  
+  //For View Room in chat
+  async findAllAvailableRoomsInApp() : Promise<ConversationEntity[]> {
+    console.log(`findAllAvailableRoomsInApp`);
+		return this.conversation.find();
+	}
 
   async findOneConversation(id: number) : Promise<any> {
 		return this.conversation.findOne(id);
@@ -88,6 +94,7 @@ export class ConvService {
     }
     return(convArray);
   }
+
 
   async joinRoomCheckValue(emission, conv: ConversationEntity, isInvited: boolean, name:string) {
     emission.data.roomPassword = atob(emission.data.roomPassword);
@@ -196,7 +203,7 @@ export class ConvService {
 
   async changePassword(conv_id: number, password: string) {
     try {
-      this.conversation.update({conv_id: conv_id}, {password: password, type: 'protected'});
+      this.conversation.update({conv_id: conv_id}, {password: password, type: password.length === 0 ? 'public' : 'protected'});
       return ('ok')
     }
     catch (error) {

@@ -3,16 +3,18 @@ import { ConversationEntity } from "src/entities/eb-conversation.entity";
 import { ConvService } from "src/services/sb-conv.service";
 import { ChatService } from "src/services/sb-chat.service";
 import { GlobalDataService, Message } from 'src/services/sb-global-data.service';
+import { UserService } from "src/services/sb-user.service";
 
 @WebSocketGateway({cors:{origin: '*'}})
 export class ConnectedGateway {
   constructor(private chatService: ChatService,
-              private convService: ConvService){}
+              private convService: ConvService,
+			  private userService: UserService ){}
 	@WebSocketServer()
 	server;
 
 	handleConnection() {
-			console.log('connection connected')
+			console.log('A new client is connected')
 	}
 
 	emitStatusToAll(login: string, status: string) {

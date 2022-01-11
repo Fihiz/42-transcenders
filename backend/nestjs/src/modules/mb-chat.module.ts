@@ -21,10 +21,11 @@ import { StatEntity } from 'src/entities/eb-stat.entity';
 import { AwardEntity } from 'src/entities/eb-award.entity';
 import { AchievementEntity } from 'src/entities/eb-achievement.entity';
 import { ConnectedGateway } from 'src/gateways/connected.gateway';
+import { RelationEntity } from 'src/entities/eb-relation.entity';
 
 
 @Module({
-    imports: [Repository, ConvModule, TypeOrmModule.forFeature([ ChatterEntity, ConversationEntity, WebAppUserEntity, MessageEntity, ApiUserDataEntity, GameTypeEntity, PongGameEntity, StatEntity, AwardEntity, AchievementEntity ])],
+    imports: [Repository, ConvModule, TypeOrmModule.forFeature([ RelationEntity, ChatterEntity, ConversationEntity, WebAppUserEntity, MessageEntity, ApiUserDataEntity, GameTypeEntity, PongGameEntity, StatEntity, AwardEntity, AchievementEntity ])],
     providers: [ ChatService, UserService, ChatGateway, ConvService, ChatterService, GameService, StatsService, ConnectedGateway ],
     controllers: [ChatController],
 })

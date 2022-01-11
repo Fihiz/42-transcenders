@@ -10,6 +10,7 @@ import { GameTypeEntity } from 'src/entities/eb-game-type.entity';
 import { MessageEntity } from 'src/entities/eb-message.entity';
 import { ParticipantEntity } from 'src/entities/eb-participant.entity';
 import { PongGameEntity } from 'src/entities/eb-pong-game.entity';
+import { RelationEntity } from 'src/entities/eb-relation.entity';
 import { StatEntity } from 'src/entities/eb-stat.entity';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { ConnectedGateway } from 'src/gateways/connected.gateway';
@@ -23,7 +24,7 @@ import { UserService } from 'src/services/sb-user.service';
 
 @Module({
     providers: [GameService, GameGateway, StatsService, ConnectedGateway, ChatService, ConvService, UserService, ChatterService],
-    imports: [TypeOrmModule.forFeature([GameTypeEntity, ParticipantEntity, PongGameEntity, StatEntity, AwardEntity, AchievementEntity, MessageEntity, ChatterEntity, ConversationEntity, WebAppUserEntity, ApiUserDataEntity])],
+    imports: [TypeOrmModule.forFeature([GameTypeEntity, RelationEntity, ParticipantEntity, PongGameEntity, StatEntity, AwardEntity, AchievementEntity, MessageEntity, ChatterEntity, ConversationEntity, WebAppUserEntity, ApiUserDataEntity])],
     controllers: [GameController],
 })
 export class GameModule {}

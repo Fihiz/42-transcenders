@@ -17,6 +17,7 @@ import { GameService } from 'src/app/services/sf-game.service';
 })
 export class ChatComponent implements OnInit {
   convMessages: Array<if_message> = [];
+  membersPseudo: Array<{ login: string; pseudo: string }> = [];
   users: Array<string> = new Array();
   currentConv: if_conversation = {
     avatar: '',
@@ -37,7 +38,8 @@ export class ChatComponent implements OnInit {
   convInfo: Map<string, { role: string; avatar: string }> = new Map();
   inputChatAndPlay: string = '';
   sets: if_game_type[] = [];
-
+  listAllAvailableRooms: Array<if_conversation> = [];
+  
   constructor(
     private socket: Socket,
     private global: GlobalService,
@@ -70,6 +72,10 @@ export class ChatComponent implements OnInit {
     if (event.key === 'Enter' && this.currentConv.name) {
       this.onSendMessage();
     }
+  }
+
+  onThreeDotsClick() {
+    this.socket.emit('allAvailableRoomsInApp');
   }
 
   onSelectOneToOneUserConv() {
@@ -119,7 +125,6 @@ export class ChatComponent implements OnInit {
   async onCreateRoom() {
     const res = await this.chatService.takeAndCheck(this.users);
     if (res.status != 'ok') return;
-    console.log('res = ', res.status);
     const roomAvatarsArray: string[] = [
       '../../../assets/room-pictures/1.png',
       '../../../assets/room-pictures/2.png',
@@ -151,12 +156,25 @@ export class ChatComponent implements OnInit {
   }
 
   async onSelectConv(value: any) {
+    this.membersPseudo = [];
     this.convMessages = [];
     this.currentConv = this.chatService.getConvFromId(
       value,
       this.listConv,
       this.currentConv
     );
+    const tmpMembers = (
+      await axios.get(
+        `http://${window.location.host}:3000/cb-chat/getMembers`,
+        { params: this.currentConv.members }
+      )
+    ).data;
+    let i = -1;
+    while (++i < tmpMembers.length)
+      this.membersPseudo.push({
+        login: this.currentConv.members[i],
+        pseudo: tmpMembers[i],
+      });
     this.emission = this.chatService.emission(
       'getMessages',
       this.currentConv,
@@ -232,7 +250,12 @@ export class ChatComponent implements OnInit {
           },
         }
       );
-      if (isMute.data !== 'ok') alert(isMute.data);
+      if (isMute.data !== 'ok')
+        alert(
+          isMute.data === 'ko'
+            ? 'you don t have the rights or the user is not in the room'
+            : isMute.data
+        );
     }
   }
 
@@ -281,7 +304,6 @@ export class ChatComponent implements OnInit {
   }
 
   async onKick() {
-    // alert pgoudet: to keep for cleaning !
     const value = (<HTMLInputElement>document.getElementById('kick-room'))
       ?.value;
     this.chatService.clearInputValues('kick-room');
@@ -308,7 +330,6 @@ export class ChatComponent implements OnInit {
   }
 
   onChangePassword() {
-    // alert pgoudet: to keep for cleaning !
     const value = (<HTMLInputElement>document.getElementById('change-password'))
       ?.value;
     this.chatService.clearInputValues('change-password');
@@ -416,7 +437,6 @@ export class ChatComponent implements OnInit {
       }
     });
     this.socket.on('allConversations', (data: any) => {
-      console.log('all conversations');
       this.listConv = data as Array<if_conversation>;
     });
     this.socket.on('newConversation', (data: any) => {
@@ -452,6 +472,27 @@ export class ChatComponent implements OnInit {
       ) as if_conversation;
       conv.password = data.password;
       conv.type = 'protected';
+      // need to change the room type into the Conv entity when we change password as empty
+      // if (data.password) conv.type = 'protected';
+      // else conv.type = 'public';
+    });
+    //For View Room in chat
+    this.socket.on('allAvailableRoomsInApp', (data: any) => {
+      this.listAllAvailableRooms = data;
+    });
+    //For View Room in chat
+    this.socket.on('newAvailableRoomsInApp', (data: any) => {
+      this.listAllAvailableRooms.push(data);
+    });
+    //For View Room in chat
+    this.socket.on('deleteAvailableRoomsInApp', (data: any) => {
+      if (this.listAllAvailableRooms.length === 0)
+        this.listAllAvailableRooms = []; /* Non-sens */
+      const index = this.listAllAvailableRooms.findIndex(
+        (conv) => conv.conv_id === data.conv_id && conv.name === data.conv_name
+      );
+      if (index >= 0) this.listAllAvailableRooms.splice(index, 1);
+      if (this.currentConv.conv_id === data.conv_id) this.clearConv();
     });
 
     this.socket.on('errorInvitation', (message: if_message) => {

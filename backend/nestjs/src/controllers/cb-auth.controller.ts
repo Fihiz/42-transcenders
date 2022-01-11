@@ -34,7 +34,6 @@ export class AuthController {
           }
         catch (error) {
             console.log(error.response.data);
-            console.log('fail redirection');
         }
     }
 

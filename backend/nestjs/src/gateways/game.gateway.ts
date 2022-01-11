@@ -16,14 +16,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	constructor(private gameService:GameService) {
 		this.emitUpdate(this);
+		this.gameService.id = 2;
 	}
 
 	handleConnection() {
-		console.log('game connected');
 	}
 
 	handleDisconnect(@MessageBody() body: any) {
-		console.log('game disconnection');
 	}
 
 	emitUpdate(test:GameGateway) {
@@ -75,6 +74,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('hello')
 	setConnected(@MessageBody() body: any) {
+		console.log(body.gameId, this.gameService.games);
 		let game = this.gameService.games.find((game) => game.id === body.gameId);
 		if (!game)
 		{
@@ -89,7 +89,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			this.server.to(body.id).emit('welcome', {notFound: true});
 			return ;
 		}
-		console.log(body.login, 'successfully joined the game ', body.gameId);
 		GlobalDataService.loginIdMap.forEach((user, loginInMap) => {
 			const foundUser = user.sockets.find((socket) => socket.id === body.id);
 			if (foundUser)
@@ -140,7 +139,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (foundUser)
 			{
 				this.gameService.setReady(foundUser.gameId, login);
-				console.log(login, 'successfully set ready in game', foundUser.gameId);
 				return ;
 			}
 		});
@@ -172,11 +170,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('matchmaking')
 	async setMatchmaking(@MessageBody() body: any) {
-		console.log(`${body.login} join Matchmaking.`);
 		// console.log(`${body.login} - IN:`, this.players);
 		const found = this.players.find((user) => user.gameType === body.gameType );
 		if (found !== undefined) {
-			const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(body.gameType)
+			const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(body.gameType);
 			if (search) {
 				let player1 = found;
 				let player2 = body;

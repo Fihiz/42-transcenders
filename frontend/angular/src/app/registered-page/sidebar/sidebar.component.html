@@ -2,16 +2,7 @@
   <div class="fixed">
     <a
       routerLink="/welcome"
-      class="
-        d-flex
-        align-items-center
-        pb-3
-        mb-3
-        link-dark
-        text-decoration-none
-        border-bottom
-        logo-link
-      "
+      class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom logo-link"
     >
       <img
         class="fit-picture"
@@ -31,9 +22,33 @@
         </button>
         <div class="collapse show" id="home-collapse">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a class="link-dark rounded" routerLink="profile/about-me/{{ global.login }}">About me</a></li>
-            <li><a class="link-dark rounded" routerLink="profile/my-friends">My friends</a></li>
-            <li><a class="link-dark rounded" routerLink="profile/my-stats">My stats</a></li>
+            <li *ngIf="currentAppRole === 'superadmin'">
+              <a class="link-dark rounded" routerLink="profile/super-admin"
+                >Web owner</a
+              >
+            </li>
+            <li *ngIf="currentAppRole === 'moderator'">
+              <a class="link-dark rounded" routerLink="profile/super-admin"
+                >Moderator</a
+              >
+            </li>
+            <li>
+              <a
+                class="link-dark rounded"
+                routerLink="profile/about-me/{{ global.login }}"
+                >About me</a
+              >
+            </li>
+            <li>
+              <a class="link-dark rounded" routerLink="profile/my-friends"
+                >My friends</a
+              >
+            </li>
+            <li>
+              <a class="link-dark rounded" routerLink="profile/my-stats"
+                >My stats</a
+              >
+            </li>
           </ul>
         </div>
       </li>
@@ -48,9 +63,15 @@
         </button>
         <div class="collapse show" id="dashboard-collapse">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a class="link-dark rounded" routerLink="pong/play">Play</a></li>
-            <li><a class="link-dark rounded" routerLink="pong/live">Live</a></li>
-            <li><a class="link-dark rounded" routerLink="pong/ranking">Ranking</a></li>
+            <li>
+              <a class="link-dark rounded" routerLink="pong/play">Play</a>
+            </li>
+            <li>
+              <a class="link-dark rounded" routerLink="pong/live">Live</a>
+            </li>
+            <li>
+              <a class="link-dark rounded" routerLink="pong/ranking">Ranking</a>
+            </li>
             <li>
               <a class="link-dark rounded" routerLink="pong/rules">Rules</a>
             </li>

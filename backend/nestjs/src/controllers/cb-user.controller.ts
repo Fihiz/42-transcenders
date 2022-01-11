@@ -1,10 +1,14 @@
-import { Controller, Get, Post, Param, Response, Request, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Response, Request, Body, Req, Res } from '@nestjs/common';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { UserService } from 'src/services/sb-user.service';
 
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
+import { AdminChangeUserRoleDto } from 'src/dtos/adminChangeUserRole.dto';
+import { AdminChangeIsBannedDto } from 'src/dtos/adminChangeIsBanned.dto';
+import { AddNewFriendDto } from 'src/dtos/addNewFriend.dto';
+import { RelationEntity } from 'src/entities/eb-relation.entity';
 
 import * as fs from 'fs';
 
@@ -26,6 +30,67 @@ export class UserController {
     
     constructor(private userService: UserService) {}
 
+    @Post('adminUpdateRole')
+    async postAdminUpdateRole(@Body('data') dataDto:  AdminChangeUserRoleDto) {
+        try {
+            const response = await this.userService.adminChangeUserRole(dataDto)
+        }
+        catch {
+            alert('An error has occured when changing the user role');
+        } 
+    }
+
+    @Post('adminUpdateIsBanned')
+    async postAdminUpdateIsBanned(@Body('data') dataDto: AdminChangeIsBannedDto) {
+        try {
+            const response = await this.userService.adminChangeIsBanned(dataDto)
+        }
+        catch {
+            alert('An error has occured when banning the user');
+        }
+        
+    } 
+    
+    @Post('addNewFriend')
+    async postAddNewFriend(@Body('data') dataDto: AddNewFriendDto) {
+        try {
+            const response = await this.userService.addNewFriend(dataDto)
+        }
+        catch {
+            alert('An error has occured when adding a new friend');
+        } 
+    }
+
+    // FOR FRIENDS
+    // @Get('getAllMyrelations/:login')
+	// async getAllMyrelations(@Param('login') login, @Response() res) {
+    //     // console.log('relations of', login);
+    //     const relations: any[] = await this.userService.findAllrelationsOf(login);
+    //     // const returnn = await this.userService.getStatsAndAchievementsFromRelation(relations);
+    //     // console.log('relations are', returnn);
+    //     res.send(relations);
+	// }
+
+    // @Get('checkIfAlreadyFriend')
+	// async getCheckIfAlreadyFriend(@Request() req, @Response() res): Promise<any> {
+    //     console.log('data', req.query);
+	// 	const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
+    //     if (isAlreadyFriend && isAlreadyFriend.friendship === "friend")
+    //         res.send(true);
+	// 	else
+	// 	    res.send(false);
+	// }
+
+    // @Get('checkIfAlreadyFriend')
+	// async getCheckIfAlreadyFriend(@Request() req, @Response() res): Promise<any> {
+    //     console.log('data', req.query);
+	// 	const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
+    //     if (isAlreadyFriend && isAlreadyFriend.friendship === "friend")
+    //         res.send(true);
+	// 	else
+	// 	    res.send(false);
+	// }
+  
 	@Get('profile/:login')
 	async getProfileByLogin(@Param('login') login: string, @Response() res, @Request() req): Promise<WebAppUserEntity> {
 		const profile: WebAppUserEntity = await this.userService.findOneWebAppUser(login);
@@ -91,6 +156,11 @@ export class UserController {
     @Get('avatar/:filename')
     getSaveAvatar(@Param('filename') filename, @Response() res) {
         res.sendFile(filename, { root: './src/assets/avatar' });
+    }
+
+    @Get('isBanned')
+    async isBanned(@Req() Req, @Res() res) {
+      res.send(await this.userService.isTheUserBanned(Req.query[0]));
     }
 
 }

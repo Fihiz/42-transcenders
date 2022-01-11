@@ -15,6 +15,7 @@ import { ConnectedGateway } from 'src/gateways/connected.gateway';
 export class GameService {
 
   	games: Game[];
+	id: number = 0;
 	sets: GameTypeEntity[] = [
 		{
 			game_type_id: 0,
@@ -345,7 +346,6 @@ export class GameService {
 		})
 		.then((response) => {
 			const types: GameTypeEntity[] = response;
-			console.log(`Get all types of game has succeeded.`);
 			return types;
 		})
 		.catch((error) => {

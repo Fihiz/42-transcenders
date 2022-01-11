@@ -4,9 +4,12 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class GlobalService {
+  pseudo: string | undefined = undefined;
   login: string | undefined = undefined;
   socketId: string | undefined = undefined;
   doubleAuth: boolean = false;
   allUserStatus: Map<string, string> = new Map<string, string>();
+  isBanned: boolean = false;
+  role: string = 'chatter';
   constructor() {}
 }

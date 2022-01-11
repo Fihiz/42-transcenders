@@ -25,6 +25,11 @@ export class MessageEntity {
 		type: "varchar"
   })
   content: string;
+
+  @Column({
+		type: "varchar"
+  })
+  pseudo: string;
   
   @Column({
 		type: "varchar"
