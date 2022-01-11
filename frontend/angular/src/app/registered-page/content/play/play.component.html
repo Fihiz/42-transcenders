@@ -39,6 +39,9 @@
             <p class="value color">{{ set.racket1_desc }}</p>
             <p class="field color">Racket right:</p>
             <p class="value color">{{ set.racket2_desc }}</p>
+            <input *ngIf="selected === undefined" (click)="setShield(set.type)" type="checkbox">
+            <input *ngIf="selected !== undefined" (click)="setShield(set.type)" type="checkbox" disabled>
+            <label for="Shield power-up">Shield power-up</label>
             <button *ngIf="selected === undefined" class="btn btn-dark button" type="submit" (click)="setParty(set.type)">PLAY</button>
             <button *ngIf="selected !== undefined && selected !== set.type" class="btn btn-dark button" type="submit" [disabled]="true">PLAY</button>
             <button *ngIf="selected !== undefined && selected === set.type" class="btn btn-dark button" type="submit" (click)="unsetParty()">CANCEL</button>

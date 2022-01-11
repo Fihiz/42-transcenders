@@ -14,6 +14,6 @@ import { RelationEntity } from 'src/entities/eb-relation.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MessageEntity, ConversationEntity, ChatterEntity, WebAppUserEntity, ApiUserDataEntity, RelationEntity])],
-  providers: [ConnectedGateway, ChatService, UserService, ConvService, ChatterService]
+  providers: [ChatService, UserService, ConvService, ChatterService]
 })
 export class ConnectionModule {}

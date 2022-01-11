@@ -82,11 +82,12 @@ export class GameService {
       });
   }
 
-  emitReadyForPlay(type: string) {
+  emitReadyForPlay(type: string, shield: boolean) {
     this.socket.emit('matchmaking', {
       id: this.socket.ioSocket.id,
       login: this.global.login,
       gameType: type,
+      shield: shield,
     });
   }
 
@@ -122,12 +123,19 @@ export class GameService {
         id: globalSocket.ioSocket.id,
         key: e.key,
       });
+    } else if (e.key === ' ' && space === false) {
+      space = true;
+      globalSocket.emit('pressed', {
+        id: globalSocket.ioSocket.id,
+        key: e.key,
+      });
     }
   }
 
   emitKeyRelease(e: KeyboardEvent) {
     if (e.key === 'ArrowUp') up = false;
     else if (e.key === 'ArrowDown') down = false;
+    else if (e.key === ' ') space = false;
     globalSocket.emit('released', { id: globalSocket.ioSocket.id, key: e.key });
   }
 
@@ -316,7 +324,21 @@ export class GameService {
           this.game.rightPaddle.score.toString().length * 80
         );
 
+        // shields
+        for(let i = 0; i < this.game.leftPaddle.shield; i++)
+        {
+          this.gameContext.fillStyle = '#999999';
+          this.gameContext.fillRect(((this.game.board.width / 2) - 12) * 5 - 40 * i, this.game.board.height * 5 - 200, 30, 100);
+        }
+
+        for(let i = 0; i < this.game.rightPaddle.shield; i++)
+        {
+          this.gameContext.fillStyle = '#999999';
+          this.gameContext.fillRect(((this.game.board.width / 2) + 6) * 5 + 40 * i, this.game.board.height * 5 - 200, 30, 100);
+        }
+
         // pseudo
+        this.gameContext.font = "150px Comfortaa";
         this.gameContext.fillText(this.game.leftPaddle.pseudo, 40 * 5, 50 * 5, 250 * 5);
         this.gameContext.fillText(
           this.game.rightPaddle.pseudo,
@@ -326,6 +348,14 @@ export class GameService {
           50 * 5,
           Math.min(this.game.rightPaddle.pseudo.length * 20, 250) * 5
         );
+
+        // login
+        this.gameContext.font = "120px Comfortaa";
+        this.gameContext.fillText(this.game.leftPaddle.login, 40 * 5, 80 * 5, 200 * 5);
+        this.gameContext.fillText(
+          this.game.rightPaddle.login,
+          (this.game.board.width - 40 - 12 * this.game.rightPaddle.login.length) * 5,
+          80 * 5);
 
         // borders and middle line
         for (
@@ -540,6 +570,8 @@ export class GameService {
       down: boolean;
       score: number;
       ready: boolean;
+      shield: number;
+      shieldDuration: number;
 
       constructor() {
         this.login = '';
@@ -554,9 +586,17 @@ export class GameService {
         this.down = false;
         this.score = 0;
         this.ready = false;
+        this.shield = 0;
+        this.shieldDuration = 0;
       }
 
       draw(context: CanvasRenderingContext2D) {
+        if (this.shieldDuration > 0)
+        {
+          context.fillStyle = "#999999";
+          context.fillRect(this.x * 5, (test.game.border.marginTopBot + test.game.border.width) * 5 , this.width * 5, test.gameCanvas.height - (test.game.border.marginTopBot + test.game.border.width) * 10);
+        }
+
         context.fillStyle = this.color;
         context.fillRect(this.x * 5, this.y * 5, this.width * 5, this.length * 5);
       }
@@ -574,6 +614,8 @@ export class GameService {
         this.down = next.down;
         this.score = next.score;
         this.ready = next.ready;
+        this.shield = next.shield;
+        this.shieldDuration = next.shieldDuration;
       }
     }
 

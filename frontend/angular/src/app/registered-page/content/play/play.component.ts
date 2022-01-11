@@ -18,6 +18,8 @@ export class PlayComponent implements OnInit, OnDestroy {
 
   time: number = 0;
   intervalId: number | null = null;
+  shields: Map<string, boolean> = new Map<string, boolean>();
+
 
   constructor(private gameService: GameService, private router: Router, private socket: Socket) { }
 
@@ -40,11 +42,16 @@ export class PlayComponent implements OnInit, OnDestroy {
     this.socket.removeAllListeners('isInPendingQueue');
   }
 
+  setShield(type: string) {
+    this.shields.set(type, !this.shields.get(type));
+  }
+
   setParty(type: string) {
     this.selected = type;
-    this.gameService.emitReadyForPlay(type);
+    this.gameService.emitReadyForPlay(type, this.shields.get(type) || false);
+    this.shields.forEach((shield, key) => this.shields.set(key, false));
   }
-  
+
   unsetParty() {
     this.selected = undefined;
     this.gameService.emitCancelForPlay();
@@ -63,6 +70,9 @@ export class PlayComponent implements OnInit, OnDestroy {
 
   async getSetsParty() {
       this.sets = await this.gameService.getTypesOfParty();
+      this.sets.forEach(set => {
+        this.shields.set(set.type, false);
+      });
   }
 
   // countDown() {

@@ -14,8 +14,7 @@ import { ConnectedGateway } from 'src/gateways/connected.gateway';
 @Injectable()
 export class GameService {
 
-  	games: Game[];
-	id: number = 0;
+  	static games: Game[] = [];
 	sets: GameTypeEntity[] = [
 		{
 			game_type_id: 0,
@@ -79,10 +78,7 @@ export class GameService {
 		},
 	]
 
-	constructor(@InjectRepository(GameTypeEntity) private gameTypes: Repository<GameTypeEntity>, @InjectRepository(PongGameEntity) private pongGames: Repository<PongGameEntity>, private statsService : StatsService, private connectedGateway: ConnectedGateway) {
-		this.games = [];
-		this.OnInit();
-	}
+	constructor(private statsService : StatsService, private connectedGateway: ConnectedGateway) {}
 
 	async OnInit() {
 		const parties: PongGameEntity[] = await this.getAllPartiesInProgress();
@@ -92,7 +88,7 @@ export class GameService {
 	}
 
 	addGame(game: PongGameEntity) {
-		this.games.push(new Game(game));
+		GameService.games.push(new Game(game));
 		const player1: string = (game.player1 as unknown as WebAppUserEntity).login;
 		const player2: string = (game.player2 as unknown as WebAppUserEntity).login;
 		if (GlobalDataService.loginIdMap.has(player1))
@@ -108,7 +104,7 @@ export class GameService {
 	}
 
 	setReady(gameId: number, login: string) {
-		const game = this.games.find(game => game.id === gameId);
+		const game = GameService.games.find(game => game.id === gameId);
 		if (game && login)
 		{
 			if (login === game.changing.leftPaddle.login &&
@@ -138,7 +134,7 @@ export class GameService {
 
 	keyboard(gameId: number, login: string, key: string, state: boolean)
 	{
-		const game = this.games.find(game => game.id === gameId);
+		const game = GameService.games.find(game => game.id === gameId);
 		if (game)
 		{
 			if (login === game.changing.leftPaddle.login)
@@ -147,6 +143,8 @@ export class GameService {
 					game.changing.leftPaddle.up = state;
 				else if (key == 'ArrowDown')
 					game.changing.leftPaddle.down = state;
+				else if (key == ' ')
+					game.changing.leftPaddle.space = state;
 			}
 			else if (login === game.changing.rightPaddle.login)
 			{
@@ -154,12 +152,14 @@ export class GameService {
 					game.changing.rightPaddle.up = state;
 				else if (key == 'ArrowDown')
 					game.changing.rightPaddle.down = state;
+				else if (key == ' ')
+					game.changing.rightPaddle.space = state;
 			}
 		}
 	}
 
 	updateAll() {
-		this.games.forEach(async (game, index) => {
+		GameService.games.forEach(async (game, index) => {
 		if (game.changing.status === 'Finished')
 		{
 			game.changing.status = 'Updating';
@@ -170,7 +170,7 @@ export class GameService {
 				GlobalDataService.loginIdMap.get(player1).sockets.forEach(socket => {
 					if (status != "Spectating" && socket.gameId != 0)
 					{
-						const game = this.games.find((game) => game.id === socket.gameId)
+						const game = GameService.games.find((game) => game.id === socket.gameId)
 						if (game && player1 !== game.changing.leftPaddle.login &&
 							player1 !== game.changing.rightPaddle.login)
 								status = "Spectating";
@@ -191,7 +191,7 @@ export class GameService {
 				GlobalDataService.loginIdMap.get(player2).sockets.forEach(socket => {
 					if (status != "Spectating" && socket.gameId != 0)
 					{
-						const game = this.games.find((game) => game.id === socket.gameId)
+						const game = GameService.games.find((game) => game.id === socket.gameId)
 						if (game && player2 !== game.changing.leftPaddle.login &&
 							player2 !== game.changing.rightPaddle.login)
 								status = "Spectating";
@@ -294,7 +294,7 @@ export class GameService {
 			}
 			await this.statsService.updateAchievementsOf(game.changing.leftPaddle.login);
 			await this.statsService.updateAchievementsOf(game.changing.rightPaddle.login);
-			this.games.splice(index, 1);
+			GameService.games.splice(index, 1);
 		}
 		else
 			game.update();
@@ -451,7 +451,7 @@ export class GameService {
 		})
 	}
 
-	async createMatchParty(player1: string, player2: string, type: GameTypeEntity): Promise<number> | undefined {
+	async createMatchParty(player1: string, player2: string, type: GameTypeEntity, shield: boolean): Promise<number> | undefined {
 		const pongRepository = getRepository(PongGameEntity);
 		const party: PongGameEntity = {
 			game_id: 0,
@@ -465,6 +465,7 @@ export class GameService {
 			game_type_id: type.game_type_id,
 			created: new Date(),
 			updated: new Date(),
+			shield: shield && shield != undefined,
 		}
 		return pongRepository.insert(party)
 		.then((result) => {
@@ -542,11 +543,11 @@ class Game {
 			status: "Starting",
 			countdown : -1,
 			ball : new Ball(game_type.ball_color, 350 - game_type.ball_size / 2, 200 - game_type.ball_size / 2, game_type.ball_size, game_type.ball_speed),
-			leftPaddle : new Paddle(game.player1 as unknown as WebAppUserEntity, game_type.racket1_color, 25, 200 - game_type.racket1_size * 4, game_type.racket1_size, game_type.racket1_size * 8, game_type.racket1_speed),
-			rightPaddle : new Paddle(game.player2 as unknown as WebAppUserEntity, game_type.racket2_color, 675 - game_type.racket2_size, 200 - game_type.racket2_size * 4, game_type.racket2_size, game_type.racket2_size * 8, game_type.racket2_speed),
+			leftPaddle : new Paddle(game.player1 as unknown as WebAppUserEntity, game_type.racket1_color, 25, 200 - game_type.racket1_size * 4, game_type.racket1_size, game_type.racket1_size * 8, game_type.racket1_speed, game.shield),
+			rightPaddle : new Paddle(game.player2 as unknown as WebAppUserEntity, game_type.racket2_color, 675 - game_type.racket2_size, 200 - game_type.racket2_size * 4, game_type.racket2_size, game_type.racket2_size * 8, game_type.racket2_speed, game.shield),
 		};
 	}
-  
+
 	update() {
 		if (this.changing.status === 'Finished' || this.changing.status === 'Updating')
 			return;
@@ -571,8 +572,8 @@ class Game {
 		this.changing.ball.update(this);
 	}
 }
-  
-  
+
+
 class Ball {
 
 	speed: number;
@@ -611,23 +612,37 @@ class Ball {
 		if(this.dx < 0 &&
 		this.x < game.changing.leftPaddle.x + game.changing.leftPaddle.width &&
 		this.x + this.size > game.changing.leftPaddle.x)
+		{
+
 			if (this.y < game.changing.leftPaddle.y + game.changing.leftPaddle.length &&
 				this.y + this.size > game.changing.leftPaddle.y)
-				{
-					game.changing.leftPaddle.hit++;
-					this.dx *= -1;
-				}
+			{
+				game.changing.leftPaddle.hit++;
+				this.dx *= -1;
+			}
+			else if (game.changing.leftPaddle.shieldDuration > 0)
+			{
+				this.dx *= -1;
+			}
+		}
 
 
 		if(this.dx > 0 &&
 		this.x < game.changing.rightPaddle.x + game.changing.rightPaddle.width &&
 		this.x + this.size > game.changing.rightPaddle.x)
+		{
 			if (this.y < game.changing.rightPaddle.y + game.changing.rightPaddle.length &&
 				this.y + this.size > game.changing.rightPaddle.y)
-				{
-					game.changing.rightPaddle.hit++;
-					this.dx *= -1;
-				}
+			{
+				game.changing.rightPaddle.hit++;
+				this.dx *= -1;
+			}
+			else if (game.changing.rightPaddle.shieldDuration > 0)
+			{
+				this.dx *= -1;
+			}
+		}
+
 
 
 		if (this.x + this.size < game.changing.leftPaddle.x)
@@ -673,11 +688,14 @@ class Paddle {
 	y: number;
 	up: boolean;
 	down: boolean;
+	space: boolean;
 	ready: boolean;
 	score: number;
 	hit: number;
+	shield: number;
+	shieldDuration: number;
 
-	constructor(user: WebAppUserEntity, color: string, x: number, y: number, width: number, length: number, speed: number) {
+	constructor(user: WebAppUserEntity, color: string, x: number, y: number, width: number, length: number, speed: number, shield: boolean) {
 		this.login = user.login;
 		this.pseudo = user.pseudo;
 		this.speed = speed;
@@ -691,9 +709,21 @@ class Paddle {
 		this.score = 0;
 		this.ready = false;
 		this.hit = 0;
+		this.shieldDuration = 0;
+		if (shield)
+			this.shield = 3;
+		else
+			this.shield = 0;
 	}
 
 	update(game: Game) {
+		if (this.shieldDuration > 0)
+			this.shieldDuration--;
+		if (this.space && this.shield > 0 && this.shieldDuration === 0 && game.changing.countdown === 0)
+		{
+			this.shieldDuration = 180;
+			this.shield--;
+		}
 		if (this.up === true && this.down === false)
 		{
 		if (this.y - this.speed > game.border.marginTopBot + game.border.width)
