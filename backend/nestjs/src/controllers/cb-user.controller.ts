@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Response, Request, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Response, Request, Body, Req, Res } from '@nestjs/common';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { UserService } from 'src/services/sb-user.service';
 
@@ -124,6 +124,11 @@ export class UserController {
     @Get('avatar/:filename')
     getUploadedAvatar(@Param('filename') filename, @Response() res) {
         res.sendFile(filename, { root: './src/assets/avatar' });
+    }
+
+    @Get('isBanned')
+    async isBanned(@Req() Req, @Res() res) {
+      res.send(await this.userService.isTheUserBanned(Req.query[0]));
     }
 
 }

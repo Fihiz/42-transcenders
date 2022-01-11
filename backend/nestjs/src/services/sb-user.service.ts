@@ -272,4 +272,11 @@ export class UserService {
     // return url;
   }
 
+  async isTheUserBanned(name: string) {
+    const user = await this.webUsers.findOne({login: name});
+    if (!user)
+      return (false)
+    return (user.banned === true ? true : false);
+  }
+
 }

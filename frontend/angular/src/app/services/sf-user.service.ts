@@ -162,7 +162,8 @@ export class UserService {
   async apiStatus(response: any): Promise<string> {
     this.login = response.data.login;
     const doubleAuthStatus = await this.doubleAUth(response.data.login);
-    if (doubleAuthStatus === 'ko') return 'ko';
+    const isBanned: boolean = (await axios.get(`http://${window.location.host}:3000/cb-user/isBanned`, {params: this.login})).data;
+    if (doubleAuthStatus === 'ko' || isBanned === true) return 'ko';
     if (response.isFound == 'found') {
       this.router.navigate(['/welcome']);
       this.user = response.data;
