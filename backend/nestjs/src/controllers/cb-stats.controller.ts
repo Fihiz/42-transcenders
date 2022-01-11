@@ -5,6 +5,8 @@ import { Response } from '@nestjs/common';
 import { NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { StatEntity } from 'src/entities/eb-stat.entity';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
+import { AchievementEntity } from 'src/entities/eb-achievement.entity';
+import { AwardEntity } from 'src/entities/eb-award.entity';
 
 @Controller('cb-stats')
 export class StatsController {
@@ -16,9 +18,9 @@ export class StatsController {
         const task: StatEntity[] = await this.statsService.getAllPlayerScores();
         if (task === undefined)
             throw new InternalServerErrorException(`Query on table Stats has failed !`);
-        task.forEach((stat) => {
-            (stat.login as unknown as WebAppUserEntity).avatar = (stat.login as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-        });
+        // task.forEach((stat) => {
+        //     (stat.login as unknown as WebAppUserEntity).avatar = (stat.login as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+        // });
         res.send(task);
         return task;
     }
@@ -28,10 +30,27 @@ export class StatsController {
         const task: StatEntity = await this.statsService.getStatsByLogin(login);
         // if (task === undefined)
             // throw new InternalServerErrorException(`Query on table Stats has failed !`);
-        if (task)
-            (task.login as unknown as WebAppUserEntity).avatar = (task.login as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-        res.send(task);
+        // if (task)
+        //     (task.login as unknown as WebAppUserEntity).avatar = (task.login as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+        // res.send(task);
         return task;
+    }
+
+    @Get('achievements/:login')
+    async getAchievementByLogin(@Param('login') login: string, @Response() res, @Request() req) {
+        const awards: AwardEntity[] = await this.statsService.getAchievementsByLogin(login);
+        const value: number = await this.statsService.getAmountOfAchievement();
+        const resp = awards.map((award: AwardEntity) => {
+            return {
+                date: award.date,
+                detail: (award.achievement_id as unknown as AchievementEntity).detail,
+                icon: (award.achievement_id as unknown as AchievementEntity).icon?.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]),
+            };
+        });
+        res.send({
+            achievements: resp,
+            total_number_of_achievements: value,
+        })
     }
 
 }

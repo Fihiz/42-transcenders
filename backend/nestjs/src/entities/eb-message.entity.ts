@@ -36,4 +36,10 @@ export class MessageEntity {
   })
   role: string;
 
+  @Column({
+		type: "boolean",
+    default: false
+  })
+  invitation: boolean;
+
 }

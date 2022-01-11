@@ -5,6 +5,7 @@ import { if_conversation } from '../interfaces/if_conversation';
 import { if_emission } from '../interfaces/if_emmission';
 import { GlobalService } from './sf-global.service';
 import axios from 'axios';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ import axios from 'axios';
 export class ChatService {
   chat?: if_chat;
 
-  constructor(private global: GlobalService, private socket: Socket) {}
+  constructor(private global: GlobalService, private socket: Socket, private router: Router) {}
 
   conversationExists(
     value: string,
@@ -190,4 +191,50 @@ export class ChatService {
     };
     return data;
   }
+
+  // invitToPlay(emission: if_emission, currentConv: if_conversation) {
+  //   emission.data = {
+  //     conv_id: currentConv.conv_id,
+  //     logins_conv: currentConv.members,
+  //     date: new Date(),
+  //     content: "Invitation to start party!",
+  //     invitation: true
+  //   };
+  //   emission.socketId = this.global.socketId as string;
+  //   if (currentConv.name) {
+  //     // this.socket.emit('message', this.emission);
+  //     this.socket.emit('setInvitation', this.emission);
+  //   }
+  //   this.socket.on('launchgameInvitation', (game: any) => {
+  //     this.router.navigate([`/pong/game/${game}`]);
+  //   });
+  // }
+
+  // acceptToPlay(emission: if_emission, currentConv: if_conversation) {
+  //   emission.data = {
+  //     conv_id: currentConv.conv_id,
+  //     logins_conv: currentConv.members,
+  //     date: new Date(),
+  //     content: "Invitation accepted!",
+  //     invitation: false
+  //   };
+  //   // this.socket.emit('takeInvitation', this.emission);
+  //   this.socket.emit('setInvitation', this.emission);
+  //   this.socket.on('launchgameInvitation', (game: any) => {
+  //     console.log(game);
+  //     this.router.navigate([`/pong/game/${game}`]);
+  //   });
+  // }
+  
+  // cancelToPlay(emission: if_emission, currentConv: if_conversation) {
+  //   emission.data = {
+  //     conv_id: currentConv.conv_id,
+  //     date: new Date(),
+  //     content: "Invitation refused!",
+  //     invitation: false
+  //   };
+  //   this.socket.emit('unsetInvitation', this.emission);
+  //   console.log("PASS CANCEL");
+  // }
+
 }

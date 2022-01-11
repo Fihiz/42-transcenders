@@ -9,9 +9,22 @@ export class AchievementEntity {
 	achievement_id: number;
 
   @Column({
-		type: "varchar"
+		type: "varchar",
+    default: "",
   })
   detail: string;
+
+  @Column({
+		type: "varchar",
+    default: "",
+  })
+  type: string;
+
+  @Column({
+		type: "int",
+    default: 0,
+  })
+  value: number;
 
   @Column({
 		type: "bytea",

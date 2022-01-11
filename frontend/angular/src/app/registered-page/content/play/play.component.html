@@ -6,23 +6,28 @@
     <li class="item" *ngFor="let set of sets">
         <div class="container">
             <svg version="1.1" id="{{ set.type }}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-            viewBox="0 0 700 400" style="border-radius: 12px 12px 0px 0px;" xml:space="preserve">
-                <g>
+            viewBox="0 0 700 400" style="border-radius: 10px 10px 0px 0px;" xml:space="preserve">
+                <g *ngIf="set.board_color === 'figma'">
+                    <image width="750" height="400" xlink:href="../../../../assets/landscapebannerfigma.png" />
+                </g>
+                <g *ngIf="set.board_color !== 'figma'">
                     <rect width="700" height="400" style="fill: {{ set.board_color }};"/>
                 </g>
                 <g *ngIf="set.type === 'classic'">
-                    <rect x="25" y="40" width="7" height="50" style="fill: {{ set.racket1_color }};"/>
-                    <rect x="668" y="260" width="7" height="50" style="fill: {{ set.racket2_color }};"/>
+                    <rect x="25" y="40" width="10" height="80" style="fill: {{ set.racket1_color }};"/>
+                    <rect x="668" y="260" width="10" height="80" style="fill: {{ set.racket2_color }};"/>
+                    <rect x="460" y="260" width="16" height="16" style="fill: {{ set.ball_color }};"/>
                 </g>
-                <g *ngIf="set.type === 'medium'">
-                    <rect x="25" y="40" width="7" height="50" style="fill: {{ set.racket1_color }};"/>
-                    <rect x="668" y="260" width="7" height="50" style="fill: {{ set.racket2_color }};"/>
+                <g *ngIf="set.type === 'our'">
+                    <rect x="25" y="40" width="10" height="80" style="fill: {{ set.racket1_color }};"/>
+                    <rect x="668" y="260" width="10" height="80" style="fill: {{ set.racket2_color }};"/>
+                    <rect x="460" y="260" width="16" height="16" style="fill: {{ set.ball_color }};"/>
                 </g>
-                <g *ngIf="set.type === 'hard'">
-                    <rect x="25" y="40" width="7" height="20" style="fill: {{ set.racket1_color }};"/>
-                    <rect x="660" y="260" width="15" height="100" style="fill: {{ set.racket2_color }};"/>
+                <g *ngIf="set.type === 'special'">
+                    <rect x="25" y="40" width="6" height="48" style="fill: {{ set.racket1_color }};"/>
+                    <rect x="660" y="130" width="15" height="120" style="fill: {{ set.racket2_color }};"/>
+                    <rect x="460" y="260" width="8" height="8" style="fill: {{ set.ball_color }};"/>
                 </g>
-                <rect x="460" y="260" width="10" height="10" style="fill: {{ set.ball_color }};"/>
             </svg>
             <h3 class="title">{{ set.type }}</h3>
             <hr>

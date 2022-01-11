@@ -19,6 +19,12 @@ export class InvitationEntity {
 	receiver: WebAppUserEntity['login'];
 
   @Column({
+    type: "varchar",
+    default: "classic"
+  })
+  game_type: string;
+
+  @Column({
     type: "varchar"
   })
   invitation_type: string;

@@ -3,11 +3,13 @@ import { GlobalDataService } from "src/services/sb-global-data.service";
 import { GameTypeEntity } from "src/entities/eb-game-type.entity";
 import { WebAppUserEntity } from "src/entities/eb-web-app-user.entity";
 import { GameService } from '../services/sb-game.service'
+import { PongGameEntity } from "src/entities/eb-pong-game.entity";
 
 @WebSocketGateway({cors:{origin: '*'}})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	players: {id: string, login: string, gameType: string}[] = [];
+	socketsOnPlayComponent: {id: string, login: string}[] = [];
 
 	@WebSocketServer()
 	server;
@@ -41,11 +43,49 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.server.emit('status', {login: login, status: status});
 	}
 
+	@SubscribeMessage('isInPendingQueue')
+	isInPendingQueue(@MessageBody() body: any) {
+		let requestLogin: string;
+		GlobalDataService.loginIdMap.forEach((user, login) => {
+			if (user.sockets.find(socket => socket.id === body.id))
+				requestLogin = login;
+		});
+		const user = this.players.find((user) => user.login === requestLogin);
+		this.socketsOnPlayComponent.push({id: body.id, login: requestLogin});
+		if (user)
+			this.server.to(body.id).emit('isInPendingQueue', {selected: user.gameType});
+	}
+
+	@SubscribeMessage('leavingPlay')
+	userLeavePlayComponent(@MessageBody() body: any) {
+		const index: number = this.socketsOnPlayComponent.findIndex((user) => user.id === body.id);
+		if (index == -1)
+			return ;
+		const userLogin: string = this.socketsOnPlayComponent[index].login;
+		this.socketsOnPlayComponent.splice(index, 1);
+		if (!this.socketsOnPlayComponent.find((user) => user.login === userLogin))
+		{
+			const index = this.players.findIndex((user) => user.login === userLogin);
+			if (index == -1)
+				return ;
+			this.players.splice(index, 1);
+			console.log(`${userLogin} left Matchmaking.`);
+		}
+	}
+
 	@SubscribeMessage('hello')
 	setConnected(@MessageBody() body: any) {
 		let game = this.gameService.games.find((game) => game.id === body.gameId);
 		if (!game)
 		{
+			console.log("CKKC", this.gameService.games);
+			console.log("CKKKC");
+			this.gameService.games.forEach((game2) => {
+				console.log(game2.id);
+				if(game2.id === body.gameId)
+					console.log("found");
+			});
+			console.log("CKC", this.gameService.games.find((game) => game.id === body.gameId));
 			this.server.to(body.id).emit('welcome', {notFound: true});
 			return ;
 		}
@@ -55,11 +95,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (foundUser)
 			{
 				foundUser.gameId = body.gameId;
-				if (loginInMap === game.changing.leftPaddle.login || loginInMap === game.changing.rightPaddle.login)
-					user.status = "Playing";
-				else if (user.status === "Online")
+				if (user.status !== "Playing")
+				{
 					user.status = "Spectating";
-				this.emitStatusToAll(loginInMap, user.status);
+					this.emitStatusToAll(loginInMap, user.status);
+				}
 				this.server.to(foundUser.id).emit('welcome', game);
 				return ;
 			}
@@ -73,23 +113,20 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (foundUser)
 			{
 				foundUser.gameId = 0;
-				let status = "Online";
-				user.sockets.forEach((socket) => {
-					if (status != "Playing" && socket.gameId != 0)
-					{
-						const game = this.gameService.games.find((game) => game.id === socket.gameId)
-						if (game)
+				if (user.status !== "Playing")
+				{
+					let status = "Online";
+					user.sockets.forEach((socket) => {
+						if (status != "Spectating" && socket.gameId != 0)
 						{
-							if (loginInMap === game.changing.leftPaddle.login ||
-								loginInMap === game.changing.rightPaddle.login)
-								status = "Playing";
-							else if (status === "Online")
-								status = "Spectating";
+							const game = this.gameService.games.find((game) => game.id === socket.gameId)
+							if (game && status === "Online")
+							status = "Spectating";
 						}
-					}
-				})
-				user.status = status;
-				this.emitStatusToAll(loginInMap, user.status);
+					})
+					user.status = status;
+					this.emitStatusToAll(loginInMap, user.status);
+				}
 				console.log(loginInMap, 'successfully left the game');
 				return ;
 			}
@@ -139,7 +176,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		// console.log(`${body.login} - IN:`, this.players);
 		const found = this.players.find((user) => user.gameType === body.gameType );
 		if (found !== undefined) {
-			const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(body.login, body.gameType)
+			const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(body.gameType)
 			if (search) {
 				let player1 = found;
 				let player2 = body;
@@ -148,14 +185,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					player2 = found;
 				}
 				const id = await this.gameService.createMatchParty(player1.login, player2.login, search);
-				const party = await this.gameService.getPartyById(id);
+				const party: PongGameEntity = await this.gameService.getPartyById(id);
 				console.log(`${body.login} match with ${player1.login}.`);
-				this.gameService.addGame(party.game_id, (party.player1 as unknown as WebAppUserEntity), (party.player2 as unknown as WebAppUserEntity));
+				this.gameService.addGame(party);
 				const index = this.players.findIndex((user) => user.login === found.login)
 				if (index != -1)
 					this.players.splice(index, 1);
-				// console.log(`${body.login} - OUT:`, this.players);
-				this.server.to([player1.id, player2.id]).emit('launchgame', party.game_id);
+				const dest = this.socketsOnPlayComponent.filter((blabla) => (blabla.login === player1.login || blabla.login === player2.login)).map((blabla2) => blabla2.id);
+				this.server.to(dest).emit('isInPendingQueue', { navigate: `/pong/game/${party.game_id}`});
 			}
 			else {
 				const index = this.players.findIndex((user) => user.login === body.login);
@@ -166,6 +203,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 		else {
 			this.players.push( { id: body.id, login: body.login, gameType: body.gameType } );
+			this.server.to(GlobalDataService.loginIdMap.get(body.login).sockets.map((socket) => {return socket.id;})).emit('isInPendingQueue', {selected: body.gameType});
 			// console.log(`${body.login} - OUT:`, this.players);
 		}
 	}
@@ -177,6 +215,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			return ;
 		this.players.splice(index, 1);
 		console.log(`${body.login} left Matchmaking.`);
+		this.server.to(GlobalDataService.loginIdMap.get(body.login).sockets.map((socket) => {return socket.id;})).emit('isInPendingQueue', {selected: undefined});
 		// this.players = [];
 		// console.log("OUT:", this.players);
 	}

@@ -25,20 +25,24 @@ export class GameController {
 		return task;
 	}
 
+	setAvatar(player: WebAppUserEntity, req) {
+		if (player && player.avatar && req?.rawHeaders && (req.rawHeaders.indexOf('Host') != -1))
+			player.avatar = player.avatar?.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+	}
+
 	@Get('parties')
 	async getPartiesInProgress(@Response() res, @Request() req): Promise<PongGameEntity[]> | undefined {
 		const task: PongGameEntity[] = await this.gameService.getAllPartiesInProgress()
 		if (task === undefined)
 			throw new InternalServerErrorException(`Query on table PongGame has failed !`);
 		task.forEach((elem) => {
-			(elem.player1 as unknown as WebAppUserEntity).avatar = (elem.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(elem.player2 as unknown as WebAppUserEntity).avatar = (elem.player2 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(elem.winner as unknown as WebAppUserEntity).avatar = (elem.winner as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(elem.looser as unknown as WebAppUserEntity).avatar = (elem.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+			this.setAvatar(elem.player1 as unknown as WebAppUserEntity, req);
+			this.setAvatar(elem.player2 as unknown as WebAppUserEntity, req);
+			this.setAvatar(elem.winner as unknown as WebAppUserEntity, req);
+			this.setAvatar(elem.looser as unknown as WebAppUserEntity, req);
 		})
 		res.send(task);
 		return task;
-
 	}
 
 	@Get('history/:login')
@@ -47,10 +51,10 @@ export class GameController {
         if (task === undefined)
             throw new InternalServerErrorException(`Query on table Stats has failed !`);
 		task.forEach((elem) => {
-			(elem.player1 as unknown as WebAppUserEntity).avatar = (elem.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(elem.player2 as unknown as WebAppUserEntity).avatar = (elem.player2 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(elem.winner as unknown as WebAppUserEntity).avatar = (elem.winner as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(elem.looser as unknown as WebAppUserEntity).avatar = (elem.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+			this.setAvatar(elem.player1 as unknown as WebAppUserEntity, req);
+			this.setAvatar(elem.player2 as unknown as WebAppUserEntity, req);
+			this.setAvatar(elem.winner as unknown as WebAppUserEntity, req);
+			this.setAvatar(elem.looser as unknown as WebAppUserEntity, req);
 		})
         res.send(task);
         return task;
@@ -61,10 +65,10 @@ export class GameController {
 		const task: PongGameEntity = await this.gameService.getPartyByLogin(login);
 		if (task)
 		{
-			(task.player1 as unknown as WebAppUserEntity).avatar = (task.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(task.player2 as unknown as WebAppUserEntity).avatar = (task.player2 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(task.winner as unknown as WebAppUserEntity).avatar = (task.winner as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-			(task.looser as unknown as WebAppUserEntity).avatar = (task.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
+			this.setAvatar(task.player1 as unknown as WebAppUserEntity, req);
+			this.setAvatar(task.player2 as unknown as WebAppUserEntity, req);
+			this.setAvatar(task.winner as unknown as WebAppUserEntity, req);
+			this.setAvatar(task.looser as unknown as WebAppUserEntity, req);
 		}
 		res.send(task);
 		return task;
@@ -75,10 +79,10 @@ export class GameController {
 		const task: PongGameEntity = await this.gameService.getPartyById(id);
 		if (task === undefined)
 			throw new NotFoundException(`Query on table PongGame has failed, id ${id} not exist.`);
-		(task.player1 as unknown as WebAppUserEntity).avatar = (task.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-		(task.player2 as unknown as WebAppUserEntity).avatar = (task.player2 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-		(task.winner as unknown as WebAppUserEntity).avatar = (task.winner as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-		(task.looser as unknown as WebAppUserEntity).avatar = (task.player1 as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);	
+		this.setAvatar(task.player1 as unknown as WebAppUserEntity, req);
+		this.setAvatar(task.player2 as unknown as WebAppUserEntity, req);
+		this.setAvatar(task.winner as unknown as WebAppUserEntity, req);
+		this.setAvatar(task.looser as unknown as WebAppUserEntity, req);
 		res.send(task);
 		return task;
 	}

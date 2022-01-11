@@ -405,3 +405,11 @@ h6 {
   justify-content: flex-start;
   align-items: center;
 }
+
+.accept {
+  color: #86c541;
+}
+
+.cancel {
+  color: crimson;
+}
