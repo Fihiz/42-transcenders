@@ -111,23 +111,42 @@
                 />
                 <div class="style-txt text-center">{{ user.pseudo }}</div>
               </div>
-              <button
-                class="btn btn-secondary btn-sm btn-block"
-                id="view-member"
-                role="button"
-                type="submit"
-                (click)="onAddFriend(user.login, 'friend')"
-              >
-                Add
-              </button>
-              <button
-                class="btn btn-secondary btn-sm btn-block"
-                id="view-member"
-                role="button"
-                type="submit"
-              >
-                Block
-              </button>
+
+                <button
+                  class="btn btn-secondary btn-sm btn-block"
+                  id="view-member"
+                  role="button"
+                  type="submit"
+                  (click)="onAddFriend(user.login, 'friend')"
+                >
+                  Add
+                </button>
+                <button
+                  class="btn btn-secondary btn-sm btn-block"
+                  id="view-member"
+                  role="button"
+                  type="submit"
+                >
+                  Remove
+                </button>
+                
+                <button
+                  class="btn btn-secondary btn-sm btn-block"
+                  id="view-member"
+                  role="button"
+                  type="submit"
+                  (click)="onAddFriend(user.login, 'friend')"
+                >
+                  Block
+                </button>
+                <button
+                  class="btn btn-secondary btn-sm btn-block"
+                  id="view-member"
+                  role="button"
+                  type="submit"
+                >
+                  Unblock
+                </button>
             </li>
           </ul>
         </li>
