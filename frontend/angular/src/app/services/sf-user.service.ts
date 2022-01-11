@@ -76,16 +76,27 @@ export class UserService {
 
   ngOnInit() {}
 
-  async checkIfAlreadyFriend(data: object): Promise<Boolean> {
-    console.log('We are in checkIfAlreadyFriend', data);
-    const resp = (
-      await axios.get(
-        `http://${window.location.host}:3000/cb-user/checkIfAlreadyFriend`,
-        { params: data }
-      )
-    ).data;
-    return resp;
-  }
+  // FOR FRIENDS
+  // async getAllMyrelations(login: string): Promise<any> {
+  // // console.log('We are in checkIfAlreadyFriend', data);
+  // const resp = (
+  //   await axios.get(
+  //     `http://${window.location.host}:3000/cb-user/getAllMyrelations/${login}`
+  //   )
+  // ).data;
+  // return resp;
+  // }
+
+  // async checkIfAlreadyFriend(data: object): Promise<Boolean> {
+  //   console.log('We are in checkIfAlreadyFriend', data);
+  //   const resp = (
+  //     await axios.get(
+  //       `http://${window.location.host}:3000/cb-user/checkIfAlreadyFriend`,
+  //       { params: data }
+  //     )
+  //   ).data;
+  //   return resp;
+  // }
 
   async adminChangeUserRole(data: object) {
     console.log('We are in adminChangeUserRole');

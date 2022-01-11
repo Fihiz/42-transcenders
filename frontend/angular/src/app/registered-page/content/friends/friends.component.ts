@@ -18,36 +18,47 @@ export class FriendsComponent implements OnInit {
 
   allMyFriends: Array<any> = [];
 
+  allMyRelations: Array<any> = [];
+
   onSeeAllUsers() {
     this.socket.emit('allUsersInApp');
   }
 
   async onAddFriend(newFriendLogin: string, friendship: string) {
-    const data = {
-      currentLogin: this.global.login,
-      newFriendLogin: newFriendLogin,
-      friendship: friendship,
-    };
-    // mettre dans une reponse
-
-    // Avant de faire insert, faire un get sur newFriendLogin pour check si deja existant (violation case)
-    if (!(await this.userService.checkIfAlreadyFriend(data)))
-      await this.userService.addNewFriend(data);
-    console.log(data.currentLogin, data.newFriendLogin, data.friendship);
-    // si la reponse est bonne
-    // mettre a jour allUserInfo avec l entity updated
-    this.socket.emit('getNewFriendInfo', data.newFriendLogin);
+    // const data = {
+    //   currentLogin: this.global.login,
+    //   newFriendLogin: newFriendLogin,
+    //   friendship: friendship,
+    // };
+    // // mettre dans une reponse
+    // // Avant de faire insert, faire un get sur newFriendLogin pour check si deja existant (violation case)
+    // if (!(await this.userService.checkIfAlreadyFriend(data)))
+    //   await this.userService.addNewFriend(data);
+    // console.log(data.currentLogin, data.newFriendLogin, data.friendship);
+    // // si la reponse est bonne
+    // // mettre a jour allUserInfo avec l entity updated
+    // this.socket.emit('getNewFriendInfo', data.newFriendLogin);
   }
 
-  getAllMyfriends() {
-    console.log('COUCOUCOUCOUCOCU', this.allMyFriends);
-    for (let i = 0; i < this.allMyFriends.length; i++) {
-      console.log('EMIT FOR: ', this.allMyFriends[i].login);
-      this.socket.emit('getNewFriendInfo', this.allMyFriends[i].login);
-    }
+  // getAllMyfriends() {
+  //   console.log('COUCOUCOUCOUCOCU', this.allMyFriends);
+  // for (let i = 0; i < this.allMyFriends.length; i++) {
+  //   console.log('EMIT FOR: ', this.allMyFriends[i].login);
+  //   this.socket.emit('getNewFriendInfo', this.allMyFriends[i].login);
+  // }
+  // }
+
+  async getAllMyRelations() {
+    // FOR FRIENDS
+    // const relations = await this.userService.getAllMyrelations(
+    //   this.userService.user.login
+    // );
+    // this.allMyRelations = relations;
+    // console.log(relations);
   }
+
   ngOnInit(): void {
-    this.getAllMyfriends();
+    this.getAllMyRelations();
     this.socket.on('allUsersInApp', (data: any) => {
       this.allUsersInfo = [];
       this.allUsersInfo = data;

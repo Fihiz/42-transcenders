@@ -8,6 +8,8 @@ import { AdminChangeUserRoleDto } from 'src/dtos/adminChangeUserRole.dto';
 import { AdminChangeIsBannedDto } from 'src/dtos/adminChangeIsBanned.dto';
 import { AddNewFriendDto } from 'src/dtos/addNewFriend.dto';
 import { RelationEntity } from 'src/entities/eb-relation.entity';
+import { StatEntity } from 'src/entities/eb-stat.entity';
+import { AwardEntity } from 'src/entities/eb-award.entity';
 
 @Injectable()
 export class UserService {
@@ -110,17 +112,53 @@ export class UserService {
     return (user);
   }
 
-  async findIfAlreadyFriend(login: string, loginFriend: string) : Promise<RelationEntity> {
-    const user : RelationEntity = await getRepository(RelationEntity)
-      .createQueryBuilder("userAlias")
-      .where("userAlias.user1 = :login", { login: login })
-      .andWhere("userAlias.user2 = :loginFriend", { loginFriend: loginFriend })
-      .getOne();
-    console.log(user);
-    if (user === undefined)
-      return undefined;
-    return (user);
-  }
+  // FOR FRIENDS
+  // async getStatsAndAchievementsFromRelation(relations: any[]) : Promise<any> {
+  //   await relations.forEach(async (relation) => {
+  //     relation.stats = await getRepository(StatEntity).findOne({
+  //       where: {login: relation.user2.login}
+  //     });
+  //     relation.achievements = await getRepository(AwardEntity).findOne({
+  //       relations: ["achievement_id"],
+  //       where: {login: relation.user2.login},
+  //     });
+  //     console.log("relation : ", relations);
+  //   });
+  //   return relations;
+  // }
+
+  // async findAllrelationsOf(login: string) : Promise<any> {
+  //   // const relations : any[] = await 
+  //   return this.relation
+  //   .find({
+  //     relations: ["user2"],
+  //     where: {user1: login},
+  //   }).then((relations) => {
+  //     console.log(relations);
+  //     return (relations);
+  //   }).catch((error) => {
+  //     console.log(error);
+  //     return undefined
+  //   });
+  //   ;
+
+
+  //   // const returnn = await this.getStatsAndAchievementsFromRelation(relations);
+  //   // console.log("test", relations);
+  //   // return (relations);
+  // }
+
+  // async findIfAlreadyFriend(login: string, loginFriend: string) : Promise<RelationEntity> {
+  //   const user : RelationEntity = await getRepository(RelationEntity)
+  //     .createQueryBuilder("userAlias")
+  //     .where("userAlias.user1 = :login", { login: login })
+  //     .andWhere("userAlias.user2 = :loginFriend", { loginFriend: loginFriend })
+  //     .getOne();
+  //   console.log(user);
+  //   if (user === undefined)
+  //     return undefined;
+  //   return (user);
+  // }
 
   // updateWebAppUser(id: number, newUser: WebAppUserEntity) {
   //   return this.webUsers.update("test", newUser);

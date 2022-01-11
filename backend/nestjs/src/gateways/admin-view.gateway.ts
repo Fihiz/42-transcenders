@@ -20,10 +20,10 @@ server;
 		this.server.emit('updatedUserGlobalRole', await this.userService.findOneAppUser(emission));
 	}
 
-  @SubscribeMessage('getNewFriendInfo')
-  async getListOfAllFriends(@MessageBody() emission) {
-		this.server.emit('aNewFriend', await this.userService.findOneApiUser(emission));
-	}
+  // @SubscribeMessage('getNewFriendInfo')
+  // async getListOfAllFriends(@MessageBody() emission) {
+	// 	this.server.emit('aNewFriend', await this.userService.findOneApiUser(emission));
+	// }
 
 
   // @SubscribeMessage('getNewUser')
