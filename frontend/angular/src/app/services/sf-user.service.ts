@@ -137,6 +137,7 @@ export class UserService {
       this.router.navigate(['/welcome']);
       this.user = response.data;
       this.global.login = response.data.login;
+      this.global.pseudo = response.data.pseudo;
       this.setRole(this.global.login as string);
       this.socket.on('connect', () => {
         this.introduce(this.socket);
@@ -167,6 +168,7 @@ export class UserService {
       date: new Date(),
       avatar: '',
       role: '',
+      pseudo: '',
     };
     socket.emit('introduction', message);
   }
@@ -209,6 +211,7 @@ export class UserService {
     this.user.pseudo = (<HTMLInputElement>(
       document.getElementById('pseudo')
     )).value;
+    this.global.pseudo = this.user.pseudo;
     if (this.user.login === 'pgoudet') {
       this.user.app_role = 'superadmin';
       this.global.role = 'superadmin';

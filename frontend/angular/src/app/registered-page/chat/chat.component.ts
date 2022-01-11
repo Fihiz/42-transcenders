@@ -14,6 +14,7 @@ import axios from 'axios';
 })
 export class ChatComponent implements OnInit {
   convMessages: Array<if_message> = [];
+  membersPseudo: Array<{login: string, pseudo: string}> = [];
   users: Array<string> = new Array();
   currentConv: if_conversation = {
     avatar: '',
@@ -37,7 +38,7 @@ export class ChatComponent implements OnInit {
 
   constructor(
     private socket: Socket,
-    private global: GlobalService,
+    public global: GlobalService,
     private chatService: ChatService
   ) {}
 
@@ -72,6 +73,7 @@ export class ChatComponent implements OnInit {
       document.getElementById('search-user')
     ))?.value;
     if (selectedUser) {
+
       if (selectedUser === this.global.login) {
         alert("Can't create a room with yourself");
         return;
@@ -145,12 +147,17 @@ export class ChatComponent implements OnInit {
   }
 
   async onSelectConv(value: any) {
+    this.membersPseudo = [];
     this.convMessages = [];
     this.currentConv = this.chatService.getConvFromId(
       value,
       this.listConv,
       this.currentConv
-    );
+      );
+    const tmpMembers = (await axios.get('http://127.0.0.1:3000/cb-chat/getMembers', {params: this.currentConv.members})).data;
+    let i = -1;
+    while (++i < tmpMembers.length)
+      this.membersPseudo.push({login: this.currentConv.members[i], pseudo: tmpMembers[i]});
     this.emission = this.chatService.emission(
       'getMessages',
       this.currentConv,
@@ -275,7 +282,6 @@ export class ChatComponent implements OnInit {
   }
 
   async onKick() {
-    // alert pgoudet: to keep for cleaning !
     const value = (<HTMLInputElement>document.getElementById('kick-room'))
       ?.value;
     this.chatService.clearInputValues('kick-room');
@@ -302,7 +308,6 @@ export class ChatComponent implements OnInit {
   }
 
   onChangePassword() {
-    // alert pgoudet: to keep for cleaning !
     const value = (<HTMLInputElement>document.getElementById('change-password'))
       ?.value;
     this.chatService.clearInputValues('change-password');

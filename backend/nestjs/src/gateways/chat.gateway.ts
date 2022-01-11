@@ -34,7 +34,8 @@ export class ChatGateway {
       id: emission.id,
       login: emission.login,
       avatar:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLoHISAbaLunfRgJ2FHPtFsHUIPa5iC66eZwBK7uc8KgzpMzuDh3cPA4CfXz8mIQlpOpM&usqp=CAU',
-      role: 'chatter'
+      role: 'chatter',
+      pseudo: 'machine'
     })
     this.server.to(emission.socketId).emit('allMessages', messArray);
   }

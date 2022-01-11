@@ -123,7 +123,7 @@
           />
           <datalist id="user-list">
             <option *ngFor="let user of users">
-              <span *ngIf="user !== login">{{ user }}</span>
+              <span *ngIf="user !== global.pseudo">{{ user }}</span>
             </option>
           </datalist>
           <button
@@ -186,9 +186,9 @@
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
                         <div class="viewMembersRoom">
-                          <span *ngFor="let member of currentConv.members">
+                          <span *ngFor="let member of membersPseudo">
                             <div class="style-txt">
-                              {{ member }}
+                              {{ member.login }} / {{ member.pseudo }}
                               <br />
                             </div>
                           </span>
@@ -459,7 +459,7 @@
                       <div class="right-chatter-wrap">
                         <div class="wrapper">
                           <span class="message-data-time"
-                            >{{ message.login }}
+                            >{{ message.pseudo }}
                             <span class="badge badge-pill badge-info">{{
                               message.role
                             }}</span>
@@ -486,7 +486,7 @@
                         <img src="{{ message.avatar }}" alt="avatar" />
                         <div class="wrapper">
                           <span class="message-data-time"
-                            >{{ message.login }}
+                            >{{ message.pseudo }}
                             <span class="badge badge-pill badge-info">{{
                               message.role
                             }}</span>

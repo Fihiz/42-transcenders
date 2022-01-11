@@ -160,4 +160,19 @@ export class ChatController {
       }
       res.send({avatars: avatars, login: login, roles: roles});
     }
+
+    @Get('getMembers')
+    async getMembersPseudo(@Req() req, @Res() res) {
+      const tmp = new Array(...Object.entries(req.query));
+      const members = []
+      for (const obj of tmp) {
+        members.push(obj[1] as string);
+      }
+      const pseudos: Array<string> = [];
+      for (const member of members) {
+        const user = await this.userService.findOneAppUser(member);
+        pseudos.push(user.pseudo)
+      }
+      res.send(pseudos);
+    }
 }

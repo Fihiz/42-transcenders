@@ -133,7 +133,8 @@ export class ChatService {
     const message = emission.data
     const doesConvExists = await this.convService.findOneConversation(message.conv_id);
     const chatter = await this.chatter.findOne({login: emission.login, conv_id: message.conv_id});
-    const avatar = (await this.userService.findOneApiUser(emission.login))?.avatar;
+    const avatar = (await this.userService.findOneApiUser(emission.login));
+    const user = (await this.userService.findOneAppUser(emission.login));
     if (doesConvExists) {
       const messRegistered: MessageEntity = {
         content: message.content,
@@ -141,8 +142,9 @@ export class ChatService {
         date: message.date,
         id: ++this.messId,
         login: emission.login,
-        avatar: avatar,
-        role: chatter.chat_role
+        avatar: avatar.avatar,
+        role: chatter.chat_role,
+        pseudo: user.pseudo,
       }
       const messageCreated = await this.createMessage(messRegistered)
 			if (typeof(messageCreated) !== 'string' && typeof(messageCreated) !== 'number')
