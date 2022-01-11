@@ -51,6 +51,17 @@ export class FriendsComponent implements OnInit {
   // }
   // }
 
+  setMyFriends() {
+    console.log('COUCOUCOUCOUCOCU', this.allMyRelations);
+    for (let i = 0; i < this.allMyRelations.length; i++) {
+      if (this.allMyRelations[i].relation.friendship === 'friend')
+      {
+        console.log('ils sont amis');
+        this.allMyFriends.push(this.allMyRelations[i]);
+      }
+    }
+  }
+
   async getAllMyRelations() {
     // FOR FRIENDS
     const relations = await this.userService.getAllMyrelations(
@@ -58,6 +69,7 @@ export class FriendsComponent implements OnInit {
     );
     this.allMyRelations = relations;
     console.log(relations);
+    this.setMyFriends();
   }
 
   async ngOnInit() {
