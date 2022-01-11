@@ -62,14 +62,11 @@ export class UserController {
     }
 
     // FOR FRIENDS
-    // @Get('getAllMyrelations/:login')
-	// async getAllMyrelations(@Param('login') login, @Response() res) {
-    //     // console.log('relations of', login);
-    //     const relations: any[] = await this.userService.findAllrelationsOf(login);
-    //     // const returnn = await this.userService.getStatsAndAchievementsFromRelation(relations);
-    //     // console.log('relations are', returnn);
-    //     res.send(relations);
-	// }
+    @Get('getAllMyrelations/:login')
+	async getAllMyrelations(@Param('login') login, @Response() res) {
+        const relations: any[] = await this.userService.findAllrelationsOf(login);
+        res.send(relations);
+	}
 
     // @Get('checkIfAlreadyFriend')
 	// async getCheckIfAlreadyFriend(@Request() req, @Response() res): Promise<any> {
@@ -160,7 +157,7 @@ export class UserController {
 
     @Get('isBanned')
     async isBanned(@Req() Req, @Res() res) {
-      res.send(await this.userService.isTheUserBanned(Req.query[0]));
+        res.send(await this.userService.isTheUserBanned(Req.query[0]));
     }
 
 }

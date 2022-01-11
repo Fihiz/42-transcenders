@@ -543,7 +543,7 @@ export class ChatComponent implements OnInit {
         logins_conv: this.currentConv.members,
         date: new Date(),
         content: "Invitation accepted!",
-        type: null,
+        type: undefined,
         invitation: false
       }
     );

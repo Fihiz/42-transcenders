@@ -247,7 +247,7 @@ export class ChatGateway {
       const emitter: WebAppUserEntity = alreadyInvited.emitter as any as WebAppUserEntity;
       // SEND INVITATION DURING INVITATION FROM ADVERSARY
       if (emitter.login !== emission.login) {
-        if (alreadyInvited && emission.data.type === null)
+        if (alreadyInvited && emission.data.type === undefined)
           emission.data.type = alreadyInvited.game_type;
         const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(emission.data.type);
         // TYPE GAME EXIST
@@ -295,7 +295,7 @@ export class ChatGateway {
       }
       else {
         console.log(`${emission.login} fait une demande pour jouer.`);
-        await this.ConvService.setInvitation(emission.data.conv_id, emission.login, emission.data.logins_conv.find((login) => login !== emission.login), emission.game_type);
+        await this.ConvService.setInvitation(emission.data.conv_id, emission.login, emission.data.logins_conv.find((login) => login !== emission.login), emission.data.type);
         const messages = await this.chatService.handleMessage(emission);
         if (typeof(messages) !== 'string') {
           const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
