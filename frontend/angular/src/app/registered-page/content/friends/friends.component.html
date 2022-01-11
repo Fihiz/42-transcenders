@@ -1,1 +1,122 @@
-<p>friends works!</p>
+<div class="container">
+  <h1>MY FRIENDS</h1>
+  <h4>My favorite friends</h4>
+  <!-- MY FAVORITE FRIENDS -->
+  <div class="row-top">
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      <!-- an user -->
+      <span *ngFor="let friend of allMyFriends">
+        <div class="col">
+          <div class="card">
+            <div class="text-center">
+              <img
+                src="{{ friend.avatar }}"
+                class="card-img-top rounded-circle"
+                alt="..."
+              />
+              <div class="card-body">
+                <h5 class="card-title">{{ friend.pseudo }}</h5>
+                <h6>Online</h6>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">
+                    <span class="badge badge-pill badge-success">Bio</span>
+                    <div class="style-txt">
+                      {{ friend.bio }}
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <span class="badge badge-pill badge-success">Stats</span>
+                    <div class="style-txt">
+                      Like any other social media site Facebook has length
+                      requirements when it comes to writing on the wall,
+                      providing status, messaging and commenting. Understanding
+                      how many characters you can use, enab.
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <span class="badge badge-pill badge-success"
+                      >Achievements</span
+                    >
+                    <div class="achievements">
+                      <img
+                        src="../../../../assets/achievements/achievement1.png"
+                        class="rounded-circle-sm"
+                        alt="..."
+                      />
+                      <img
+                        src="../../../../assets/achievements/achievement4.png"
+                        class="rounded-circle-sm"
+                        alt="..."
+                      />
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </span>
+      <!-- /an user -->
+    </div>
+  </div>
+</div>
+<!-- ALL USERS -->
+<br />
+<br />
+<div class="row-bottom">
+  <h4>All users</h4>
+  <nav class="navbar navbar-expand-lg" id="header-conv-nav">
+    <!-- BOTTOM DROPDOWN -->
+    <div class="dropdown">
+      <button
+        class="btn btn-light btn-lg"
+        type="button"
+        id="dropdownMenuButton"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        (click)="onSeeAllUsers()"
+      >
+        See all users
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <!--View members-->
+        <li *ngFor="let user of allUsersInfo">
+          <a *ngIf="user.login !== global.login" class="dropdown-item"
+            >{{ user.login }} &raquo;
+          </a>
+          <ul class="dropdown-menu dropdown-submenu">
+            <li>
+              <div class="text-center">
+                <img
+                  src="{{ user.avatar }}"
+                  class="rounded-circle-sm"
+                  alt="..."
+                />
+                <div class="style-txt text-center">{{ user.pseudo }}</div>
+              </div>
+              <button
+                class="btn btn-secondary btn-sm btn-block"
+                id="view-member"
+                role="button"
+                type="submit"
+                (click)="onAddFriend(user.login, 'friend')"
+              >
+                Add
+              </button>
+              <button
+                class="btn btn-secondary btn-sm btn-block"
+                id="view-member"
+                role="button"
+                type="submit"
+              >
+                Block
+              </button>
+            </li>
+          </ul>
+        </li>
+        <!-- /view memebers -->
+      </ul>
+    </div>
+  </nav>
+</div>

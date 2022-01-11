@@ -123,7 +123,7 @@
           />
           <datalist id="user-list">
             <option *ngFor="let user of users">
-              <span *ngIf="user !== global.pseudo">{{ user }}</span>
+              <span *ngIf="user !== global.login">{{ user }}</span>
             </option>
           </datalist>
           <button
@@ -297,7 +297,13 @@
                     </ul>
                   </li>
                   <!--Mute-->
-                  <li *ngIf="currentConv.type === 'private' || currentConv.type !== 'private'  && currentRole !== 'chatter'">
+                  <li
+                    *ngIf="
+                      currentConv.type === 'private' ||
+                      (currentConv.type !== 'private' &&
+                        currentRole !== 'chatter')
+                    "
+                  >
                     <a class="dropdown-item"> Mute &raquo; </a>
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
@@ -317,7 +323,13 @@
                       </li>
                     </ul>
                   </li>
-                  <li  *ngIf="currentConv.type === 'private' || currentConv.type !== 'private' && currentRole !== 'chatter'">
+                  <li
+                    *ngIf="
+                      currentConv.type === 'private' ||
+                      (currentConv.type !== 'private' &&
+                        currentRole !== 'chatter')
+                    "
+                  >
                     <a class="dropdown-item"> Unmute &raquo; </a>
                     <ul class="dropdown-menu dropdown-submenu">
                       <li>
@@ -452,56 +464,56 @@
             <div class="messages" *ngFor="let message of convMessages">
               <!-- if global.login is emitter, print on right -->
               <!-- <div *ngIf="message.avatar !== 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLoHISAbaLunfRgJ2FHPtFsHUIPa5iC66eZwBK7uc8KgzpMzuDh3cPA4CfXz8mIQlpOpM&usqp=CAU'; else errorMessage"> -->
-                <span *ngIf="login === message.login; else leftMessages">
-                  <li class="clearfix">
-                    <div class="message-data text-right">
-                      <!-- new wrap for right-chatter infos -->
-                      <div class="right-chatter-wrap">
-                        <div class="wrapper">
-                          <span class="message-data-time"
-                            >{{ message.pseudo }}
-                            <span class="badge badge-pill badge-info">{{
-                              message.role
-                            }}</span>
-                          </span>
-                          <span class="message-data-time">{{
-                            message.date | date: "short"
+              <span *ngIf="login === message.login; else leftMessages">
+                <li class="clearfix">
+                  <div class="message-data text-right">
+                    <!-- new wrap for right-chatter infos -->
+                    <div class="right-chatter-wrap">
+                      <div class="wrapper">
+                        <span class="message-data-time"
+                          >{{ message.pseudo }}
+                          <span class="badge badge-pill badge-info">{{
+                            message.role
                           }}</span>
-                        </div>
-                        <img src="{{ message.avatar }}" alt="avatarrr" />
+                        </span>
+                        <span class="message-data-time">{{
+                          message.date | date: "short"
+                        }}</span>
+                      </div>
+                      <img src="{{ message.avatar }}" alt="avatarrr" />
+                    </div>
+                  </div>
+                  <!-- end of new wrap for right-chatter infos -->
+                  <div class="message other-message float-right">
+                    {{ message.content }}
+                  </div>
+                </li>
+              </span>
+              <!-- else, print on left -->
+              <ng-template #leftMessages>
+                <li class="clearfix">
+                  <div class="message-data text-left">
+                    <!-- new wrap for left-chatter infos -->
+                    <div class="left-chatter-wrap">
+                      <img src="{{ message.avatar }}" alt="avatar" />
+                      <div class="wrapper">
+                        <span class="message-data-time"
+                          >{{ message.pseudo }}
+                          <span class="badge badge-pill badge-info">{{
+                            message.role
+                          }}</span>
+                        </span>
+                        <span class="message-data-time">{{
+                          message.date | date: "short"
+                        }}</span>
                       </div>
                     </div>
-                    <!-- end of new wrap for right-chatter infos -->
-                    <div class="message other-message float-right">
-                      {{ message.content }}
-                    </div>
-                  </li>
-                </span>
-                <!-- else, print on left -->
-                <ng-template #leftMessages>
-                  <li class="clearfix">
-                    <div class="message-data text-left">
-                      <!-- new wrap for left-chatter infos -->
-                      <div class="left-chatter-wrap">
-                        <img src="{{ message.avatar }}" alt="avatar" />
-                        <div class="wrapper">
-                          <span class="message-data-time"
-                            >{{ message.pseudo }}
-                            <span class="badge badge-pill badge-info">{{
-                              message.role
-                            }}</span>
-                          </span>
-                          <span class="message-data-time">{{
-                            message.date | date: "short"
-                          }}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="message other-message float-left">
-                      {{ message.content }}
-                    </div>
-                  </li>
-                </ng-template>
+                  </div>
+                  <div class="message other-message float-left">
+                    {{ message.content }}
+                  </div>
+                </li>
+              </ng-template>
               <!-- </div> -->
               <!-- <ng-template #errorMessage class="message other-message float-right">
                 <span class="badge bg-warning text-dark">{{ message.content }}</span>

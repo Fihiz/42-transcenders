@@ -13,25 +13,16 @@ export class RelationEntity {
 	user2: WebAppUserEntity['login'];
 
   @Column({
-    type: "varchar"
+    type: "varchar",
+    default: 'notfriend'
   })
   friendship: string;
 
   @Column({
-    type: "timestamp",
-    nullable: true
+    type: "boolean",
+    default: false
   })
-  friendship_birthday: Date;
-
-  @Column({
-    type: "boolean"
-  })
-  blocked_by_2: boolean;
-
-  @Column({
-    type: "boolean"
-  })
-  blocked_by_1: boolean;
+  blocked: boolean;
 
   @Column({
 		type: "timestamp",
@@ -44,5 +35,4 @@ export class RelationEntity {
     default: new Date()
   })
   created: Date;
-  
 }

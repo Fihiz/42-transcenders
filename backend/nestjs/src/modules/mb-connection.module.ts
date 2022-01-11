@@ -10,9 +10,10 @@ import { ChatService } from 'src/services/sb-chat.service';
 import { UserService } from 'src/services/sb-user.service';
 import { ConnectedGateway } from '../gateways/connected.gateway'
 import { ChatterService } from 'src/services/sb-chatter.service';
+import { RelationEntity } from 'src/entities/eb-relation.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MessageEntity, ConversationEntity, ChatterEntity, WebAppUserEntity, ApiUserDataEntity])],
+  imports: [TypeOrmModule.forFeature([MessageEntity, ConversationEntity, ChatterEntity, WebAppUserEntity, ApiUserDataEntity, RelationEntity])],
   providers: [ConnectedGateway, ChatService, UserService, ConvService, ChatterService]
 })
 export class ConnectionModule {}

@@ -7,6 +7,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { AdminChangeUserRoleDto } from 'src/dtos/adminChangeUserRole.dto';
 import { AdminChangeIsBannedDto } from 'src/dtos/adminChangeIsBanned.dto';
+import { AddNewFriendDto } from 'src/dtos/addNewFriend.dto';
+import { RelationEntity } from 'src/entities/eb-relation.entity';
 
 
 const editFileName = (req, file, callback) => {
@@ -46,7 +48,47 @@ export class UserController {
             alert('An error has occured when banning the user');
         }
         
+    } 
+    
+    @Post('addNewFriend')
+    async postAddNewFriend(@Body('data') dataDto: AddNewFriendDto) {
+        try {
+            const response = await this.userService.addNewFriend(dataDto)
+        }
+        catch {
+            alert('An error has occured when adding a new friend');
+        } 
     }
+
+    // FOR FRIENDS
+    // @Get('getAllMyrelations/:login')
+	// async getAllMyrelations(@Param('login') login, @Response() res) {
+    //     // console.log('relations of', login);
+    //     const relations: any[] = await this.userService.findAllrelationsOf(login);
+    //     // const returnn = await this.userService.getStatsAndAchievementsFromRelation(relations);
+    //     // console.log('relations are', returnn);
+    //     res.send(relations);
+	// }
+
+    // @Get('checkIfAlreadyFriend')
+	// async getCheckIfAlreadyFriend(@Request() req, @Response() res): Promise<any> {
+    //     console.log('data', req.query);
+	// 	const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
+    //     if (isAlreadyFriend && isAlreadyFriend.friendship === "friend")
+    //         res.send(true);
+	// 	else
+	// 	    res.send(false);
+	// }
+
+    // @Get('checkIfAlreadyFriend')
+	// async getCheckIfAlreadyFriend(@Request() req, @Response() res): Promise<any> {
+    //     console.log('data', req.query);
+	// 	const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
+    //     if (isAlreadyFriend && isAlreadyFriend.friendship === "friend")
+    //         res.send(true);
+	// 	else
+	// 	    res.send(false);
+	// }
   
 	@Get('profile/:login')
 	async getProfileByLogin(@Param('login') login: string, @Response() res, @Request() req): Promise<WebAppUserEntity> {
