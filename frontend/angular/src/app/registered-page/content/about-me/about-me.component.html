@@ -1,121 +1,6 @@
-<!-- <app-double-auth></app-double-auth>
-<div *ngIf="profile" style="text-align: center">
-
-  <form [formGroup]="profileForm">
-    <h6 id="Oops something went wrong updating your profile" class="d-none" style="color:red;"><em>Oops something went wrong updating your profile</em></h6>
-    <h6 id="Success" class="d-none" style="color:rgb(0, 255, 64);"><em>Profile update successfull</em></h6>
-    <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Login</span>
-      </div>
-      <input
-        id="login"
-        value={{profile.login}}
-        disabled>
-    </div>
-
-    <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Pseudo</span>
-      </div>
-      <input
-        id="pseudo"
-        type="text"
-        maxlength="20"
-        class="form-control"
-        formControlName="pseudo"
-        pattern="[A-Za-z0-9]+"
-      />
-    </div>
-    <h6 id="pseudo already exists" class="d-none" style="color:red;"><em>This pseudo already exists</em></h6>
-              
-    <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Bio</span>
-      </div>
-      <textarea class="form-control"
-      id="bio"
-      type="text"
-      maxlength="200"
-      formControlName="bio"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label for="avatar" class="col-form-label title-form"
-        >Avatar</label
-      >
-
-      <div>
-        <div class="btn btn-dark" (click)="decrement()">&lt;</div>
-        <img
-          id="avatar"
-          class="rounded-circle"
-          alt="{{ userService.avatarList[userService.i].alt }}"
-          src="{{ userService.avatarList[userService.i].url }}"
-        />
-        <input
-          class="d-none"
-          type="text"
-          id="avatarUrl"
-          formControlName="avatarUrl"
-          value="{{ userService.avatarList[userService.i].url }}"
-        />
-        <div class="btn btn-dark" (click)="increment()">&gt;</div>
-      </div>
-      <div>
-        <input
-          type="file"
-          class="form-control"
-          id="uploaded-avatar"
-          name="avatar"
-          accept="image/jpeg"
-          (change)="userService.inputFile($event)"
-        />
-      </div>
-    </div>
-  </form>
-  <button
-    id="submitId"
-    type="button"
-    [disabled]="!profileForm.valid"
-    class="btn btn-primary"
-    (click)="saveChanges()"
-  >
-    Save changes
-  </button>
-  <div class="padding-text">
-    <h6><em>Complete the form to enable the button</em></h6>
-  </div>
-
-  <h6>
-    <em>Form Status: {{ profileForm.status }}</em>
-  </h6>
-
-  <div>
-    <h2>Achievements: {{ unlockedAchievements }} / {{ totalNumberOfAchievements }}</h2>
-    <table *ngIf="unlockedAchievements">
-      <tr *ngFor="let achievement of achievements">
-        <td>
-          <img src="{{ achievement.icon }}">
-        </td>
-        <td>
-          <p>
-            {{ achievement.detail }}
-          </p>
-        </td>
-        <td>
-            {{ achievement.date }}
-        </td>
-      </tr>
-    </table>
-  </div>
-</div>
-<div *ngIf="!found">Not found</div> -->
-
-
 <!-- NEW -->
 <div class="container">
-  <h1>ABOUT ME</h1>
+  <h1>About me</h1>
   <br>
   <h4>My information</h4>
   <!-- MY FAVORITE FRIENDS -->
@@ -255,7 +140,7 @@
 
     </div>
 
-    <div class="card-body">
+    <div class="card-body" id="achievements-list">
       <!-- achievements: make it scrollable ? -->
       <h5 class="card-title">My achievements</h5>
        <div>

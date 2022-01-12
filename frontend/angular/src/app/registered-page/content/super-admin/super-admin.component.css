@@ -49,3 +49,15 @@ button[type="submit"] {
 .badge {
   font-size: 7px;
 }
+
+h1,
+h5 {
+  text-align: center;
+  font-family: "Secular One", sans-serif;
+  color: #324448;
+}
+
+h4 {
+  font-family: "Secular One", sans-serif;
+  color: #324448;
+}

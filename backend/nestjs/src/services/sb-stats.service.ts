@@ -13,7 +13,7 @@ export class StatsService {
     sets: AchievementEntity[] = [
 		{
             achievement_id: 0,
-            detail: "Hit the ball 1 time in game",
+            detail: "Hit the ball at least once in a game",
             icon: "http://localhost:3000/cb-stats/achievements/icon/ball_hit_x1.png",
             type: "ball hit",
             value: 1,
@@ -21,7 +21,7 @@ export class StatsService {
 		},
         {
             achievement_id: 0,
-            detail: "Hit the ball 10 times in game",
+            detail: "Hit the ball at least 10 times in a game",
             icon: "http://localhost:3000/cb-stats/achievements/icon/ball_hit_x10.png",
             type: "ball hit",
             value: 10,
@@ -29,7 +29,7 @@ export class StatsService {
 		},
         {
             achievement_id: 0,
-            detail: "Hit the ball 100 times in game",
+            detail: "Hit the ball at least 100 times in a game",
             icon: "http://localhost:3000/cb-stats/achievements/icon/ball_hit_x100.png",
             type: "ball hit",
             value: 100,
@@ -37,7 +37,7 @@ export class StatsService {
 		},
         {
             achievement_id: 0,
-            detail: "Win your first game",
+            detail: "Win your 1st game",
             icon: "http://localhost:3000/cb-stats/achievements/icon/win_x1.png",
             type: "victory",
             value: 1,
@@ -61,7 +61,7 @@ export class StatsService {
 		},
         {
             achievement_id: 0,
-            detail: "Let your adversary score 1 point",
+            detail: "Some altruism : let your adversary score 1 point",
             icon: "http://localhost:3000/cb-stats/achievements/icon/lost_x1.png",
             type: "adversary points",
             value: 1,
@@ -69,7 +69,7 @@ export class StatsService {
 		},
         {
             achievement_id: 0,
-            detail: "Let your adversary score 10 points",
+            detail: "Some altruism : let your adversary score 10 points",
             icon: "http://localhost:3000/cb-stats/achievements/icon/lost_x10.png",
             type: "adversary points",
             value: 10,
@@ -77,7 +77,7 @@ export class StatsService {
 		},
         {
             achievement_id: 0,
-            detail: "Let your adversary score 100 points",
+            detail: "Some altruism : let your adversary score 100 points",
             icon: "http://localhost:3000/cb-stats/achievements/icon/lost_x100.png",
             type: "adversary points",
             value: 100,
@@ -85,7 +85,7 @@ export class StatsService {
 		},
         {
             achievement_id: 0,
-            detail: "Obtain your very first point in the classement",
+            detail: "Obtain your very first point in the rank",
             icon: "http://localhost:3000/cb-stats/achievements/icon/point_x1.png",
             type: "points for ladder",
             value: 1,
@@ -93,7 +93,7 @@ export class StatsService {
 		},
         {
             achievement_id: 0,
-            detail: "Obtain your 10th point in the classement",
+            detail: "Obtain your 10th point in the rank",
             icon: "http://localhost:3000/cb-stats/achievements/icon/point_x10.png",
             type: "points for ladder",
             value: 10,
@@ -101,7 +101,7 @@ export class StatsService {
 		},
         {
             achievement_id: 0,
-            detail: "Obtain your 100th point in the classement",
+            detail: "Obtain your 100th point in the rank",
             icon: "http://localhost:3000/cb-stats/achievements/icon/point_x100.png",
             type: "points for ladder",
             value: 100,
@@ -109,7 +109,7 @@ export class StatsService {
 		},
         {
             achievement_id: 0,
-            detail: "Obtain your 1000th point in the classement",
+            detail: "Obtain your 1000th point in the rank",
             icon: "http://localhost:3000/cb-stats/achievements/icon/point_x1000.png",
             type: "points for ladder",
             value: 1000,

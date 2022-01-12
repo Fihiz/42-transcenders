@@ -1,5 +1,6 @@
 <div class="container">
-  <h1>MY FRIENDS</h1>
+  <h1>My friends</h1>
+  <br>
   <h4>My favorite friends</h4>
   <!-- MY FAVORITE FRIENDS -->
   <div class="row-top">
@@ -44,22 +45,22 @@
                     <li class="list-group-item">
                       <span class="badge badge-pill badge-success">Stats</span>
                       <div class="style-txt">
-                        Number of matches: {{ relation.stat.match_number}}
+                        Number of games : {{ relation.stat.match_number}}
                       </div>
                       <div class="style-txt">
-                        Wins: {{ relation.stat.victory}}
+                        Wins : {{ relation.stat.victory}}
                       </div>
                       <div class="style-txt">
-                        Losses: {{ relation.stat.loss}}
+                        Losses : {{ relation.stat.loss}}
                       </div>
                       <div class="style-txt">
-                        Scored_points: {{ relation.stat.scored_points}}
+                        Scored points : {{ relation.stat.scored_points}}
                       </div>
                       <div class="style-txt">
-                        Adversary_points: {{ relation.stat.adversary_points}}
+                        Adversary points : {{ relation.stat.adversary_points}}
                       </div>
                       <div class="style-txt">
-                        Number of ball hits: {{ relation.stat.ball_hit}}
+                        Number of hit ball : {{ relation.stat.ball_hit}}
                       </div>
                     
                     </li>
@@ -96,7 +97,6 @@
           <span class="badge badge-pill badge-danger">{{relation.relation.user2.login}}</span> 
         </span>
       </span>
-</div>
 <!-- ALL USERS -->
 <br />
 <br />
@@ -185,4 +185,5 @@
       </ul>
     </div>
   </nav>
+</div>
 </div>

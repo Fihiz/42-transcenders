@@ -1,5 +1,8 @@
-<h1>Stats profile</h1>
-<p class="count">Last parties played: {{ size }}</p>
+<h1>My statistics</h1>
+<br>
+<h4>Games history</h4>
+<br>
+<p class="count">You have already played <span class="badge badge-warning">{{size}}</span> games</p>
 <div class="list">
 	<li class="item" *ngFor="let match of matches">
 		<div class="player1">
@@ -22,16 +25,26 @@
 	</li>
 </div>
 <br>
-<p *ngIf="stats" class="count">Others stats:</p>
+<br>
+<br>
+<h4 *ngIf="stats">More statistics</h4>
+<br>
 <div *ngIf="stats" class="bloc">
-	<p class="title">Number of victories:</p>
-	<p class="data">{{ stats.victory }}</p>
-	<p class="title">Number of defeats:</p>
-	<p class="data">{{ stats.loss }}</p>
-	<p class="title">Highest score:</p>
-	<p class="data">{{ stats.highest_score }}</p>
-	<p class="title">Worst score:</p>
-	<p class="data">{{ stats.worst_score }}</p>
-	<p *ngIf="stats.match_number > 0 && stats.loss > 0" class="title">Ratio (victory / loss):</p>
-	<p *ngIf="stats.match_number > 0 && stats.loss > 0" class="data">{{ ratio }}</p>
+    <p class="title">Number of victories :</p>
+    <h4 class="data">{{ stats.victory }} / {{ stats.match_number }}</h4>
+	<br>
+    <p class="title">Number of defeats :</p>
+    <h4 class="data">{{ stats.loss }} / {{ stats.match_number }}</h4>
+	<br>
+    <p class="title">Scored points :</p>
+    <h4 class="data">{{ stats.scored_points }}</h4>
+	<br>
+    <p class="title">Adversary points :</p>
+    <h4 class="data">{{ stats.adversary_points }}</h4>
+	<br>
+    <p class="title">Number of hit balls :</p>
+    <h4 class="data">{{ stats.ball_hit }}</h4>
+	<br>
+    <!-- <p *ngIf="stats.match_number > 0 && stats.loss > 0" class="title">Ratio :</p> -->
+    <!-- <p *ngIf="stats.match_number > 0 && stats.loss > 0" class="data">{{ ratio }}</p> -->
 </div>

@@ -1,9 +1,13 @@
 <div class="container">
-  <h1>SUPER ADMIN PANEL</h1>
+  <h1>Admin interface</h1>
+  <br>
+  <br>
+
   <!-- CHANGE USER ROLE -->
+  <h4>Global user settings</h4>
+  <h6>You can appoint moderators who will have the same rights as you</h6>
   <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
-      <!-- <a class="navbar-brand">Set user roles</a> -->
       <div *ngIf="global.role === 'superadmin'" class="dropdown">
         <button
           class="btn btn-light btn-lg"
@@ -58,7 +62,76 @@
       </div>
     </div>
   </nav>
+  <br>
+  <br>
+  <!-- BAN USER -->
+  <h6>You can ban users from the website. They won't be able to connect anymore</h6>
+  <nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+      <!-- <a class="navbar-brand">Set user roles</a> -->
+      <div class="dropdown">
+        <button
+          class="btn btn-light btn-lg"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          (click)="onGetAllUsersList()"
+        >
+          Ban
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <!--1 -->
+          <li *ngFor="let user of allUsersInfo">
+            <div class="viewUsers">
+              <a *ngIf="user.app_role !== 'superadmin'" class="dropdown-item">
+                {{ user.login }}
+                <span
+                  *ngIf="user.banned; else activeUser"
+                  class="badge badge-pill badge-danger"
+                  >banned</span
+                >
+                <ng-template #activeUser>
+                  <span class="badge badge-pill badge-success">active</span>
+                </ng-template>
+                &raquo;
+              </a>
+            </div>
+            <ul class="dropdown-menu dropdown-submenu">
+              <li>
+                <span *ngIf="user.banned === true; else setAsBanned">
+                  <button
+                    type="submit"
+                    class="btn btn-secondary btn-sm btn-block"
+                    (click)="onBanChange(user.login, false)"
+                  >
+                    Unban
+                  </button>
+                </span>
+                <ng-template #setAsBanned>
+                  <button
+                    type="submit"
+                    class="btn btn-secondary btn-sm btn-block"
+                    (click)="onBanChange(user.login, true)"
+                  >
+                    Ban
+                  </button>
+                </ng-template>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <br>
+  <br>
+  <br>
+  <br>
   <!-- CHAT ROOM -->
+  <h4>Global chat settings</h4>
+  <h6>You can destroy channels and give or remove rights to users into chat channels</h6>
   <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
       <!-- <a class="navbar-brand">Set user roles</a> -->
@@ -154,64 +227,6 @@
       </div>
     </div>
   </nav>
-  <!-- BAN USER -->
-  <nav class="navbar navbar-light bg-light">
-    <div class="container-fluid">
-      <!-- <a class="navbar-brand">Set user roles</a> -->
-      <div class="dropdown">
-        <button
-          class="btn btn-light btn-lg"
-          type="button"
-          id="dropdownMenuButton"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          (click)="onGetAllUsersList()"
-        >
-          Ban
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <!--1 -->
-          <li *ngFor="let user of allUsersInfo">
-            <div class="viewUsers">
-              <a *ngIf="user.app_role !== 'superadmin'" class="dropdown-item">
-                {{ user.login }}
-                <span
-                  *ngIf="user.banned; else activeUser"
-                  class="badge badge-pill badge-danger"
-                  >banned</span
-                >
-                <ng-template #activeUser>
-                  <span class="badge badge-pill badge-success">active</span>
-                </ng-template>
-                &raquo;
-              </a>
-            </div>
-            <ul class="dropdown-menu dropdown-submenu">
-              <li>
-                <span *ngIf="user.banned === true; else setAsBanned">
-                  <button
-                    type="submit"
-                    class="btn btn-secondary btn-sm btn-block"
-                    (click)="onBanChange(user.login, false)"
-                  >
-                    Unban
-                  </button>
-                </span>
-                <ng-template #setAsBanned>
-                  <button
-                    type="submit"
-                    class="btn btn-secondary btn-sm btn-block"
-                    (click)="onBanChange(user.login, true)"
-                  >
-                    Ban
-                  </button>
-                </ng-template>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <br>
+  <br>
 </div>

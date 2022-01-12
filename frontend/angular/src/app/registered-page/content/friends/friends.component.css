@@ -59,14 +59,14 @@ button[type="submit"] {
 }
 
 .row-top {
-  min-height: 650px;
-  max-height: 650px;
+  min-height: 450px;
+  max-height: 450px;
   overflow-y: auto;
 }
 
 .row-bottom {
-  min-height: 350px;
-  max-height: 350px;
+  min-height: 400px;
+  max-height: 400px;
   overflow-y: auto;
 }
 
@@ -82,12 +82,12 @@ h1,
 h5 {
   text-align: center;
   font-family: "Secular One", sans-serif;
-  color: #528fac;
+  color: #324448;
 }
 
 h4 {
   font-family: "Secular One", sans-serif;
-  color: #528fac;
+  color: #324448;
 }
 
 h6 {
@@ -135,4 +135,8 @@ p {
 .viewMembersRoom {
   max-height: 150px;
   overflow-y: auto;
+}
+
+.list-group-item {
+  font-size: 10px;
 }

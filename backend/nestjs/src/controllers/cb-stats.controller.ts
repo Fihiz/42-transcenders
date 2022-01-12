@@ -28,11 +28,9 @@ export class StatsController {
     @Get('statistic/:login')
     async getStatsByLogin(@Param('login') login: string, @Response() res, @Request() req): Promise<StatEntity> {
         const task: StatEntity = await this.statsService.getStatsByLogin(login);
-        // if (task === undefined)
-            // throw new InternalServerErrorException(`Query on table Stats has failed !`);
         // if (task)
         //     (task.login as unknown as WebAppUserEntity).avatar = (task.login as unknown as WebAppUserEntity).avatar.replace("localhost:3000", req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
-        // res.send(task);
+        res.send(task);
         return task;
     }
 

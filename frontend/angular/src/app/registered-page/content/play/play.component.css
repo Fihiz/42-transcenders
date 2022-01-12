@@ -1,5 +1,7 @@
-h1, .state {
-	text-align: center;
+h1, h4, .state {
+  text-align: center;
+  font-family: "Secular One", sans-serif;
+  color: #324448;
 }
 
 h5, h6 {

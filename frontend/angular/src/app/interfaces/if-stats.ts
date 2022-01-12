@@ -36,12 +36,9 @@ export interface if_stats_object {
   victory: number;
   loss: number;
   points_for_ladder: number;
-  highest_score: number;
-  worst_score: number;
   scored_points: number;
   adversary_points: number;
-  longest_match: number;
-  shortest_match: number;
+  ball_hit: number;
   created: Date;
   updated: Date;
 }
