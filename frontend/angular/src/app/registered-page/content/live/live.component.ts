@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { if_game_object } from 'src/app/interfaces/if-game';
 import { GameService } from 'src/app/services/sf-game.service'
+import { GlobalService } from 'src/app/services/sf-global.service';
 
 @Component({
   selector: 'app-live',
@@ -13,7 +14,7 @@ export class LiveComponent implements OnInit {
   parties: if_game_object[] | undefined = [];
   size: number = 0;
 
-  constructor(private gameService: GameService ) { }
+  constructor(private gameService: GameService, public global: GlobalService  ) { }
 
   ngOnInit(): void {
     this.getLives();

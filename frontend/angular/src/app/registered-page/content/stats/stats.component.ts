@@ -15,9 +15,9 @@ export class StatsComponent implements OnInit {
   size: number = 0;
   stats?: if_stats_object;
   ratio: number = 0;
-  profile: string | undefined = this.globalService.login;
+  profile: string | undefined = this.global.login;
 
-  constructor(private statsService: StatsService, private globalService: GlobalService) { }
+  constructor(private statsService: StatsService, public global: GlobalService) { }
 
   ngOnInit(): void {
     this.getMatchHistory();

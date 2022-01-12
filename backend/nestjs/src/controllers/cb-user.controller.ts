@@ -11,6 +11,7 @@ import { AddNewFriendDto } from 'src/dtos/addNewFriend.dto';
 import { RelationEntity } from 'src/entities/eb-relation.entity';
 
 import * as fs from 'fs';
+import { DisplayProfileUpdate } from 'src/gateways/displayProfileUpdate.gateway';
 
 const editFileName = (req, file, callback) => {
     const name = req.body.filename;
@@ -27,7 +28,7 @@ const checkFileExtension = (req, file, callback) => {
 @Controller('cb-user')
 export class UserController {
     
-    constructor(private userService: UserService) {}
+    constructor(private userService: UserService, private displayProfileUpdate: DisplayProfileUpdate) {}
 
     @Post('adminUpdateRole')
     async postAdminUpdateRole(@Body('data') dataDto:  AdminChangeUserRoleDto) {
@@ -118,7 +119,10 @@ export class UserController {
         }
         const response = await this.userService.updateUser(login, data);
         if (response.affected === 1)
+        {
+            this.displayProfileUpdate.server.emit("profileUpdate", {login , pseudo: data.pseudo, avatar: data.avatar, bio: data.bio});
             res.send("Success");
+        }
         else
             res.send("Failure");
     }
