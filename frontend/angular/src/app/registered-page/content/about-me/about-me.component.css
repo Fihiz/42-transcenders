@@ -156,3 +156,9 @@ input[type="file"] {
   /* padding: 6px 12px; */
   cursor: pointer;
 }
+
+.icon {
+  height: 80px;
+  width: 80px;
+  border-radius: 10px;
+}

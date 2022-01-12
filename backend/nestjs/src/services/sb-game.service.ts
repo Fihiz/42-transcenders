@@ -302,16 +302,7 @@ export class GameService {
 	}
 	
 	async createTypeOfGame(type: string) {
-		let index: number = -1;
-		if (type === "classic")
-			index = 0;
-		else if (type === "special")
-			index = 1;
-		else if (type === "our")
-			index = 2;
-		else
-			return;
-		const data: GameTypeEntity = this.sets[index];
+		const data: GameTypeEntity = this.sets.find((game) => game.type === type);
 		const typeRepository = await getRepository(GameTypeEntity);
 		return typeRepository.insert(data)
 		.then((response) => {
@@ -323,18 +314,33 @@ export class GameService {
 	}
 
 	async initTypeOfGame() {
-		const classic = await this.searchOneTypeOfGame("classic");
-		if (classic === undefined)
-			if (await this.createTypeOfGame("classic") === false)
-				return false;
-		const special = await this.searchOneTypeOfGame("special");
-		if (special === undefined)
-			if (await this.createTypeOfGame("special") === false)
-				return false;
-		const our = await this.searchOneTypeOfGame("our");
-		if (our === undefined)
-			if (await this.createTypeOfGame("our") === false)
-				return false;
+		// const classic = await this.searchOneTypeOfGame("classic");
+		// if (classic === undefined)
+		// 	if (await this.createTypeOfGame("classic") === false)
+		// 		return false;
+		// const special = await this.searchOneTypeOfGame("special");
+		// if (special === undefined)
+		// 	if (await this.createTypeOfGame("special") === false)
+		// 		return false;
+		// const our = await this.searchOneTypeOfGame("our");
+		// if (our === undefined)
+		// 	if (await this.createTypeOfGame("our") === false)
+		// 		return false;
+		// this.sets.forEach(async (game) => {
+		//     const search = await this.searchOneTypeOfGame(game.type);
+		//     if (search === undefined) {
+		//         if (await this.createTypeOfGame(game.type) === false)
+		//             return false;
+		//     }
+		// });
+		for (let index = 0; index < this.sets.length; index++) {
+			const search = await this.searchOneTypeOfGame(this.sets[index].type);
+			if (search === undefined) {
+				if (await this.createTypeOfGame(this.sets[index].type) === false)
+					return false;
+			}
+		}
+		return true;
 	}
 
 	async getAllTypesOfGame(): Promise<GameTypeEntity[]> | undefined {
@@ -406,7 +412,7 @@ export class GameService {
 			return type;
 		})
 		.catch((error) => {
-			console.log(`Search new parties has failed...`);
+			console.log(`Search type of game has failed...`);
 			console.log(`details: ${error}`);
 			return undefined;
 		})

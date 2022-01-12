@@ -10,6 +10,113 @@ import { CreateUserDto } from 'src/dtos/createUser.dto';
 @Injectable()
 export class StatsService {
 
+    sets: AchievementEntity[] = [
+		{
+            achievement_id: 0,
+            detail: "Hit the ball 1 time in game",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/ball_hit_x1.png",
+            type: "ball hit",
+            value: 1,
+            order: 1
+		},
+        {
+            achievement_id: 0,
+            detail: "Hit the ball 10 times in game",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/ball_hit_x10.png",
+            type: "ball hit",
+            value: 10,
+            order: 2
+		},
+        {
+            achievement_id: 0,
+            detail: "Hit the ball 100 times in game",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/ball_hit_x100.png",
+            type: "ball hit",
+            value: 100,
+            order: 3
+		},
+        {
+            achievement_id: 0,
+            detail: "Win your first game",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/win_x1.png",
+            type: "victory",
+            value: 1,
+            order: 4
+		},
+        {
+            achievement_id: 0,
+            detail: "Win your 5th game",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/win_x5.png",
+            type: "victory",
+            value: 5,
+            order: 5
+		},
+        {
+            achievement_id: 0,
+            detail: "Win your 10th game",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/win_x10.png",
+            type: "victory",
+            value: 10,
+            order: 6
+		},
+        {
+            achievement_id: 0,
+            detail: "Let your adversary score 1 point",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/lost_x1.png",
+            type: "adversary points",
+            value: 1,
+            order: 7
+		},
+        {
+            achievement_id: 0,
+            detail: "Let your adversary score 10 points",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/lost_x10.png",
+            type: "adversary points",
+            value: 10,
+            order: 8
+		},
+        {
+            achievement_id: 0,
+            detail: "Let your adversary score 100 points",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/lost_x100.png",
+            type: "adversary points",
+            value: 100,
+            order: 9
+		},
+        {
+            achievement_id: 0,
+            detail: "Obtain your very first point in the classement",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/point_x1.png",
+            type: "points for ladder",
+            value: 1,
+            order: 10
+		},
+        {
+            achievement_id: 0,
+            detail: "Obtain your 10th point in the classement",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/point_x10.png",
+            type: "points for ladder",
+            value: 10,
+            order: 11
+		},
+        {
+            achievement_id: 0,
+            detail: "Obtain your 100th point in the classement",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/point_x100.png",
+            type: "points for ladder",
+            value: 100,
+            order: 12
+		},
+        {
+            achievement_id: 0,
+            detail: "Obtain your 1000th point in the classement",
+            icon: "http://localhost:3000/cb-stats/achievements/icon/point_x1000.png",
+            type: "points for ladder",
+            value: 1000,
+            order: 13
+		},
+	]
+
     constructor(
         @InjectRepository(StatEntity)
         private stats: Repository<StatEntity>,
@@ -146,7 +253,56 @@ export class StatsService {
         return (await this.achievements.count());
     }
 
+	async createTypeOfAchievement(order: number) {
+		const data: AchievementEntity = this.sets.find((achievement) => achievement.order === order);
+		const typeRepository = getRepository(AchievementEntity);
+		return typeRepository.insert(data)
+		.then((response) => {
+			return true;
+		})
+		.catch((error) => {
+			return false;
+		})
+	}
+
+    async searchOneTypeOfAchievement(id: number): Promise<AchievementEntity> {
+        const typeRepository = getRepository(AchievementEntity);
+        return typeRepository.findOne({
+            where: { order: id }
+        })
+        .then((response) => {
+            const type = response;
+            console.log(`Search achievement has succeeded.`);
+            return type;
+        })
+        .catch((error) => {
+            console.log(`Search achievement has failed...`);
+            console.log(`details: ${error}`);
+            return undefined;
+        })
+    }
+
+	async initAchievements() {
+        // this.sets.forEach(async (achievement) => {
+        //     const search = await this.searchOneTypeOfAchievement(achievement.order);
+        //     if (search === undefined) {
+        //         if (await this.createTypeOfAchievement(achievement.order - 1) === false)
+        //             return false;
+        //     }
+        // });
+        for (let index = 0; index < this.sets.length; index++) {
+            const search = await this.searchOneTypeOfAchievement(this.sets[index].order);
+            if (search === undefined) {
+                if (await this.createTypeOfAchievement(this.sets[index].order) === false)
+                    return false;
+            }
+        }
+		return true;
+	}
+    
     async getAchievementsByLogin(login: string): Promise<AwardEntity[]> | undefined {
+        if (await this.initAchievements() === false)
+            console.log("Error initiatialization of achievements.");
         return (await this.awards.find({
             relations: ["achievement_id"],
             where: { login: login },

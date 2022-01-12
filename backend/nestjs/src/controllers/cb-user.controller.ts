@@ -14,7 +14,6 @@ import * as fs from 'fs';
 
 const editFileName = (req, file, callback) => {
     const name = req.body.filename;
-    // const extension = mime.extension(file.mimetype); // if we want handle several extention
     const extension = "jpg";
     callback(null, `${name}.${extension}`);
 };
@@ -105,6 +104,19 @@ export class UserController {
 
     @Post('profile/:login')
     async updateProfile(@Param('login') login: string, @Response() res, @Request() req, @Body('data') data) {
+        console.log("data:", data);
+        if (data.avatar.search("/cb-user/avatar/upload/") != -1) {
+            data.avatar = data.avatar.replace("/cb-user/avatar/upload/", "/cb-user/avatar/")
+            console.log(data.avatar);
+            const oldPath = `src/assets/avatar/upload/${login}.jpg`;
+            const newPath = `src/assets/avatar/${login}.jpg`;
+            fs.rename(oldPath, newPath, (error) => {
+                if (error) {
+                    console.log('Uploaded file moove has failed...');
+                    throw error;
+                }
+            })
+        }
         const response = await this.userService.updateUser(login, data);
         if (response.affected === 1)
             res.send("Success");
@@ -112,7 +124,6 @@ export class UserController {
             res.send("Failure");
     }
 
-    // @Post('avatar/:login')
     @Post('avatar/upload/:file')
     @UseInterceptors(
     FileInterceptor('avatar', {
@@ -124,25 +135,11 @@ export class UserController {
         fileFilter: checkFileExtension,
     }),
     )
-    uploadAvatar(@UploadedFile() file, @Response() res) {
+    uploadAvatar(@UploadedFile() file, @Request() req, @Response() res) {
         console.log();
-        const url = `http://localhost:3000/cb-user/avatar/upload/${file.filename}`;
+        const url = `http://${req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]}/cb-user/avatar/upload/${file.filename}`;
         res.send(url);
         return url;
-    }
-
-    @Post('avatar/save/:login')
-    saveAvatar(@Body('login') login: string) {
-        const oldPath = `src/assets/avatar/upload/${login}.jpg`;
-        const newPath = `src/assets/avatar/${login}.jpg`;
-        fs.rename(oldPath, newPath, (error) => {
-            if (error) {
-                console.log('Uploaded file moove has failed...');
-                throw error;
-            }
-            console.log('Uploaded file moove has succeded!');
-        })
-        this.userService.updateAvatar(login);
     }
 
     @Get('avatar/upload/:filename')
