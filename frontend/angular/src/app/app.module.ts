@@ -4,7 +4,6 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { OnlineStatusModule } from 'ngx-online-status';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxTypedJsModule } from 'ngx-typed-js';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthPageComponent } from './auth-page/auth-page.component';
@@ -36,6 +35,7 @@ import { ModeratorComponent } from './registered-page/content/moderator/moderato
 const config: SocketIoConfig = {
   url: `http://${window.location.host}:3000`,
   options: { autoConnect: false },
+
 };
 
 @NgModule({
@@ -69,6 +69,7 @@ const config: SocketIoConfig = {
     OnlineStatusModule,
     ReactiveFormsModule,
     SocketIoModule.forRoot(config),
+    
     NgxTypedJsModule,
   ],
   providers: [GlobalService],

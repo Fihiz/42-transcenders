@@ -11,6 +11,7 @@ import { WebAppUserEntity } from "src/entities/eb-web-app-user.entity";
 import { InvitationEntity } from "src/entities/eb-invitation.entity";
 import { GameService } from "src/services/sb-game.service";
 import { GameTypeEntity } from "src/entities/eb-game-type.entity";
+import { SocialService } from "src/services/sb-social.service";
 
 @WebSocketGateway({cors:{origin: '*'}})
 
@@ -18,15 +19,18 @@ export class ChatGateway {
 	conv_id: number = 0;
 
   invits: { conv_id: number, id: string, login: string }[] = [];
+  @WebSocketServer()
+	server;
 
 	constructor(private chatService: ChatService,
               private ConvService: ConvService,
 							private chatterService: ChatterService,
 							private gameService: GameService,
-              private userService: UserService){}
+              private userService: UserService,
+              private socialService: SocialService){}
 
-	@WebSocketServer()
-	server;
+
+
 
   // emitFail(to:string | string[], error: string) {
   //   this.server.emit('error', error);
@@ -49,20 +53,22 @@ export class ChatGateway {
     this.server.to(emission.login).emit('allMessages', messArray);
   }
 
+
 	@SubscribeMessage('message')
 	async messageFunc(@MessageBody() emission) {
+    const receivers = await this.chatService.getReceiverMessages(emission.data.conv_id);
+    const res = await this.socialService.checkRelation(emission.login, receivers);
     const sender = await this.chatterService.findOneChatter(emission.data.conv_id, emission.login);
-    if (sender && sender.muted !== true) {
+    if (sender && sender.muted !== true && res === true) {
 		  const messages = await this.chatService.handleMessage(emission);
       if (typeof(messages) !== 'string') {
-        const receivers = new Set(await this.chatService.getReceiverMessages(emission.data.conv_id));
-        this.server.to(this.chatService.getReceiver(receivers, emission.login)).emit('allMessages', messages);
+        this.server.to(this.chatService.getReceiver(new Set(receivers), emission.login)).emit('allMessages', messages);
       }
       else
         this.errorResponse(emission, 'an error has occured');
     }
     else {
-      this.errorResponse(emission, 'Sorry, you cannot talk. You have been muted.');
+      this.errorResponse(emission, 'Sorry, you cannot talk. You have been muted or blocked.');
     }
 	}
 

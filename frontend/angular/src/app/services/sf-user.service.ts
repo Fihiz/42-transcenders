@@ -137,7 +137,6 @@ export class UserService {
 
   // FOR FRIENDS
   async getAllMyrelations(login: string): Promise<any> {
-  // console.log('We are in checkIfAlreadyFriend', data);
   const resp = (
     await axios.get(
       `http://${window.location.host}:3000/cb-user/getAllMyrelations/${login}`
@@ -146,16 +145,15 @@ export class UserService {
   return resp;
   }
 
-  // async checkIfAlreadyFriend(data: object): Promise<Boolean> {
-  //   console.log('We are in checkIfAlreadyFriend', data);
-  //   const resp = (
-  //     await axios.get(
-  //       `http://${window.location.host}:3000/cb-user/checkIfAlreadyFriend`,
-  //       { params: data }
-  //     )
-  //   ).data;
-  //   return resp;
-  // }
+  async checkIfAlreadyRelation(data: object): Promise<Boolean> {
+    const resp = (
+      await axios.get(
+        `http://${window.location.host}:3000/cb-user/checkIfAlreadyRelation`,
+        { params: data }
+      )
+    ).data;
+    return resp;
+  }
 
   async adminChangeUserRole(data: object) {
     await axios.post(
@@ -172,9 +170,15 @@ export class UserService {
   }
 
   async addNewFriend(data: object) {
-    console.log('We are in addNewFriend');
     await axios.post(
       `http://${window.location.host}:3000/cb-user/addNewFriend`,
+      { data }
+    );
+  }
+
+  async removeFriend(data: object) {
+    await axios.post(
+      `http://${window.location.host}:3000/cb-user/removeFriend`,
       { data }
     );
   }
@@ -244,8 +248,6 @@ export class UserService {
       this.fillUserInfos(response);
       this.i = 0;
       this.registerBackInRequest(response);
-      // console.log('IS OKAYYYY');
-      // EMIT
       this.socket.emit('allUsersInApp');
     }
 

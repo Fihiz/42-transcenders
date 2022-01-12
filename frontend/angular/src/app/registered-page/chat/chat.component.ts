@@ -9,6 +9,9 @@ import { GlobalService } from 'src/app/services/sf-global.service';
 import axios from 'axios';
 import { if_game_type } from 'src/app/interfaces/if-game';
 import { GameService } from 'src/app/services/sf-game.service';
+import { SocialService } from 'src/app/services/sf-social.service';
+import { UserService } from 'src/app/services/sf-user.service';
+import { if_stats } from 'src/app/interfaces/if-stats';
 
 @Component({
   selector: 'app-chat',
@@ -39,13 +42,17 @@ export class ChatComponent implements OnInit {
   inputChatAndPlay: string = '';
   sets: if_game_type[] = [];
   listAllAvailableRooms: Array<if_conversation> = [];
+  relations: Array<{relation: any, stat: if_stats, achievements: any}> = [];
+  blockList: string[] = []
   
   constructor(
     private socket: Socket,
     private global: GlobalService,
     private chatService: ChatService,
     private gameService: GameService,
-    private router: Router
+    private router: Router,
+    private userService: UserService,
+    private socialService: SocialService
   ) {}
 
   async getSetsParty() {
@@ -156,49 +163,29 @@ export class ChatComponent implements OnInit {
   }
 
   async onSelectConv(value: any) {
+    
     this.membersPseudo = [];
     this.convMessages = [];
-    this.currentConv = this.chatService.getConvFromId(
-      value,
-      this.listConv,
-      this.currentConv
-    );
-    const tmpMembers = (
-      await axios.get(
-        `http://${window.location.host}:3000/cb-chat/getMembers`,
-        { params: this.currentConv.members }
-      )
-    ).data;
-    let i = -1;
-    while (++i < tmpMembers.length)
-      this.membersPseudo.push({
-        login: this.currentConv.members[i],
-        pseudo: tmpMembers[i],
-      });
-    this.emission = this.chatService.emission(
-      'getMessages',
-      this.currentConv,
-      value
-    );
-    const response = (
-      await axios.get(
-        `http://${window.location.host}:3000/cb-chat/getRoomInfo`,
-        {
-          params: {
-            conv_id: this.currentConv.conv_id,
-            name: this.global.login,
-          },
-        }
-      )
-    ).data;
-    for (let i = 0; i < response.login.length; i++) {
-      this.convInfo.set(response.login[i], {
-        role: response.roles[i],
-        avatar: response.avatars[i],
-      });
-    }
-    this.currentRole = this.convInfo.get(this.global.login as string)
-      ?.role as string;
+    this.currentConv = this.chatService.getConvFromId( value, this.listConv, this.currentConv);
+      const tmpMembers = ( await axios.get(`http://${window.location.host}:3000/cb-chat/getMembers`,{ params: this.currentConv.members })).data;
+      let i = -1;
+      while (++i < tmpMembers.length)
+        this.membersPseudo.push({
+          login: this.currentConv.members[i],
+          pseudo: tmpMembers[i],
+        });
+      this.emission = this.chatService.emission( 'getMessages', this.currentConv, value);
+      const response = (await axios.get(`http://${window.location.host}:3000/cb-chat/getRoomInfo`,{params: {
+              conv_id: this.currentConv.conv_id,
+              name: this.global.login,
+            }})).data;
+      for (let i = 0; i < response.login.length; i++) {
+        this.convInfo.set(response.login[i], {
+          role: response.roles[i],
+          avatar: response.avatars[i],
+        });
+      }
+      this.currentRole = this.convInfo.get(this.global.login as string)?.role as string;
   }
 
   onJoinRoom() {
@@ -421,8 +408,10 @@ export class ChatComponent implements OnInit {
     else pass.type = 'password';
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.getSetsParty();
+    this.relations = await this.userService.getAllMyrelations(this.global.login as string);
+    this.blockList = this.socialService.createBlockedList(this.relations);
     this.login = this.global.login as string;
     this.inputChatAndPlay = (<HTMLInputElement>(
       document.getElementById('search-user')
@@ -434,6 +423,7 @@ export class ChatComponent implements OnInit {
       if (data.length > 0 && data[0].conv_id === this.currentConv.conv_id) {
         this.convMessages.splice(0, this.convMessages.length);
         this.convMessages = data;
+        this.convMessages = this.chatService.clearMessages(this.convMessages, this.blockList);
       }
     });
     this.socket.on('allConversations', (data: any) => {
@@ -457,6 +447,7 @@ export class ChatComponent implements OnInit {
       const conv = this.listConv.find((conv) => conv.conv_id === data.conv_id);
       if (!conv?.members.find((member) => member === data.name))
         conv?.members.push(data.name);
+      console.log(conv);
     });
     this.socket.on('updatedRoleInConv', (data: any) => {
       this.currentRole = data;
@@ -504,6 +495,20 @@ export class ChatComponent implements OnInit {
     this.socket.on('launchgameInvitation', (game: any) => {
       console.log(game);
       this.router.navigate([`/pong/game/${game}`]);
+    });
+    this.socket.on('block', async (data: any) => {
+      console.log('block = ', this.blockList);
+      this.relations = await this.userService.getAllMyrelations(this.global.login as string);
+      this.blockList = this.socialService.createBlockedList(this.relations);
+      console.log('block = ', this.blockList);
+
+    });
+    this.socket.on('unBlock', async (data: any) => {
+      console.log('unblock = ', this.blockList);
+      this.relations = await this.userService.getAllMyrelations(this.global.login as string);
+      this.blockList = this.socialService.createBlockedList(this.relations);
+      console.log('unblock = ', this.blockList);
+
     });
 
   }
@@ -562,6 +567,7 @@ export class ChatComponent implements OnInit {
       }
     );
   }
+  
 
   // onInvitToPlay() {
   //   this.chatService.invitToPlay(this.emission, this.currentConv);

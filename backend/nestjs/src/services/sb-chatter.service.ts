@@ -117,7 +117,7 @@ export class ChatterService {
 
   async unBan(name, conv_id) {
     try {
-      await this.chatter.update({login: name, conv_id: conv_id}, {ban: true});
+      await this.chatter.update({login: name, conv_id: conv_id}, {ban: false});
       return ('ok');
     }
     catch {

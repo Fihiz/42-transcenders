@@ -61,6 +61,18 @@ export class UserController {
         } 
     }
 
+	//BEGIN OF REMOVE FRIEND
+	@Post('removeFriend')
+    async postRemoveFriend(@Body('data') dataDto: AddNewFriendDto) {
+		console.log('Passing into removeFriend controller');
+       try {
+           const response = await this.userService.removeFriend(dataDto)
+       }
+       catch {
+           alert('An error has occured when removing a new friend');
+       } 
+    }
+
     // FOR FRIENDS
     @Get('getAllMyrelations/:login')
 	async getAllMyrelations(@Param('login') login, @Response() res) {
@@ -68,25 +80,14 @@ export class UserController {
         res.send(relations);
 	}
 
-    // @Get('checkIfAlreadyFriend')
-	// async getCheckIfAlreadyFriend(@Request() req, @Response() res): Promise<any> {
-    //     console.log('data', req.query);
-	// 	const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
-    //     if (isAlreadyFriend && isAlreadyFriend.friendship === "friend")
-    //         res.send(true);
-	// 	else
-	// 	    res.send(false);
-	// }
-
-    // @Get('checkIfAlreadyFriend')
-	// async getCheckIfAlreadyFriend(@Request() req, @Response() res): Promise<any> {
-    //     console.log('data', req.query);
-	// 	const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
-    //     if (isAlreadyFriend && isAlreadyFriend.friendship === "friend")
-    //         res.send(true);
-	// 	else
-	// 	    res.send(false);
-	// }
+    @Get('checkIfAlreadyRelation')
+	async getcheckIfAlreadyRelation(@Request() req, @Response() res): Promise<any> {
+		const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
+        if (isAlreadyFriend /*&& isAlreadyFriend.friendship === "friend"*/)
+            res.send(true);
+		else
+		    res.send(false);
+	}
   
 	@Get('profile/:login')
 	async getProfileByLogin(@Param('login') login: string, @Response() res, @Request() req): Promise<WebAppUserEntity> {

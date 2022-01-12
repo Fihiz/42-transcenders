@@ -141,21 +141,21 @@ export class UserService {
       where: {login: relation.user2}});
       obj.push({relation: relation, stat: stats, achievement: achievements});
     }
-    console.log('obj = ', obj);
+    //console.log('obj = ', obj);
     return (obj);
   }
 
-  // async findIfAlreadyFriend(login: string, loginFriend: string) : Promise<RelationEntity> {
-  //   const user : RelationEntity = await getRepository(RelationEntity)
-  //     .createQueryBuilder("userAlias")
-  //     .where("userAlias.user1 = :login", { login: login })
-  //     .andWhere("userAlias.user2 = :loginFriend", { loginFriend: loginFriend })
-  //     .getOne();
-  //   console.log(user);
-  //   if (user === undefined)
-  //     return undefined;
-  //   return (user);
-  // }
+  async findIfAlreadyFriend(login: string, loginFriend: string) : Promise<RelationEntity> {
+    const user : RelationEntity = await getRepository(RelationEntity)
+      .createQueryBuilder("userAlias")
+      .where("userAlias.user1 = :login", { login: login })
+      .andWhere("userAlias.user2 = :loginFriend", { loginFriend: loginFriend })
+      .getOne();
+    //console.log('user is from user-service', user);
+    if (user === undefined)
+      return undefined;
+    return (user);
+  }
 
   // updateWebAppUser(id: number, newUser: WebAppUserEntity) {
   //   return this.webUsers.update("test", newUser);
@@ -218,25 +218,19 @@ export class UserService {
   }
 
   async addNewFriend(data: AddNewFriendDto): Promise<boolean> {
-    const relationRepository = await getRepository(RelationEntity);
-    return relationRepository.insert({ user1: data.currentLogin as any, user2: data.newFriendLogin as any, friendship: data.friendship as any })
-    .then((response) => {
-      return true;
-    })
-    .catch((error) => {
-      console.log("An error has occured when adding a new friend");
-      return false;
-    })
+    try {
+      const relation = await this.relation.findOne({where: {user1: data.currentLogin, user2: data.newFriendLogin}});
+      if (!relation)
+        await this.relation.insert({ user1: data.currentLogin as any, user2: data.newFriendLogin as any, friendship: data.friendship as any })
+      else
+        await this.relation.update({user1: data.currentLogin, user2: data.newFriendLogin}, {friendship: data.friendship});
+      return (true);
+    }
+    catch (error) {
+      console.log(error);
+      return (false);
+    }
   }
-
-  // async modifieApiUserData(set1: object, where1: string, where2: object) {
-  //   const user = await getRepository(ApiUserDataEntity)
-  //   .createQueryBuilder()
-  //   .update(ApiUserDataEntity)
-  //   .set(set1)
-  //   .where(where1, where2)
-  //   .execute();
-  // }
 
   failLog(@Res() res) {
     res.send('error');
@@ -280,6 +274,11 @@ export class UserService {
     if (!user)
       return (false)
     return (user.banned === true ? true : false);
+  }
+
+  async removeFriend(data: AddNewFriendDto): Promise<any> {
+    const relations= await getRepository(RelationEntity);
+	  await relations.update({user1: data.currentLogin, user2: data.newFriendLogin}, {friendship: data.friendship});
   }
 
 }
