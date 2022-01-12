@@ -23,9 +23,7 @@ export class ChatGateway {
               private ConvService: ConvService,
 							private chatterService: ChatterService,
 							private gameService: GameService,
-              private userService: UserService){
-                gameService.id = 1;
-              }
+              private userService: UserService){}
 
 	@WebSocketServer()
 	server;
@@ -223,7 +221,6 @@ export class ChatGateway {
   @SubscribeMessage('setInvitation')
 	async setInvitationFunc(@MessageBody() emission) {
     // CHECK INVITATION / STATUS
-    console.log("chat gateway", this.gameService.id);
     const alreadyInvited = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
     const receiver = emission.data.logins_conv.find((search) => search !== emission.login);
     const statusReceiver = GlobalDataService.loginIdMap.get(receiver)?.status;
@@ -259,7 +256,7 @@ export class ChatGateway {
             return;
           }
           const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
-          const id = await this.gameService.createMatchParty((invitation.emitter as any as WebAppUserEntity).login, (invitation.receiver as any as WebAppUserEntity).login, search);
+          const id = await this.gameService.createMatchParty((invitation.emitter as any as WebAppUserEntity).login, (invitation.receiver as any as WebAppUserEntity).login, search, true);
           const party = await this.gameService.getPartyById(id);
           this.gameService.addGame(party);
           await this.ConvService.unsetInvitation(invitation);

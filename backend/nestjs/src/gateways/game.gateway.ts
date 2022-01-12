@@ -8,15 +8,15 @@ import { PongGameEntity } from "src/entities/eb-pong-game.entity";
 @WebSocketGateway({cors:{origin: '*'}})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
-	players: {id: string, login: string, gameType: string}[] = [];
+	players: {id: string, login: string, gameType: string, shield: boolean}[] = [];
 	socketsOnPlayComponent: {id: string, login: string}[] = [];
 
 	@WebSocketServer()
 	server;
 
 	constructor(private gameService:GameService) {
+		this.gameService.OnInit();
 		this.emitUpdate(this);
-		this.gameService.id = 2;
 	}
 
 	handleConnection() {
@@ -27,7 +27,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	emitUpdate(test:GameGateway) {
 		test.gameService.updateAll();
-		test.gameService.games.forEach((game) => {
+		GameService.games.forEach((game) => {
 			let dest: string[] = [];
 			GlobalDataService.loginIdMap.forEach(user => {
 				user.sockets.filter(socket => socket.gameId === game.id).map((socket) => {return socket.id;}).forEach((socketId) => dest.push(socketId));
@@ -74,18 +74,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('hello')
 	setConnected(@MessageBody() body: any) {
-		console.log(body.gameId, this.gameService.games);
-		let game = this.gameService.games.find((game) => game.id === body.gameId);
+		let game = GameService.games.find((game) => game.id === body.gameId);
 		if (!game)
 		{
-			console.log("CKKC", this.gameService.games);
-			console.log("CKKKC");
-			this.gameService.games.forEach((game2) => {
-				console.log(game2.id);
-				if(game2.id === body.gameId)
-					console.log("found");
-			});
-			console.log("CKC", this.gameService.games.find((game) => game.id === body.gameId));
 			this.server.to(body.id).emit('welcome', {notFound: true});
 			return ;
 		}
@@ -118,7 +109,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					user.sockets.forEach((socket) => {
 						if (status != "Spectating" && socket.gameId != 0)
 						{
-							const game = this.gameService.games.find((game) => game.id === socket.gameId)
+							const game = GameService.games.find((game) => game.id === socket.gameId)
 							if (game && status === "Online")
 							status = "Spectating";
 						}
@@ -171,7 +162,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('matchmaking')
 	async setMatchmaking(@MessageBody() body: any) {
 		// console.log(`${body.login} - IN:`, this.players);
-		const found = this.players.find((user) => user.gameType === body.gameType );
+		const found = this.players.find((user) => (user.gameType === body.gameType) && (user.shield === body.shield));
 		if (found !== undefined) {
 			const search: GameTypeEntity = await this.gameService.searchOneTypeOfGame(body.gameType);
 			if (search) {
@@ -181,7 +172,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					player1 = body;
 					player2 = found;
 				}
-				const id = await this.gameService.createMatchParty(player1.login, player2.login, search);
+				const id = await this.gameService.createMatchParty(player1.login, player2.login, search, body.shield);
 				const party: PongGameEntity = await this.gameService.getPartyById(id);
 				console.log(`${body.login} match with ${player1.login}.`);
 				this.gameService.addGame(party);
@@ -199,7 +190,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			}
 		}
 		else {
-			this.players.push( { id: body.id, login: body.login, gameType: body.gameType } );
+			this.players.push( { id: body.id, login: body.login, gameType: body.gameType, shield: body.shield } );
 			this.server.to(GlobalDataService.loginIdMap.get(body.login).sockets.map((socket) => {return socket.id;})).emit('isInPendingQueue', {selected: body.gameType});
 			// console.log(`${body.login} - OUT:`, this.players);
 		}

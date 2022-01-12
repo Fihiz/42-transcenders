@@ -57,9 +57,11 @@ export class PongGameEntity {
   @JoinColumn({name: 'game_type_id'})
   game_type_id: GameTypeEntity['game_type_id'];
 
-  // @OneToOne(() => ConversationEntity)
-  // @JoinColumn({name: 'room_id'})
-  // room_id: ConversationEntity['conv_id'];
+  @Column({
+    type: "boolean",
+    default: false,
+  })
+  shield: boolean;
 
   @Column({
 		type: "timestamp",
