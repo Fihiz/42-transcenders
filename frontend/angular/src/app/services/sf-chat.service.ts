@@ -6,6 +6,7 @@ import { if_emission } from '../interfaces/if_emmission';
 import { GlobalService } from './sf-global.service';
 import axios from 'axios';
 import { Router } from '@angular/router';
+import { if_message } from '../interfaces/if-message';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,17 @@ export class ChatService {
   chat?: if_chat;
 
   constructor(private global: GlobalService, private socket: Socket, private router: Router) {}
+
+  clearMessages(convMessages: Array<if_message>, blockedList: Array<string>) {
+    for (const [i, message] of convMessages.entries()) {
+      console.log('index = ', i);
+      if (blockedList.find(el => el === message.login)) {
+        console.log('i = ', i);
+        convMessages.splice(i, 1);
+      }
+    }
+    return (convMessages)
+  }
 
   conversationExists(
     value: string,

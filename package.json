@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@nestjs/event-emitter": "github:nestjs/event-emitter"
+  }
+}

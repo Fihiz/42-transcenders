@@ -62,16 +62,16 @@ export class UserController {
     }
 
 	//BEGIN OF REMOVE FRIEND
-	//@Post('removeFriend')
-    //async postRemoveFriend(@Body('data') dataDto: AddNewFriendDto) {
-	//	console.log('Passing into removeFriend controller');
-    //    try {
-    //        //const response = await this.userService.removeFriend(dataDto)
-    //    }
-    //    catch {
-    //        alert('An error has occured when removing a new friend');
-    //    } 
-    //}
+	@Post('removeFriend')
+    async postRemoveFriend(@Body('data') dataDto: AddNewFriendDto) {
+		console.log('Passing into removeFriend controller');
+       try {
+           const response = await this.userService.removeFriend(dataDto)
+       }
+       catch {
+           alert('An error has occured when removing a new friend');
+       } 
+    }
 
     // FOR FRIENDS
     @Get('getAllMyrelations/:login')
@@ -82,7 +82,6 @@ export class UserController {
 
     @Get('checkIfAlreadyRelation')
 	async getcheckIfAlreadyRelation(@Request() req, @Response() res): Promise<any> {
-        console.log('data', req.query);
 		const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
         if (isAlreadyFriend /*&& isAlreadyFriend.friendship === "friend"*/)
             res.send(true);

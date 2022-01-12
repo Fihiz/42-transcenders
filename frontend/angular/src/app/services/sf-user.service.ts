@@ -91,7 +91,6 @@ export class UserService {
   }
 
   async checkIfAlreadyRelation(data: object): Promise<Boolean> {
-    console.log('We are in checkIfAlreadyRelation', data);
     const resp = (
       await axios.get(
         `http://${window.location.host}:3000/cb-user/checkIfAlreadyRelation`,

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Socket } from 'ngx-socket-io';
 import { GlobalService } from 'src/app/services/sf-global.service';
+import { SocialService } from 'src/app/services/sf-social.service';
 import { UserService } from 'src/app/services/sf-user.service';
 
 @Component({
@@ -14,10 +15,9 @@ export class FriendsComponent implements OnInit {
   constructor(
     private socket: Socket,
     private userService: UserService,
-    public global: GlobalService
-  ) {
-    console.log(global.allUserStatus);
-  }
+    public global: GlobalService,
+    private socialService: SocialService
+  ) {}
 
   allMyFriends: Array<any> = [];
 
@@ -39,6 +39,7 @@ export class FriendsComponent implements OnInit {
     {
       console.log('No relation yet, need to post');
       await this.userService.addNewFriend(data);
+      this.setMyFriends();
     }
     console.log(data.currentLogin, data.newFriendLogin, data.friendship);
     this.getAllMyRelations();
@@ -54,7 +55,8 @@ export class FriendsComponent implements OnInit {
 	  if (await this.userService.checkIfAlreadyRelation(data))
    		{
 			console.log('There is a relation that we can remove');
-			//await this.userService.removeFriend(data);
+			await this.userService.removeFriend(data);
+      this.setMyFriends();
 		}
 		else{
 			console.log('There is NO relation that we can remove');
@@ -64,20 +66,23 @@ export class FriendsComponent implements OnInit {
 
   async onBlockFriend(blockFriendLogin: string, blocked: boolean)
   {
-	const data = {
-		currentLogin: this.global.login,
-		newFriendLogin: blockFriendLogin,
-		friendship: blocked,
-	  };
-	  if (await this.userService.checkIfAlreadyRelation(data))
-   		{
-			console.log('There is a relation that we can block');
-			//await this.userService.blockFriend(data);
-		}
-		else{
-			console.log('There is NO relation that we can block');
-		}
-  }
+	  const data = {
+		  currentLogin: this.global.login as string,
+		  newFriendLogin: blockFriendLogin,
+		  friendship: blocked,
+	    };
+		await this.socialService.blockFriend(data);
+	}
+
+  async onUnBlockFriend(blockFriendLogin: string, blocked: boolean)
+  {
+	  const data = {
+		  currentLogin: this.global.login as string,
+		  newFriendLogin: blockFriendLogin,
+		  friendship: blocked,
+	    };
+		await this.socialService.unblockFriend(data);
+	}
 
   setMyFriends() {
     console.log('COUCOUCOUCOUCOCU', this.allMyRelations);

@@ -22,11 +22,12 @@ import { AwardEntity } from 'src/entities/eb-award.entity';
 import { AchievementEntity } from 'src/entities/eb-achievement.entity';
 import { ConnectedGateway } from 'src/gateways/connected.gateway';
 import { RelationEntity } from 'src/entities/eb-relation.entity';
+import { SocialService } from 'src/services/sb-social.service';
 
 
 @Module({
     imports: [Repository, ConvModule, TypeOrmModule.forFeature([ RelationEntity, ChatterEntity, ConversationEntity, WebAppUserEntity, MessageEntity, ApiUserDataEntity, GameTypeEntity, PongGameEntity, StatEntity, AwardEntity, AchievementEntity ])],
-    providers: [ ChatService, UserService, ChatGateway, ConvService, ChatterService, GameService, StatsService, ConnectedGateway ],
+    providers: [ ChatService, UserService, ChatGateway, ConvService, ChatterService, GameService, StatsService, ConnectedGateway, SocialService ],
     controllers: [ChatController],
 })
 export class ChatModule {}

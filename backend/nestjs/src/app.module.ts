@@ -12,7 +12,7 @@ import { UserModule } from './modules/mb-user.module';
 
 
 @Module({
-  imports: [AppDatabaseModule, ChatModule, GameModule, SocialModule, StatsModule, UserModule, AuthModule, ConnectionModule],
+  imports: [AppDatabaseModule, ChatModule, GameModule, SocialModule, StatsModule, UserModule, AuthModule, ConnectionModule,],
   controllers: [AppController],
   providers: [AppService],
 })

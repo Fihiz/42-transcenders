@@ -21,6 +21,7 @@ constructor(private userService: UserService,
 @WebSocketServer()
 server;
 
+
   @SubscribeMessage('allUsersInApp')
   async getAllUsersInApp(@MessageBody() emission) {
 		this.server.emit('allUsersInApp', await this.userService.findAllAppUser());

@@ -282,4 +282,9 @@ export class UserService {
     return (user.banned === true ? true : false);
   }
 
+  async removeFriend(data: AddNewFriendDto): Promise<any> {
+    const relations= await getRepository(RelationEntity);
+	  await relations.update({user1: data.currentLogin, user2: data.newFriendLogin}, {friendship: data.friendship});
+  }
+
 }
