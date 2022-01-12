@@ -6,6 +6,8 @@ import { if_conversation } from 'src/app/interfaces/if_conversation';
 import { GlobalService } from 'src/app/services/sf-global.service';
 import { UserService } from 'src/app/services/sf-user.service';
 
+
+
 @Component({
   selector: 'app-super-admin',
   templateUrl: './super-admin.component.html',
@@ -13,7 +15,6 @@ import { UserService } from 'src/app/services/sf-user.service';
 })
 export class SuperAdminComponent implements OnInit {
   allUsersInfo: Array<any> = [];
-  // allConversations: Map<if_conversation, Array<{login: string, role: string}>> = new Map();
   listConv: Array<{
     conv: if_conversation;
     members: Array<{ login: string; role: string }>;
@@ -36,9 +37,6 @@ export class SuperAdminComponent implements OnInit {
         },
       }
     );
-    // if (repsonse.data === 'ok') {
-    //   alert('ok');
-    // }
   }
 
   async onSetAdmin(conv: if_conversation, login: string) {
@@ -52,10 +50,6 @@ export class SuperAdminComponent implements OnInit {
         },
       }
     );
-    // if (repsonse.data === 'ok') {
-    //   alert('ok');
-    // }
-    // console.log('convName = ', conv.name, 'login = ', login);
   }
 
   async onSetChatter(conv: if_conversation, login: string) {
@@ -69,9 +63,6 @@ export class SuperAdminComponent implements OnInit {
         },
       }
     );
-    // if (repsonse.data === 'ok') {
-    //   alert('ok');
-    // }
   }
 
   onDelete(conv: if_conversation) {
@@ -100,6 +91,7 @@ export class SuperAdminComponent implements OnInit {
       isBanned: isBanned,
     };
     await this.userService.adminChangeIsBanned(data);
+    this.socket.emit('log-out', {login: currentLogin});
     this.socket.emit('allUsersInApp');
   }
 

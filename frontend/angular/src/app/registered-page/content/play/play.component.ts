@@ -5,6 +5,7 @@ import { if_game_object, if_game_type } from 'src/app/interfaces/if-game';
 import { Socket } from 'ngx-socket-io';
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-play',
   templateUrl: './play.component.html',
@@ -20,7 +21,7 @@ export class PlayComponent implements OnInit, OnDestroy {
   intervalId: number | null = null;
   shields: Map<string, boolean> = new Map<string, boolean>();
 
-  constructor(private gameService: GameService, private router: Router, private socket: Socket) { }
+  constructor(private gameService: GameService, private router: Router, private socket: Socket) {}
 
   ngOnInit() {
     this.socket.on('isInPendingQueue', (body: any) => {

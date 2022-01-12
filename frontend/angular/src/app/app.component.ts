@@ -5,7 +5,6 @@ import { GlobalService } from './services/sf-global.service';
 import { Socket } from 'ngx-socket-io';
 import { UserService } from './services/sf-user.service';
 import { GameService } from './services/sf-game.service';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

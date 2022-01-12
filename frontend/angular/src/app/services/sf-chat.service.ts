@@ -28,13 +28,6 @@ export class ChatService {
         }
       }
     }
-    // while (index = convMessages.findIndex(element => element.id === message.id)) {
-    //   if (blockedList.find(el => el === message.login)) {
-    //     const index = convMessages.findIndex(element => element.id === message.id);
-    //     console.log('index = ', index, 'message = ', message);
-    //     convMessages.splice(index, 1);
-    //     console.log('the Array = ', convMessages)
-    //   }
     return (convMessages);
   }
 
@@ -214,50 +207,5 @@ export class ChatService {
     };
     return data;
   }
-
-  // invitToPlay(emission: if_emission, currentConv: if_conversation) {
-  //   emission.data = {
-  //     conv_id: currentConv.conv_id,
-  //     logins_conv: currentConv.members,
-  //     date: new Date(),
-  //     content: "Invitation to start party!",
-  //     invitation: true
-  //   };
-  //   emission.socketId = this.global.socketId as string;
-  //   if (currentConv.name) {
-  //     // this.socket.emit('message', this.emission);
-  //     this.socket.emit('setInvitation', this.emission);
-  //   }
-  //   this.socket.on('launchgameInvitation', (game: any) => {
-  //     this.router.navigate([`/pong/game/${game}`]);
-  //   });
-  // }
-
-  // acceptToPlay(emission: if_emission, currentConv: if_conversation) {
-  //   emission.data = {
-  //     conv_id: currentConv.conv_id,
-  //     logins_conv: currentConv.members,
-  //     date: new Date(),
-  //     content: "Invitation accepted!",
-  //     invitation: false
-  //   };
-  //   // this.socket.emit('takeInvitation', this.emission);
-  //   this.socket.emit('setInvitation', this.emission);
-  //   this.socket.on('launchgameInvitation', (game: any) => {
-  //     console.log(game);
-  //     this.router.navigate([`/pong/game/${game}`]);
-  //   });
-  // }
-  
-  // cancelToPlay(emission: if_emission, currentConv: if_conversation) {
-  //   emission.data = {
-  //     conv_id: currentConv.conv_id,
-  //     date: new Date(),
-  //     content: "Invitation refused!",
-  //     invitation: false
-  //   };
-  //   this.socket.emit('unsetInvitation', this.emission);
-  //   console.log("PASS CANCEL");
-  // }
 
 }

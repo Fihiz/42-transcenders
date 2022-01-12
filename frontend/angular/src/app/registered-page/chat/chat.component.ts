@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Router } from '@angular/router';
 import { if_message } from 'src/app/interfaces/if-message';
@@ -13,12 +13,14 @@ import { SocialService } from 'src/app/services/sf-social.service';
 import { UserService } from 'src/app/services/sf-user.service';
 import { if_stats } from 'src/app/interfaces/if-stats';
 
+
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
 })
 export class ChatComponent implements OnInit {
+
   convMessages: Array<if_message> = [];
   membersPseudo: Array<{ login: string; pseudo: string }> = [];
   users: Array<string> = new Array();
@@ -409,6 +411,7 @@ export class ChatComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    console.log('this.socket = ', this.socket);
     this.getSetsParty();
     this.relations = await this.userService.getAllMyrelations(this.global.login as string);
     this.blockList = this.socialService.createBlockedList(this.relations);

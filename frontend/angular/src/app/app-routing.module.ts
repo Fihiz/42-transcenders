@@ -13,7 +13,7 @@ import { RulesComponent } from './registered-page/content/rules/rules.component'
 import { StatsComponent } from './registered-page/content/stats/stats.component';
 import { SuperAdminComponent } from './registered-page/content/super-admin/super-admin.component';
 import { WelcomeComponent } from './registered-page/content/welcome/welcome.component';
-
+require('events').EventEmitter.defaultMaxListeners = 50;
 const routes: Routes = [
   { path: 'auth', component: AuthComponent },
   { path: 'welcome', component: WelcomeComponent, canActivate: [AuthGuard] },

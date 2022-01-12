@@ -7,6 +7,8 @@ export class DisplayProfileUpdate {
   constructor(){}
 
 
+  handleConncetion() {
+  }
   @WebSocketServer()
   server;
 

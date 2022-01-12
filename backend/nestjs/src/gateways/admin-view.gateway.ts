@@ -22,6 +22,12 @@ constructor(private userService: UserService,
 server;
 
 
+  handleConncetion() {
+  }
+
+  handleDisconnection () {
+  }
+
   @SubscribeMessage('allUsersInApp')
   async getAllUsersInApp(@MessageBody() emission) {
 		this.server.emit('allUsersInApp', await this.userService.findAllAppUser());

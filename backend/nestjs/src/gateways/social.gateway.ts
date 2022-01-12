@@ -8,6 +8,11 @@ export class SocialGateway {
   @WebSocketServer()
 	server;
 
+  handleConnection() {
+  }
+
+  handleDisconncetion() {
+  }
 
   @SubscribeMessage('block')
 	async block(@MessageBody() emission) {

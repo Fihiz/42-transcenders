@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { EventEmitter, NgModule, Output } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { OnlineStatusModule } from 'ngx-online-status';
@@ -34,8 +34,7 @@ import { ModeratorComponent } from './registered-page/content/moderator/moderato
 // const config: SocketIoConfig = { url: 'http://127.0.0.1:3000',  options: {autoConnect: false} };
 const config: SocketIoConfig = {
   url: `http://${window.location.host}:3000`,
-  options: { autoConnect: false },
-
+  options: { autoConnect: false , forceBase64: true},
 };
 
 @NgModule({
@@ -62,6 +61,7 @@ const config: SocketIoConfig = {
     DoubleAuthComponent,
     SuperAdminComponent,
     ModeratorComponent,
+    // ngEventEmitter,
   ],
   imports: [
     BrowserModule,
@@ -69,7 +69,6 @@ const config: SocketIoConfig = {
     OnlineStatusModule,
     ReactiveFormsModule,
     SocketIoModule.forRoot(config),
-    
     NgxTypedJsModule,
   ],
   providers: [GlobalService],

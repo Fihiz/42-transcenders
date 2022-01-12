@@ -64,7 +64,12 @@ export class ConnectedGateway {
 
 	@SubscribeMessage('log-out')
 	handleLeaving(@MessageBody() message: Message): void {
-		const dest = GlobalDataService.loginIdMap.get(message.login).sockets.map((socket) => {return socket.id;});
-		this.server.to(dest).emit('disconnection', 'disconnection');
+    try {
+		  const dest = GlobalDataService.loginIdMap.get(message.login).sockets.map((socket) => {return socket.id;});
+		  this.server.to(dest).emit('disconnection', 'disconnection');
+    }
+    catch(error) {
+      console.log('an error has occured emitting');
+    }
 	}
 }

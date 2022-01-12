@@ -32,6 +32,15 @@ export class ChatGateway {
 
 
 
+  handleConnection() {
+    // console.log('this server = ', this.server.engine)
+    // this.server._maxListeners = 100;
+    // this.server.engine.ws._maxListeners = 100;
+    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>this server = ',this.server);
+  }
+
+  handleDisconnection() {
+  }
   // emitFail(to:string | string[], error: string) {
   //   this.server.emit('error', error);
   // }
