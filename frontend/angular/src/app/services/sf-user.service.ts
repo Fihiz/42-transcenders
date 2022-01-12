@@ -63,6 +63,62 @@ export class UserService {
       alt: 'rlepart',
       url: 'https://cdn.intra.42.fr/users/large_rlepart.jpg',
     },
+    {
+      alt: 'donkey',
+      url: '../../assets/animal-avatars/donkey-pgoudet.jpeg',
+    },
+    {
+      alt: 'bear',
+      url: '../../assets/animal-avatars/bear.jpeg',
+    },
+    {
+      alt: 'dog',
+      url: '../../assets/animal-avatars/dog.jpeg',
+    },
+    {
+      alt: 'dog2',
+      url: '../../assets/animal-avatars/dog2.jpeg',
+    },
+    {
+      alt: 'pig',
+      url: '../../assets/animal-avatars/pig.jpeg',
+    },
+    {
+      alt: 'sheep',
+      url: '../../assets/animal-avatars/sheep.jpeg',
+    },
+    {
+      alt: 'fox',
+      url: '../../assets/animal-avatars/fox.jpeg',
+    },
+    {
+      alt: 'wolf',
+      url: '../../assets/animal-avatars/wolf.jpeg',
+    },
+    {
+      alt: 'cow',
+      url: '../../assets/animal-avatars/cow.jpeg',
+    },
+    {
+      alt: 'mimi1',
+      url: '../../assets/animal-avatars/mimi1.jpg',
+    },
+    {
+      alt: 'mimi2',
+      url: '../../assets/animal-avatars/mimi2.jpg',
+    },
+    {
+      alt: 'susu1',
+      url: '../../assets/animal-avatars/susu1.jpg',
+    },
+    {
+      alt: 'susu2',
+      url: '../../assets/animal-avatars/susu2.jpg',
+    },
+    {
+      alt: 'susu3',
+      url: '../../assets/animal-avatars/susu3.jpg',
+    },
   ];
   i: number = 0;
   file: File | null = null;
