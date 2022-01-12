@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Socket } from 'ngx-socket-io';
+import { ChatService } from 'src/app/services/sf-chat.service';
 import { GlobalService } from 'src/app/services/sf-global.service';
 import { SocialService } from 'src/app/services/sf-social.service';
 import { UserService } from 'src/app/services/sf-user.service';
@@ -16,7 +17,8 @@ export class FriendsComponent implements OnInit {
     private socket: Socket,
     private userService: UserService,
     public global: GlobalService,
-    private socialService: SocialService
+    private socialService: SocialService,
+    private chatService: ChatService
   ) {}
 
   allMyFriends: Array<any> = [];
@@ -33,14 +35,10 @@ export class FriendsComponent implements OnInit {
       newFriendLogin: newFriendLogin,
       friendship: friendship,
     };
-    // mettre dans une reponse
-    // Avant de faire insert, faire un get sur newFriendLogin pour check si deja existant (violation case)
-    if (!(await this.userService.checkIfAlreadyRelation(data)))
-    {
-      console.log('No relation yet, need to post');
-      await this.userService.addNewFriend(data);
-      this.setMyFriends();
-    }
+
+    console.log('No relation yet, need to post');
+    await this.userService.addNewFriend(data);
+    this.setMyFriends();
     console.log(data.currentLogin, data.newFriendLogin, data.friendship);
     this.getAllMyRelations();
   }
@@ -56,7 +54,7 @@ export class FriendsComponent implements OnInit {
    		{
 			console.log('There is a relation that we can remove');
 			await this.userService.removeFriend(data);
-      this.setMyFriends();
+      this.getAllMyRelations();
 		}
 		else{
 			console.log('There is NO relation that we can remove');
@@ -72,6 +70,15 @@ export class FriendsComponent implements OnInit {
 		  friendship: blocked,
 	    };
 		await this.socialService.blockFriend(data);
+    this.getAllMyRelations();
+    this.chatService.emission('block', {
+      avatar: '',
+      conv_id: 0,
+      members: [],
+      name: '',
+      password: '',
+      type: ''
+    }, 0, {data});
 	}
 
   async onUnBlockFriend(blockFriendLogin: string, blocked: boolean)
@@ -82,6 +89,16 @@ export class FriendsComponent implements OnInit {
 		  friendship: blocked,
 	    };
 		await this.socialService.unblockFriend(data);
+    this.getAllMyRelations();
+    console.log('test test')
+    this.chatService.emission('unBlock', {
+      avatar: '',
+      conv_id: 0,
+      members: [],
+      name: '',
+      password: '',
+      type: ''
+    }, 0, {data});
 	}
 
   setMyFriends() {

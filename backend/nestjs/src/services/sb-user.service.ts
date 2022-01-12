@@ -218,15 +218,18 @@ export class UserService {
   }
 
   async addNewFriend(data: AddNewFriendDto): Promise<boolean> {
-    const relationRepository = await getRepository(RelationEntity);
-    return relationRepository.insert({ user1: data.currentLogin as any, user2: data.newFriendLogin as any, friendship: data.friendship as any })
-    .then((response) => {
-      return true;
-    })
-    .catch((error) => {
-      console.log("An error has occured when adding a new friend");
-      return false;
-    })
+    try {
+      const relation = await this.relation.findOne({where: {user1: data.currentLogin, user2: data.friendship}});
+      if (relation)
+        await this.relation.insert({ user1: data.currentLogin as any, user2: data.newFriendLogin as any, friendship: data.friendship as any })
+      else
+        await this.relation.update({user1: data.currentLogin, user2: data.newFriendLogin}, {friendship: data.friendship});
+      return (true);
+    }
+    catch (error) {
+      console.log(error);
+      return (false);
+    }
   }
 
   // async modifieApiUserData(set1: object, where1: string, where2: object) {

@@ -412,7 +412,6 @@ export class ChatComponent implements OnInit {
     this.getSetsParty();
     this.relations = await this.userService.getAllMyrelations(this.global.login as string);
     this.blockList = this.socialService.createBlockedList(this.relations);
-    console.log('relations = ', this.relations);
     this.login = this.global.login as string;
     this.inputChatAndPlay = (<HTMLInputElement>(
       document.getElementById('search-user')
@@ -425,7 +424,6 @@ export class ChatComponent implements OnInit {
         this.convMessages.splice(0, this.convMessages.length);
         this.convMessages = data;
         this.convMessages = this.chatService.clearMessages(this.convMessages, this.blockList);
-        console.log('conv message = ',this.convMessages);
       }
     });
     this.socket.on('allConversations', (data: any) => {
@@ -496,6 +494,20 @@ export class ChatComponent implements OnInit {
     this.socket.on('launchgameInvitation', (game: any) => {
       console.log(game);
       this.router.navigate([`/pong/game/${game}`]);
+    });
+    this.socket.on('block', async (data: any) => {
+      console.log('block = ', this.blockList);
+      this.relations = await this.userService.getAllMyrelations(this.global.login as string);
+      this.blockList = this.socialService.createBlockedList(this.relations);
+      console.log('block = ', this.blockList);
+
+    });
+    this.socket.on('unBlock', async (data: any) => {
+      console.log('unblock = ', this.blockList);
+      this.relations = await this.userService.getAllMyrelations(this.global.login as string);
+      this.blockList = this.socialService.createBlockedList(this.relations);
+      console.log('unblock = ', this.blockList);
+
     });
 
   }

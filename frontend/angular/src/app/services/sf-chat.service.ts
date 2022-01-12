@@ -17,14 +17,25 @@ export class ChatService {
   constructor(private global: GlobalService, private socket: Socket, private router: Router) {}
 
   clearMessages(convMessages: Array<if_message>, blockedList: Array<string>) {
-    for (const [i, message] of convMessages.entries()) {
-      console.log('index = ', i);
-      if (blockedList.find(el => el === message.login)) {
-        console.log('i = ', i);
-        convMessages.splice(i, 1);
+    console.log('convMessage = ', convMessages);
+    let i = -1;
+    let j = -1;
+    while (++i < blockedList.length) {
+      while (++j < convMessages.length) {
+        if (convMessages[j].login === blockedList[i]) {
+          convMessages.splice(j, 1);
+          j--;
+        }
       }
     }
-    return (convMessages)
+    // while (index = convMessages.findIndex(element => element.id === message.id)) {
+    //   if (blockedList.find(el => el === message.login)) {
+    //     const index = convMessages.findIndex(element => element.id === message.id);
+    //     console.log('index = ', index, 'message = ', message);
+    //     convMessages.splice(index, 1);
+    //     console.log('the Array = ', convMessages)
+    //   }
+    return (convMessages);
   }
 
   conversationExists(

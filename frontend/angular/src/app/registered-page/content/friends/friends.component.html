@@ -72,9 +72,17 @@
             </div>
           </div>
       </span>
+      
       <!-- /an user -->
     </div>
   </div>
+  <h4>Blocked users</h4>
+      <span *ngFor="let relation of allMyRelations"> 
+        <span *ngIf="relation.relation.blocked === true" >
+          
+          <span class="badge badge-pill badge-danger">{{relation.relation.user2.login}}</span> 
+        </span>
+      </span>
 </div>
 <!-- ALL USERS -->
 <br />

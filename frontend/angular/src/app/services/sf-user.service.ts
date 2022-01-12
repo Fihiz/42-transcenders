@@ -81,7 +81,6 @@ export class UserService {
 
   // FOR FRIENDS
   async getAllMyrelations(login: string): Promise<any> {
-  // console.log('We are in checkIfAlreadyRelation', data);
   const resp = (
     await axios.get(
       `http://${window.location.host}:3000/cb-user/getAllMyrelations/${login}`
@@ -115,7 +114,6 @@ export class UserService {
   }
 
   async addNewFriend(data: object) {
-    console.log('We are in addNewFriend');
     await axios.post(
       `http://${window.location.host}:3000/cb-user/addNewFriend`,
       { data }
@@ -123,7 +121,6 @@ export class UserService {
   }
 
   async removeFriend(data: object) {
-    console.log('We are in addNewFriend');
     await axios.post(
       `http://${window.location.host}:3000/cb-user/removeFriend`,
       { data }
@@ -195,8 +192,6 @@ export class UserService {
       this.fillUserInfos(response);
       this.i = 0;
       this.registerBackInRequest(response);
-      // console.log('IS OKAYYYY');
-      // EMIT
       this.socket.emit('allUsersInApp');
     }
 

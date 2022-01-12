@@ -16,7 +16,6 @@ export class SocialService {
     if (conv.members.length != 2)
       return (true)
     for (const relation of relations) {
-      console.log('relation = ', relation.relation.user2.login, relation.relation.friendship);
       if (conv.members.find(member => member === relation.relation.user2.login)) {
         if (relation.relation.blocked === true)
           return (false);
