@@ -42,7 +42,7 @@ export class ChatComponent implements OnInit {
   
   constructor(
     private socket: Socket,
-    private global: GlobalService,
+    public global: GlobalService,
     private chatService: ChatService,
     private gameService: GameService,
     private router: Router

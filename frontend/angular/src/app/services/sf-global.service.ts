@@ -9,6 +9,9 @@ export class GlobalService {
   socketId: string | undefined = undefined;
   doubleAuth: boolean = false;
   allUserStatus: Map<string, string> = new Map<string, string>();
+  allUserBio: Map<string, string> = new Map<string, string>();
+  allUserAvatar: Map<string, string> = new Map<string, string>();
+  allUserPseudo: Map<string, string> = new Map<string, string>();
   isBanned: boolean = false;
   role: string = 'chatter';
   constructor() {}

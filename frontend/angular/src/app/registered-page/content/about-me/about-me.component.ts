@@ -10,7 +10,6 @@ import { UserService } from 'src/app/services/sf-user.service';
   styleUrls: ['./about-me.component.css'],
 })
 export class AboutMeComponent implements OnInit {
-  user: string;
   profile: any;
   found: boolean;
   unlockedAchievements: number;
@@ -28,7 +27,6 @@ export class AboutMeComponent implements OnInit {
   });
 
   constructor(private route: ActivatedRoute, public userService: UserService) {
-    this.user = '';
     this.profile = undefined;
     this.found = true;
     this.achievements = [];
@@ -37,8 +35,7 @@ export class AboutMeComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.user = this.route.snapshot.paramMap.get('login') + '';
-    const url = `http://${window.location.host}:3000/cb-user/profile/${this.user}`;
+    const url = `http://${window.location.host}:3000/cb-user/profile/${this.userService.login}`;
     await axios
       .get(url)
       .then((response: any) => {
@@ -50,7 +47,7 @@ export class AboutMeComponent implements OnInit {
     if (this.profile === undefined) this.found = false;
     else this.found = true;
 
-    await axios.get(`http://${window.location.host}:3000/cb-stats/achievements/${this.user}`)
+    await axios.get(`http://${window.location.host}:3000/cb-stats/achievements/${this.userService.login}`)
       .then((response: any) => {
         this.achievements = response.data.achievements;
         this.totalNumberOfAchievements = response.data.total_number_of_achievements;

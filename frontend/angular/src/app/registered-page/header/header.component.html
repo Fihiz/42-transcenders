@@ -3,6 +3,13 @@
     <div class="flex-grid">
       <div class="d-flex justify-content-center align-items-center">
         <img
+          *ngIf="global.allUserAvatar.has(userService.user.login)"
+          class="rounded-circle"
+          alt="{{ userService.user.login }}"
+          src="{{ global.allUserAvatar.get(userService.user.login) }}"
+        />
+        <img
+          *ngIf="!global.allUserAvatar.has(userService.user.login)"
           class="rounded-circle"
           alt="{{ userService.user.login }}"
           src="{{ userService.user.avatar }}"
@@ -14,7 +21,8 @@
       </div>
       <div>
         <h3>pseudo</h3>
-        <p>{{ userService.user.pseudo }}</p>
+        <p *ngIf="global.allUserPseudo.has(userService.user.login)">{{ global.allUserPseudo.get(userService.user.login) }}</p>
+        <p *ngIf="!global.allUserPseudo.has(userService.user.login)">{{ userService.user.pseudo }}</p>
       </div>
       <div>
         <h3>points</h3>

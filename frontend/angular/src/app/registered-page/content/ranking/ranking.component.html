@@ -7,7 +7,8 @@
 			'second': i == 1,
 			'first': i == 0}">{{ i + 1 }}</p>
 		<div [ngSwitch]="global.allUserStatus.get(score.login.login)">
-			<img class="avatar" src="{{ score.login.avatar }}">
+			<img *ngIf="global.allUserAvatar.has(score.login.login)" class="avatar" src="{{ global.allUserAvatar.get(score.login.login) }}">
+			<img *ngIf="!global.allUserAvatar.has(score.login.login)" class="avatar" src="{{ score.login.avatar }}">
 			<div *ngSwitchCase="'Offline'" class ="offline" onmouseenter="$(this).tooltip('show')" title="Offline">
 			</div>
 			<div *ngSwitchCase="'Playing'" class="playing" onmouseenter="$(this).tooltip('show')" title="Playing">
@@ -20,7 +21,8 @@
 			</div>
 		</div>
 		<div class="detail">
-			<div class="left">{{ score.login.pseudo }}</div>
+			<div *ngIf="global.allUserPseudo.has(score.login.login)" class="left">{{ global.allUserPseudo.get(score.login.login) }}</div>
+			<div *ngIf="!global.allUserPseudo.has(score.login.login)" class="left">{{ score.login.pseudo }}</div>
 			<div class="right">{{ score.points_for_ladder }} pts</div>
 		</div>
 	</li>

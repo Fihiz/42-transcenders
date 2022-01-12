@@ -29,9 +29,11 @@
 					</g>
 				</svg>
 			</a>
-			<p class="left">{{ party.player1.pseudo }}</p>
+			<p *ngIf="global.allUserPseudo.has(party.player1.login)" class="left">{{ global.allUserPseudo.get(party.player1.login) }}</p>
+			<p *ngIf="!global.allUserPseudo.has(party.player1.login)" class="left">{{ party.player1.pseudo }}</p>
 			<p class="versus">VS</p>
-			<p class="right">{{ party.player2.pseudo }}</p>
+			<p *ngIf="global.allUserPseudo.has(party.player2.login)" class="left">{{ global.allUserPseudo.get(party.player2.login) }}</p>
+			<p *ngIf="!global.allUserPseudo.has(party.player2.login)" class="left">{{ party.player2.pseudo }}</p>
 		</div>
 	</li>
 </div>

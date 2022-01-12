@@ -25,8 +25,8 @@ import { RelationEntity } from 'src/entities/eb-relation.entity';
 
 
 @Module({
-    imports: [Repository, ConvModule, TypeOrmModule.forFeature([ RelationEntity, ChatterEntity, ConversationEntity, WebAppUserEntity, MessageEntity, ApiUserDataEntity, GameTypeEntity, PongGameEntity, StatEntity, AwardEntity, AchievementEntity ])],
-    providers: [ ChatService, UserService, ChatGateway, ConvService, ChatterService, GameService, StatsService, ConnectedGateway ],
-    controllers: [ChatController],
+    // imports: [Repository, ConvModule, TypeOrmModule.forFeature([ RelationEntity, ChatterEntity, ConversationEntity, WebAppUserEntity, MessageEntity, ApiUserDataEntity, GameTypeEntity, PongGameEntity, StatEntity, AwardEntity, AchievementEntity ])],
+    // providers: [ ChatService, UserService, ChatGateway, ConvService, ChatterService, GameService, StatsService, ConnectedGateway ],
+    // controllers: [ChatController],
 })
 export class ChatModule {}
