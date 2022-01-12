@@ -27,8 +27,14 @@ export class AchievementEntity {
   value: number;
 
   @Column({
-		type: "bytea",
-    nullable: true // Temporaire le temps de créer les images
+		type: "varchar",
+    nullable: true
   })
   icon: string;
+
+  @Column({
+		type: "int",
+    nullable: true
+  })
+  order: number;
 }

@@ -133,7 +133,7 @@ export class ChatController {
       if (conv.type === 'private')
         res.send((await this.chatterService.deMuteSomeone(target)) === 'ok' ?  'ok' : 'ko');
       else {
-        if ((userAsking.chat_role !== 'admin' && userAsking.chat_role !== 'owner') || target.chat_role === 'owner')
+        if ((userAsking.chat_role !== 'admin' && userAsking.chat_role !== 'owner') || target.chat_role === 'owner' || (target.login === userAsking.login))
           res.send('Error: not good role');
         else {
           res.send((await this.chatterService.deMuteSomeone(target)) === 'ok' ?  'ok' : 'ko');

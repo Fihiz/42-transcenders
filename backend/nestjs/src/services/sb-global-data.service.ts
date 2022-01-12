@@ -6,7 +6,6 @@ export class GlobalDataService {
             = new Map<string, {status: string, sockets: Array<{id: string, gameId: number}>}>();
 }
 
-//possible de faire une interface plus tard
 export class Message {
     id:any = "id";
     conv_id: number = 0;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import axios from 'axios';
@@ -9,8 +9,7 @@ import { UserService } from 'src/app/services/sf-user.service';
   templateUrl: './about-me.component.html',
   styleUrls: ['./about-me.component.css'],
 })
-export class AboutMeComponent implements OnInit {
-  // user: string;
+export class AboutMeComponent implements OnInit, OnDestroy {
   profile: any;
   found: boolean;
   unlockedAchievements: number;
@@ -28,7 +27,6 @@ export class AboutMeComponent implements OnInit {
   });
 
   constructor(private route: ActivatedRoute, public userService: UserService) {
-    // this.user = '';
     this.profile = undefined;
     this.found = true;
     this.achievements = [];
@@ -37,7 +35,6 @@ export class AboutMeComponent implements OnInit {
   }
 
   async ngOnInit() {
-    // this.user = this.route.snapshot.paramMap.get('login') + '';
     const url = `http://${window.location.host}:3000/cb-user/profile/${this.userService.login}`;
     await axios
       .get(url)
@@ -98,7 +95,8 @@ export class AboutMeComponent implements OnInit {
           pseudo: pseudo,
           bio: bio,
           avatar: avatar,
-        }
+          // uploaded: this.userService.uploaded
+        },
       });
       if (responseToUpdate.data !== "Success")
       {
@@ -117,5 +115,9 @@ export class AboutMeComponent implements OnInit {
 
   decrement() {
     this.userService.decrement();
+  }
+
+  ngOnDestroy() {
+    this.userService.i = 0;
   }
 }

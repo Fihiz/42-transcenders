@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { ChatController } from 'src/controllers/cb-chat.controller';
 import { GameController } from 'src/controllers/cb-game.controller';
-import { SocialController } from 'src/controllers/cb-social.controller';
 import { AchievementEntity } from 'src/entities/eb-achievement.entity';
 import { ApiUserDataEntity } from 'src/entities/eb-api-user-data.entity';
 import { AwardEntity } from 'src/entities/eb-award.entity';
@@ -28,6 +28,6 @@ import { UserService } from 'src/services/sb-user.service';
 @Module({
     providers: [GameService, GameGateway, StatsService, ConnectedGateway, ChatService, ConvService, UserService, ChatterService, ChatGateway, SocialService],
     imports: [TypeOrmModule.forFeature([GameTypeEntity, RelationEntity, ParticipantEntity, PongGameEntity, StatEntity, AwardEntity, AchievementEntity, MessageEntity, ChatterEntity, ConversationEntity, WebAppUserEntity, ApiUserDataEntity])],
-    controllers: [GameController],
+    controllers: [GameController, ChatController],
 })
 export class GameModule {}

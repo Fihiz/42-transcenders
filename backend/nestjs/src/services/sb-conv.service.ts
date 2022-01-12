@@ -191,7 +191,10 @@ export class ConvService {
         await this.chatter.remove(chatter);
       }
       const messagesToRemove = await this.message.find({where: {conv_id: conv.conv_id}});
-      messagesToRemove.forEach(message => this.message.remove(message));
+      // messagesToRemove.forEach(message => this.);
+      for (const message of messagesToRemove) {
+          await this.message.remove(message);
+      }
       await this.conversation.remove(conv);
       return ('ok');
     }

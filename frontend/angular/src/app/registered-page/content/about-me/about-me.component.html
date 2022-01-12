@@ -263,7 +263,7 @@
         <table *ngIf="unlockedAchievements">
           <tr *ngFor="let achievement of achievements">
             <td>
-              <img src="{{ achievement.icon }}">
+              <img class="icon" src="{{ achievement.icon }}">
             </td>
             <td>
               <p>
@@ -271,7 +271,7 @@
               </p>
             </td>
             <td>
-                {{ achievement.date }}
+                {{ achievement.date | date: "short"}}
             </td>
           </tr>
         </table>
