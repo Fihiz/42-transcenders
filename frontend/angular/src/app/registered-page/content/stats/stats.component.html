@@ -3,8 +3,10 @@
 <div class="list">
 	<li class="item" *ngFor="let match of matches">
 		<div class="player1">
-			<img class="avatar_p1" alt="{{ match.player1.login }}" src="{{ match.player1.avatar }}">
-			<p class="pseudo_p1">{{ match.player1.pseudo }}</p>
+			<img *ngIf="global.allUserAvatar.has(match.player1.login)" class="avatar_p1" alt="{{ match.player1.login }}" src="{{ global.allUserAvatar.get(match.player1.login) }}">
+			<img *ngIf="!global.allUserAvatar.has(match.player1.login)" class="avatar_p1" alt="{{ match.player1.login }}" src="{{ match.player1.avatar }}">
+			<p *ngIf="global.allUserPseudo.has(match.player1.login)" class="pseudo_p1">{{ global.allUserPseudo.get(match.player1.login) }}</p>
+			<p *ngIf="!global.allUserPseudo.has(match.player1.login)" class="pseudo_p1">{{ match.player1.pseudo }}</p>
 			<p [ngClass]="{'win': match.winner === profile,
 						'lost': match.looser === profile}" class="score_p1">{{ match.player1_score }}</p>
 		</div>
@@ -12,8 +14,10 @@
 		<div class="player2">
 			<p [ngClass]="{'win': match.winner !== profile,
 						'lost': match.looser !== profile}" class="score_p2">{{ match.player2_score }}</p>
-			<p class="pseudo_p2">{{ match.player2.pseudo }}</p>
-			<img class="avatar_p2" alt="{{ match.player2.login }}" src="{{ match.player2.avatar }}">
+			<p *ngIf="global.allUserPseudo.has(match.player2.login)" class="pseudo_p2">{{ global.allUserPseudo.get(match.player2.login) }}</p>
+			<p *ngIf="!global.allUserPseudo.has(match.player2.login)" class="pseudo_p2">{{ match.player2.pseudo }}</p>
+			<img *ngIf="global.allUserAvatar.has(match.player2.login)" class="avatar_p2" alt="{{ match.player2.login }}" src="{{ global.allUserAvatar.get(match.player2.login) }}">
+			<img *ngIf="!global.allUserAvatar.has(match.player2.login)" class="avatar_p2" alt="{{ match.player2.login }}" src="{{ match.player2.avatar }}">
 		</div>
 	</li>
 </div>

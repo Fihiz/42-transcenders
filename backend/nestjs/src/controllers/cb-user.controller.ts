@@ -11,10 +11,10 @@ import { AddNewFriendDto } from 'src/dtos/addNewFriend.dto';
 import { RelationEntity } from 'src/entities/eb-relation.entity';
 
 import * as fs from 'fs';
+import { DisplayProfileUpdate } from 'src/gateways/displayProfileUpdate.gateway';
 
 const editFileName = (req, file, callback) => {
     const name = req.body.filename;
-    // const extension = mime.extension(file.mimetype); // if we want handle several extention
     const extension = "jpg";
     callback(null, `${name}.${extension}`);
 };
@@ -28,7 +28,7 @@ const checkFileExtension = (req, file, callback) => {
 @Controller('cb-user')
 export class UserController {
     
-    constructor(private userService: UserService) {}
+    constructor(private userService: UserService, private displayProfileUpdate: DisplayProfileUpdate) {}
 
     @Post('adminUpdateRole')
     async postAdminUpdateRole(@Body('data') dataDto:  AdminChangeUserRoleDto) {
@@ -61,32 +61,33 @@ export class UserController {
         } 
     }
 
+	//BEGIN OF REMOVE FRIEND
+	@Post('removeFriend')
+    async postRemoveFriend(@Body('data') dataDto: AddNewFriendDto) {
+		console.log('Passing into removeFriend controller');
+       try {
+           const response = await this.userService.removeFriend(dataDto)
+       }
+       catch {
+           alert('An error has occured when removing a new friend');
+       } 
+    }
+
     // FOR FRIENDS
     @Get('getAllMyrelations/:login')
-	async getAllMyrelations(@Param('login') login, @Response() res) {
-        const relations: any[] = await this.userService.findAllrelationsOf(login);
+	async getAllMyrelations(@Param('login') login, @Response() res, @Request() req) {
+        const relations: any[] = await this.userService.findAllrelationsOf(login, req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]);
         res.send(relations);
 	}
 
-    // @Get('checkIfAlreadyFriend')
-	// async getCheckIfAlreadyFriend(@Request() req, @Response() res): Promise<any> {
-    //     console.log('data', req.query);
-	// 	const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
-    //     if (isAlreadyFriend && isAlreadyFriend.friendship === "friend")
-    //         res.send(true);
-	// 	else
-	// 	    res.send(false);
-	// }
-
-    // @Get('checkIfAlreadyFriend')
-	// async getCheckIfAlreadyFriend(@Request() req, @Response() res): Promise<any> {
-    //     console.log('data', req.query);
-	// 	const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
-    //     if (isAlreadyFriend && isAlreadyFriend.friendship === "friend")
-    //         res.send(true);
-	// 	else
-	// 	    res.send(false);
-	// }
+    @Get('checkIfAlreadyRelation')
+	async getcheckIfAlreadyRelation(@Request() req, @Response() res): Promise<any> {
+		const isAlreadyFriend: RelationEntity = await this.userService.findIfAlreadyFriend(req.query.currentLogin, req.query.newFriendLogin);
+        if (isAlreadyFriend /*&& isAlreadyFriend.friendship === "friend"*/)
+            res.send(true);
+		else
+		    res.send(false);
+	}
   
 	@Get('profile/:login')
 	async getProfileByLogin(@Param('login') login: string, @Response() res, @Request() req): Promise<WebAppUserEntity> {
@@ -105,14 +106,27 @@ export class UserController {
 
     @Post('profile/:login')
     async updateProfile(@Param('login') login: string, @Response() res, @Request() req, @Body('data') data) {
+        if (data.avatar.search("/cb-user/avatar/upload/") != -1) {
+            data.avatar = data.avatar.replace("/cb-user/avatar/upload/", "/cb-user/avatar/")
+            const oldPath = `src/assets/avatar/upload/${login}.jpg`;
+            const newPath = `src/assets/avatar/${login}.jpg`;
+            fs.rename(oldPath, newPath, (error) => {
+                if (error) {
+                    console.log('Uploaded file moove has failed...');
+                    throw error;
+                }
+            })
+        }
         const response = await this.userService.updateUser(login, data);
         if (response.affected === 1)
+        {
+            this.displayProfileUpdate.server.emit("profileUpdate", {login , pseudo: data.pseudo, avatar: data.avatar, bio: data.bio});
             res.send("Success");
+        }
         else
             res.send("Failure");
     }
 
-    // @Post('avatar/:login')
     @Post('avatar/upload/:file')
     @UseInterceptors(
     FileInterceptor('avatar', {
@@ -124,25 +138,11 @@ export class UserController {
         fileFilter: checkFileExtension,
     }),
     )
-    uploadAvatar(@UploadedFile() file, @Response() res) {
+    uploadAvatar(@UploadedFile() file, @Request() req, @Response() res) {
         console.log();
-        const url = `http://localhost:3000/cb-user/avatar/upload/${file.filename}`;
+        const url = `http://${req.rawHeaders[req.rawHeaders.indexOf('Host') + 1]}/cb-user/avatar/upload/${file.filename}`;
         res.send(url);
         return url;
-    }
-
-    @Post('avatar/save/:login')
-    saveAvatar(@Body('login') login: string) {
-        const oldPath = `src/assets/avatar/upload/${login}.jpg`;
-        const newPath = `src/assets/avatar/${login}.jpg`;
-        fs.rename(oldPath, newPath, (error) => {
-            if (error) {
-                console.log('Uploaded file moove has failed...');
-                throw error;
-            }
-            console.log('Uploaded file moove has succeded!');
-        })
-        this.userService.updateAvatar(login);
     }
 
     @Get('avatar/upload/:filename')

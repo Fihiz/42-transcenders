@@ -5,18 +5,25 @@
   <div class="row-top">
     <div class="row row-cols-1 row-cols-md-2 g-4">
       <!-- an user -->
-      <span *ngFor="let relation of allMyRelations">
-        <span *ngIf="relation.relation.friendship === 'friend'">
+      <span *ngFor="let relation of allMyFriends">
           <div class="col">
             <div class="card">
               <div class="text-center">
                 <img
-                  src="{{ relation.relation.user2.avatar }}"
-                  class="card-img-top rounded-circle"
-                  alt="..."
-                />
+                    *ngIf="global.allUserAvatar.has(relation.relation.user2.login)"
+                    src="{{ global.allUserAvatar.get(relation.relation.user2.login) }}"
+                    class="card-img-top rounded-circle"
+                    alt="..."
+                  />
+                  <img
+                    *ngIf="!global.allUserAvatar.has(relation.relation.user2.login)"
+                      src="{{ relation.relation.user2.avatar }}"
+                      class="card-img-top rounded-circle"
+                      alt="..."
+                    />
                 <div class="card-body">
-                  <h5 class="card-title">{{ relation.relation.user2.pseudo }}</h5>
+                    <h5 *ngIf="global.allUserPseudo.has(relation.relation.user2.login)" class="card-title">{{ global.allUserPseudo.get(relation.relation.user2.login) }}</h5>
+                    <h5 *ngIf="!global.allUserPseudo.has(relation.relation.user2.login)" class="card-title">{{ relation.relation.user2.pseudo }}</h5>
                   <div [ngSwitch]="global.allUserStatus.get(relation.relation.user2.login)">
                     <div *ngSwitchCase="'Offline'" ><h6>Offline</h6></div>
                     <div *ngSwitchCase="'Online'" ><h6>Online</h6></div>
@@ -27,9 +34,12 @@
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                       <span class="badge badge-pill badge-success">Bio</span>
-                      <div class="style-txt">
-                        {{ relation.relation.user2.bio }}
-                      </div>
+                          <div *ngIf="global.allUserBio.has(relation.relation.user2.login)" class="style-txt">
+                              {{ global.allUserBio.get(relation.relation.user2.login) }}
+                            </div>
+                            <div *ngIf="!global.allUserBio.has(relation.relation.user2.login)" class="style-txt">
+                              {{ relation.relation.user2.bio }}
+                            </div>
                     </li>
                     <li class="list-group-item">
                       <span class="badge badge-pill badge-success">Stats</span>
@@ -72,11 +82,20 @@
               </div>
             </div>
           </div>
-        </span>
       </span>
+      
       <!-- /an user -->
     </div>
   </div>
+  <br>
+  <br>
+  <h4>Blocked users</h4>
+      <span *ngFor="let relation of allMyRelations"> 
+        <span *ngIf="relation.relation.blocked === true" >
+          
+          <span class="badge badge-pill badge-danger">{{relation.relation.user2.login}}</span> 
+        </span>
+      </span>
 </div>
 <!-- ALL USERS -->
 <br />
@@ -107,29 +126,58 @@
             <li>
               <div class="text-center">
                 <img
+                  *ngIf="global.allUserAvatar.has(user.login)"
+                  src="{{ global.allUserAvatar.get(user.login) }}"
+                  class="rounded-circle-sm"
+                  alt="..."
+                />
+                <img
+                  *ngIf="!global.allUserAvatar.has(user.login)"
                   src="{{ user.avatar }}"
                   class="rounded-circle-sm"
                   alt="..."
                 />
-                <div class="style-txt text-center">{{ user.pseudo }}</div>
+               <div *ngIf="global.allUserPseudo.has(user.login)" class="style-txt text-center">{{ global.allUserPseudo.get(user.login) }}</div>
+                <div *ngIf="!global.allUserPseudo.has(user.login)" class="style-txt text-center">{{ user.pseudo }}</div>
               </div>
-              <button
-                class="btn btn-secondary btn-sm btn-block"
-                id="view-member"
-                role="button"
-                type="submit"
-                (click)="onAddFriend(user.login, 'friend')"
-              >
-                Add
-              </button>
-              <button
-                class="btn btn-secondary btn-sm btn-block"
-                id="view-member"
-                role="button"
-                type="submit"
-              >
-                Block
-              </button>
+
+                <button
+                  class="btn btn-secondary btn-sm btn-block"
+                  id="view-member"
+                  role="button"
+                  type="submit"
+                  (click)="onAddFriend(user.login, 'friend')"
+                >
+                  Add
+                </button>
+                <button
+                  class="btn btn-secondary btn-sm btn-block"
+                  id="view-member"
+                  role="button"
+                  type="submit"
+				  (click)="onRemoveFriend(user.login, 'notfriend')"
+                >
+                  Remove
+                </button>
+                
+                <button
+                  class="btn btn-secondary btn-sm btn-block"
+                  id="view-member"
+                  role="button"
+                  type="submit"
+				  (click)="onBlockFriend(user.login, true)"
+                >
+                  Block
+                </button>
+                <button
+                  class="btn btn-secondary btn-sm btn-block"
+                  id="view-member"
+                  role="button"
+                  type="submit"
+                  (click)="onUnBlockFriend(user.login, true)"
+                >
+                  Unblock
+                </button>
             </li>
           </ul>
         </li>

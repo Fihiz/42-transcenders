@@ -22,11 +22,6 @@ const routes: Routes = [
     component: SuperAdminComponent,
     canActivate: [AuthGuard],
   },
-  // {
-  //   path: 'profile/moderator',
-  //   component: ModeratorComponent,
-  //   canActivate: [AuthGuard],
-  // },
   {
     path: 'profile/about-me',
     component: AboutMeComponent,

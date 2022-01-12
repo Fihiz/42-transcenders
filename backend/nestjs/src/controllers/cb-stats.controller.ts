@@ -53,4 +53,9 @@ export class StatsController {
         })
     }
 
+    @Get('achievements/icon/:filename')
+    getAchievement(@Param('filename') filename, @Response() res) {
+        res.sendFile(filename, { root: './src/assets/achievement' });
+    }
+
 }

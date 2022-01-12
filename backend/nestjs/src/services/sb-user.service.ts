@@ -10,6 +10,7 @@ import { AddNewFriendDto } from 'src/dtos/addNewFriend.dto';
 import { RelationEntity } from 'src/entities/eb-relation.entity';
 import { StatEntity } from 'src/entities/eb-stat.entity';
 import { AwardEntity } from 'src/entities/eb-award.entity';
+import { AchievementEntity } from 'src/entities/eb-achievement.entity';
 
 @Injectable()
 export class UserService {
@@ -131,31 +132,39 @@ export class UserService {
 
   // FOR FRIENDS
 
-  async findAllrelationsOf(login: string) : Promise<any> {
+  async findAllrelationsOf(login: string, host: string) : Promise<any> {
     // const relations : any[] = await
     const obj: Array<{relation: RelationEntity, stat: StatEntity, achievement: AwardEntity}> = [];
     const relations = await this.relation.find({relations: ["user2"],where: {user1: login}});
     for (const relation of relations) {
       const stats = await getRepository(StatEntity).findOne({where: {login: relation.user2}});
-      const achievements = await getRepository(AwardEntity).findOne({relations: ["achievement_id"],
-      where: {login: relation.user2}});
-      obj.push({relation: relation, stat: stats, achievement: achievements});
+      const achievements = await getRepository(AwardEntity).find({relations: ["achievement_id"],
+      where: {login: relation.user2},
+    });
+    if (achievements.length)
+    {
+      const achievement = achievements[Math.floor(Math.random() * achievements.length)];
+      (achievement.achievement_id as unknown as AchievementEntity).icon = (achievement.achievement_id as unknown as AchievementEntity).icon.replace("localhost:3000", host);
+      obj.push({relation: relation, stat: stats, achievement: achievement});
     }
-    console.log('obj = ', obj);
+    else
+      obj.push({relation: relation, stat: stats, achievement: undefined});
+    }
+    //console.log('obj = ', obj);
     return (obj);
   }
 
-  // async findIfAlreadyFriend(login: string, loginFriend: string) : Promise<RelationEntity> {
-  //   const user : RelationEntity = await getRepository(RelationEntity)
-  //     .createQueryBuilder("userAlias")
-  //     .where("userAlias.user1 = :login", { login: login })
-  //     .andWhere("userAlias.user2 = :loginFriend", { loginFriend: loginFriend })
-  //     .getOne();
-  //   console.log(user);
-  //   if (user === undefined)
-  //     return undefined;
-  //   return (user);
-  // }
+  async findIfAlreadyFriend(login: string, loginFriend: string) : Promise<RelationEntity> {
+    const user : RelationEntity = await getRepository(RelationEntity)
+      .createQueryBuilder("userAlias")
+      .where("userAlias.user1 = :login", { login: login })
+      .andWhere("userAlias.user2 = :loginFriend", { loginFriend: loginFriend })
+      .getOne();
+    //console.log('user is from user-service', user);
+    if (user === undefined)
+      return undefined;
+    return (user);
+  }
 
   // updateWebAppUser(id: number, newUser: WebAppUserEntity) {
   //   return this.webUsers.update("test", newUser);
@@ -218,25 +227,19 @@ export class UserService {
   }
 
   async addNewFriend(data: AddNewFriendDto): Promise<boolean> {
-    const relationRepository = await getRepository(RelationEntity);
-    return relationRepository.insert({ user1: data.currentLogin as any, user2: data.newFriendLogin as any, friendship: data.friendship as any })
-    .then((response) => {
-      return true;
-    })
-    .catch((error) => {
-      console.log("An error has occured when adding a new friend");
-      return false;
-    })
+    try {
+      const relation = await this.relation.findOne({where: {user1: data.currentLogin, user2: data.newFriendLogin}});
+      if (!relation)
+        await this.relation.insert({ user1: data.currentLogin as any, user2: data.newFriendLogin as any, friendship: data.friendship as any })
+      else
+        await this.relation.update({user1: data.currentLogin, user2: data.newFriendLogin}, {friendship: data.friendship});
+      return (true);
+    }
+    catch (error) {
+      console.log(error);
+      return (false);
+    }
   }
-
-  // async modifieApiUserData(set1: object, where1: string, where2: object) {
-  //   const user = await getRepository(ApiUserDataEntity)
-  //   .createQueryBuilder()
-  //   .update(ApiUserDataEntity)
-  //   .set(set1)
-  //   .where(where1, where2)
-  //   .execute();
-  // }
 
   failLog(@Res() res) {
     res.send('error');
@@ -280,6 +283,11 @@ export class UserService {
     if (!user)
       return (false)
     return (user.banned === true ? true : false);
+  }
+
+  async removeFriend(data: AddNewFriendDto): Promise<any> {
+    const relations= await getRepository(RelationEntity);
+	  await relations.update({user1: data.currentLogin, user2: data.newFriendLogin}, {friendship: data.friendship});
   }
 
 }

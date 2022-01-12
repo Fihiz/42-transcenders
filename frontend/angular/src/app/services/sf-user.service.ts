@@ -63,6 +63,62 @@ export class UserService {
       alt: 'rlepart',
       url: 'https://cdn.intra.42.fr/users/large_rlepart.jpg',
     },
+    {
+      alt: 'donkey',
+      url: '../../assets/animal-avatars/donkey-pgoudet.jpeg',
+    },
+    {
+      alt: 'bear',
+      url: '../../assets/animal-avatars/bear.jpeg',
+    },
+    {
+      alt: 'dog',
+      url: '../../assets/animal-avatars/dog.jpeg',
+    },
+    {
+      alt: 'dog2',
+      url: '../../assets/animal-avatars/dog2.jpeg',
+    },
+    {
+      alt: 'pig',
+      url: '../../assets/animal-avatars/pig.jpeg',
+    },
+    {
+      alt: 'sheep',
+      url: '../../assets/animal-avatars/sheep.jpeg',
+    },
+    {
+      alt: 'fox',
+      url: '../../assets/animal-avatars/fox.jpeg',
+    },
+    {
+      alt: 'wolf',
+      url: '../../assets/animal-avatars/wolf.jpeg',
+    },
+    {
+      alt: 'cow',
+      url: '../../assets/animal-avatars/cow.jpeg',
+    },
+    {
+      alt: 'mimi1',
+      url: '../../assets/animal-avatars/mimi1.jpg',
+    },
+    {
+      alt: 'mimi2',
+      url: '../../assets/animal-avatars/mimi2.jpg',
+    },
+    {
+      alt: 'susu1',
+      url: '../../assets/animal-avatars/susu1.jpg',
+    },
+    {
+      alt: 'susu2',
+      url: '../../assets/animal-avatars/susu2.jpg',
+    },
+    {
+      alt: 'susu3',
+      url: '../../assets/animal-avatars/susu3.jpg',
+    },
   ];
   i: number = 0;
   file: File | null = null;
@@ -81,7 +137,6 @@ export class UserService {
 
   // FOR FRIENDS
   async getAllMyrelations(login: string): Promise<any> {
-  // console.log('We are in checkIfAlreadyFriend', data);
   const resp = (
     await axios.get(
       `http://${window.location.host}:3000/cb-user/getAllMyrelations/${login}`
@@ -90,16 +145,15 @@ export class UserService {
   return resp;
   }
 
-  // async checkIfAlreadyFriend(data: object): Promise<Boolean> {
-  //   console.log('We are in checkIfAlreadyFriend', data);
-  //   const resp = (
-  //     await axios.get(
-  //       `http://${window.location.host}:3000/cb-user/checkIfAlreadyFriend`,
-  //       { params: data }
-  //     )
-  //   ).data;
-  //   return resp;
-  // }
+  async checkIfAlreadyRelation(data: object): Promise<Boolean> {
+    const resp = (
+      await axios.get(
+        `http://${window.location.host}:3000/cb-user/checkIfAlreadyRelation`,
+        { params: data }
+      )
+    ).data;
+    return resp;
+  }
 
   async adminChangeUserRole(data: object) {
     await axios.post(
@@ -116,9 +170,15 @@ export class UserService {
   }
 
   async addNewFriend(data: object) {
-    console.log('We are in addNewFriend');
     await axios.post(
       `http://${window.location.host}:3000/cb-user/addNewFriend`,
+      { data }
+    );
+  }
+
+  async removeFriend(data: object) {
+    await axios.post(
+      `http://${window.location.host}:3000/cb-user/removeFriend`,
       { data }
     );
   }
@@ -188,8 +248,6 @@ export class UserService {
       this.fillUserInfos(response);
       this.i = 0;
       this.registerBackInRequest(response);
-      // console.log('IS OKAYYYY');
-      // EMIT
       this.socket.emit('allUsersInApp');
     }
 
