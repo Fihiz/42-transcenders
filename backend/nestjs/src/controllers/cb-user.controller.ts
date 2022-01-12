@@ -61,6 +61,18 @@ export class UserController {
         } 
     }
 
+	//BEGIN OF REMOVE FRIEND
+	//@Post('removeFriend')
+    //async postRemoveFriend(@Body('data') dataDto: AddNewFriendDto) {
+	//	console.log('Passing into removeFriend controller');
+    //    try {
+    //        //const response = await this.userService.removeFriend(dataDto)
+    //    }
+    //    catch {
+    //        alert('An error has occured when removing a new friend');
+    //    } 
+    //}
+
     // FOR FRIENDS
     @Get('getAllMyrelations/:login')
 	async getAllMyrelations(@Param('login') login, @Response() res) {

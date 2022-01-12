@@ -123,6 +123,14 @@ export class UserService {
     );
   }
 
+  async removeFriend(data: object) {
+    console.log('We are in addNewFriend');
+    await axios.post(
+      `http://${window.location.host}:3000/cb-user/removeFriend`,
+      { data }
+    );
+  }
+
   async doubleAUth(login: string) {
     this.global.doubleAuth = (
       await axios.get(

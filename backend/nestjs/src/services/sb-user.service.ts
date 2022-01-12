@@ -141,7 +141,7 @@ export class UserService {
       where: {login: relation.user2}});
       obj.push({relation: relation, stat: stats, achievement: achievements});
     }
-    console.log('obj = ', obj);
+    //console.log('obj = ', obj);
     return (obj);
   }
 
@@ -151,7 +151,7 @@ export class UserService {
       .where("userAlias.user1 = :login", { login: login })
       .andWhere("userAlias.user2 = :loginFriend", { loginFriend: loginFriend })
       .getOne();
-    console.log('user is from user-service', user);
+    //console.log('user is from user-service', user);
     if (user === undefined)
       return undefined;
     return (user);

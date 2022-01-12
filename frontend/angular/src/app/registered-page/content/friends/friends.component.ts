@@ -72,7 +72,7 @@ export class FriendsComponent implements OnInit {
 	  if (await this.userService.checkIfAlreadyRelation(data))
    		{
 			console.log('There is a relation that we can block');
-			//await this.userService.removeFriend(data);
+			//await this.userService.blockFriend(data);
 		}
 		else{
 			console.log('There is NO relation that we can block');
