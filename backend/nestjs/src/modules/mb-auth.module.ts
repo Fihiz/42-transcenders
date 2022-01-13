@@ -13,10 +13,11 @@ import { UserService } from 'src/services/sb-user.service';
 import { UserModule } from './mb-user.module';
 import { AdminViewModule } from './mb-admin-view.module';
 import { RelationEntity } from 'src/entities/eb-relation.entity';
+import { DisplayProfileUpdate } from 'src/gateways/displayProfileUpdate.gateway';
 
 @Module({
     imports: [UserModule, TypeOrmModule.forFeature([RelationEntity, WebAppUserEntity, ApiUserDataEntity, StatEntity, AwardEntity, AchievementEntity]), AdminViewModule],
-    providers: [AuthService, UserService, StatsService],
+    providers: [AuthService, UserService, StatsService, DisplayProfileUpdate],
     controllers: [AuthController, DoubleAuthController],
 })
 export class AuthModule {}

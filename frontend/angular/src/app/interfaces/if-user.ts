@@ -14,4 +14,5 @@ export interface if_user {
   created: Date;
   updated: Date;
   points_for_ladder: number;
+  ranking: number;
 }

@@ -6,6 +6,9 @@ import { AchievementEntity } from 'src/entities/eb-achievement.entity';
 import { AwardEntity } from 'src/entities/eb-award.entity';
 import { StatEntity } from 'src/entities/eb-stat.entity';
 import { CreateUserDto } from 'src/dtos/createUser.dto';
+import { DisplayProfileUpdate } from 'src/gateways/displayProfileUpdate.gateway';
+import { GlobalDataService } from './sb-global-data.service';
+import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 
 @Injectable()
 export class StatsService {
@@ -118,6 +121,7 @@ export class StatsService {
 	]
 
     constructor(
+        private displayProfileUpdate: DisplayProfileUpdate,
         @InjectRepository(StatEntity)
         private stats: Repository<StatEntity>,
         @InjectRepository(AwardEntity)
@@ -218,7 +222,8 @@ export class StatsService {
                     })
                 }
             }
-        })
+        });
+        this.displayProfileUpdate.server.to(GlobalDataService.loginIdMap.get(login)?.sockets.map((socket) => socket.id)).emit("points for ladder", { points: userStats.points_for_ladder});
     }
 
     async registerStatsInDatabase(data: CreateUserDto, res) {
@@ -232,6 +237,13 @@ export class StatsService {
         }
         catch (error) {
             this.failLog(res);
+        }
+    }
+
+    async displayRankingToAll() {
+        const ranking: StatEntity[] = await this.getAllPlayerScores();
+        for( let rank of ranking ) {
+            this.displayProfileUpdate.server.to(GlobalDataService.loginIdMap.get((rank.login as unknown as WebAppUserEntity).login)?.sockets.map((socket) => socket.id)).emit("ranking", ranking.indexOf(rank) + 1);
         }
     }
 

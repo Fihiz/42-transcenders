@@ -56,4 +56,19 @@ export class StatsController {
         res.sendFile(filename, { root: './src/assets/achievement' });
     }
 
+
+    @Get('getMyRanking/:login')
+    async getMyRanking(@Param('login') login: string, @Response() res) {
+        const rankings: StatEntity[] = await this.statsService.getAllPlayerScores();
+        for( let rank of rankings ) {
+            if ((rank.login as unknown as WebAppUserEntity).login === login)
+            {
+                res.send({ranking: rankings.indexOf(rank) + 1});
+                return ;
+            }
+        }
+        res.send({ranking: rankings.length + 1});
+        return ;
+    }
+
 }

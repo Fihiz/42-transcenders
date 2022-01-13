@@ -16,6 +16,7 @@ import { StatEntity } from 'src/entities/eb-stat.entity';
 import { WebAppUserEntity } from 'src/entities/eb-web-app-user.entity';
 import { ChatGateway } from 'src/gateways/chat.gateway';
 import { ConnectedGateway } from 'src/gateways/connected.gateway';
+import { DisplayProfileUpdate } from 'src/gateways/displayProfileUpdate.gateway';
 import { GameGateway } from 'src/gateways/game.gateway';
 import { ChatService } from 'src/services/sb-chat.service';
 import { ChatterService } from 'src/services/sb-chatter.service';
@@ -26,7 +27,7 @@ import { StatsService } from 'src/services/sb-stats.service';
 import { UserService } from 'src/services/sb-user.service';
 
 @Module({
-    providers: [GameService, GameGateway, StatsService, ConnectedGateway, ChatService, ConvService, UserService, ChatterService, ChatGateway, SocialService],
+    providers: [GameService, GameGateway, StatsService, ConnectedGateway, ChatService, ConvService, UserService, ChatterService, ChatGateway, SocialService, DisplayProfileUpdate],
     imports: [TypeOrmModule.forFeature([GameTypeEntity, RelationEntity, ParticipantEntity, PongGameEntity, StatEntity, AwardEntity, AchievementEntity, MessageEntity, ChatterEntity, ConversationEntity, WebAppUserEntity, ApiUserDataEntity])],
     controllers: [GameController, ChatController],
 })

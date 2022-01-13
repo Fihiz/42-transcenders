@@ -30,7 +30,10 @@
       </div>
       <div>
         <h3>rank</h3>
-        <p>1st</p>
+        <p *ngIf="userService.user.ranking % 10 === 1 && userService.user.ranking % 100 !== 11" >{{ userService.user.ranking }}st</p>
+        <p *ngIf="userService.user.ranking % 10 === 2 && userService.user.ranking % 100 !== 12" >{{ userService.user.ranking }}nd</p>
+        <p *ngIf="userService.user.ranking % 10 === 3 && userService.user.ranking % 100 !== 13" >{{ userService.user.ranking }}rd</p>
+        <p *ngIf="userService.user.ranking % 10 !== 1 && userService.user.ranking % 10 !== 2 && userService.user.ranking % 10 !== 3 || userService.user.ranking % 100 === 11 || userService.user.ranking % 100 === 12 || userService.user.ranking % 100 === 13" >{{ userService.user.ranking }}th</p>
       </div>
     </div>
   </div>

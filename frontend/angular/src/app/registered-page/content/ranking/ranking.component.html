@@ -2,6 +2,7 @@
 <br>
 <h4 class="count"> Number of champions : {{ size }}</h4>
 <div class="list">
+	<img *ngIf="scores?.length === 0 || scores === undefined" src="../../../../assets/champions.png" style="width: 100%;">
 	<li class="item" *ngFor="let score of scores;let i=index">
 		<p [ngClass]="{'other': i > 2,
 			'third': i == 2,
@@ -24,6 +25,7 @@
 		<div class="detail">
 			<div *ngIf="global.allUserPseudo.has(score.login.login)" class="left">{{ global.allUserPseudo.get(score.login.login) }}</div>
 			<div *ngIf="!global.allUserPseudo.has(score.login.login)" class="left">{{ score.login.pseudo }}</div>
+			<div class="right">{{ score.points_for_ladder }} pts</div>
 		</div>
 	</li>
 </div>

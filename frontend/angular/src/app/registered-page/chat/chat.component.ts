@@ -240,7 +240,7 @@ export class ChatComponent implements OnInit {
       if (isMute.data !== 'ok')
         alert(
           isMute.data === 'ko'
-            ? 'you don t have the rights or the user is not in the room'
+            ? 'The entered information cannot be processed'
             : isMute.data
         );
     }
@@ -261,7 +261,10 @@ export class ChatComponent implements OnInit {
           },
         }
       );
-      if (isDeMute.data !== 'ok') alert(isDeMute.data);
+      if (isDeMute.data !== 'ok') alert(
+        isDeMute.data === 'ko'
+          ? 'The entered information cannot be processed'
+          : isDeMute.data);
     }
   }
 

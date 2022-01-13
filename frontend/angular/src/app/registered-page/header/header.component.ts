@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { if_user } from 'src/app/interfaces/if-user';
 import { GlobalService } from 'src/app/services/sf-global.service';
 import { UserService } from 'src/app/services/sf-user.service';
+import { Socket } from 'ngx-socket-io';
+import axios from 'axios';
 
 @Component({
   selector: 'app-header',
@@ -9,35 +11,22 @@ import { UserService } from 'src/app/services/sf-user.service';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  /* Need to deal with later (case of update ?) */
-  // user: if_user = {
-  //   login: '',
-  //   pseudo: '',
-  //   avatar: '',
-  //   status: '',
-  //   bio: '',
-  //   pending_queue: false,
-  //   banned: false,
-  //   admonishement: 0,
-  //   app_role: '',
-  //   created_web_app: new Date(),
-  //   updated_web_app: new Date(),
-  //   last_name: '',
-  //   first_name: '',
-  //   mail: '',
-  //   created_api: new Date(),
-  //   updated_api: new Date(),
-  // };
 
-  constructor(public userService: UserService, public global: GlobalService) {}
+  constructor(public userService: UserService, public global: GlobalService, private socket: Socket) {}
 
   async ngOnInit(): Promise<void> {
-    // try {
-    //   this.user = await this.userService.getUser();
-    //   console.log(this.user.login);
-    // } catch (error) {
-    //   console.log(error);
-    //   throw error;
-    // }
+    this.userService.user.ranking = (
+      await axios.get(
+        `http://${window.location.host}:3000/cb-stats/getMyRanking/${this.userService.user.login}`
+      )
+    ).data.ranking;
+    if (!this.userService.user.ranking)
+        this.userService.user.ranking = 0;
+    this.socket.on("points for ladder", (data: {points: number}) => {
+      this.userService.user.points_for_ladder = data.points;
+    });
+    this.socket.on("ranking", (data: number) => {
+      this.userService.user.ranking = data;
+    });
   }
 }

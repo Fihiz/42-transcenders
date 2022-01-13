@@ -29,6 +29,7 @@ export class UserService {
     created: new Date(),
     updated: new Date(),
     points_for_ladder: 0,
+    ranking: 0,
   };
 
   avatarList: {

@@ -440,7 +440,6 @@ export class GameService {
       drawEnd() {
         // end screen
         if (this.game.status === 'Finished' || this.game.status === 'Updating') {
-          console.log(this.game.status);
           this.gameContext.fillStyle = this.game.overlay_color;
           this.gameContext.fillRect(
             0,

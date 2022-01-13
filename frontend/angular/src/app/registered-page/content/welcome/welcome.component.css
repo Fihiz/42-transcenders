@@ -1,6 +1,7 @@
 .team {
-    font-size: 8px;
+    font-size: 10px;
     position: absolute;
+    left: 0;
     bottom: 0;
     text-align: center;
     width: 100%;

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { OnlineStatusService, OnlineStatusType } from 'ngx-online-status';
 import { Subscription } from 'rxjs';
+import { GlobalService } from 'src/app/services/sf-global.service';
 
 @Component({
   selector: 'app-welcome',
@@ -12,7 +13,7 @@ export class WelcomeComponent implements OnInit, OnDestroy {
   status: OnlineStatusType = 1;
   subscription: Subscription = new Subscription();
 
-  constructor(private onlineStatusService: OnlineStatusService) {}
+  constructor(private onlineStatusService: OnlineStatusService, public global: GlobalService) {}
 
   ngOnInit(): void {
     this.subscription.unsubscribe();

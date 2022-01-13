@@ -2,6 +2,7 @@
 <br>
 <h4 class="count">Available lives : {{ size }}</h4>
 <div class="list">
+	<img *ngIf="parties?.length === 0 || parties === undefined" src="../../../../assets/live.png" style="width: 100%;">
 	<li class="item" *ngFor="let party of parties">
 		<div class="container">
 			<a routerLink="../game/{{ party.game_id }}">
