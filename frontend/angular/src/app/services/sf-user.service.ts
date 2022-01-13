@@ -64,6 +64,10 @@ export class UserService {
       url: 'https://cdn.intra.42.fr/users/large_rlepart.jpg',
     },
     {
+      alt: 'Jonas',
+      url: 'https://img-c.udemycdn.com/user/200_H/7799204_2091_5.jpg',
+    },
+    {
       alt: 'donkey',
       url: '../../assets/animal-avatars/donkey-pgoudet.jpeg',
     },

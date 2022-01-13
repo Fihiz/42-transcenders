@@ -1,5 +1,6 @@
-<h1>Pong's ranking</h1>
-<p class="count"> Current players ranked: {{ size }}</p>
+<h1>Pong ranking</h1>
+<br>
+<h4 class="count"> Number of champions : {{ size }}</h4>
 <div class="list">
 	<li class="item" *ngFor="let score of scores;let i=index">
 		<p [ngClass]="{'other': i > 2,

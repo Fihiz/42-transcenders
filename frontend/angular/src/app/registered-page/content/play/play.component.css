@@ -1,10 +1,11 @@
-h1, h4, .state {
+h1, h3, h4, .state {
   text-align: center;
   font-family: "Secular One", sans-serif;
   color: #324448;
 }
 
 h5, h6 {
+  font-family: "Secular One", sans-serif;
   margin: 0px;
   padding: 0px;
 }
@@ -20,6 +21,8 @@ hr {
 .list {
 	padding: 2px;
 	text-align: center;
+  display: flex;
+  justify-content: space-around;
 }
 
 .item {

@@ -1,5 +1,7 @@
-h1 {
-  text-align: center;
+h1, h4 {
+	text-align: center;
+	font-family: "Secular One", sans-serif;
+	color: #324448;
 }
 
 img {

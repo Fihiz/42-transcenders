@@ -1,7 +1,7 @@
 <div *ngIf="sets.length > 0">
-    <h1>Pong game</h1>
+    <h1>Play pong</h1>
     <br>
-    <h4 class="state">Start a new game !</h4>
+    <h4 class="state">Select your game to compete with the best 42 pong players !</h4>
     <br>
     <br>
     <br>
@@ -10,7 +10,7 @@
     <li class="item" *ngFor="let set of sets">
         <div class="container">
             <svg version="1.1" id="{{ set.type }}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-            viewBox="0 0 700 400" style="border-radius: 10px 10px 0px 0px;" xml:space="preserve">
+            viewBox="0 0 700 400" style="border-radius: 10px 10px 0px 0px; margin: 4px;" xml:space="preserve">
                 <g *ngIf="set.board_color === 'figma'">
                     <image width="750" height="400" xlink:href="../../../../assets/landscapebannerfigma.png" />
                 </g>
@@ -35,17 +35,22 @@
             </svg>
             <h3 class="title">{{ set.type }}</h3>
             <hr>
-            <h5 class="color">Specifications</h5>
-            <h6 class="detail">size / speed</h6>
-            <p class="field color">Ball:</p>
+            <br>
+            <h5 class="color">Game characteristics</h5>
+            <h6 class="detail">size | speed</h6>
+            <br>
+            <h5 class="field color">Ball</h5>
             <p class="value color">{{ set.ball_desc }}</p>
-            <p class="field color">Racket left:</p>
+            <br>
+            <h5 class="field color">Left paddle</h5>
             <p class="value color">{{ set.racket1_desc }}</p>
-            <p class="field color">Racket right:</p>
+            <br>
+            <h5 class="field color">Right paddle</h5>
             <p class="value color">{{ set.racket2_desc }}</p>
+            <br>
             <input *ngIf="selected === undefined" (click)="setShield(set.type)" type="checkbox">
             <input *ngIf="selected !== undefined" (click)="setShield(set.type)" type="checkbox" disabled>
-            <label for="Shield power-up">Shield power-up</label>
+            <label for="Shield power-up" style="margin-left: 4px;">Shield power-up</label>
             <button *ngIf="selected === undefined" class="btn btn-dark button" type="submit" (click)="setParty(set.type)">PLAY</button>
             <button *ngIf="selected !== undefined && selected !== set.type" class="btn btn-dark button" type="submit" [disabled]="true">PLAY</button>
             <button *ngIf="selected !== undefined && selected === set.type" class="btn btn-dark button" type="submit" (click)="unsetParty()">CANCEL</button>

@@ -1,11 +1,12 @@
-<h1>Live's pong</h1>
-<p class="count">Current games played: {{ size }}</p>
+<h1>Pong games in live</h1>
+<br>
+<h4 class="count">Available lives : {{ size }}</h4>
 <div class="list">
 	<li class="item" *ngFor="let party of parties">
 		<div class="container">
 			<a routerLink="../game/{{ party.game_id }}">
 				<svg version="1.1" id="{{ party.game_type_id.type }}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-				viewBox="0 0 700 400" style="border-radius: 10px 10px 0px 0px;" xml:space="preserve">
+				viewBox="0 0 700 400" style="border-radius: 10px 10px 0px 0px; margin: 4px;" xml:space="preserve">
 					<g *ngIf="party.game_type_id.board_color === 'figma'">
 						<image width="750" height="400" clip-path="url(#figma)" xlink:href="../../../../assets/landscapebannerfigma.png" />
 					</g>

@@ -531,7 +531,7 @@ export class ChatComponent implements OnInit {
         conv_id: this.currentConv.conv_id,
         logins_conv: this.currentConv.members,
         date: new Date(),
-        content: "Invitation to start party!",
+        content: "Invitation to start a game!",
         type: type,
         invitation: true,
       }

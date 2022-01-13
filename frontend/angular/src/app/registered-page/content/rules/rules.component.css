@@ -30,7 +30,7 @@ p {
 
 h1
 {
-  color: #528FAC;
+  color: #324448;
   text-align: center;
   font-family: 'Secular One', sans-serif;
 }
@@ -38,12 +38,12 @@ h1
 h3, h5 {
   text-align: center;
   font-family: 'Secular One', sans-serif;
-  color: #528FAC;
+  color: #324448;
 }
 
 .card-header {
   background-color: white;
-  border-bottom: 10px solid #528FAC;
+  border-bottom: 10px solid #324448;
 }
 
 .card {
