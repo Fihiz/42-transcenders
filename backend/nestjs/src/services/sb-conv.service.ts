@@ -37,7 +37,7 @@ export class ConvService {
       if (!(await this.user.findOneApiUser(mem)))
         return (false)
     }
-    conv.password = atob(conv.password)
+    conv.password = conv.password
     return (true);
   }
 
@@ -97,7 +97,7 @@ export class ConvService {
 
 
   async joinRoomCheckValue(emission, conv: ConversationEntity, isInvited: boolean, name:string) {
-    emission.data.roomPassword = atob(emission.data.roomPassword);
+    emission.data.roomPassword = emission.data.roomPassword;
     if (!conv || conv?.members?.find(member => member === name) || conv.type === 'private') {
       return (false);
     }
