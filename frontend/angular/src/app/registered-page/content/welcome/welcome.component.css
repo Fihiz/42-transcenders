@@ -1,0 +1,11 @@
+.team {
+    font-size: 8px;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+}
+
+p {
+    text-align: center;
+}

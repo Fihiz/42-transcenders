@@ -226,6 +226,7 @@ export class ChatGateway {
 
   @SubscribeMessage('setInvitation')
 	async setInvitationFunc(@MessageBody() emission) {
+    const user = await this.userService.findOneAppUser(emission.login);
     // CHECK INVITATION / STATUS
     const alreadyInvited = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
     const receiver = emission.data.logins_conv.find((search) => search !== emission.login);
@@ -234,14 +235,14 @@ export class ChatGateway {
     if (statusReceiver === undefined) {
       if (alreadyInvited)
         this.ConvService.unsetInvitation(alreadyInvited);
-      this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "User not connected..."));
+      this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "User not connected...", user));
       return;
     }
     // CAS D'ERREURS: ADVERSARY INGAME
     else if (statusReceiver === "Playing") { // TODO: CHECK VALUE OF "INGAME"
       if (alreadyInvited)
         this.ConvService.unsetInvitation(alreadyInvited);
-      this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Already in a game..."));
+      this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Already in a game...", user));
       return;
     }
     // INVITATION EXIST
@@ -258,7 +259,7 @@ export class ChatGateway {
           if (emission.data.invitation === true && alreadyInvited.game_type !== emission.data.type) {
             console.log(`${emission.login} a déjà fait une demande de type differente.`);
             this.ConvService.unsetInvitation(alreadyInvited);
-            this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Type game differs... Last invitation deleted!"));
+            this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Type game differs... Last invitation deleted!", user));
             return;
           }
           const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
@@ -277,7 +278,7 @@ export class ChatGateway {
         }
         // CAS D'ERREURS: TYPE GAME NOT EXIST
         else {
-          this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Type game not exist..."));
+          this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Type game not exist...", user));
           return;
         }
         console.log(`${emission.login} a fait une demande pour jouer alors qu'il a été invité.`);
@@ -285,7 +286,7 @@ export class ChatGateway {
       // SEND DOUBLE INVITATION
       else {
         console.log(`${emission.login} a déjà fait une demande pour jouer.`);
-        this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Request to play already launched..."));
+        this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Request to play already launched...", user));
         return;
       }
     }
@@ -293,7 +294,7 @@ export class ChatGateway {
     else {
       if (emission.data.content === "Invitation accepted!") {
         console.log(`${emission.login} a accepté une une invitation expirée.`);
-        this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Invitation has expired..."));
+        this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Invitation has expired...", user));
         return;
       }
       else {
@@ -311,6 +312,7 @@ export class ChatGateway {
 
   @SubscribeMessage('unsetInvitation')
 	async unsetInvitationFunc(@MessageBody() emission) {
+    const user = await this.userService.findOneAppUser(emission.login);
     const invitation = await this.ConvService.getInvitationRoomById(emission.data.conv_id);
     if (invitation !== undefined) {
       await this.ConvService.unsetInvitation(invitation);
@@ -325,8 +327,8 @@ export class ChatGateway {
     // CAS D'ERREURS: INVITATION NOT EXIST
     else {
       console.log(`${emission.login} repond a une invitation expirée.`);
-      this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Invitation has expired..."));
-      console.log(this.chatService.errorMessage(emission, "Type game not exist..."));
+      this.server.to(emission.socketId).emit('errorInvitation', this.chatService.errorMessage(emission, "Invitation has expired...", user));
+      console.log(this.chatService.errorMessage(emission, "Type game not exist...", user));
       return;
     }
 	}

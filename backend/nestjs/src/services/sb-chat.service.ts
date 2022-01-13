@@ -194,18 +194,18 @@ export class ChatService {
     }
   }
 
-  errorMessage(emission: any, message: string) {
+  errorMessage(emission: any, message: string, user: any) {
     console.log("ERROR: ", message);
     const error: MessageEntity = {
       id: emission.socketId,
       conv_id: emission.data.conv_id,
-      login: emission.login,
+      login: user.login,
       date: emission.data.date,
       content: message,
-      avatar: (emission.login as any as WebAppUserEntity).avatar, // fail
-      role: (emission.login as any as WebAppUserEntity).app_role, // fail
+      avatar: user.avatar, // fail
+      role: user.app_role, // fail
       invitation: false,
-      pseudo: (emission.login as any as WebAppUserEntity).pseudo,
+      pseudo: user.pseudo,
     }
     return error;
   }
