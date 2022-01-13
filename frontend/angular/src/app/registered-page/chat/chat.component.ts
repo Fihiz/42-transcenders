@@ -328,7 +328,7 @@ export class ChatComponent implements OnInit {
       this.currentConv,
       this.currentConv.conv_id,
       {
-        password: value,
+        password: btoa(value),
         conv_id: this.currentConv.conv_id,
       }
     );
