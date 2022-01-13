@@ -100,6 +100,7 @@ export class SuperAdminComponent implements OnInit {
       isBanned: isBanned,
     };
     await this.userService.adminChangeIsBanned(data);
+    this.socket.emit('log-out', {login: currentLogin});
     this.socket.emit('allUsersInApp');
   }
 

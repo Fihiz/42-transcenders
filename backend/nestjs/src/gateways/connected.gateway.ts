@@ -59,12 +59,12 @@ export class ConnectedGateway {
       	conversations = await this.convService.findAllConv(message.login);
 	}
 	this.server.emit('users', await this.chatService.getUsers());
-	this.server.to(GlobalDataService.loginIdMap.get(message.login).sockets.map((socket) => {return socket.id;})).emit('allConversations', conversations);
+	this.server.to(GlobalDataService.loginIdMap.get(message.login)?.sockets.map((socket) => {return socket.id;})).emit('allConversations', conversations);
 }
 
 	@SubscribeMessage('log-out')
 	handleLeaving(@MessageBody() message: Message): void {
-		const dest = GlobalDataService.loginIdMap.get(message.login).sockets.map((socket) => {return socket.id;});
+		const dest = GlobalDataService.loginIdMap.get(message.login)?.sockets.map((socket) => {return socket.id;});
 		this.server.to(dest).emit('disconnection', 'disconnection');
 	}
 }
