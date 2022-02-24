@@ -16,3 +16,8 @@ To launch the app
 
 To shut down  
 `sh clean.sh`
+
+
+*__Authors__*
+
+Joel Benassac, Romain Lepart, Agathe Géraud, Pierre-louis Goudet, Salomé d'Audeteau
