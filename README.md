@@ -22,8 +22,7 @@ The website should be a single page app, but the user should be able to use the 
 
 #### To shut down  
 `sh clean.sh`
-###### *This is responsible for opening the three respective ports of our services (the backend, the database and the single page).*  
-> To access to the app, you can go on `http://localhost
+###### *This will take care of stopping the services, deleting the containers and images*  
 
 *__Authors__*
 
