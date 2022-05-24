@@ -27,3 +27,7 @@ The website should be a single page app, but the user should be able to use the 
 *__Authors__*
 
 Joel Benassac, Romain Lepart, Agathe Géraud, Pierre-louis Goudet, Salomé d'Audeteau
+
+
+https://user-images.githubusercontent.com/45790426/169988316-a975a609-0340-4451-9c1a-0d5530f147b0.mov
+
